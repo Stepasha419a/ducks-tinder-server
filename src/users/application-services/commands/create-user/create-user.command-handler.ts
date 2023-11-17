@@ -21,16 +21,5 @@ export class CreateUserCommandHandler
       });
 
     return createdUser;
-
-    /* const user = await this.prismaService.user.create({
-      data: dto,
-      include: UsersSelector.selectUser(),
-    });
-
-    const pairsCount = await this.prismaService.user.count({
-      where: { pairFor: { some: { email: dto.email } } },
-    });
-
-    return new UserDto({ ...user, pairsCount }); */
   }
 }

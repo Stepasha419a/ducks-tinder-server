@@ -1,8 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { User as PrismaUser } from 'prisma';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from './user.repository';
 import { User, UserAggregate } from 'users/domain';
+import { UsersSelector } from 'users/users.selector';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -10,23 +11,34 @@ export class UserAdapter implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async save(user: User): Promise<UserAggregate | null> {
-    if (user?.id) {
-      const existingUser = await this.findOne(user.id);
-      if (!existingUser) {
-        throw new NotFoundException();
-      }
-
+    const existingUser = await this.findOne(user.id);
+    if (existingUser) {
       const { id, ...toUpdate } = user;
       const updatedUser = await this.prismaService.user.update({
         where: { id },
         data: toUpdate,
+        include: UsersSelector.selectUser(),
       });
 
-      return this.getUserAggregate(updatedUser);
+      const pairsCount = await this.getPairsCount(updatedUser.id);
+
+      return this.getUserAggregate({ ...updatedUser, pairsCount });
     }
 
-    const saved = await this.prismaService.user.create({ data: user });
-    return this.getUserAggregate(saved);
+    const saved = await this.prismaService.user.create({
+      data: user,
+      include: UsersSelector.selectUser(),
+    });
+
+    const pairsCount = await this.getPairsCount(saved.id);
+
+    return this.getUserAggregate({ ...saved, pairsCount });
+  }
+
+  private async getPairsCount(id: string): Promise<number> {
+    return this.prismaService.user.count({
+      where: { pairFor: { some: { id: id } } },
+    });
   }
 
   async findOne(id: string): Promise<UserAggregate | null> {
@@ -40,7 +52,7 @@ export class UserAdapter implements UserRepository {
       });
 
     if (!existingUser) {
-      throw new NotFoundException();
+      return null;
     }
 
     return this.getUserAggregate(existingUser);

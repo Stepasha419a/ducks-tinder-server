@@ -45,14 +45,24 @@ import {
 import { GetPairsQuery, GetSortedQuery } from './queries';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
-import { User } from 'common/decorators';
+import { Public, User } from 'common/decorators';
+import { UserFacade } from './application-services';
+import { CreateUserDto } from './application-services/commands';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly facade: UserFacade,
   ) {}
+
+  @Public()
+  @Post()
+  @HttpCode(HttpStatus.OK)
+  create(@Body() dto: CreateUserDto) {
+    return this.facade.commands.createUser(dto);
+  }
 
   @Patch()
   @HttpCode(HttpStatus.OK)
