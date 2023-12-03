@@ -1,3 +1,14 @@
+export interface PictureInterface {
+  name: string;
+  order: number;
+}
+
+export interface Place {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
 export interface User {
   id: string;
   password: string;
@@ -15,61 +26,25 @@ export interface User {
   preferAgeFrom?: number;
   preferAgeTo?: number;
 
+  interests?: string[];
+  zodiacSign?: string;
+  education?: string;
+  alcoholAttitude?: string;
+  chronotype?: string;
+  foodPreference?: string;
+  pet?: string;
+  smokingAttitude?: string;
+  socialNetworksActivity?: string;
+  trainingAttitude?: string;
+  childrenAttitude?: string;
+  personalityType?: string;
+  communicationStyle?: string;
+  attentionSign?: string;
+
+  place: Place;
+
+  pictures: PictureInterface[];
+
   createdAt: string;
   updatedAt: string;
-
-  //token?: Token;
-  //pictures: Picture[]
-  //interests: Interest[]
-
-  //messages: Message[]
-  //chats: Chat[]
-  //chatsVisit: ChatVisit[]
-
-  //pairFor: User[]
-  //pairs: User[]
-
-  //place?: Place
-
-  //checked: CheckedUsers[]
-  //wasChecked: CheckedUsers[]
-
-  //zodiacSign?: ZodiacSign
-  //zodiacSignId?: String
-
-  //education?:   Education
-  //educationId?: String
-
-  //childrenAttitude?: ChildrenAttitude
-  //childrenAttitudeId?: String
-
-  //personalityType?: PersonalityType
-  //personalityTypeId?: String
-
-  //communicationStyle?: CommunicationStyle
-  //communicationStylesId?: String
-
-  //attentionSign?: AttentionSign
-  //attentionSignsId?: String
-
-  //pet?: Pet
-  //petId?: String
-
-  //alcoholAttitude?: AlcoholAttitude
-  //alcoholAttitudeId?: String
-
-  //smokingAttitude?: SmokingAttitude
-  //smokingAttitudeId?: String?
-
-  //trainingAttitude?: TrainingAttitude
-  //trainingAttitudeId?: String?
-
-  //foodPreference?: FoodPreference
-  //foodPreferenceId?: String
-
-  //socialNetworksActivity?: SocialNetworksActivity
-  //socialNetworksActivityId?: String
-
-  //chronotype?: Chronotype
-  //chronotypeId?: String
 }

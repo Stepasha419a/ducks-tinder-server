@@ -1,11 +1,14 @@
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { User } from './user.interface';
+import { PictureInterface, Place, User } from './user.interface';
 import { UserServices } from './services';
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -14,9 +17,34 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateNested,
   validateSync,
 } from 'class-validator';
 import { DomainError } from 'users/errors';
+import { Type } from 'class-transformer';
+
+export class PictureAggregate implements PictureInterface {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(8)
+  order: number;
+}
+
+class PlaceAggregate implements Place {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  latitude: number;
+
+  @IsNumber()
+  longitude: number;
+}
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -44,12 +72,14 @@ export class UserAggregate extends UserServices implements User {
   @Length(6, 16)
   nickname?: string;
 
+  @IsOptional()
   @IsBoolean()
   isActivated = false;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  activationLink: string;
+  activationLink: string = randomStringGenerator();
 
   @IsOptional()
   @IsNumber()
@@ -91,6 +121,84 @@ export class UserAggregate extends UserServices implements User {
   @Max(100)
   preferAgeTo?: number;
 
+  @IsOptional()
+  @IsObject()
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => PlaceAggregate)
+  place: Place;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  zodiacSign?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  education?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  childrenAttitude?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  personalityType?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  communicationStyle: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  attentionSign?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  alcoholAttitude?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  chronotype?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  foodPreference?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  pet?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  smokingAttitude?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  socialNetworksActivity?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  trainingAttitude?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PictureAggregate)
+  pictures: PictureAggregate[];
+
   @IsString()
   @IsNotEmpty()
   createdAt = new Date().toISOString();
@@ -116,4 +224,47 @@ export class UserAggregate extends UserServices implements User {
 
     return _user;
   }
+
+  getPrimitiveFields(): UserPrimitiveFields {
+    const keys: Array<keyof User> = [
+      'age',
+      'description',
+      'distance',
+      'email',
+      'interests',
+      'name',
+      'nickname',
+      'password',
+      'place',
+      'preferAgeFrom',
+      'preferAgeTo',
+      'preferSex',
+      'sex',
+      'usersOnlyInDistance',
+    ];
+    const subset = Object.fromEntries(
+      keys.filter((key) => key in this).map((key) => [key, this[key]]),
+    ) as UserPrimitiveFields;
+
+    return subset;
+  }
+}
+
+export interface UserPrimitiveFields {
+  password: string;
+  email: string;
+  name: string;
+  description?: string;
+  nickname?: string;
+  age?: number;
+  sex?: string;
+  distance?: number;
+  usersOnlyInDistance?: boolean;
+  preferSex?: string;
+  preferAgeFrom?: number;
+  preferAgeTo?: number;
+
+  interests?: string[];
+
+  place: Place;
 }
