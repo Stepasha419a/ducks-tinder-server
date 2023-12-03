@@ -1,4 +1,4 @@
-import { ValidatedUserDto } from 'users/dto';
+import { ValidatedUserDto } from 'users/legacy/dto';
 
 export class GetChatQuery {
   constructor(

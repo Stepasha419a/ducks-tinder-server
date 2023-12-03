@@ -1,4 +1,4 @@
-import { MixPicturesDto } from 'users/dto';
+import { MixPicturesDto } from 'users/legacy/dto';
 
 export const USERS_PICTURE_MIX_PUT_DTO: MixPicturesDto = {
   pictures: [

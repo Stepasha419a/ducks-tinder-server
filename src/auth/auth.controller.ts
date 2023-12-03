@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
-import { CreateUserDto } from 'users/dto';
+import { CreateUserDto } from 'users/legacy/dto';
 import { LoginUserDto } from './dto';
 import { CommandBus } from '@nestjs/cqrs';
 import {

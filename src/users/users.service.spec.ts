@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { UsersService } from 'users/users.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 import {
   UsersPrismaMock,
   CommandBusMock,

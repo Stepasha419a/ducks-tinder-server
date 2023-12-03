@@ -3,7 +3,7 @@ import { QueryBus } from '@nestjs/cqrs';
 import { GetChatQuery, GetChatsQuery } from './queries';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
-import { ValidatedUserDto } from 'users/dto';
+import { ValidatedUserDto } from 'users/legacy/dto';
 
 @Controller('chats')
 export class ChatsController {

@@ -42,7 +42,7 @@ import {
 } from './chats.interface';
 import { ChatsMapper } from './chats.mapper';
 import { CustomValidationPipe } from 'common/pipes';
-import { ValidatedUserDto } from 'users/dto';
+import { ValidatedUserDto } from 'users/legacy/dto';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)

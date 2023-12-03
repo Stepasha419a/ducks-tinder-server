@@ -25,7 +25,7 @@ import {
   ValidatedUserDto,
   NotValidatedUserDto,
   PatchUserRelationsDto,
-} from './dto';
+} from './legacy/dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   AcceptPairCommand,
@@ -41,8 +41,8 @@ import {
   RemoveAllPairsCommand,
   ReturnUserCommand,
   SavePictureCommand,
-} from './commands';
-import { GetPairsQuery, GetSortedQuery } from './queries';
+} from './legacy/commands';
+import { GetPairsQuery, GetSortedQuery } from './legacy/queries';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { Public, User } from 'common/decorators';

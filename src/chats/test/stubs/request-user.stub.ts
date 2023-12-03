@@ -1,4 +1,4 @@
-import { ValidatedUserDto } from 'users/dto';
+import { ValidatedUserDto } from 'users/legacy/dto';
 import { userDtoStub } from 'users/test/stubs';
 
 export const requestUserStub = (): ValidatedUserDto => {

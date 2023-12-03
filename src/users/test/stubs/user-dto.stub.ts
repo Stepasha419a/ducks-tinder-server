@@ -1,4 +1,4 @@
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 
 export const userDtoStub = (): UserDto => ({
   id: 'sdfhsdghj34259034578923',

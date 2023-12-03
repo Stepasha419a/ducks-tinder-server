@@ -1,4 +1,4 @@
-import { NameObjectDto } from './dto';
+import { NameObjectDto } from './legacy/dto';
 
 export interface PictureInterface {
   name: string;

@@ -5,7 +5,7 @@ import { AuthDataReturn } from 'auth/auth.interface';
 import { UsersService } from 'users/users.service';
 import { TokensService } from 'tokens/tokens.service';
 import { ForbiddenException } from '@nestjs/common';
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 import { UserTokenDto } from 'auth/dto';
 import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
 

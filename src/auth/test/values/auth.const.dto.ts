@@ -1,4 +1,4 @@
-import { CreateUserDto } from 'users/dto';
+import { CreateUserDto } from 'users/legacy/dto';
 import { userDtoStub } from 'users/test/stubs';
 import { LoginUserDto } from 'auth/dto';
 

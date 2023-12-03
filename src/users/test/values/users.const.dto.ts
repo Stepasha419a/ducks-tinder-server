@@ -5,7 +5,7 @@ import {
   PatchUserDto,
   PatchUserPlaceDto,
   PatchUserRelationsDto,
-} from 'users/dto';
+} from 'users/legacy/dto';
 import { userDtoStub } from '../stubs';
 
 export const USER_SORTS_DATA = {

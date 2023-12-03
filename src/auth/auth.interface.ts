@@ -1,4 +1,4 @@
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 
 export interface UserData {
   user: UserDto;

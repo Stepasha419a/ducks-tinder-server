@@ -3,7 +3,7 @@ import { UsersController } from 'users/users.controller';
 import { CommandBusMock, QueryBusMock } from 'users/test/mocks';
 import { AccessTokenGuard } from 'common/guards';
 import { requestUserStub, shortUserStub, userDtoStub } from 'users/test/stubs';
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 import { ShortUser } from 'users/users.interface';
 import {
   DELETE_PICTURE_DTO,

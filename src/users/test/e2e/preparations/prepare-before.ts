@@ -1,6 +1,6 @@
 import { UsersSelector } from 'users/users.selector';
 import prismaClient from 'prisma/test/prisma-client';
-import { UserDto } from 'users/dto';
+import { UserDto } from 'users/legacy/dto';
 
 export async function prepareBefore(currentUserId, secondUserId) {
   await prismaClient.$transaction([

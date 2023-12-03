@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateUserCommand } from './commands';
-import { GetUserByEmailQuery, GetUserQuery } from './queries';
-import { UserDto, CreateUserDto } from './dto';
+import { CreateUserCommand } from './legacy/commands';
+import { GetUserByEmailQuery, GetUserQuery } from './legacy/queries';
+import { UserDto, CreateUserDto } from './legacy/dto';
 
 @Injectable()
 export class UsersService {
