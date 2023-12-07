@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateUserCommand } from './legacy/commands';
-import { GetUserByEmailQuery, GetUserQuery } from './legacy/queries';
-import { UserDto, CreateUserDto } from './legacy/dto';
+import { UserFacade } from './application-services';
+import { CreateUserDto } from './application-services/commands';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
+  constructor(private readonly facade: UserFacade) {}
 
-  async getUser(id: string): Promise<UserDto> {
-    return this.queryBus.execute(new GetUserQuery(id));
+  async getUser(id: string) {
+    return this.facade.queries.getUser(id);
   }
 
-  async getUserByEmail(email: string): Promise<User> {
-    return this.queryBus.execute(new GetUserByEmailQuery(email));
+  async getUserByEmail(email: string) {
+    return this.facade.queries.getUserByEmail(email);
   }
 
-  async createUser(dto: CreateUserDto): Promise<UserDto> {
-    return this.commandBus.execute(new CreateUserCommand(dto));
+  async createUser(dto: CreateUserDto) {
+    return this.facade.commands.createUser(dto);
   }
 }

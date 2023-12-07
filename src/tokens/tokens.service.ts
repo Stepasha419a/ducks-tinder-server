@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { UserTokenDto } from 'auth/dto';
 import {
-  GenerateTokensCommand,
   RemoveTokenCommand,
   ValidateAccessTokenCommand,
   ValidateRefreshTokenCommand,
-} from './commands';
+} from './legacy/commands';
+import { RefreshTokenFacade } from './application-services';
+import { UserTokenDto } from './application-services/commands';
 
 @Injectable()
 export class TokensService {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly facade: RefreshTokenFacade,
+  ) {}
 
-  public async generateTokens(payload: UserTokenDto) {
-    return this.commandBus.execute(new GenerateTokensCommand(payload));
+  public async generateTokens(dto: UserTokenDto) {
+    return this.facade.commands.generateTokens(dto);
   }
 
   public async removeToken(refreshToken: string) {

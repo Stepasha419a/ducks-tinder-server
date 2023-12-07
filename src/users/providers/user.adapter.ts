@@ -209,6 +209,24 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(existingUser);
   }
 
+  async findOneByEmail(email: string): Promise<UserAggregate | null> {
+    const existingUser = await this.prismaService.user
+      .findUnique({
+        where: { email },
+        include: UsersSelector.selectUser(),
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+
+    if (!existingUser) {
+      return null;
+    }
+
+    return this.getUserAggregate(existingUser);
+  }
+
   async findMany(): Promise<[UserAggregate[], number]> {
     throw new Error('Method not implemented.');
   }

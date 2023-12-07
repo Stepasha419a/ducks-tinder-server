@@ -12,34 +12,31 @@ import {
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
-import { CreateUserDto } from 'users/legacy/dto';
-import { LoginUserDto } from './dto';
+import { LoginUserDto } from './legacy/dto';
 import { CommandBus } from '@nestjs/cqrs';
-import {
-  LoginCommand,
-  LogoutCommand,
-  RefreshCommand,
-  RegisterCommand,
-} from './commands';
-import { AuthDataReturn, UserData } from './auth.interface';
+import { LoginCommand, LogoutCommand, RefreshCommand } from './legacy/commands';
+import { UserData } from './auth.interface';
+import { AuthUserFacade } from './application-services';
+import { RegisterUserDto } from './application-services/commands';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly facade: AuthUserFacade,
+  ) {}
 
   @Public()
   @Post('registration')
   @HttpCode(HttpStatus.OK)
   async registration(
     @Res() res: Response,
-    @Body() dto: CreateUserDto,
+    @Body() dto: RegisterUserDto,
   ): Promise<Response<UserData>> {
-    const userData: AuthDataReturn = await this.commandBus.execute(
-      new RegisterCommand(dto),
-    );
-    this.setCookies(res, userData.refreshToken);
+    const authUserAggregate = await this.facade.commands.register(dto);
+    this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(userData.data);
+    return res.json(authUserAggregate.withoutPrivateFields());
   }
 
   @Public()
