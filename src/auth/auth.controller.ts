@@ -12,12 +12,11 @@ import {
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
-import { LoginUserDto } from './legacy/dto';
 import { CommandBus } from '@nestjs/cqrs';
-import { LoginCommand, LogoutCommand, RefreshCommand } from './legacy/commands';
+import { LogoutCommand, RefreshCommand } from './legacy/commands';
 import { UserData } from './auth.interface';
 import { AuthUserFacade } from './application-services';
-import { RegisterUserDto } from './application-services/commands';
+import { LoginUserDto, RegisterUserDto } from './application-services/commands';
 
 @Controller('auth')
 export class AuthController {
@@ -46,12 +45,10 @@ export class AuthController {
     @Res() res: Response,
     @Body() dto: LoginUserDto,
   ): Promise<Response<UserData>> {
-    const userData: AuthDataReturn = await this.commandBus.execute(
-      new LoginCommand(dto),
-    );
-    this.setCookies(res, userData.refreshToken);
+    const authUserAggregate = await this.facade.commands.login(dto);
+    this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(userData.data);
+    return res.json(authUserAggregate.withoutPrivateFields());
   }
 
   @Patch('logout')
@@ -77,7 +74,7 @@ export class AuthController {
   ): Promise<Response<UserData>> {
     const { refreshToken } = req.cookies;
 
-    const userData: AuthDataReturn = await this.commandBus.execute(
+    const userData = await this.commandBus.execute(
       new RefreshCommand(refreshToken),
     );
     this.setCookies(res, userData.refreshToken);

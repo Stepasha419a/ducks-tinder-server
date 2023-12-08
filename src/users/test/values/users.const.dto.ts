@@ -1,5 +1,4 @@
 import {
-  CreateUserDto,
   DeletePictureDto,
   MixPicturesDto,
   PatchUserDto,
@@ -27,7 +26,7 @@ export const USER_SORTS_DATA = {
   },
 };
 
-export const CREATE_USER_DTO: CreateUserDto = {
+export const CREATE_USER_DTO = {
   email: userDtoStub().email,
   password: '123123123',
   name: userDtoStub().name,

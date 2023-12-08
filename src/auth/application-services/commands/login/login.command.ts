@@ -1,4 +1,4 @@
-import { LoginUserDto } from 'auth/legacy/dto';
+import { LoginUserDto } from 'auth/application-services/commands/dto';
 
 export class LoginCommand {
   constructor(public readonly dto: LoginUserDto) {}

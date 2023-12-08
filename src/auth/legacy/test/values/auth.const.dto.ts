@@ -1,14 +1,12 @@
-import { CreateUserDto } from 'users/legacy/dto';
 import { userDtoStub } from 'users/test/stubs';
-import { LoginUserDto } from 'auth/legacy/dto';
 
-export const CREATE_USER_DTO: CreateUserDto = {
+export const CREATE_USER_DTO = {
   email: userDtoStub().email,
   password: '123123123',
   name: userDtoStub().name,
 };
 
-export const LOGIN_USER_DTO: LoginUserDto = {
+export const LOGIN_USER_DTO = {
   email: userDtoStub().email,
   password: '123123123',
 };

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcryptjs';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { PictureInterface, Place, User } from './user.interface';
 import { UserServices } from './services';
@@ -223,6 +224,10 @@ export class UserAggregate extends UserServices implements User {
     }
 
     return _user;
+  }
+
+  async comparePasswords(passwordToCompare: string): Promise<boolean> {
+    return bcrypt.compare(this.password, passwordToCompare);
   }
 
   getPrimitiveFields(): UserPrimitiveFields {
