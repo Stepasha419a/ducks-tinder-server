@@ -4,6 +4,7 @@ import {
   LoginCommand,
   LoginUserDto,
   LogoutCommand,
+  RefreshCommand,
   RegisterCommand,
   RegisterUserDto,
 } from './commands';
@@ -17,6 +18,7 @@ export class AuthUserFacade {
     register: (dto: RegisterUserDto) => this.register(dto),
     login: (dto: LoginUserDto) => this.login(dto),
     logout: (refreshTokenValue: string) => this.logout(refreshTokenValue),
+    refresh: (refreshTokenValue: string) => this.refresh(refreshTokenValue),
   };
   queries = {};
 
@@ -35,6 +37,12 @@ export class AuthUserFacade {
   private logout(refreshTokenValue: string) {
     return this.commandBus.execute<LogoutCommand>(
       new LogoutCommand(refreshTokenValue),
+    );
+  }
+
+  private refresh(refreshTokenValue: string) {
+    return this.commandBus.execute<RefreshCommand, AuthUserAggregate>(
+      new RefreshCommand(refreshTokenValue),
     );
   }
 }

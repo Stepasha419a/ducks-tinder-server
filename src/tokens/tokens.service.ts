@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import {
-  ValidateAccessTokenCommand,
-  ValidateRefreshTokenCommand,
-} from './legacy/commands';
+import { ValidateAccessTokenCommand } from './legacy/commands';
 import { RefreshTokenFacade } from './application-services';
 import { UserTokenDto } from './application-services/commands';
 
@@ -22,8 +19,8 @@ export class TokensService {
     return this.facade.commands.removeToken(refreshTokenValue);
   }
 
-  public async validateRefreshToken(token: string) {
-    return this.commandBus.execute(new ValidateRefreshTokenCommand(token));
+  public async validateRefreshToken(refreshTokenValue: string) {
+    return this.facade.commands.validateRefreshToken(refreshTokenValue);
   }
 
   public validateAccessToken(token: string) {

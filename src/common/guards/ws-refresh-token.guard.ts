@@ -26,7 +26,7 @@ export class WsRefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const user = await this.usersService.getUser(userData.id);
+    const user = await this.usersService.getUser(userData.userId);
 
     client.request.user = user;
     return true;

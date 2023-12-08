@@ -13,7 +13,6 @@ import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
 import { CommandBus } from '@nestjs/cqrs';
-import { RefreshCommand } from './legacy/commands';
 import { UserData } from './auth.interface';
 import { AuthUserFacade } from './application-services';
 import { LoginUserDto, RegisterUserDto } from './application-services/commands';
@@ -74,12 +73,10 @@ export class AuthController {
   ): Promise<Response<UserData>> {
     const { refreshToken } = req.cookies;
 
-    const userData = await this.commandBus.execute(
-      new RefreshCommand(refreshToken),
-    );
-    this.setCookies(res, userData.refreshToken);
+    const authUserAggregate = await this.facade.commands.refresh(refreshToken);
+    this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(userData.data);
+    return res.json(authUserAggregate.withoutPrivateFields());
   }
 
   private setCookies(res: Response, refreshToken: string) {
