@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
 import { CommandBus } from '@nestjs/cqrs';
-import { LogoutCommand, RefreshCommand } from './legacy/commands';
+import { RefreshCommand } from './legacy/commands';
 import { UserData } from './auth.interface';
 import { AuthUserFacade } from './application-services';
 import { LoginUserDto, RegisterUserDto } from './application-services/commands';
@@ -60,7 +60,7 @@ export class AuthController {
     const { refreshToken } = req.cookies;
 
     this.clearCookies(res);
-    await this.commandBus.execute(new LogoutCommand(refreshToken));
+    await this.facade.commands.logout(refreshToken);
 
     return res.end();
   }

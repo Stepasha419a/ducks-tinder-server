@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
-  RemoveTokenCommand,
   ValidateAccessTokenCommand,
   ValidateRefreshTokenCommand,
 } from './legacy/commands';
@@ -19,8 +18,8 @@ export class TokensService {
     return this.facade.commands.generateTokens(dto);
   }
 
-  public async removeToken(refreshToken: string) {
-    return this.commandBus.execute(new RemoveTokenCommand(refreshToken));
+  public async removeToken(refreshTokenValue: string) {
+    return this.facade.commands.removeToken(refreshTokenValue);
   }
 
   public async validateRefreshToken(token: string) {

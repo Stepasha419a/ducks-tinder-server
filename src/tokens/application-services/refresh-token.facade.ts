@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GenerateTokensCommand, UserTokenDto } from './commands';
 import { AccessTokenAggregate, RefreshTokenAggregate } from 'tokens/domain';
+import { RemoveTokenCommand } from './commands/remove-token';
 
 @Injectable()
 export class RefreshTokenFacade {
@@ -12,6 +13,8 @@ export class RefreshTokenFacade {
 
   commands = {
     generateTokens: (dto: UserTokenDto) => this.generateTokens(dto),
+    removeToken: (refreshTokenValue: string) =>
+      this.removeToken(refreshTokenValue),
   };
   queries = {};
 
@@ -23,5 +26,11 @@ export class RefreshTokenFacade {
         refreshTokenAggregate: RefreshTokenAggregate;
       }
     >(new GenerateTokensCommand(dto));
+  }
+
+  private removeToken(refreshTokenValue: string) {
+    return this.commandBus.execute<RemoveTokenCommand>(
+      new RemoveTokenCommand(refreshTokenValue),
+    );
   }
 }

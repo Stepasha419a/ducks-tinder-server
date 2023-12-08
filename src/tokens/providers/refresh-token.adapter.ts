@@ -44,6 +44,22 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
     return this.getRefreshTokenAggregate(existingRefreshToken);
   }
 
+  async findOneByValue(value: string): Promise<RefreshTokenAggregate> {
+    const existingRefreshToken = await this.prismaService.token
+      .findUnique({
+        where: { refreshToken: value },
+      })
+      .catch(() => {
+        return null;
+      });
+
+    if (!existingRefreshToken) {
+      return null;
+    }
+
+    return this.getRefreshTokenAggregate(existingRefreshToken);
+  }
+
   async delete(id: string): Promise<boolean> {
     const deletedRefreshToken = await this.prismaService.token
       .delete({ where: { id } })

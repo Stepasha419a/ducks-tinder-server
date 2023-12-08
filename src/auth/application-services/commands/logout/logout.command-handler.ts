@@ -5,7 +5,7 @@ import { UnauthorizedException } from '@nestjs/common';
 
 @CommandHandler(LogoutCommand)
 export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
-  constructor(private readonly tokensService: TokensService) {}
+  constructor(private readonly refreshTokenService: TokensService) {}
 
   async execute(command: LogoutCommand): Promise<void> {
     const { refreshToken } = command;
@@ -14,6 +14,6 @@ export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
       throw new UnauthorizedException();
     }
 
-    await this.tokensService.removeToken(refreshToken);
+    await this.refreshTokenService.removeToken(refreshToken);
   }
 }
