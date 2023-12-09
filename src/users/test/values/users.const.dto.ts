@@ -3,7 +3,6 @@ import {
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
-  PatchUserRelationsDto,
 } from 'users/legacy/dto';
 import { userDtoStub } from '../stubs';
 
@@ -42,7 +41,7 @@ export const UPDATE_USER_PLACE_DTO: PatchUserPlaceDto = {
   longitude: 12.34567,
 };
 
-export const UPDATE_USER_RELATIONS_DTO: PatchUserRelationsDto = {
+export const UPDATE_USER_RELATIONS_DTO = {
   attentionSign: 'attention-sign',
   childrenAttitude: 'children-attitude',
   communicationStyle: 'communication-style',

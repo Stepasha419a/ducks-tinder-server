@@ -16,6 +16,11 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.findOne(user.id);
     if (existingUser) {
       const differentKeys = this.getDifferences(user, existingUser);
+
+      if (differentKeys.includes('interests')) {
+        await this.updateInterests(existingUser, user.interests);
+      }
+
       const updatedUser = await this.prismaService.user.update({
         where: { id: user.id },
         data: this.getUserAggregateToUpdate(user, existingUser, differentKeys),
@@ -73,6 +78,71 @@ export class UserAdapter implements UserRepository {
       place: {},
       interests: {},
     };
+  }
+
+  private async updateInterests(user: UserAggregate, newInterests?: string[]) {
+    if (!newInterests) {
+      return {};
+    }
+
+    const allExistingInterests = (
+      await this.prismaService.interest.findMany({
+        select: { name: true },
+      })
+    ).map((interestObject) => interestObject.name);
+
+    const { toConnect, toDisconnect } = this.compareUserRelationFieldIds(
+      user.interests,
+      newInterests,
+      allExistingInterests,
+    );
+
+    if (toConnect.length) {
+      await this.prismaService.$transaction(
+        toConnect.map((interest) =>
+          this.prismaService.user.update({
+            where: { id: user.id },
+            data: { interests: { connect: { name: interest } } },
+          }),
+        ),
+      );
+    }
+    if (toDisconnect.length) {
+      await this.prismaService.$transaction(
+        toDisconnect.map((interest) =>
+          this.prismaService.user.update({
+            where: { id: user.id },
+            data: { interests: { disconnect: { name: interest } } },
+          }),
+        ),
+      );
+    }
+  }
+
+  private compareUserRelationFieldIds(
+    oldInterests: string[],
+    newInterests: string[],
+    allExistingInterests: string[],
+  ) {
+    const toConnect = [];
+    const toDisconnect = [];
+
+    newInterests.forEach((interest) => {
+      if (
+        !oldInterests.includes(interest) &&
+        allExistingInterests.includes(interest)
+      ) {
+        toConnect.push(interest);
+      }
+    });
+
+    oldInterests.forEach((interest) => {
+      if (!newInterests.includes(interest)) {
+        toDisconnect.push(interest);
+      }
+    });
+
+    return { toConnect, toDisconnect };
   }
 
   private getPicturesToUpdate(
