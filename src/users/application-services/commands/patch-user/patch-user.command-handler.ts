@@ -1,33 +1,32 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserCommand } from './patch-user.command';
-import { Logger, NotFoundException } from '@nestjs/common';
-import { UserAggregate } from 'users/domain';
+import { ForbiddenException } from '@nestjs/common';
+import { USER_ALREADY_EXISTS } from 'common/constants/error';
 import { UserRepository } from 'users/providers';
+import { UserAggregate } from 'users/domain';
 
 @CommandHandler(PatchUserCommand)
 export class PatchUserCommandHandler
-  implements ICommandHandler<PatchUserCommand, UserAggregate>
+  implements ICommandHandler<PatchUserCommand>
 {
-  private readonly logger = new Logger(PatchUserCommandHandler.name);
   constructor(private readonly repository: UserRepository) {}
 
   async execute(command: PatchUserCommand): Promise<UserAggregate> {
-    const { dto } = command;
+    const { userId, dto } = command;
 
-    const existingUser = await this.repository.findOne(dto.id).catch((err) => {
-      this.logger.error(err);
-      return null as UserAggregate;
-    });
+    const existingUser = await this.repository.findOne(userId);
 
-    if (!existingUser) {
-      throw new NotFoundException();
+    if (dto.email) {
+      const candidate = await this.repository.findOneByEmail(dto.email);
+      if (candidate) {
+        throw new ForbiddenException(USER_ALREADY_EXISTS);
+      }
     }
 
     Object.assign(existingUser, dto);
 
-    const userAggregate = UserAggregate.create(existingUser);
+    const updatedUser = await this.repository.save(existingUser);
 
-    await this.repository.save(userAggregate);
-    return userAggregate;
+    return updatedUser;
   }
 }

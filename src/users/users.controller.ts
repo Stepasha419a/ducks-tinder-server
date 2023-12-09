@@ -18,7 +18,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ShortUser } from './users.interface';
 import {
   DeletePictureDto,
-  PatchUserDto,
   UserDto,
   MixPicturesDto,
   PatchUserPlaceDto,
@@ -35,7 +34,6 @@ import {
   DislikeUserCommand,
   LikeUserCommand,
   MixPicturesCommand,
-  PatchUserCommand,
   PatchUserPlaceCommand,
   PatchUserRelationsCommand,
   RemoveAllPairsCommand,
@@ -45,9 +43,9 @@ import {
 import { GetPairsQuery, GetSortedQuery } from './legacy/queries';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
-import { Public, User } from 'common/decorators';
+import { User } from 'common/decorators';
 import { UserFacade } from './application-services';
-import { CreateUserDto } from './application-services/commands';
+import { PatchUserDto } from './application-services/commands';
 
 @Controller('users')
 export class UsersController {
@@ -57,20 +55,13 @@ export class UsersController {
     private readonly facade: UserFacade,
   ) {}
 
-  @Public()
-  @Post()
-  @HttpCode(HttpStatus.OK)
-  create(@Body() dto: CreateUserDto) {
-    return this.facade.commands.createUser(dto);
-  }
-
   @Patch()
   @HttpCode(HttpStatus.OK)
   patch(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @Body(OptionalValidationPipe) dto: PatchUserDto,
-  ): Promise<UserDto> {
-    return this.commandBus.execute(new PatchUserCommand(user, dto));
+  ) {
+    return this.facade.commands.patchUser(user.id, dto);
   }
 
   @Patch('place')

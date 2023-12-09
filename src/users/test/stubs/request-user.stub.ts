@@ -1,7 +1,7 @@
-import { NotValidatedUserDto, ValidatedUserDto } from 'users/legacy/dto';
+import { UserDto } from 'users/legacy/dto';
 import { userDtoStub } from './user-dto.stub';
 
-export const requestUserStub = (): ValidatedUserDto & NotValidatedUserDto => {
+export const requestUserStub = (): UserDto => {
   const userStubObj = userDtoStub();
 
   return {
@@ -24,20 +24,20 @@ export const requestUserStub = (): ValidatedUserDto & NotValidatedUserDto => {
       latitude: 12.3456789,
       longitude: 12.3456789,
     },
-    interests: [{ name: 'interest-1' }, { name: 'interest-2' }],
-    zodiacSign: { name: 'zodiac-sign' },
-    education: { name: 'education' },
-    childrenAttitude: { name: 'children-attitude' },
-    personalityType: { name: 'personality-type' },
-    communicationStyle: { name: 'communication-style' },
-    attentionSign: { name: 'attention-sign' },
-    alcoholAttitude: { name: 'alcohol-attitude' },
-    chronotype: { name: 'chronotype' },
-    foodPreference: { name: 'food-preference' },
-    pet: { name: 'pet' },
-    smokingAttitude: { name: 'smoking-attitude' },
-    socialNetworksActivity: { name: 'social-networks-activity' },
-    trainingAttitude: { name: 'training-attitude' },
+    interests: ['interest-1', 'interest-2'],
+    zodiacSign: 'zodiac-sign',
+    education: 'education',
+    childrenAttitude: 'children-attitude',
+    personalityType: 'personality-type',
+    communicationStyle: 'communication-style',
+    attentionSign: 'attention-sign',
+    alcoholAttitude: 'alcohol-attitude',
+    chronotype: 'chronotype',
+    foodPreference: 'food-preference',
+    pet: 'pet',
+    smokingAttitude: 'smoking-attitude',
+    socialNetworksActivity: 'social-networks-activity',
+    trainingAttitude: 'training-attitude',
     pictures: [{ name: 'picture.jpg', order: 0 }],
     firstPair: undefined,
     pairsCount: 0,

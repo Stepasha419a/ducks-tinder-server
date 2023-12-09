@@ -1,4 +1,3 @@
-export { PatchUserCommand } from './patch-user';
 export { SavePictureCommand } from './save-picture';
 export { DeletePictureCommand } from './delete-picture';
 export { MixPicturesCommand } from './mix-pictures';
@@ -13,7 +12,6 @@ export { CreatePairsCommand } from './create-pairs-dev';
 export { PatchUserPlaceCommand } from './patch-user-place';
 export { PatchUserRelationsCommand } from './patch-user-relations';
 
-import { PatchUserCommandHandler } from './patch-user';
 import { SavePictureCommandHandler } from './save-picture';
 import { DeletePictureCommandHandler } from './delete-picture';
 import { MixPicturesCommandHandler } from './mix-pictures';
@@ -32,7 +30,6 @@ import {
 } from './patch-user-relations';
 
 export const UserCommandHandlers = [
-  PatchUserCommandHandler,
   SavePictureCommandHandler,
   DeletePictureCommandHandler,
   MixPicturesCommandHandler,

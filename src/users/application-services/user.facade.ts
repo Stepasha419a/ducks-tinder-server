@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateUserDto, PatchUserDto } from './commands/dto';
+import { CreateUserDto, PatchUserDto } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
 import { GetUserByEmailQuery, GetUserQuery } from './queries';
 import { UserAggregate } from 'users/domain';
@@ -14,7 +14,8 @@ export class UserFacade {
 
   commands = {
     createUser: (dto: CreateUserDto) => this.createUser(dto),
-    patchUser: (dto: PatchUserDto) => this.patchUser(dto),
+    patchUser: (userId: string, dto: PatchUserDto) =>
+      this.patchUser(userId, dto),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -27,9 +28,9 @@ export class UserFacade {
     );
   }
 
-  private patchUser(dto: PatchUserDto) {
+  private patchUser(userId: string, dto: PatchUserDto) {
     return this.commandBus.execute<PatchUserCommand, UserAggregate>(
-      new PatchUserCommand(dto),
+      new PatchUserCommand(userId, dto),
     );
   }
 
