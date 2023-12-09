@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ValidateAccessTokenCommand } from './legacy/commands';
 import { RefreshTokenFacade } from './application-services';
 import { UserTokenDto } from './application-services/commands';
 
@@ -23,7 +22,7 @@ export class TokensService {
     return this.facade.commands.validateRefreshToken(refreshTokenValue);
   }
 
-  public validateAccessToken(token: string) {
-    return this.commandBus.execute(new ValidateAccessTokenCommand(token));
+  public validateAccessToken(accessTokenValue: string) {
+    return this.facade.commands.validateAccessToken(accessTokenValue);
   }
 }

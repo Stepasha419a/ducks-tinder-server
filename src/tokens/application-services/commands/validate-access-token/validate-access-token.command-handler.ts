@@ -14,9 +14,9 @@ export class ValidateAccessTokenCommandHandler
 
   async execute(command: ValidateAccessTokenCommand) {
     try {
-      const { token } = command;
+      const { accessTokenValue } = command;
 
-      const userData = this.jwtService.verify(token, {
+      const userData = this.jwtService.verify(accessTokenValue, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
       });
       return userData;

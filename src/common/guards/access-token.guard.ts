@@ -9,6 +9,7 @@ import { TokensService } from 'tokens/tokens.service';
 import { UsersService } from 'users/users.service';
 import { IS_PUBLIC_KEY } from 'common/constants';
 import { Request } from 'express';
+import { UserTokenDto } from 'tokens/application-services/commands';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -30,12 +31,14 @@ export class AccessTokenGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const accessToken = this.extractTokenFromHeader(req);
 
-    const userData = await this.tokensService.validateAccessToken(accessToken);
+    const userData: UserTokenDto = await this.tokensService.validateAccessToken(
+      accessToken,
+    );
     if (!userData) {
       throw new UnauthorizedException();
     }
 
-    const user = await this.usersService.getUser(userData.id);
+    const user = await this.usersService.getUser(userData.userId);
     req.user = user;
     return true;
   }

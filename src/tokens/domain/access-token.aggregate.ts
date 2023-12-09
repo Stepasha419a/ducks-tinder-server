@@ -1,10 +1,10 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AccessToken } from './access-token.interface';
-import { IsBase64, validateSync } from 'class-validator';
+import { IsJWT, validateSync } from 'class-validator';
 import { DomainError } from 'users/errors';
 
 export class AccessTokenAggregate extends AggregateRoot implements AccessToken {
-  @IsBase64()
+  @IsJWT()
   value: string;
 
   private constructor() {

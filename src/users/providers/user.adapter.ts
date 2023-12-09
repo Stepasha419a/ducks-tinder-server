@@ -22,13 +22,22 @@ export class UserAdapter implements UserRepository {
         include: UsersSelector.selectUser(),
       });
 
+      this.standardUser(updatedUser);
+
       return this.getUserAggregate(updatedUser);
     }
 
     const saved = await this.prismaService.user.create({
-      data: { email: user.email, name: user.name, password: user.password },
+      data: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        password: user.password,
+      },
       include: UsersSelector.selectUser(),
     });
+
+    this.standardUser(saved);
 
     return this.getUserAggregate(saved);
   }
@@ -206,6 +215,8 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
+    this.standardUser(existingUser);
+
     return this.getUserAggregate(existingUser);
   }
 
@@ -224,11 +235,9 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getUserAggregate(existingUser);
-  }
+    this.standardUser(existingUser);
 
-  async findMany(): Promise<[UserAggregate[], number]> {
-    throw new Error('Method not implemented.');
+    return this.getUserAggregate(existingUser);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -248,5 +257,27 @@ export class UserAdapter implements UserRepository {
       updatedAt: user.updatedAt.toISOString(),
       createdAt: user.createdAt.toISOString(),
     });
+  }
+
+  private standardUser(user) {
+    this.standardUserPrimitiveRelations(user);
+    this.standardUserInterests(user);
+  }
+
+  private standardUserPrimitiveRelations(user) {
+    for (const key in user) {
+      if (
+        this.primitiveRelationFields.includes(key as keyof User) &&
+        user[key] !== null
+      ) {
+        user[key] = user[key].name;
+      }
+    }
+  }
+
+  private standardUserInterests(user) {
+    user.interests = user.interests.map(
+      (interestObject) => interestObject.name,
+    );
   }
 }

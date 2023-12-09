@@ -18,7 +18,6 @@ import {
   Max,
   MaxLength,
   Min,
-  ValidateNested,
   validateSync,
 } from 'class-validator';
 import { DomainError } from 'users/errors';
@@ -52,7 +51,7 @@ export class UserAggregate extends UserServices implements User {
   id: string = randomStringGenerator();
 
   @IsString()
-  @Length(6, 30)
+  @IsNotEmpty()
   password: string;
 
   @IsEmail()
@@ -125,7 +124,6 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsObject()
   @IsNotEmptyObject()
-  @ValidateNested()
   @Type(() => PlaceAggregate)
   place: Place;
 
@@ -196,7 +194,11 @@ export class UserAggregate extends UserServices implements User {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
+  @Type(() => String)
+  interests: string[];
+
+  @IsOptional()
+  @IsArray()
   @Type(() => PictureAggregate)
   pictures: PictureAggregate[];
 
@@ -227,7 +229,7 @@ export class UserAggregate extends UserServices implements User {
   }
 
   async comparePasswords(passwordToCompare: string): Promise<boolean> {
-    return bcrypt.compare(this.password, passwordToCompare);
+    return bcrypt.compare(passwordToCompare, this.password);
   }
 
   getPrimitiveFields(): UserPrimitiveFields {
@@ -248,7 +250,7 @@ export class UserAggregate extends UserServices implements User {
       'usersOnlyInDistance',
     ];
     const subset = Object.fromEntries(
-      keys.filter((key) => key in this).map((key) => [key, this[key]]),
+      keys.map((key) => [key, this[key]]),
     ) as UserPrimitiveFields;
 
     return subset;
@@ -256,9 +258,9 @@ export class UserAggregate extends UserServices implements User {
 }
 
 export interface UserPrimitiveFields {
-  password: string;
-  email: string;
-  name: string;
+  password?: string;
+  email?: string;
+  name?: string;
   description?: string;
   nickname?: string;
   age?: number;
@@ -271,5 +273,5 @@ export interface UserPrimitiveFields {
 
   interests?: string[];
 
-  place: Place;
+  place?: Place;
 }

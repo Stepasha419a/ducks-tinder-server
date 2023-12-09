@@ -1,5 +1,5 @@
 import {
-  IsBase64,
+  IsJWT,
   IsNotEmpty,
   IsString,
   IsUUID,
@@ -16,7 +16,7 @@ export class RefreshTokenAggregate
   @IsUUID()
   id: string;
 
-  @IsBase64()
+  @IsJWT()
   value: string;
 
   @IsString()

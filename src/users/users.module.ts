@@ -23,7 +23,6 @@ import { UserAdapter } from './providers';
     ...UserQueryHandlers,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
-    { provide: APP_FILTER, useClass: AllExceptionsFilter },
     {
       provide: UserFacade,
       inject: [CommandBus, QueryBus],

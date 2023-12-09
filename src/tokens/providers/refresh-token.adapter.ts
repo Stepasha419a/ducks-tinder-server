@@ -15,14 +15,23 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
       const { id, ...toUpdate } = refreshToken;
       const updatedRefreshToken = await this.prismaService.token.update({
         where: { id },
-        data: toUpdate,
+        data: {
+          refreshToken: toUpdate.value,
+          createdAt: toUpdate.createdAt,
+          updatedAt: toUpdate.updatedAt,
+        },
       });
 
       return this.getRefreshTokenAggregate(updatedRefreshToken);
     }
 
     const savedRefreshToken = await this.prismaService.token.create({
-      data: refreshToken,
+      data: {
+        id: refreshToken.id,
+        refreshToken: refreshToken.value,
+        createdAt: refreshToken.createdAt,
+        updatedAt: refreshToken.updatedAt,
+      },
     });
 
     return this.getRefreshTokenAggregate(savedRefreshToken);
@@ -73,6 +82,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
   private getRefreshTokenAggregate(refreshToken: Token): RefreshTokenAggregate {
     return RefreshTokenAggregate.create({
       ...refreshToken,
+      value: refreshToken.refreshToken,
       updatedAt: refreshToken.updatedAt.toISOString(),
       createdAt: refreshToken.createdAt.toISOString(),
     });

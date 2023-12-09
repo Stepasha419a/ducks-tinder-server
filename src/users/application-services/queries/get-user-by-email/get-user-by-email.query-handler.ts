@@ -14,14 +14,6 @@ export class GetUserByEmailQueryHandler
 
     const userAggregate = await this.repository.findOneByEmail(email);
 
-    /* const pairsCount = await this.prismaService.user.count({
-      where: { pairFor: { some: { email } } },
-    });
-    const user = await this.prismaService.user.findUnique({
-      where: { email },
-      include: UsersSelector.selectUser(),
-    }); */
-
     return userAggregate;
   }
 }
