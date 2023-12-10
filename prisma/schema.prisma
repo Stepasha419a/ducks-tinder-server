@@ -58,11 +58,11 @@ model User {
   personalityType   PersonalityType? @relation(fields: [personalityTypeId], references: [id])
   personalityTypeId String?
 
-  communicationStyle    CommunicationStyle? @relation(fields: [communicationStylesId], references: [id])
-  communicationStylesId String?
+  communicationStyle   CommunicationStyle? @relation(fields: [communicationStyleId], references: [id])
+  communicationStyleId String?
 
-  attentionSign    AttentionSign? @relation(fields: [attentionSignsId], references: [id])
-  attentionSignsId String?
+  attentionSign   AttentionSign? @relation(fields: [attentionSignId], references: [id])
+  attentionSignId String?
 
   pet   Pet?    @relation(fields: [petId], references: [id])
   petId String?

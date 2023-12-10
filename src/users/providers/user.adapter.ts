@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { User as PrismaUser } from 'prisma';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from './user.repository';
@@ -16,6 +16,12 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.findOne(user.id);
     if (existingUser) {
       const differentKeys = this.getDifferences(user, existingUser);
+
+      if (
+        differentKeys.some((key) => this.primitiveRelationFields.includes(key))
+      ) {
+        await this.updatePrimitiveRelations(user, differentKeys);
+      }
 
       if (differentKeys.includes('interests')) {
         await this.updateInterests(existingUser, user.interests);
@@ -56,15 +62,6 @@ export class UserAdapter implements UserRepository {
         Prisma.UserUncheckedUpdateInput)
     | (Prisma.Without<Prisma.UserUncheckedUpdateInput, Prisma.UserUpdateInput> &
         Prisma.UserUpdateInput) {
-    const primitiveRelationKeysToUpdate =
-      this.getPrimitiveRelationKeysToUpdate(differentKeys);
-
-    const primitiveRelationFieldsToUpdate =
-      this.getPrimitiveRelationFieldsToUpdate(
-        user,
-        primitiveRelationKeysToUpdate,
-      );
-
     const picturesToUpdate = this.getPicturesToUpdate(
       user,
       existingUser,
@@ -73,11 +70,41 @@ export class UserAdapter implements UserRepository {
 
     return {
       ...user.getPrimitiveFields(),
-      ...primitiveRelationFieldsToUpdate,
       ...picturesToUpdate,
       place: {},
       interests: {},
     };
+  }
+
+  private async updatePrimitiveRelations(
+    user: UserAggregate,
+    differentKeys: Array<keyof User>,
+  ) {
+    const primitiveRelationKeysToUpdate =
+      this.getPrimitiveRelationKeysToUpdate(differentKeys);
+
+    for (const fieldToUpdate of primitiveRelationKeysToUpdate) {
+      let existingRelationId = null;
+      if (user[fieldToUpdate] !== null) {
+        existingRelationId = (
+          await this.prismaService[fieldToUpdate].findUnique({
+            where: { name: user[fieldToUpdate] },
+            select: { id: true },
+          })
+        )?.id;
+      }
+
+      if (!existingRelationId && user[fieldToUpdate] !== null) {
+        throw new NotFoundException();
+      }
+
+      await this.prismaService.user.update({
+        where: { id: user.id },
+        data: {
+          [`${fieldToUpdate}Id`]: existingRelationId,
+        },
+      });
+    }
   }
 
   private async updateInterests(user: UserAggregate, newInterests?: string[]) {
@@ -165,27 +192,12 @@ export class UserAdapter implements UserRepository {
     }
   }
 
-  private getPrimitiveRelationFieldsToUpdate(
-    user: User,
-    primitiveRelationKeysToUpdate?: Array<keyof User>,
-  ) {
-    const res = {};
-    if (!primitiveRelationKeysToUpdate.length) {
-      return res;
-    }
-
-    for (const key of primitiveRelationKeysToUpdate) {
-      res[key] = this.getUserNamePropertyUpdate(user[key] as string);
-    }
-  }
-
   private getDifferences(oldUser, newUser) {
     const keysToUpdate = [];
     for (const key in newUser) {
-      if (oldUser[key] !== newUser[key]) {
+      if (typeof oldUser[key] !== 'object' && oldUser[key] !== newUser[key]) {
         keysToUpdate.push(key);
       } else if (
-        typeof oldUser[key] === 'object' &&
         JSON.stringify(oldUser[key]) !== JSON.stringify(newUser[key])
       ) {
         keysToUpdate.push(key);
@@ -221,13 +233,6 @@ export class UserAdapter implements UserRepository {
     'trainingAttitude',
     'zodiacSign',
   ];
-
-  private getUserNamePropertyUpdate(value: string) {
-    const operation = value ? 'connect' : 'disconnect';
-    return {
-      [operation]: { name: value },
-    };
-  }
 
   private getUserPicturesUpdate(
     newPictures: PictureAggregate[],
@@ -265,6 +270,10 @@ export class UserAdapter implements UserRepository {
           order: oldPicture.order,
         });
       }
+    }
+
+    if (!res.createMany.data.length && !res.deleteMany.data.length) {
+      return {};
     }
 
     return res;
