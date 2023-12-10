@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
-import { GetCoordsGeocodeQuery } from './queries';
-import { Geocode } from './maps.interface';
+import { Geocode } from './domain';
+import { MapFacade } from './application-services';
+import { GetCoordsGeocodeDto } from './application-services/queries';
 
 @Injectable()
 export class MapsService {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(private readonly facade: MapFacade) {}
 
   getCoordsGeocode(latitude: number, longitude: number): Promise<Geocode> {
-    return this.queryBus.execute(
-      new GetCoordsGeocodeQuery(latitude, longitude),
+    return this.facade.queries.getCoordsGeocode(
+      new GetCoordsGeocodeDto({ latitude, longitude }),
     );
   }
 }

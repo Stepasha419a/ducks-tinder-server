@@ -1,4 +1,4 @@
-import { GetCoordsGeocodeQuery } from './queries/get-coords-geocode/get-coords-geocode.query';
+import { GetCoordsGeocodeQuery } from './application-services/queries/get-coords-geocode/get-coords-geocode.query';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MapsService } from './maps.service';
 import { CqrsModule, QueryBus } from '@nestjs/cqrs';

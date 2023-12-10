@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { PictureInterface, Place, User } from './user.interface';
+import { PictureInterface, User } from './user.interface';
 import { UserServices } from './services';
 import {
   IsArray,
@@ -22,6 +22,8 @@ import {
 } from 'class-validator';
 import { DomainError } from 'users/errors';
 import { Type } from 'class-transformer';
+import { PlaceAggregate } from './place.aggregate';
+import { UserPlaceInfo } from './place.interface';
 
 export class PictureAggregate implements PictureInterface {
   @IsString()
@@ -32,18 +34,6 @@ export class PictureAggregate implements PictureInterface {
   @Min(0)
   @Max(8)
   order: number;
-}
-
-class PlaceAggregate implements Place {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsNumber()
-  latitude: number;
-
-  @IsNumber()
-  longitude: number;
 }
 
 export class UserAggregate extends UserServices implements User {
@@ -125,7 +115,7 @@ export class UserAggregate extends UserServices implements User {
   @IsObject()
   @IsNotEmptyObject()
   @Type(() => PlaceAggregate)
-  place: Place;
+  place: UserPlaceInfo;
 
   @IsOptional()
   @IsString()
@@ -232,6 +222,10 @@ export class UserAggregate extends UserServices implements User {
     return bcrypt.compare(passwordToCompare, this.password);
   }
 
+  updatePlace(placeAggregate: PlaceAggregate) {
+    this.place = placeAggregate.getUserPlaceInfo();
+  }
+
   getPrimitiveFields(): UserPrimitiveFields {
     const keys: Array<keyof User> = [
       'age',
@@ -273,5 +267,5 @@ export interface UserPrimitiveFields {
 
   interests?: string[];
 
-  place?: Place;
+  place?: UserPlaceInfo;
 }

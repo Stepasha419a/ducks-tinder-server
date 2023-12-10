@@ -1,23 +1,21 @@
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { MapApi } from './map.api';
 import { HttpService } from '@nestjs/axios';
-import { GetCoordsGeocodeQuery } from './get-coords-geocode.query';
 import { ConfigService } from '@nestjs/config';
-import { map, lastValueFrom } from 'rxjs';
-import { NotFoundException } from '@nestjs/common';
-import { Geocode } from 'maps/maps.interface';
+import { GeocodeAggregate } from 'maps/domain';
+import { lastValueFrom, map } from 'rxjs';
 
-@QueryHandler(GetCoordsGeocodeQuery)
-export class GetCoordsGeocodeQueryHandler
-  implements IQueryHandler<GetCoordsGeocodeQuery>
-{
+@Injectable()
+export class MapApiAdapter implements MapApi {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
 
-  async execute(query: GetCoordsGeocodeQuery): Promise<Geocode> {
-    const { latitude, longitude } = query;
-
+  async getGeocode(
+    latitude: number,
+    longitude: number,
+  ): Promise<GeocodeAggregate> {
     const response = await lastValueFrom(
       this.httpService
         .get(
@@ -41,6 +39,6 @@ export class GetCoordsGeocodeQueryHandler
       throw new NotFoundException();
     }
 
-    return { address, name };
+    return GeocodeAggregate.create({ address, name });
   }
 }

@@ -20,7 +20,6 @@ import {
   DeletePictureDto,
   UserDto,
   MixPicturesDto,
-  PatchUserPlaceDto,
   ValidatedUserDto,
   NotValidatedUserDto,
 } from './legacy/dto';
@@ -33,7 +32,6 @@ import {
   DislikeUserCommand,
   LikeUserCommand,
   MixPicturesCommand,
-  PatchUserPlaceCommand,
   RemoveAllPairsCommand,
   ReturnUserCommand,
   SavePictureCommand,
@@ -43,7 +41,10 @@ import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
 import { UserFacade } from './application-services';
-import { PatchUserDto } from './application-services/commands';
+import {
+  PatchUserDto,
+  PatchUserPlaceDto,
+} from './application-services/commands';
 
 @Controller('users')
 export class UsersController {
@@ -67,8 +68,8 @@ export class UsersController {
   patchPlace(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @Body() dto: PatchUserPlaceDto,
-  ): Promise<UserDto> {
-    return this.commandBus.execute(new PatchUserPlaceCommand(user, dto));
+  ) {
+    return this.facade.commands.patchUserPlace(user.id, dto);
   }
 
   @Get('sorted')

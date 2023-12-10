@@ -2,7 +2,6 @@ import {
   DeletePictureDto,
   MixPicturesDto,
   PatchUserDto,
-  PatchUserPlaceDto,
 } from 'users/legacy/dto';
 import { userDtoStub } from '../stubs';
 
@@ -36,7 +35,7 @@ export const UPDATE_USER_DTO: PatchUserDto = {
   email: 'email123123@gmail.com',
 };
 
-export const UPDATE_USER_PLACE_DTO: PatchUserPlaceDto = {
+export const UPDATE_USER_PLACE_DTO = {
   latitude: 12.34567,
   longitude: 12.34567,
 };

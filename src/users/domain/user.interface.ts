@@ -1,12 +1,8 @@
+import { UserPlaceInfo } from './place.interface';
+
 export interface PictureInterface {
   name: string;
   order: number;
-}
-
-export interface Place {
-  name: string;
-  latitude: number;
-  longitude: number;
 }
 
 export interface User {
@@ -41,7 +37,7 @@ export interface User {
   communicationStyle?: string;
   attentionSign?: string;
 
-  place: Place;
+  place: UserPlaceInfo;
 
   pictures: PictureInterface[];
 

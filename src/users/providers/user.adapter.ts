@@ -27,6 +27,10 @@ export class UserAdapter implements UserRepository {
         await this.updateInterests(existingUser, user.interests);
       }
 
+      if (differentKeys.includes('place')) {
+        await this.updatePlace(user);
+      }
+
       const updatedUser = await this.prismaService.user.update({
         where: { id: user.id },
         data: this.getUserAggregateToUpdate(user, existingUser, differentKeys),
@@ -74,6 +78,18 @@ export class UserAdapter implements UserRepository {
       place: {},
       interests: {},
     };
+  }
+
+  private async updatePlace(user: UserAggregate) {
+    const place = user.place;
+    await this.prismaService.place.upsert({
+      where: { id: user.id },
+      create: {
+        ...place,
+        user: { connect: { id: user.id } },
+      },
+      update: place,
+    });
   }
 
   private async updatePrimitiveRelations(
@@ -192,7 +208,7 @@ export class UserAdapter implements UserRepository {
     }
   }
 
-  private getDifferences(oldUser, newUser) {
+  private getDifferences(oldUser, newUser): Array<keyof User> {
     const keysToUpdate = [];
     for (const key in newUser) {
       if (typeof oldUser[key] !== 'object' && oldUser[key] !== newUser[key]) {
