@@ -26,13 +26,13 @@ export class PatchUserPlaceCommandHandler
       dto.longitude,
     );
 
-    existingUser.updatePlace(
+    existingUser.setPlace(
       PlaceAggregate.create({
         id: userId,
         address: geocode.address,
         name: geocode.name,
-        latitude: dto.latitude,
-        longitude: dto.longitude,
+        latitude: dto.longitude,
+        longitude: dto.latitude,
       }),
     );
 
