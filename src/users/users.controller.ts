@@ -45,6 +45,7 @@ import {
   PatchUserDto,
   PatchUserPlaceDto,
 } from './application-services/commands';
+import { ResponseUser, ShortUserWithDistance } from './domain';
 
 @Controller('users')
 export class UsersController {
@@ -56,26 +57,34 @@ export class UsersController {
 
   @Patch()
   @HttpCode(HttpStatus.OK)
-  patch(
+  async patch(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @Body(OptionalValidationPipe) dto: PatchUserDto,
-  ) {
-    return this.facade.commands.patchUser(user.id, dto);
+  ): Promise<ResponseUser> {
+    const userAggregate = await this.facade.commands.patchUser(user.id, dto);
+    return userAggregate.getResponseUser();
   }
 
   @Patch('place')
   @HttpCode(HttpStatus.OK)
-  patchPlace(
+  async patchPlace(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @Body() dto: PatchUserPlaceDto,
-  ) {
-    return this.facade.commands.patchUserPlace(user.id, dto);
+  ): Promise<ResponseUser> {
+    const userAggregate = await this.facade.commands.patchUserPlace(
+      user.id,
+      dto,
+    );
+    return userAggregate.getResponseUser();
   }
 
   @Get('sorted')
   @HttpCode(HttpStatus.OK)
-  getSortedUser(@User(CustomValidationPipe) user: ValidatedUserDto) {
-    return this.facade.queries.getSorted(user.id);
+  async getSortedUser(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+  ): Promise<ShortUserWithDistance> {
+    const userAggregate = await this.facade.queries.getSorted(user.id);
+    return userAggregate.getShortUserWithDistance();
   }
 
   @Post('picture')

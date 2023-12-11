@@ -47,6 +47,11 @@ export interface User {
   updatedAt: string;
 }
 
+export type ResponseUser = Omit<
+  User,
+  'password' | 'activationLink' | 'createdAt' | 'updatedAt'
+>;
+
 export interface ShortUser {
   id: string;
   name: string;

@@ -3,13 +3,13 @@ import { GetSortedQuery } from './get-sorted.query';
 import { NotFoundException } from '@nestjs/common';
 import { getDistanceFromLatLonInKm, getSearchingCoords } from 'common/helpers';
 import { UserRepository } from 'users/providers';
-import { ShortUserWithDistance } from 'users/domain';
+import { UserAggregate } from 'users/domain';
 
 @QueryHandler(GetSortedQuery)
 export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(query: GetSortedQuery): Promise<ShortUserWithDistance> {
+  async execute(query: GetSortedQuery): Promise<UserAggregate> {
     const { userId } = query;
 
     const user = await this.repository.findOne(userId);
@@ -48,6 +48,6 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
 
     sortedUser.setDistance(distance);
 
-    return sortedUser.getShortUserWithDistance();
+    return sortedUser;
   }
 }

@@ -2,6 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import {
   PictureInterface,
+  ResponseUser,
   Sex,
   ShortUserWithDistance,
   User,
@@ -257,6 +258,37 @@ export class UserAggregate extends UserServices implements User {
     ) as UserPrimitiveFields;
 
     return subset;
+  }
+
+  getResponseUser(): ResponseUser {
+    return {
+      id: this.id,
+      email: this.email,
+      name: this.name,
+      age: this.age,
+      description: this.description,
+      distance: this.distance,
+      isActivated: this.isActivated,
+
+      interests: this.interests,
+      zodiacSign: this.zodiacSign,
+      education: this.education,
+      alcoholAttitude: this.alcoholAttitude,
+      chronotype: this.chronotype,
+      foodPreference: this.foodPreference,
+      pet: this.pet,
+      smokingAttitude: this.smokingAttitude,
+      socialNetworksActivity: this.socialNetworksActivity,
+      trainingAttitude: this.trainingAttitude,
+      childrenAttitude: this.childrenAttitude,
+      personalityType: this.personalityType,
+      communicationStyle: this.communicationStyle,
+      attentionSign: this.attentionSign,
+
+      place: this.place,
+
+      pictures: this.pictures,
+    };
   }
 
   getShortUserWithDistance(): ShortUserWithDistance {

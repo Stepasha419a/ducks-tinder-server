@@ -8,7 +8,7 @@ import {
 } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
 import { GetSortedQuery, GetUserByEmailQuery, GetUserQuery } from './queries';
-import { ShortUserWithDistance, UserAggregate } from 'users/domain';
+import { UserAggregate } from 'users/domain';
 
 @Injectable()
 export class UserFacade {
@@ -61,7 +61,7 @@ export class UserFacade {
   }
 
   private getSorted(id: string) {
-    return this.queryBus.execute<GetSortedQuery, ShortUserWithDistance>(
+    return this.queryBus.execute<GetSortedQuery, UserAggregate>(
       new GetSortedQuery(id),
     );
   }

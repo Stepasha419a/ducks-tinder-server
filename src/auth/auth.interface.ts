@@ -1,6 +1,6 @@
-import { UserDto } from 'users/legacy/dto';
+import { User } from 'users/domain';
 
-export interface UserData {
-  user: UserDto;
+export interface AuthUserWithoutRefreshToken {
+  user: User;
   accessToken: string;
 }

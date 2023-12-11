@@ -12,17 +12,13 @@ import {
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
-import { CommandBus } from '@nestjs/cqrs';
-import { UserData } from './auth.interface';
 import { AuthUserFacade } from './application-services';
 import { LoginUserDto, RegisterUserDto } from './application-services/commands';
+import { AuthUserWithoutRefreshToken } from './auth.interface';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly facade: AuthUserFacade,
-  ) {}
+  constructor(private readonly facade: AuthUserFacade) {}
 
   @Public()
   @Post('registration')
@@ -30,7 +26,7 @@ export class AuthController {
   async registration(
     @Res() res: Response,
     @Body() dto: RegisterUserDto,
-  ): Promise<Response<UserData>> {
+  ): Promise<Response<AuthUserWithoutRefreshToken>> {
     const authUserAggregate = await this.facade.commands.register(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
@@ -43,7 +39,7 @@ export class AuthController {
   async login(
     @Res() res: Response,
     @Body() dto: LoginUserDto,
-  ): Promise<Response<UserData>> {
+  ): Promise<Response<AuthUserWithoutRefreshToken>> {
     const authUserAggregate = await this.facade.commands.login(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
@@ -70,7 +66,7 @@ export class AuthController {
   async refresh(
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<Response<UserData>> {
+  ): Promise<Response<AuthUserWithoutRefreshToken>> {
     const { refreshToken } = req.cookies;
 
     const authUserAggregate = await this.facade.commands.refresh(refreshToken);
