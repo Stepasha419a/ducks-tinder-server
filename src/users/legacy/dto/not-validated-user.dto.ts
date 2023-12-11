@@ -20,7 +20,10 @@ import { PictureInterface } from 'users/users.interface';
 import { PlaceDto } from './place.dto';
 import { User } from 'users/domain';
 
-export class NotValidatedUserDto implements Partial<User> {
+export class NotValidatedUserDto
+  implements
+    Omit<User, 'password' | 'activationLink' | 'createdAt' | 'updatedAt'>
+{
   @IsString()
   @IsNotEmpty()
   id: string;

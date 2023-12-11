@@ -15,3 +15,7 @@ export interface UserPlaceInfo {
   latitude: number;
   longitude: number;
 }
+
+export interface ShortUserPlaceInfo {
+  name: string;
+}

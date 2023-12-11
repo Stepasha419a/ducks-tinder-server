@@ -1,6 +1,11 @@
 import * as bcrypt from 'bcryptjs';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { PictureInterface, User } from './user.interface';
+import {
+  PictureInterface,
+  Sex,
+  ShortUserWithDistance,
+  User,
+} from './user.interface';
 import { UserServices } from './services';
 import {
   IsArray,
@@ -81,7 +86,7 @@ export class UserAggregate extends UserServices implements User {
   @Matches(/^(male|female)$/g, {
     message: 'Sex value must be male or female',
   })
-  sex?: string;
+  sex?: Sex;
 
   @IsOptional()
   @IsNumber()
@@ -97,7 +102,7 @@ export class UserAggregate extends UserServices implements User {
   @Matches(/^(male|female)$/g, {
     message: 'Prefer sex value must be male or female',
   })
-  preferSex?: string;
+  preferSex?: Sex;
 
   @IsOptional()
   @IsNumber()
@@ -222,8 +227,12 @@ export class UserAggregate extends UserServices implements User {
     return bcrypt.compare(passwordToCompare, this.password);
   }
 
-  updatePlace(placeAggregate: PlaceAggregate) {
+  setPlace(placeAggregate: PlaceAggregate) {
     this.place = placeAggregate.getUserPlaceInfo();
+  }
+
+  setDistance(distance: number) {
+    this.distance = distance;
   }
 
   getPrimitiveFields(): UserPrimitiveFields {
@@ -248,6 +257,41 @@ export class UserAggregate extends UserServices implements User {
     ) as UserPrimitiveFields;
 
     return subset;
+  }
+
+  getShortUserWithDistance(): ShortUserWithDistance {
+    const placeAggregate = PlaceAggregate.create({
+      ...this.place,
+      id: this.id,
+    });
+
+    return {
+      id: this.id,
+      name: this.name,
+      age: this.age,
+      description: this.description,
+      distance: this.distance,
+      isActivated: this.isActivated,
+
+      interests: this.interests,
+      zodiacSign: this.zodiacSign,
+      education: this.education,
+      alcoholAttitude: this.alcoholAttitude,
+      chronotype: this.chronotype,
+      foodPreference: this.foodPreference,
+      pet: this.pet,
+      smokingAttitude: this.smokingAttitude,
+      socialNetworksActivity: this.socialNetworksActivity,
+      trainingAttitude: this.trainingAttitude,
+      childrenAttitude: this.childrenAttitude,
+      personalityType: this.personalityType,
+      communicationStyle: this.communicationStyle,
+      attentionSign: this.attentionSign,
+
+      place: placeAggregate.getShortUserPlaceInfo(),
+
+      pictures: this.pictures,
+    };
   }
 }
 

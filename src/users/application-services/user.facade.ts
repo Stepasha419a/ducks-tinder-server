@@ -7,8 +7,8 @@ import {
   PatchUserPlaceDto,
 } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
-import { GetUserByEmailQuery, GetUserQuery } from './queries';
-import { UserAggregate } from 'users/domain';
+import { GetSortedQuery, GetUserByEmailQuery, GetUserQuery } from './queries';
+import { ShortUserWithDistance, UserAggregate } from 'users/domain';
 
 @Injectable()
 export class UserFacade {
@@ -27,6 +27,7 @@ export class UserFacade {
   queries = {
     getUser: (id: string) => this.getUser(id),
     getUserByEmail: (email: string) => this.getUserByEmail(email),
+    getSorted: (id: string) => this.getSorted(id),
   };
 
   private createUser(dto: CreateUserDto) {
@@ -56,6 +57,12 @@ export class UserFacade {
   private async getUserByEmail(email: string) {
     return this.queryBus.execute<GetUserByEmailQuery, UserAggregate | null>(
       new GetUserByEmailQuery(email),
+    );
+  }
+
+  private getSorted(id: string) {
+    return this.queryBus.execute<GetSortedQuery, ShortUserWithDistance>(
+      new GetSortedQuery(id),
     );
   }
 }

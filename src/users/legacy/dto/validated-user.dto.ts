@@ -8,7 +8,6 @@ import {
   IsNotEmpty,
   IsNotEmptyObject,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
   Length,
@@ -16,14 +15,15 @@ import {
   Max,
   MaxLength,
   Min,
-  ValidateNested,
 } from 'class-validator';
-import { PictureInterface, ShortUser } from 'users/users.interface';
-import { UserDto } from './user.dto';
-import { NameObjectDto } from './name-object.dto';
+import { PictureInterface } from 'users/users.interface';
 import { PlaceDto } from './place.dto';
+import { User } from 'users/domain';
 
-export class ValidatedUserDto implements UserDto {
+export class ValidatedUserDto
+  implements
+    Omit<User, 'password' | 'activationLink' | 'createdAt' | 'updatedAt'>
+{
   @IsString() // because e2e tests use string ids (not uuid)
   @IsNotEmpty()
   id: string;
@@ -87,112 +87,77 @@ export class ValidatedUserDto implements UserDto {
   @Type(() => PlaceDto)
   place: PlaceDto;
 
+  @IsOptional()
   @IsArray()
-  @ArrayMaxSize(16)
-  @ValidateNested({ each: true })
-  @Type(() => NameObjectDto)
-  interests: NameObjectDto[];
+  @Type(() => String)
+  interests: string[];
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  zodiacSign: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  zodiacSign?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  education: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  education?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  childrenAttitude: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  childrenAttitude?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  personalityType: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  personalityType?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  communicationStyle: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  communicationStyle: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  attentionSign: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  attentionSign?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  alcoholAttitude: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  alcoholAttitude?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  chronotype: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  chronotype?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  foodPreference: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  foodPreference?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  pet: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  pet?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  smokingAttitude: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  smokingAttitude?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  socialNetworksActivity: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  socialNetworksActivity?: string;
 
   @IsOptional()
-  @IsObject()
-  @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => NameObjectDto)
-  trainingAttitude: NameObjectDto;
+  @IsString()
+  @IsNotEmpty()
+  trainingAttitude?: string;
 
   @IsArray()
   @ArrayMaxSize(9)
   pictures: PictureInterface[];
-
-  @IsOptional()
-  @IsDefined()
-  @IsNotEmptyObject()
-  firstPair: ShortUser | undefined;
-
-  @IsNumber()
-  pairsCount: number;
 }

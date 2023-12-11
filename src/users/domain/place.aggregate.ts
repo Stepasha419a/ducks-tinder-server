@@ -7,7 +7,7 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { Place, UserPlaceInfo } from './place.interface';
+import { Place, ShortUserPlaceInfo, UserPlaceInfo } from './place.interface';
 import { DomainError } from 'users/errors';
 
 export class PlaceAggregate extends AggregateRoot implements Place {
@@ -59,6 +59,12 @@ export class PlaceAggregate extends AggregateRoot implements Place {
       latitude: this.latitude,
       longitude: this.longitude,
       address: this.address,
+      name: this.name,
+    };
+  }
+
+  getShortUserPlaceInfo(): ShortUserPlaceInfo {
+    return {
       name: this.name,
     };
   }

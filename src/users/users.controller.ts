@@ -36,7 +36,7 @@ import {
   ReturnUserCommand,
   SavePictureCommand,
 } from './legacy/commands';
-import { GetPairsQuery, GetSortedQuery } from './legacy/queries';
+import { GetPairsQuery } from './legacy/queries';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
@@ -74,10 +74,8 @@ export class UsersController {
 
   @Get('sorted')
   @HttpCode(HttpStatus.OK)
-  getSortedUser(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
-  ): Promise<ShortUser> {
-    return this.queryBus.execute(new GetSortedQuery(user));
+  getSortedUser(@User(CustomValidationPipe) user: ValidatedUserDto) {
+    return this.facade.queries.getSorted(user.id);
   }
 
   @Post('picture')

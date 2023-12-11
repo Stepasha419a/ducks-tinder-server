@@ -335,6 +335,60 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(existingUser);
   }
 
+  async findSorted(
+    id: string,
+    minLatitude: number,
+    maxLatitude: number,
+    minLongitude: number,
+    maxLongitude: number,
+    preferAgeFrom: number,
+    preferAgeTo: number,
+    age: number,
+    preferSex: 'male' | 'female',
+    sex: 'male' | 'female',
+  ): Promise<UserAggregate | null> {
+    const checkedUsers = await this.prismaService.checkedUsers.findMany({
+      where: { OR: [{ checkedId: id }, { wasCheckedId: id }] },
+      select: {
+        checked: { select: { id: true } },
+        wasChecked: { select: { id: true } },
+      },
+    });
+    const checkedIds = checkedUsers.map((user) => user.checked.id);
+    const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
+
+    const sortedUser = await this.prismaService.user.findFirst({
+      where: {
+        id: { notIn: [...checkedIds, ...wasCheckedIds, id] },
+        place: {
+          latitude: { gte: minLatitude, lte: maxLatitude },
+          longitude: { gte: minLongitude, lte: maxLongitude },
+        },
+        age: {
+          gte: preferAgeFrom,
+          lte: preferAgeTo,
+        },
+        preferAgeFrom: {
+          lte: age,
+        },
+        preferAgeTo: {
+          gte: age,
+        },
+        sex: preferSex,
+        preferSex: sex,
+      },
+      include: UsersSelector.selectUser(),
+    });
+
+    if (!sortedUser) {
+      return null;
+    }
+
+    this.standardUser(sortedUser);
+
+    return this.getUserAggregate(sortedUser);
+  }
+
   async delete(id: string): Promise<boolean> {
     const deletedUser = await this.prismaService.user
       .delete({ where: { id } })

@@ -1,9 +1,11 @@
-import { UserPlaceInfo } from './place.interface';
+import { ShortUserPlaceInfo, UserPlaceInfo } from './place.interface';
 
 export interface PictureInterface {
   name: string;
   order: number;
 }
+
+export type Sex = 'male' | 'female';
 
 export interface User {
   id: string;
@@ -43,4 +45,35 @@ export interface User {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ShortUser {
+  id: string;
+  name: string;
+  age: number;
+  description: string;
+  isActivated: boolean;
+
+  interests: string[];
+  zodiacSign?: string;
+  education?: string;
+  alcoholAttitude?: string;
+  chronotype?: string;
+  foodPreference?: string;
+  pet?: string;
+  smokingAttitude?: string;
+  socialNetworksActivity?: string;
+  trainingAttitude?: string;
+  childrenAttitude?: string;
+  personalityType?: string;
+  communicationStyle?: string;
+  attentionSign?: string;
+
+  pictures: PictureInterface[];
+
+  place: ShortUserPlaceInfo;
+}
+
+export interface ShortUserWithDistance extends ShortUser {
+  distance: number;
 }
