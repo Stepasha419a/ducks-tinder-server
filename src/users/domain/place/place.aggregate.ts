@@ -1,4 +1,3 @@
-import { AggregateRoot } from '@nestjs/cqrs';
 import {
   IsLatitude,
   IsLongitude,
@@ -7,10 +6,11 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { Place, ShortUserPlaceInfo, UserPlaceInfo } from './place.interface';
+import { Place } from './place.interface';
 import { DomainError } from 'users/errors';
+import { PlaceServices } from './services';
 
-export class PlaceAggregate extends AggregateRoot implements Place {
+export class PlaceAggregate extends PlaceServices implements Place {
   @IsUUID()
   id: string;
 
@@ -52,20 +52,5 @@ export class PlaceAggregate extends AggregateRoot implements Place {
     }
 
     return _place;
-  }
-
-  getUserPlaceInfo(): UserPlaceInfo {
-    return {
-      latitude: this.latitude,
-      longitude: this.longitude,
-      address: this.address,
-      name: this.name,
-    };
-  }
-
-  getShortUserPlaceInfo(): ShortUserPlaceInfo {
-    return {
-      name: this.name,
-    };
   }
 }

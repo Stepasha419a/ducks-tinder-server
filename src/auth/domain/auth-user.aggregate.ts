@@ -1,4 +1,3 @@
-import { AggregateRoot } from '@nestjs/cqrs';
 import { AuthUser } from './auth-user.interface';
 import {
   IsNotEmptyObject,
@@ -10,8 +9,9 @@ import { Type } from 'class-transformer';
 import { User, UserAggregate } from 'users/domain';
 import { DomainError } from 'users/errors';
 import { AccessTokenAggregate, RefreshTokenAggregate } from 'tokens/domain';
+import { AuthUserServices } from './services';
 
-export class AuthUserAggregate extends AggregateRoot implements AuthUser {
+export class AuthUserAggregate extends AuthUserServices implements AuthUser {
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested()
@@ -45,9 +45,5 @@ export class AuthUserAggregate extends AggregateRoot implements AuthUser {
     }
 
     return _authUser;
-  }
-
-  withoutPrivateFields(): Partial<AuthUser> {
-    return { user: this.user, accessToken: this.accessToken };
   }
 }

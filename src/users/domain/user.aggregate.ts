@@ -1,12 +1,5 @@
-import * as bcrypt from 'bcryptjs';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import {
-  PictureInterface,
-  ResponseUser,
-  Sex,
-  ShortUserWithDistance,
-  User,
-} from './user.interface';
+import { PictureInterface, Sex, User } from './user.interface';
 import { UserServices } from './services';
 import {
   IsArray,
@@ -28,8 +21,8 @@ import {
 } from 'class-validator';
 import { DomainError } from 'users/errors';
 import { Type } from 'class-transformer';
-import { PlaceAggregate } from './place.aggregate';
-import { UserPlaceInfo } from './place.interface';
+import { PlaceAggregate } from './place/place.aggregate';
+import { UserPlaceInfo } from './place/place.interface';
 
 export class PictureAggregate implements PictureInterface {
   @IsString()
@@ -223,125 +216,4 @@ export class UserAggregate extends UserServices implements User {
 
     return _user;
   }
-
-  async comparePasswords(passwordToCompare: string): Promise<boolean> {
-    return bcrypt.compare(passwordToCompare, this.password);
-  }
-
-  setPlace(placeAggregate: PlaceAggregate) {
-    this.place = placeAggregate.getUserPlaceInfo();
-  }
-
-  setDistance(distance: number) {
-    this.distance = distance;
-  }
-
-  getPrimitiveFields(): UserPrimitiveFields {
-    const keys: Array<keyof User> = [
-      'age',
-      'description',
-      'distance',
-      'email',
-      'interests',
-      'name',
-      'nickname',
-      'password',
-      'place',
-      'preferAgeFrom',
-      'preferAgeTo',
-      'preferSex',
-      'sex',
-      'usersOnlyInDistance',
-    ];
-    const subset = Object.fromEntries(
-      keys.map((key) => [key, this[key]]),
-    ) as UserPrimitiveFields;
-
-    return subset;
-  }
-
-  getResponseUser(): ResponseUser {
-    return {
-      id: this.id,
-      email: this.email,
-      name: this.name,
-      age: this.age,
-      description: this.description,
-      distance: this.distance,
-      isActivated: this.isActivated,
-
-      interests: this.interests,
-      zodiacSign: this.zodiacSign,
-      education: this.education,
-      alcoholAttitude: this.alcoholAttitude,
-      chronotype: this.chronotype,
-      foodPreference: this.foodPreference,
-      pet: this.pet,
-      smokingAttitude: this.smokingAttitude,
-      socialNetworksActivity: this.socialNetworksActivity,
-      trainingAttitude: this.trainingAttitude,
-      childrenAttitude: this.childrenAttitude,
-      personalityType: this.personalityType,
-      communicationStyle: this.communicationStyle,
-      attentionSign: this.attentionSign,
-
-      place: this.place,
-
-      pictures: this.pictures,
-    };
-  }
-
-  getShortUserWithDistance(): ShortUserWithDistance {
-    const placeAggregate = PlaceAggregate.create({
-      ...this.place,
-      id: this.id,
-    });
-
-    return {
-      id: this.id,
-      name: this.name,
-      age: this.age,
-      description: this.description,
-      distance: this.distance,
-      isActivated: this.isActivated,
-
-      interests: this.interests,
-      zodiacSign: this.zodiacSign,
-      education: this.education,
-      alcoholAttitude: this.alcoholAttitude,
-      chronotype: this.chronotype,
-      foodPreference: this.foodPreference,
-      pet: this.pet,
-      smokingAttitude: this.smokingAttitude,
-      socialNetworksActivity: this.socialNetworksActivity,
-      trainingAttitude: this.trainingAttitude,
-      childrenAttitude: this.childrenAttitude,
-      personalityType: this.personalityType,
-      communicationStyle: this.communicationStyle,
-      attentionSign: this.attentionSign,
-
-      place: placeAggregate.getShortUserPlaceInfo(),
-
-      pictures: this.pictures,
-    };
-  }
-}
-
-export interface UserPrimitiveFields {
-  password?: string;
-  email?: string;
-  name?: string;
-  description?: string;
-  nickname?: string;
-  age?: number;
-  sex?: string;
-  distance?: number;
-  usersOnlyInDistance?: boolean;
-  preferSex?: string;
-  preferAgeFrom?: number;
-  preferAgeTo?: number;
-
-  interests?: string[];
-
-  place?: UserPlaceInfo;
 }

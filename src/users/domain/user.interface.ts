@@ -1,4 +1,4 @@
-import { ShortUserPlaceInfo, UserPlaceInfo } from './place.interface';
+import { ShortUserPlaceInfo, UserPlaceInfo } from './place/place.interface';
 
 export interface PictureInterface {
   name: string;

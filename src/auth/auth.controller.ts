@@ -30,7 +30,9 @@ export class AuthController {
     const authUserAggregate = await this.facade.commands.register(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(authUserAggregate.withoutPrivateFields());
+    const withoutPrivateFields =
+      await authUserAggregate.getWithoutPrivateFields();
+    return res.json(withoutPrivateFields);
   }
 
   @Public()
@@ -43,7 +45,9 @@ export class AuthController {
     const authUserAggregate = await this.facade.commands.login(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(authUserAggregate.withoutPrivateFields());
+    const withoutPrivateFields =
+      await authUserAggregate.getWithoutPrivateFields();
+    return res.json(withoutPrivateFields);
   }
 
   @Patch('logout')
@@ -72,7 +76,9 @@ export class AuthController {
     const authUserAggregate = await this.facade.commands.refresh(refreshToken);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
-    return res.json(authUserAggregate.withoutPrivateFields());
+    const withoutPrivateFields =
+      await authUserAggregate.getWithoutPrivateFields();
+    return res.json(withoutPrivateFields);
   }
 
   private setCookies(res: Response, refreshToken: string) {
