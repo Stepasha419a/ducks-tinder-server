@@ -30,7 +30,6 @@ import {
   DeletePairCommand,
   DeletePictureCommand,
   DislikeUserCommand,
-  LikeUserCommand,
   MixPicturesCommand,
   RemoveAllPairsCommand,
   ReturnUserCommand,
@@ -126,9 +125,9 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   likeUser(
     @User(CustomValidationPipe) user: ValidatedUserDto,
-    @Param('id') userPairId: string,
+    @Param('id') pairId: string,
   ): Promise<void> {
-    return this.commandBus.execute(new LikeUserCommand(user, userPairId));
+    return this.facade.commands.likeUser(user.id, pairId);
   }
 
   @Post('dislike/:id')

@@ -5,6 +5,7 @@ export abstract class UserRepository {
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findOneByEmail(email: string): Promise<UserAggregate | null>;
   abstract findPairs(id: string): Promise<UserAggregate[]>;
+  abstract findCheckedUsersIds(id: string, checkId: string): Promise<string[]>;
   abstract findSorted(
     id: string,
     minLatitude: number,
@@ -17,5 +18,6 @@ export abstract class UserRepository {
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null>;
+  abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract delete(id: string): Promise<boolean>;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateUserDto,
+  LikeUserCommand,
   PatchUserDto,
   PatchUserPlaceCommand,
   PatchUserPlaceDto,
@@ -28,6 +29,7 @@ export class UserFacade {
       this.patchUser(userId, dto),
     patchUserPlace: (userId: string, dto: PatchUserPlaceDto) =>
       this.patchUserPlace(userId, dto),
+    likeUser: (userId: string, pairId: string) => this.likeUser(userId, pairId),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -51,6 +53,12 @@ export class UserFacade {
   private patchUserPlace(userId: string, dto: PatchUserPlaceDto) {
     return this.commandBus.execute<PatchUserPlaceCommand, UserAggregate>(
       new PatchUserPlaceCommand(userId, dto),
+    );
+  }
+
+  private likeUser(userId: string, pairId) {
+    return this.commandBus.execute<LikeUserCommand>(
+      new LikeUserCommand(userId, pairId),
     );
   }
 

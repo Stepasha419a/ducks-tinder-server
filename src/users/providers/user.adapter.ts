@@ -347,6 +347,37 @@ export class UserAdapter implements UserRepository {
     });
   }
 
+  async findCheckedUsersIds(id: string, checkId: string): Promise<string[]> {
+    const checkedUsers = await this.prismaService.checkedUsers.findMany({
+      where: { OR: [{ checkedId: id }, { checkedId: checkId }] },
+      select: {
+        checked: { select: { id: true } },
+        wasChecked: { select: { id: true } },
+      },
+    });
+
+    const checkedIds = checkedUsers.map((user) => user.checked.id);
+    const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
+
+    return checkedIds.concat(wasCheckedIds);
+  }
+
+  async createPair(id: string, forId: string): Promise<UserAggregate> {
+    const pair = await this.prismaService.user.update({
+      where: { id: forId },
+      data: {
+        pairs: { connect: { id } },
+      },
+      include: UsersSelector.selectUser(),
+    });
+
+    await this.prismaService.checkedUsers.create({
+      data: { wasCheckedId: id, checkedId: forId },
+    });
+
+    return this.getUserAggregate(pair);
+  }
+
   async findSorted(
     id: string,
     minLatitude: number,
