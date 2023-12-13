@@ -335,6 +335,18 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(existingUser);
   }
 
+  async findPairs(id: string): Promise<UserAggregate[]> {
+    const pairs = await this.prismaService.user.findMany({
+      where: { pairFor: { some: { id } } },
+      include: UsersSelector.selectUser(),
+    });
+
+    return pairs.map((pair) => {
+      this.standardUser(pair);
+      return this.getUserAggregate(pair);
+    });
+  }
+
   async findSorted(
     id: string,
     minLatitude: number,

@@ -5,7 +5,6 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UserCommandHandlers } from './legacy/commands';
-import { UserQueryHandlers } from './legacy/queries';
 import { ChatsModule } from 'chats/chats.module';
 import { MapsModule } from 'maps/maps.module';
 import { APP_FILTER } from '@nestjs/core';
@@ -20,7 +19,6 @@ import { UserAdapter } from './providers';
   providers: [
     UsersService,
     ...UserCommandHandlers,
-    ...UserQueryHandlers,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     {

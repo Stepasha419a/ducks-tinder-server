@@ -7,7 +7,12 @@ import {
   PatchUserPlaceDto,
 } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
-import { GetSortedQuery, GetUserByEmailQuery, GetUserQuery } from './queries';
+import {
+  GetPairsQuery,
+  GetSortedQuery,
+  GetUserByEmailQuery,
+  GetUserQuery,
+} from './queries';
 import { UserAggregate } from 'users/domain';
 
 @Injectable()
@@ -28,6 +33,7 @@ export class UserFacade {
     getUser: (id: string) => this.getUser(id),
     getUserByEmail: (email: string) => this.getUserByEmail(email),
     getSorted: (id: string) => this.getSorted(id),
+    getPairs: (id: string) => this.getPairs(id),
   };
 
   private createUser(dto: CreateUserDto) {
@@ -63,6 +69,12 @@ export class UserFacade {
   private getSorted(id: string) {
     return this.queryBus.execute<GetSortedQuery, UserAggregate>(
       new GetSortedQuery(id),
+    );
+  }
+
+  private getPairs(id: string) {
+    return this.queryBus.execute<GetPairsQuery, UserAggregate[]>(
+      new GetPairsQuery(id),
     );
   }
 }

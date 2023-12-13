@@ -4,6 +4,7 @@ export abstract class UserRepository {
   abstract save(user: User): Promise<UserAggregate>;
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findOneByEmail(email: string): Promise<UserAggregate | null>;
+  abstract findPairs(id: string): Promise<UserAggregate[]>;
   abstract findSorted(
     id: string,
     minLatitude: number,

@@ -36,7 +36,6 @@ import {
   ReturnUserCommand,
   SavePictureCommand,
 } from './legacy/commands';
-import { GetPairsQuery } from './legacy/queries';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
@@ -151,10 +150,18 @@ export class UsersController {
 
   @Get('pairs')
   @HttpCode(HttpStatus.OK)
-  getPairs(
+  async getPairs(
     @User(CustomValidationPipe) user: ValidatedUserDto,
-  ): Promise<ShortUser[]> {
-    return this.queryBus.execute(new GetPairsQuery(user));
+  ): Promise<ShortUserWithDistance[]> {
+    const pairsWithDistance = await this.facade.queries.getPairs(user.id);
+
+    const pairs = await Promise.all(
+      pairsWithDistance.map((pair) => {
+        return pair.getShortUserWithDistance();
+      }),
+    );
+
+    return pairs;
   }
 
   @Post('pairs/:id')
