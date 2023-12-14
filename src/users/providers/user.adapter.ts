@@ -347,7 +347,7 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findCheckedUsersIds(id: string, checkId: string): Promise<string[]> {
+  async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
     const checkedUsers = await this.prismaService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { checkedId: checkId }] },
       select: {
@@ -371,11 +371,17 @@ export class UserAdapter implements UserRepository {
       include: UsersSelector.selectUser(),
     });
 
-    await this.prismaService.checkedUsers.create({
-      data: { wasCheckedId: id, checkedId: forId },
-    });
+    this.standardUser(pair);
 
     return this.getUserAggregate(pair);
+  }
+
+  async makeChecked(id: string, forId: string): Promise<boolean> {
+    const result = await this.prismaService.checkedUsers.create({
+      data: { wasCheckedId: forId, checkedId: id },
+    });
+
+    return Boolean(result);
   }
 
   async findSorted(

@@ -1,7 +1,6 @@
 export { SavePictureCommand } from './save-picture';
 export { DeletePictureCommand } from './delete-picture';
 export { MixPicturesCommand } from './mix-pictures';
-export { DislikeUserCommand } from './dislike-user';
 export { ReturnUserCommand } from './return-user';
 export { DeletePairCommand } from './delete-pair';
 export { CreateUserCommand } from './create-user';
@@ -12,7 +11,6 @@ export { CreatePairsCommand } from './create-pairs-dev';
 import { SavePictureCommandHandler } from './save-picture';
 import { DeletePictureCommandHandler } from './delete-picture';
 import { MixPicturesCommandHandler } from './mix-pictures';
-import { DislikeUserCommandHandler } from './dislike-user';
 import { ReturnUserCommandHandler } from './return-user';
 import { DeletePairCommandHandler } from './delete-pair';
 import { CreateUserCommandHandler } from './create-user';
@@ -24,7 +22,6 @@ export const UserCommandHandlers = [
   SavePictureCommandHandler,
   DeletePictureCommandHandler,
   MixPicturesCommandHandler,
-  DislikeUserCommandHandler,
   ReturnUserCommandHandler,
   DeletePairCommandHandler,
   CreateUserCommandHandler,
