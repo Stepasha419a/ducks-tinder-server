@@ -6,6 +6,7 @@ export {
 } from './patch-user-place';
 export { LikeUserCommand, LikeUserCommandHandler } from './like-user';
 export { DislikeUserCommand, DislikeUserCommandHandler } from './dislike-user';
+export { SavePictureCommand, SavePictureCommandHandler } from './save-picture';
 
 export * from './dto';
 
@@ -16,6 +17,7 @@ import { PatchUserCommandHandler } from './patch-user';
 import { PatchUserPlaceCommandHandler } from './patch-user-place';
 import { LikeUserCommandHandler } from './like-user';
 import { DislikeUserCommandHandler } from './dislike-user';
+import { SavePictureCommandHandler } from './save-picture';
 
 export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   CreateUserCommandHandler,
@@ -23,4 +25,5 @@ export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   PatchUserPlaceCommandHandler,
   LikeUserCommandHandler,
   DislikeUserCommandHandler,
+  SavePictureCommandHandler,
 ];

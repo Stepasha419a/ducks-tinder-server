@@ -13,6 +13,7 @@ import {
   GET_SHORT_USER_WITH_DISTANCE,
   GetShortUserWithDistance,
 } from './get-short-user-with-distance.case';
+import { ADD_PICTURE, AddPicture } from './add-picture.case';
 
 export class UserServices
   extends AggregateRoot
@@ -23,7 +24,8 @@ export class UserServices
     SetDistance,
     GetPrimitiveFields,
     GetResponseUser,
-    GetShortUserWithDistance
+    GetShortUserWithDistance,
+    AddPicture
 {
   @IsDefined()
   setDescription = SET_DESCRIPTION;
@@ -45,4 +47,7 @@ export class UserServices
 
   @IsDefined()
   getShortUserWithDistance = GET_SHORT_USER_WITH_DISTANCE;
+
+  @IsDefined()
+  addPicture = ADD_PICTURE;
 }

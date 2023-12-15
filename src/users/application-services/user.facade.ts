@@ -7,6 +7,7 @@ import {
   PatchUserDto,
   PatchUserPlaceCommand,
   PatchUserPlaceDto,
+  SavePictureCommand,
 } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
 import {
@@ -33,6 +34,8 @@ export class UserFacade {
     likeUser: (userId: string, pairId: string) => this.likeUser(userId, pairId),
     dislikeUser: (userId: string, pairId: string) =>
       this.dislikeUser(userId, pairId),
+    savePicture: (userId: string, picture: Express.Multer.File) =>
+      this.savePicture(userId, picture),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -68,6 +71,12 @@ export class UserFacade {
   private dislikeUser(userId: string, pairId) {
     return this.commandBus.execute<DislikeUserCommand>(
       new DislikeUserCommand(userId, pairId),
+    );
+  }
+
+  private savePicture(userId: string, picture: Express.Multer.File) {
+    return this.commandBus.execute<SavePictureCommand>(
+      new SavePictureCommand(userId, picture),
     );
   }
 

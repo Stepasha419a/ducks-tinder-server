@@ -1,5 +1,5 @@
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { PictureInterface, Sex, User } from './user.interface';
+import { Sex, User } from './user.interface';
 import { UserServices } from './services';
 import {
   IsArray,
@@ -23,17 +23,7 @@ import { DomainError } from 'users/errors';
 import { Type } from 'class-transformer';
 import { PlaceAggregate } from './place/place.aggregate';
 import { UserPlaceInfo } from './place/place.interface';
-
-export class PictureAggregate implements PictureInterface {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsNumber()
-  @Min(0)
-  @Max(8)
-  order: number;
-}
+import { PictureAggregate } from './picture';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()

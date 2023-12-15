@@ -5,7 +5,7 @@ import { UserRepository } from './user.repository';
 import { User, UserAggregate } from 'users/domain';
 import { UsersSelector } from 'users/users.selector';
 import { Prisma } from '@prisma/client';
-import { PictureAggregate } from 'users/domain/user.aggregate';
+import { PictureAggregate } from 'users/domain/picture';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -76,7 +76,6 @@ export class UserAdapter implements UserRepository {
       ...user.getPrimitiveFields(),
       ...picturesToUpdate,
       place: {},
-      interests: {},
     };
   }
 
@@ -345,6 +344,20 @@ export class UserAdapter implements UserRepository {
       this.standardUser(pair);
       return this.getUserAggregate(pair);
     });
+  }
+
+  async findPictures(userId: string): Promise<PictureAggregate[]> {
+    const pictures = await this.prismaService.picture.findMany({
+      where: { userId },
+    });
+
+    return pictures.map((picture) =>
+      PictureAggregate.create({
+        ...picture,
+        createdAt: picture.createdAt.toISOString(),
+        updatedAt: picture.updatedAt.toISOString(),
+      }),
+    );
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {

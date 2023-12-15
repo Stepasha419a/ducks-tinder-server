@@ -1,9 +1,5 @@
+import { UserPictureInfo } from './picture';
 import { ShortUserPlaceInfo, UserPlaceInfo } from './place/place.interface';
-
-export interface PictureInterface {
-  name: string;
-  order: number;
-}
 
 export type Sex = 'male' | 'female';
 
@@ -41,7 +37,7 @@ export interface User {
 
   place: UserPlaceInfo;
 
-  pictures: PictureInterface[];
+  pictures: UserPictureInfo[];
 
   createdAt: string;
   updatedAt: string;
@@ -74,7 +70,7 @@ export interface ShortUser {
   communicationStyle?: string;
   attentionSign?: string;
 
-  pictures: PictureInterface[];
+  pictures: UserPictureInfo[];
 
   place: ShortUserPlaceInfo;
 }

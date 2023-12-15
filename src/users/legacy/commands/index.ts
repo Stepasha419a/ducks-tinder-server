@@ -1,4 +1,3 @@
-export { SavePictureCommand } from './save-picture';
 export { DeletePictureCommand } from './delete-picture';
 export { MixPicturesCommand } from './mix-pictures';
 export { ReturnUserCommand } from './return-user';
@@ -8,7 +7,6 @@ export { AcceptPairCommand } from './accept-pair';
 export { RemoveAllPairsCommand } from './remove-all-pairs-dev';
 export { CreatePairsCommand } from './create-pairs-dev';
 
-import { SavePictureCommandHandler } from './save-picture';
 import { DeletePictureCommandHandler } from './delete-picture';
 import { MixPicturesCommandHandler } from './mix-pictures';
 import { ReturnUserCommandHandler } from './return-user';
@@ -19,7 +17,6 @@ import { RemoveAllPairsCommandHandler } from './remove-all-pairs-dev';
 import { CreatePairsCommandHandler } from './create-pairs-dev';
 
 export const UserCommandHandlers = [
-  SavePictureCommandHandler,
   DeletePictureCommandHandler,
   MixPicturesCommandHandler,
   ReturnUserCommandHandler,

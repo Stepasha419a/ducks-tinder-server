@@ -32,7 +32,6 @@ import {
   MixPicturesCommand,
   RemoveAllPairsCommand,
   ReturnUserCommand,
-  SavePictureCommand,
 } from './legacy/commands';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
@@ -99,7 +98,7 @@ export class UsersController {
     )
     picture: Express.Multer.File,
   ): Promise<UserDto> {
-    return this.commandBus.execute(new SavePictureCommand(user, picture));
+    return this.facade.commands.savePicture(user.id, picture);
   }
 
   @Put('picture')
