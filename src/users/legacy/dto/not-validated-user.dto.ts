@@ -16,9 +16,9 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PictureInterface } from 'users/users.interface';
 import { PlaceDto } from './place.dto';
 import { User } from 'users/domain';
+import { Picture } from 'users/domain/picture';
 
 export class NotValidatedUserDto
   implements
@@ -166,5 +166,5 @@ export class NotValidatedUserDto
 
   @IsArray()
   @ArrayMaxSize(9)
-  pictures: PictureInterface[];
+  pictures: Picture[];
 }

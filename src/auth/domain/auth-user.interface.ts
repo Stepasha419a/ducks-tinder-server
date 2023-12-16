@@ -1,8 +1,8 @@
 import { AccessToken, RefreshToken } from 'tokens/domain';
-import { User } from 'users/domain';
+import { ResponseUser } from 'users/domain';
 
 export interface AuthUser {
-  user: User;
+  user: ResponseUser;
   refreshToken: RefreshToken;
   accessToken: AccessToken;
 }

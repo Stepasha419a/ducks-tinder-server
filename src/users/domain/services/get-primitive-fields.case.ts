@@ -1,4 +1,3 @@
-import { UserPlaceInfo } from '../place';
 import { User } from '../user.interface';
 
 export interface GetPrimitiveFields {
@@ -13,11 +12,9 @@ export async function GET_PRIMITIVE_FIELDS(
     'description',
     'distance',
     'email',
-    'interests',
     'name',
     'nickname',
     'password',
-    'place',
     'preferAgeFrom',
     'preferAgeTo',
     'preferSex',
@@ -44,8 +41,4 @@ export interface UserPrimitiveFields {
   preferSex?: string;
   preferAgeFrom?: number;
   preferAgeTo?: number;
-
-  interests?: string[];
-
-  place?: UserPlaceInfo;
 }

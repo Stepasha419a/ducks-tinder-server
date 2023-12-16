@@ -5,7 +5,6 @@ export class UsersSelector {
     return {
       interests: { select: { name: true } },
       pictures: {
-        select: { name: true, order: true },
         orderBy: { order: 'asc' as 'asc' | 'desc' },
       },
       place: {

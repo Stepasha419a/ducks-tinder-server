@@ -38,6 +38,15 @@ export const requestUserStub = (): ValidatedUserDto => {
     smokingAttitude: 'smoking-attitude',
     socialNetworksActivity: 'social-networks-activity',
     trainingAttitude: 'training-attitude',
-    pictures: [{ name: 'picture.jpg', order: 0 }],
+    pictures: [
+      {
+        id: 'asdasda',
+        userId: 'sdfhsdghj34259034578923',
+        name: 'picture.jpg',
+        order: 0,
+        createdAt: '2022-11-11',
+        updatedAt: '2022-11-11',
+      },
+    ],
   };
 };

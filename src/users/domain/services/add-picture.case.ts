@@ -9,7 +9,7 @@ export async function ADD_PICTURE(
   this: User,
   picture: PictureAggregate,
 ): Promise<PictureAggregate> {
-  const pictureInfo = await picture.getUserPictureInfo();
+  const pictureInfo = await picture.getPicture();
   this.pictures.push(pictureInfo);
 
   return picture;

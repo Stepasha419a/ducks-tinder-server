@@ -23,7 +23,7 @@ import { DomainError } from 'users/errors';
 import { Type } from 'class-transformer';
 import { PlaceAggregate } from './place/place.aggregate';
 import { UserPlaceInfo } from './place/place.interface';
-import { PictureAggregate } from './picture';
+import { Picture, PictureAggregate } from './picture';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -179,7 +179,7 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsArray()
   @Type(() => PictureAggregate)
-  pictures: PictureAggregate[];
+  pictures: Picture[];
 
   @IsString()
   @IsNotEmpty()

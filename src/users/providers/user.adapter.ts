@@ -5,7 +5,7 @@ import { UserRepository } from './user.repository';
 import { User, UserAggregate } from 'users/domain';
 import { UsersSelector } from 'users/users.selector';
 import { Prisma } from '@prisma/client';
-import { PictureAggregate } from 'users/domain/picture';
+import { Picture, PictureAggregate } from 'users/domain/picture';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -31,9 +31,19 @@ export class UserAdapter implements UserRepository {
         await this.updatePlace(user);
       }
 
+      if (differentKeys.includes('pictures')) {
+        await this.updatePictures(user, existingUser);
+      }
+
+      const dataToUpdate = (await user.getPrimitiveFields()) as Prisma.Without<
+        Prisma.UserUpdateInput,
+        Prisma.UserUncheckedUpdateInput
+      > &
+        Prisma.UserUncheckedUpdateInput;
+
       const updatedUser = await this.prismaService.user.update({
         where: { id: user.id },
-        data: this.getUserAggregateToUpdate(user, existingUser, differentKeys),
+        data: dataToUpdate,
         include: UsersSelector.selectUser(),
       });
 
@@ -57,26 +67,60 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(saved);
   }
 
-  private getUserAggregateToUpdate(
+  private async updatePictures(
     user: UserAggregate,
-    existingUser?: UserAggregate,
-    differentKeys?: Array<keyof User>,
-  ):
-    | (Prisma.Without<Prisma.UserUpdateInput, Prisma.UserUncheckedUpdateInput> &
-        Prisma.UserUncheckedUpdateInput)
-    | (Prisma.Without<Prisma.UserUncheckedUpdateInput, Prisma.UserUpdateInput> &
-        Prisma.UserUpdateInput) {
-    const picturesToUpdate = this.getPicturesToUpdate(
-      user,
-      existingUser,
-      differentKeys,
+    existingUser: UserAggregate,
+  ) {
+    const toDeleteIds: string[] = [];
+    const toCreatePictures: Picture[] = [];
+
+    await Promise.all(
+      user.pictures.map(async (picture) => {
+        if (
+          !existingUser.pictures.find(
+            (existingPicture) => existingPicture.id === picture.id,
+          )
+        ) {
+          const createdPicture = await PictureAggregate.create(
+            picture,
+          ).getPicture();
+          toCreatePictures.push(createdPicture);
+        }
+      }),
     );
 
-    return {
-      ...user.getPrimitiveFields(),
-      ...picturesToUpdate,
-      place: {},
-    };
+    existingUser.pictures.forEach((existingPicture) => {
+      if (!user.pictures.find((picture) => picture.id === existingPicture.id)) {
+        toDeleteIds.push(existingPicture.id);
+      }
+    });
+
+    await this.prismaService.picture.deleteMany({
+      where: { id: { in: toDeleteIds } },
+    });
+
+    await this.prismaService.picture.createMany({
+      data: toCreatePictures,
+    });
+
+    const updatedPictures = await this.prismaService.picture.findMany({
+      where: { userId: existingUser.id },
+    });
+
+    await Promise.all(
+      user.pictures.map((newPicture: Picture, i) => {
+        const picture = updatedPictures.find(
+          (item) => item.id === newPicture.id,
+        );
+
+        if (picture.order !== i) {
+          return this.prismaService.picture.update({
+            where: { id: picture.id },
+            data: { order: i },
+          });
+        }
+      }),
+    );
   }
 
   private async updatePlace(user: UserAggregate) {
@@ -185,26 +229,6 @@ export class UserAdapter implements UserRepository {
     });
 
     return { toConnect, toDisconnect };
-  }
-
-  private getPicturesToUpdate(
-    user: UserAggregate,
-    existingUser?: UserAggregate,
-    differentKeys?: Array<keyof User>,
-  ):
-    | Record<
-        'pictures',
-        Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
-      >
-    | undefined {
-    if (existingUser && !differentKeys.includes('pictures')) {
-      return {
-        pictures: this.getUserPicturesUpdate(
-          user.pictures,
-          existingUser.pictures,
-        ) as Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput,
-      };
-    }
   }
 
   private getDifferences(oldUser, newUser): Array<keyof User> {
@@ -473,6 +497,14 @@ export class UserAdapter implements UserRepository {
   private standardUser(user) {
     this.standardUserPrimitiveRelations(user);
     this.standardUserInterests(user);
+    this.standardUserPictures(user);
+  }
+
+  private standardUserPictures(user) {
+    for (const picture of user.pictures) {
+      picture.createdAt = picture.createdAt.toISOString();
+      picture.updatedAt = picture.updatedAt.toISOString();
+    }
   }
 
   private standardUserPrimitiveRelations(user) {

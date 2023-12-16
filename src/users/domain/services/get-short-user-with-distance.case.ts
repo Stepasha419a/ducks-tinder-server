@@ -1,3 +1,4 @@
+import { PictureAggregate } from '../picture';
 import { PlaceAggregate } from '../place';
 import { ShortUserWithDistance, User } from '../user.interface';
 
@@ -14,6 +15,12 @@ export async function GET_SHORT_USER_WITH_DISTANCE(
   });
 
   const place = await placeAggregate.getShortUserPlaceInfo();
+
+  const pictures = await Promise.all(
+    this.pictures.map((picture) =>
+      PictureAggregate.create(picture).getUserPictureInfo(),
+    ),
+  );
 
   return {
     id: this.id,
@@ -40,6 +47,6 @@ export async function GET_SHORT_USER_WITH_DISTANCE(
 
     place,
 
-    pictures: this.pictures,
+    pictures,
   };
 }

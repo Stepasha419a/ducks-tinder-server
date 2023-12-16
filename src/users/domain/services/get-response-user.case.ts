@@ -1,3 +1,4 @@
+import { PictureAggregate } from '../picture';
 import { ResponseUser, User } from '../user.interface';
 
 export interface GetResponseUser {
@@ -5,11 +6,18 @@ export interface GetResponseUser {
 }
 
 export async function GET_RESPONSE_USER(this: User): Promise<ResponseUser> {
+  const pictures = await Promise.all(
+    this.pictures.map((picture) =>
+      PictureAggregate.create(picture).getUserPictureInfo(),
+    ),
+  );
+
   return {
     id: this.id,
     email: this.email,
     name: this.name,
     age: this.age,
+    sex: this.sex,
     description: this.description,
     distance: this.distance,
     isActivated: this.isActivated,
@@ -31,6 +39,6 @@ export async function GET_RESPONSE_USER(this: User): Promise<ResponseUser> {
 
     place: this.place,
 
-    pictures: this.pictures,
+    pictures: pictures,
   };
 }

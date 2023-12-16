@@ -8,6 +8,7 @@ export async function GET_USER_PICTURE_INFO(
   this: Picture,
 ): Promise<UserPictureInfo> {
   return {
+    id: this.id,
     name: this.name,
     order: this.order,
   };

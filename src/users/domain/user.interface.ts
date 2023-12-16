@@ -1,4 +1,4 @@
-import { UserPictureInfo } from './picture';
+import { Picture, UserPictureInfo } from './picture';
 import { ShortUserPlaceInfo, UserPlaceInfo } from './place/place.interface';
 
 export type Sex = 'male' | 'female';
@@ -37,16 +37,19 @@ export interface User {
 
   place: UserPlaceInfo;
 
-  pictures: UserPictureInfo[];
+  pictures: Picture[];
 
   createdAt: string;
   updatedAt: string;
 }
 
-export type ResponseUser = Omit<
-  User,
-  'password' | 'activationLink' | 'createdAt' | 'updatedAt'
->;
+export interface ResponseUser
+  extends Omit<
+    User,
+    'activationLink' | 'password' | 'createdAt' | 'updatedAt' | 'pictures'
+  > {
+  pictures: UserPictureInfo[];
+}
 
 export interface ShortUser {
   id: string;
