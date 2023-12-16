@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { User as PrismaUser } from 'prisma';
+import { User as PrismaUser, Picture as PrismaPicture } from 'prisma';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from './user.repository';
 import { User, UserAggregate } from 'users/domain';
@@ -370,18 +370,12 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findPictures(userId: string): Promise<PictureAggregate[]> {
+  async findManyPictures(userId: string): Promise<PictureAggregate[]> {
     const pictures = await this.prismaService.picture.findMany({
       where: { userId },
     });
 
-    return pictures.map((picture) =>
-      PictureAggregate.create({
-        ...picture,
-        createdAt: picture.createdAt.toISOString(),
-        updatedAt: picture.updatedAt.toISOString(),
-      }),
-    );
+    return pictures.map((picture) => this.getPictureAggregate(picture));
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
@@ -484,6 +478,14 @@ export class UserAdapter implements UserRepository {
       });
 
     return Boolean(deletedUser);
+  }
+
+  private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
+    return PictureAggregate.create({
+      ...picture,
+      updatedAt: picture.updatedAt.toISOString(),
+      createdAt: picture.createdAt.toISOString(),
+    });
   }
 
   private getUserAggregate(user: PrismaUser): UserAggregate {

@@ -19,7 +19,7 @@ export class SavePictureCommandHandler
   async execute(command: SavePictureCommand): Promise<UserAggregate> {
     const { userId, picture } = command;
 
-    const pictures = await this.repository.findPictures(userId);
+    const pictures = await this.repository.findManyPictures(userId);
     if (pictures.length > 8) {
       throw new BadRequestException(MAX_PICTURES_COUNT);
     }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateUserDto,
+  DeletePictureCommand,
   DislikeUserCommand,
   LikeUserCommand,
   PatchUserDto,
@@ -36,6 +37,8 @@ export class UserFacade {
       this.dislikeUser(userId, pairId),
     savePicture: (userId: string, picture: Express.Multer.File) =>
       this.savePicture(userId, picture),
+    deletePicture: (userId: string, pictureId: string) =>
+      this.deletePicture(userId, pictureId),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -77,6 +80,12 @@ export class UserFacade {
   private savePicture(userId: string, picture: Express.Multer.File) {
     return this.commandBus.execute<SavePictureCommand>(
       new SavePictureCommand(userId, picture),
+    );
+  }
+
+  private deletePicture(userId: string, pictureId: string) {
+    return this.commandBus.execute<DeletePictureCommand>(
+      new DeletePictureCommand(userId, pictureId),
     );
   }
 

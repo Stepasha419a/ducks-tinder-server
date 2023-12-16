@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { DeletePictureCommand } from './commands';
 import { FileFacade } from './application-services';
 
 @Injectable()
@@ -15,6 +14,6 @@ export class FilesService {
   }
 
   deletePicture(fileName: string, userId: string): Promise<string> {
-    return this.commandBus.execute(new DeletePictureCommand(fileName, userId));
+    return this.facade.commands.deletePicture(fileName, userId);
   }
 }

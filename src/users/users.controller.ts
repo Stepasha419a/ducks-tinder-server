@@ -17,7 +17,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShortUser } from './users.interface';
 import {
-  DeletePictureDto,
   UserDto,
   MixPicturesDto,
   ValidatedUserDto,
@@ -28,7 +27,6 @@ import {
   AcceptPairCommand,
   CreatePairsCommand,
   DeletePairCommand,
-  DeletePictureCommand,
   MixPicturesCommand,
   RemoveAllPairsCommand,
   ReturnUserCommand,
@@ -101,13 +99,13 @@ export class UsersController {
     return this.facade.commands.savePicture(user.id, picture);
   }
 
-  @Put('picture')
+  @Put('picture/:id')
   @HttpCode(HttpStatus.OK)
   deletePicture(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
-    @Body() dto: DeletePictureDto,
+    @Param('id') pictureId: string,
   ): Promise<UserDto> {
-    return this.commandBus.execute(new DeletePictureCommand(user, dto));
+    return this.facade.commands.deletePicture(user.id, pictureId);
   }
 
   @Put('picture/mix')

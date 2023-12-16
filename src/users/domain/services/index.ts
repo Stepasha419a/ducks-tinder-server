@@ -14,6 +14,11 @@ import {
   GetShortUserWithDistance,
 } from './get-short-user-with-distance.case';
 import { ADD_PICTURE, AddPicture } from './add-picture.case';
+import { DELETE_PICTURE, DeletePicture } from './delete-picture.case';
+import {
+  SORT_PICTURE_ORDERS,
+  SortPictureOrders,
+} from './sort-picture-orders.case';
 
 export class UserServices
   extends AggregateRoot
@@ -25,7 +30,9 @@ export class UserServices
     GetPrimitiveFields,
     GetResponseUser,
     GetShortUserWithDistance,
-    AddPicture
+    AddPicture,
+    DeletePicture,
+    SortPictureOrders
 {
   @IsDefined()
   setDescription = SET_DESCRIPTION;
@@ -50,4 +57,10 @@ export class UserServices
 
   @IsDefined()
   addPicture = ADD_PICTURE;
+
+  @IsDefined()
+  deletePicture = DELETE_PICTURE;
+
+  @IsDefined()
+  sortPictureOrders = SORT_PICTURE_ORDERS;
 }

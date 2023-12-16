@@ -1,8 +1,4 @@
-import {
-  DeletePictureDto,
-  MixPicturesDto,
-  PatchUserDto,
-} from 'users/legacy/dto';
+import { MixPicturesDto, PatchUserDto } from 'users/legacy/dto';
 import { userDtoStub } from '../stubs';
 
 export const USER_SORTS_DATA = {
@@ -48,10 +44,6 @@ export const UPDATE_USER_RELATIONS_DTO = {
   interests: ['interest-1', 'interest-2', 'wrong-interest'],
   personalityType: 'personality-type',
   zodiacSign: 'zodiac-sign',
-};
-
-export const DELETE_PICTURE_DTO: DeletePictureDto = {
-  order: 0,
 };
 
 export const MIX_PICTURES_DTO: MixPicturesDto = {

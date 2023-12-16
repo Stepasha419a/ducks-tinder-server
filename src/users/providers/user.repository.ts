@@ -1,8 +1,8 @@
-import { User, UserAggregate } from 'users/domain';
+import { UserAggregate } from 'users/domain';
 import { PictureAggregate } from 'users/domain/picture';
 
 export abstract class UserRepository {
-  abstract save(user: User): Promise<UserAggregate>;
+  abstract save(user: UserAggregate): Promise<UserAggregate>;
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findOneByEmail(email: string): Promise<UserAggregate | null>;
   abstract findPairs(id: string): Promise<UserAggregate[]>;
@@ -19,7 +19,7 @@ export abstract class UserRepository {
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null>;
-  abstract findPictures(userId: string): Promise<PictureAggregate[]>;
+  abstract findManyPictures(userId: string): Promise<PictureAggregate[]>;
   abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract makeChecked(id: string, forId: string): Promise<boolean>;
   abstract delete(id: string): Promise<boolean>;
