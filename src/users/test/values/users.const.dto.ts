@@ -1,5 +1,6 @@
-import { MixPicturesDto, PatchUserDto } from 'users/legacy/dto';
+import { PatchUserDto } from 'users/legacy/dto';
 import { userDtoStub } from '../stubs';
+import { MixPicturesDto } from 'users/application-services/commands';
 
 export const USER_SORTS_DATA = {
   ...userDtoStub(),
@@ -47,9 +48,5 @@ export const UPDATE_USER_RELATIONS_DTO = {
 };
 
 export const MIX_PICTURES_DTO: MixPicturesDto = {
-  pictures: [
-    { name: 'picture-3.jpg', order: 2 },
-    { name: 'picture-1.jpg', order: 0 },
-    { name: 'picture-2.jpg', order: 1 },
-  ],
+  pictureOrders: [2, 0, 1],
 };

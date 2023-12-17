@@ -9,14 +9,16 @@ export async function SORT_PICTURE_ORDERS(
   this: User,
   byOrder: number,
 ): Promise<PictureAggregate[]> {
-  for (let i = 0; i < this.pictures.length; i++) {
-    let picture = this.pictures[i];
-    if (picture.order > byOrder) {
-      const pictureAggregate = PictureAggregate.create(picture);
-      pictureAggregate.decreaseOrder();
-      picture = await pictureAggregate.getPicture();
-    }
-  }
+  this.pictures = await Promise.all(
+    this.pictures.map(async (picture) => {
+      if (picture.order > byOrder) {
+        const pictureAggregate = PictureAggregate.create(picture);
+        pictureAggregate.decreaseOrder();
+        picture = await pictureAggregate.getPicture();
+      }
+      return picture;
+    }),
+  );
 
   return this.pictures.map((picture) => PictureAggregate.create(picture));
 }

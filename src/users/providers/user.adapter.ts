@@ -108,15 +108,15 @@ export class UserAdapter implements UserRepository {
     });
 
     await Promise.all(
-      user.pictures.map((newPicture: Picture, i) => {
+      user.pictures.map((newPicture: Picture) => {
         const picture = updatedPictures.find(
           (item) => item.id === newPicture.id,
         );
 
-        if (picture.order !== i) {
+        if (newPicture.order !== picture.order) {
           return this.prismaService.picture.update({
             where: { id: picture.id },
-            data: { order: i },
+            data: { order: newPicture.order },
           });
         }
       }),

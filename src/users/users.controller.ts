@@ -16,18 +16,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShortUser } from './users.interface';
-import {
-  UserDto,
-  MixPicturesDto,
-  ValidatedUserDto,
-  NotValidatedUserDto,
-} from './legacy/dto';
+import { ValidatedUserDto, NotValidatedUserDto } from './legacy/dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   AcceptPairCommand,
   CreatePairsCommand,
   DeletePairCommand,
-  MixPicturesCommand,
   RemoveAllPairsCommand,
   ReturnUserCommand,
 } from './legacy/commands';
@@ -36,6 +30,7 @@ import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
 import { UserFacade } from './application-services';
 import {
+  MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
 } from './application-services/commands';
@@ -84,7 +79,7 @@ export class UsersController {
   @Post('picture')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('picture'))
-  savePicture(
+  async savePicture(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -95,26 +90,35 @@ export class UsersController {
       }),
     )
     picture: Express.Multer.File,
-  ): Promise<UserDto> {
-    return this.facade.commands.savePicture(user.id, picture);
-  }
-
-  @Put('picture/:id')
-  @HttpCode(HttpStatus.OK)
-  deletePicture(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
-    @Param('id') pictureId: string,
-  ): Promise<UserDto> {
-    return this.facade.commands.deletePicture(user.id, pictureId);
+  ): Promise<ResponseUser> {
+    const userAggregate = await this.facade.commands.savePicture(
+      user.id,
+      picture,
+    );
+    return userAggregate.getResponseUser();
   }
 
   @Put('picture/mix')
   @HttpCode(HttpStatus.OK)
-  mixPictures(
+  async mixPictures(
     @User(CustomValidationPipe) user: NotValidatedUserDto,
     @Body() dto: MixPicturesDto,
-  ): Promise<UserDto> {
-    return this.commandBus.execute(new MixPicturesCommand(user, dto));
+  ): Promise<ResponseUser> {
+    const userAggregate = await this.facade.commands.mixPictures(user.id, dto);
+    return userAggregate.getResponseUser();
+  }
+
+  @Put('picture/:id')
+  @HttpCode(HttpStatus.OK)
+  async deletePicture(
+    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @Param('id') pictureId: string,
+  ): Promise<ResponseUser> {
+    const userAggregate = await this.facade.commands.deletePicture(
+      user.id,
+      pictureId,
+    );
+    return userAggregate.getResponseUser();
   }
 
   @Post('like/:id')

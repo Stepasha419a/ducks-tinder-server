@@ -5,6 +5,8 @@ import {
   DeletePictureCommand,
   DislikeUserCommand,
   LikeUserCommand,
+  MixPicturesCommand,
+  MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceCommand,
   PatchUserPlaceDto,
@@ -39,6 +41,8 @@ export class UserFacade {
       this.savePicture(userId, picture),
     deletePicture: (userId: string, pictureId: string) =>
       this.deletePicture(userId, pictureId),
+    mixPictures: (userId: string, dto: MixPicturesDto) =>
+      this.mixPictures(userId, dto),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -78,14 +82,20 @@ export class UserFacade {
   }
 
   private savePicture(userId: string, picture: Express.Multer.File) {
-    return this.commandBus.execute<SavePictureCommand>(
+    return this.commandBus.execute<SavePictureCommand, UserAggregate>(
       new SavePictureCommand(userId, picture),
     );
   }
 
   private deletePicture(userId: string, pictureId: string) {
-    return this.commandBus.execute<DeletePictureCommand>(
+    return this.commandBus.execute<DeletePictureCommand, UserAggregate>(
       new DeletePictureCommand(userId, pictureId),
+    );
+  }
+
+  private mixPictures(userId: string, dto: MixPicturesDto) {
+    return this.commandBus.execute<MixPicturesCommand, UserAggregate>(
+      new MixPicturesCommand(userId, dto),
     );
   }
 

@@ -19,6 +19,10 @@ import {
   SORT_PICTURE_ORDERS,
   SortPictureOrders,
 } from './sort-picture-orders.case';
+import {
+  MIX_PICTURE_ORDERS,
+  MixPictureOrders,
+} from './mix-picture-orders.case';
 
 export class UserServices
   extends AggregateRoot
@@ -32,7 +36,8 @@ export class UserServices
     GetShortUserWithDistance,
     AddPicture,
     DeletePicture,
-    SortPictureOrders
+    SortPictureOrders,
+    MixPictureOrders
 {
   @IsDefined()
   setDescription = SET_DESCRIPTION;
@@ -63,4 +68,7 @@ export class UserServices
 
   @IsDefined()
   sortPictureOrders = SORT_PICTURE_ORDERS;
+
+  @IsDefined()
+  mixPictureOrders = MIX_PICTURE_ORDERS;
 }
