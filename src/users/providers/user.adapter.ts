@@ -358,6 +358,26 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(existingUser);
   }
 
+  async findPair(id: string, forId: string): Promise<UserAggregate | null> {
+    const pair = await this.prismaService.user
+      .findFirst({
+        where: { id, pairFor: { some: { id: forId } } },
+        include: UsersSelector.selectUser(),
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+
+    if (!pair) {
+      return null;
+    }
+
+    this.standardUser(pair);
+
+    return this.getUserAggregate(pair);
+  }
+
   async findPairs(id: string): Promise<UserAggregate[]> {
     const pairs = await this.prismaService.user.findMany({
       where: { pairFor: { some: { id } } },
@@ -478,6 +498,15 @@ export class UserAdapter implements UserRepository {
       });
 
     return Boolean(deletedUser);
+  }
+
+  async deletePair(id: string, forId: string): Promise<boolean> {
+    const deletedPair = await this.prismaService.user.update({
+      where: { id: forId },
+      data: { pairs: { disconnect: { id } } },
+    });
+
+    return Boolean(deletedPair);
   }
 
   private getPictureAggregate(picture: PrismaPicture): PictureAggregate {

@@ -12,6 +12,7 @@ export {
   DeletePictureCommandHandler,
 } from './delete-picture';
 export { MixPicturesCommand, MixPicturesCommandHandler } from './mix-pictures';
+export { AcceptPairCommand, AcceptPairCommandHandler } from './accept-pair';
 
 export * from './dto';
 
@@ -25,6 +26,7 @@ import { DislikeUserCommandHandler } from './dislike-user';
 import { SavePictureCommandHandler } from './save-picture';
 import { DeletePictureCommandHandler } from './delete-picture';
 import { MixPicturesCommandHandler } from './mix-pictures';
+import { AcceptPairCommandHandler } from './accept-pair';
 
 export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   CreateUserCommandHandler,
@@ -35,4 +37,5 @@ export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   SavePictureCommandHandler,
   DeletePictureCommandHandler,
   MixPicturesCommandHandler,
+  AcceptPairCommandHandler,
 ];

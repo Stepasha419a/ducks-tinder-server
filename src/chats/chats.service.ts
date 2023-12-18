@@ -6,7 +6,7 @@ import { ChatFacade } from './application-services';
 export class ChatsService {
   constructor(private readonly facade: ChatFacade) {}
 
-  async create(memberIds: string[]): Promise<Chat> {
+  async createChat(memberIds: string[]): Promise<Chat> {
     return this.facade.commands.createChat(memberIds);
   }
 }

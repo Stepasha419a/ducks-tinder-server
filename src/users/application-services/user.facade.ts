@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
+  AcceptPairCommand,
   CreateUserDto,
   DeletePictureCommand,
   DislikeUserCommand,
@@ -37,6 +38,8 @@ export class UserFacade {
     likeUser: (userId: string, pairId: string) => this.likeUser(userId, pairId),
     dislikeUser: (userId: string, pairId: string) =>
       this.dislikeUser(userId, pairId),
+    acceptPair: (userId: string, pairId: string) =>
+      this.acceptPair(userId, pairId),
     savePicture: (userId: string, picture: Express.Multer.File) =>
       this.savePicture(userId, picture),
     deletePicture: (userId: string, pictureId: string) =>
@@ -69,15 +72,21 @@ export class UserFacade {
     );
   }
 
-  private likeUser(userId: string, pairId) {
+  private likeUser(userId: string, pairId: string) {
     return this.commandBus.execute<LikeUserCommand>(
       new LikeUserCommand(userId, pairId),
     );
   }
 
-  private dislikeUser(userId: string, pairId) {
+  private dislikeUser(userId: string, pairId: string) {
     return this.commandBus.execute<DislikeUserCommand>(
       new DislikeUserCommand(userId, pairId),
+    );
+  }
+
+  private acceptPair(userId: string, pairId: string) {
+    return this.commandBus.execute<AcceptPairCommand, UserAggregate>(
+      new AcceptPairCommand(userId, pairId),
     );
   }
 

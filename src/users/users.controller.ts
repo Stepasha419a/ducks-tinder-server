@@ -19,7 +19,6 @@ import { ShortUser } from './users.interface';
 import { ValidatedUserDto, NotValidatedUserDto } from './legacy/dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  AcceptPairCommand,
   CreatePairsCommand,
   DeletePairCommand,
   RemoveAllPairsCommand,
@@ -165,11 +164,16 @@ export class UsersController {
 
   @Post('pairs/:id')
   @HttpCode(HttpStatus.OK)
-  acceptPair(
+  async acceptPair(
     @User(CustomValidationPipe) user: ValidatedUserDto,
-    @Param('id') userPairId: string,
-  ): Promise<ShortUser[]> {
-    return this.commandBus.execute(new AcceptPairCommand(user, userPairId));
+    @Param('id') pairId: string,
+  ): Promise<ShortUserWithDistance> {
+    const pairAggregate = await this.facade.commands.acceptPair(
+      user.id,
+      pairId,
+    );
+
+    return pairAggregate.getShortUserWithDistance();
   }
 
   @Put('pairs/:id')
