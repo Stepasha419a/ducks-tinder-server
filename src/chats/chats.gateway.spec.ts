@@ -15,7 +15,7 @@ import {
   EditMessageDto,
   GetMessagesDto,
   SendMessageDto,
-} from './dto';
+} from './legacy/dto';
 import {
   BlockChatCommand,
   DeleteMessageCommand,

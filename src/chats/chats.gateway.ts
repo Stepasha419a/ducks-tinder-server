@@ -16,8 +16,8 @@ import {
   SaveLastSeenCommand,
   SendMessageCommand,
   UnblockChatCommand,
-} from './commands';
-import { GetMessagesQuery, ValidateChatMemberQuery } from './queries';
+} from './legacy/commands';
+import { GetMessagesQuery, ValidateChatMemberQuery } from './legacy/queries';
 import {
   UseFilters,
   UseGuards,
@@ -32,7 +32,7 @@ import {
   GetMessagesDto,
   SendMessageDto,
   ChatIdDto,
-} from './dto';
+} from './legacy/dto';
 import { User } from 'common/decorators';
 import {
   BlockChatSocketReturn,

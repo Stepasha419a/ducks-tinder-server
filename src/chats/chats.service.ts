@@ -1,13 +1,12 @@
 import { Chat } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import { CreateChatCommand } from './commands/create-chat/create-chat.command';
+import { ChatFacade } from './application-services';
 
 @Injectable()
 export class ChatsService {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly facade: ChatFacade) {}
 
   async create(memberIds: string[]): Promise<Chat> {
-    return this.commandBus.execute(new CreateChatCommand(memberIds));
+    return this.facade.commands.createChat(memberIds);
   }
 }

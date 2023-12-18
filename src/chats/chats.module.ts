@@ -4,11 +4,14 @@ import { ChatsGateway } from './chats.gateway';
 import { ChatsController } from './chats.controller';
 import { ChatsService } from './chats.service';
 import { PrismaModule } from 'prisma/prisma.module';
-import { CqrsModule } from '@nestjs/cqrs';
-import { ChatCommandHandlers } from './commands';
-import { ChatQueryHandlers } from './queries';
+import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
+import { ChatCommandHandlers } from './legacy/commands';
+import { ChatQueryHandlers } from './legacy/queries';
 import { TokensModule } from 'tokens/tokens.module';
 import { UsersModule } from 'users/users.module';
+import { ChatAdapter, ChatRepository, chatFacadeFactory } from './providers';
+import { CHAT_COMMAND_HANDLERS } from './application-services/commands';
+import { ChatFacade } from './application-services';
 
 @Module({
   controllers: [ChatsController],
@@ -17,6 +20,13 @@ import { UsersModule } from 'users/users.module';
     ChatsGateway,
     ...ChatCommandHandlers,
     ...ChatQueryHandlers,
+    ...CHAT_COMMAND_HANDLERS,
+    { provide: ChatRepository, useClass: ChatAdapter },
+    {
+      provide: ChatFacade,
+      inject: [CommandBus, QueryBus],
+      useFactory: chatFacadeFactory,
+    },
   ],
   imports: [
     PrismaModule,

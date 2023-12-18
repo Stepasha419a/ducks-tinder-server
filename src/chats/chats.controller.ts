@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetChatQuery, GetChatsQuery } from './queries';
+import { GetChatQuery, GetChatsQuery } from './legacy/queries';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
