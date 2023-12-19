@@ -11,6 +11,7 @@ import { TokensModule } from 'tokens/tokens.module';
 import { UsersModule } from 'users/users.module';
 import { ChatAdapter, ChatRepository, chatFacadeFactory } from './providers';
 import { CHAT_COMMAND_HANDLERS } from './application-services/commands';
+import { CHAT_QUERY_HANDLERS } from './application-services/queries';
 import { ChatFacade } from './application-services';
 
 @Module({
@@ -21,6 +22,7 @@ import { ChatFacade } from './application-services';
     ...ChatCommandHandlers,
     ...ChatQueryHandlers,
     ...CHAT_COMMAND_HANDLERS,
+    ...CHAT_QUERY_HANDLERS,
     { provide: ChatRepository, useClass: ChatAdapter },
     {
       provide: ChatFacade,

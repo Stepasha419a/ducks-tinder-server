@@ -1,6 +1,7 @@
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import {
   IsNotEmpty,
+  IsNotEmptyObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -9,6 +10,8 @@ import {
 import { DomainError } from 'users/errors';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { Message } from './message.interface';
+import { Type } from 'class-transformer';
+import { RepliedMessage, RepliedMessageDto } from './replied-message';
 
 export class MessageAggregate extends AggregateRoot implements Message {
   @IsUUID()
@@ -25,8 +28,9 @@ export class MessageAggregate extends AggregateRoot implements Message {
   chatId: string;
 
   @IsOptional()
-  @IsUUID()
-  repliedId?: string;
+  @IsNotEmptyObject()
+  @Type(() => RepliedMessageDto)
+  repliedId?: RepliedMessage;
 
   @IsString()
   @IsNotEmpty()

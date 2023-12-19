@@ -1,17 +1,25 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetChatQuery, GetChatsQuery } from './legacy/queries';
+import { GetChatQuery } from './legacy/queries';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
+import { ChatFacade } from './application-services';
+import { PaginationDto } from 'libs/shared/dto';
 
 @Controller('chats')
 export class ChatsController {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly facade: ChatFacade,
+  ) {}
 
   @Get()
-  getChats(@User(CustomValidationPipe) user: ValidatedUserDto) {
-    return this.queryBus.execute(new GetChatsQuery(user));
+  getChats(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Body() dto: PaginationDto,
+  ) {
+    return this.facade.queries.getChats(user.id, dto);
   }
 
   @Get(':id')
