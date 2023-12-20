@@ -8,12 +8,12 @@ import {
   validateSync,
 } from 'class-validator';
 import { DomainError } from 'users/errors';
-import { AggregateRoot } from '@nestjs/cqrs';
 import { Message } from './message.interface';
 import { Type } from 'class-transformer';
 import { RepliedMessage, RepliedMessageDto } from './replied-message';
+import { MessageServices } from './services';
 
-export class MessageAggregate extends AggregateRoot implements Message {
+export class MessageAggregate extends MessageServices implements Message {
   @IsUUID()
   id: string = randomStringGenerator();
 
@@ -30,7 +30,7 @@ export class MessageAggregate extends AggregateRoot implements Message {
   @IsOptional()
   @IsNotEmptyObject()
   @Type(() => RepliedMessageDto)
-  repliedId?: RepliedMessage;
+  replied?: RepliedMessage;
 
   @IsString()
   @IsNotEmpty()

@@ -11,12 +11,4 @@ export class RepliedMessageDto implements RepliedMessage {
 
   @IsUUID()
   userId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  createdAt;
-
-  @IsString()
-  @IsNotEmpty()
-  updatedAt;
 }

@@ -10,7 +10,7 @@ import {
 import { DomainError } from 'users/errors';
 import { PaginationChat } from './pagination-chat.interface';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { Message, MessageAggregate } from '../message';
+import { ChatMessage, ChatMessageDto } from '../message';
 import { Type } from 'class-transformer';
 
 export class PaginationChatAggregate
@@ -31,8 +31,8 @@ export class PaginationChatAggregate
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => MessageAggregate)
-  lastMessage?: Message;
+  @Type(() => ChatMessageDto)
+  lastMessage?: ChatMessage;
 
   @IsBoolean()
   blocked: boolean;

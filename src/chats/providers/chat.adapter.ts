@@ -4,7 +4,7 @@ import { ChatRepository } from './chat.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { ChatAggregate } from 'chats/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';
-import { PaginationChatAggregate } from 'chats/domain';
+import { MessageAggregate, PaginationChatAggregate } from 'chats/domain';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
@@ -89,15 +89,13 @@ export class ChatAdapter implements ChatRepository {
             createdAt: true,
             updatedAt: true,
             text: true,
-            userId: true,
             chatId: true,
+            userId: true,
             replied: {
               select: {
                 id: true,
                 text: true,
                 userId: true,
-                createdAt: true,
-                updatedAt: true,
               },
             },
           },
@@ -112,26 +110,29 @@ export class ChatAdapter implements ChatRepository {
       },
     });
 
-    const paginationChatAggregates = chats.map((chat) => {
-      const lastMessage = chat.messages[0]
-        ? {
-            ...chat.messages[0],
-            createdAt: chat.messages[0].createdAt.toISOString(),
-            updatedAt: chat.messages[0].updatedAt.toISOString(),
-          }
-        : null;
+    const paginationChatAggregates = await Promise.all(
+      chats.map(async (chat) => {
+        const lastMessage = chat.messages[0]
+          ? await MessageAggregate.create({
+              ...chat.messages[0],
+              createdAt: chat.messages[0].createdAt.toISOString(),
+              updatedAt: chat.messages[0].updatedAt.toISOString(),
+            }).getChatMessage()
+          : null;
 
-      const avatar: string | null = chat.users[0]?.pictures?.[0]?.name || null;
+        const avatar: string | null =
+          chat.users[0]?.pictures?.[0]?.name || null;
 
-      return PaginationChatAggregate.create({
-        id: chat.id,
-        avatar,
-        name: chat.users[0].name,
-        blocked: chat.blocked,
-        blockedById: chat.blockedById,
-        lastMessage,
-      });
-    });
+        return PaginationChatAggregate.create({
+          id: chat.id,
+          avatar,
+          name: chat.users[0].name,
+          blocked: chat.blocked,
+          blockedById: chat.blockedById,
+          lastMessage,
+        });
+      }),
+    );
 
     return paginationChatAggregates;
   }

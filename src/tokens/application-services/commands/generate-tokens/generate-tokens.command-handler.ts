@@ -19,7 +19,7 @@ export class GenerateTokensCommandHandler
     const { dto } = command;
 
     const accessTokenValue = this.jwtService.sign(dto, {
-      expiresIn: '15m',
+      expiresIn: '60m',
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
     });
     const refreshTokenValue = this.jwtService.sign(dto, {

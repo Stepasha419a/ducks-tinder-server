@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetChatQuery } from './legacy/queries';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
@@ -20,13 +19,5 @@ export class ChatsController {
     @Body() dto: PaginationDto,
   ) {
     return this.facade.queries.getChats(user.id, dto);
-  }
-
-  @Get(':id')
-  getChat(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
-    @Param('id') id: string,
-  ) {
-    return this.queryBus.execute(new GetChatQuery(user, id));
   }
 }

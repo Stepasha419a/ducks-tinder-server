@@ -5,7 +5,7 @@ export interface Message {
   text: string;
   userId: string;
   chatId: string;
-  repliedId?: RepliedMessage;
+  replied?: RepliedMessage;
 
   createdAt: string;
   updatedAt: string;
