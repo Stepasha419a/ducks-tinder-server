@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException, forwardRef } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { ChatsService } from 'chats/chats.service';
@@ -12,6 +12,7 @@ export class AcceptPairCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
+    @Inject(forwardRef(() => ChatsService))
     private readonly chatsService: ChatsService,
   ) {}
 

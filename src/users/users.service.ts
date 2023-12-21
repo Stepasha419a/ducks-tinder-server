@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { UserFacade } from './application-services';
 import { CreateUserDto } from './application-services/commands';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly facade: UserFacade) {}
+  constructor(
+    @Inject(forwardRef(() => UserFacade)) private readonly facade: UserFacade,
+  ) {}
 
   async getUser(id: string) {
     return this.facade.queries.getUser(id);

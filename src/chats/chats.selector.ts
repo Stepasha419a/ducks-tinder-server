@@ -6,6 +6,7 @@ export class ChatsSelector {
       userId: true,
       createdAt: true,
       updatedAt: true,
+      chatId: true,
       replied: {
         select: {
           id: true,

@@ -4,7 +4,12 @@ import { ChatRepository } from './chat.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { ChatAggregate } from 'chats/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';
-import { MessageAggregate, PaginationChatAggregate } from 'chats/domain';
+import {
+  ChatMessage,
+  MessageAggregate,
+  PaginationChatAggregate,
+} from 'chats/domain';
+import { ChatsSelector } from 'chats/chats.selector';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
@@ -71,6 +76,25 @@ export class ChatAdapter implements ChatRepository {
     return ChatAggregate.create(existingChat);
   }
 
+  async findOneHavingMember(
+    id: string,
+    userId: string,
+  ): Promise<ChatAggregate | null> {
+    const existingChat = await this.prismaService.chat
+      .findFirst({
+        where: { id, users: { some: { id: userId } } },
+      })
+      .catch(() => {
+        return null;
+      });
+
+    if (!existingChat) {
+      return null;
+    }
+
+    return ChatAggregate.create(existingChat);
+  }
+
   async findMany(
     userId: string,
     dto: PaginationDto,
@@ -84,21 +108,7 @@ export class ChatAdapter implements ChatRepository {
         messages: {
           take: 1,
           orderBy: { createdAt: 'desc' },
-          select: {
-            id: true,
-            createdAt: true,
-            updatedAt: true,
-            text: true,
-            chatId: true,
-            userId: true,
-            replied: {
-              select: {
-                id: true,
-                text: true,
-                userId: true,
-              },
-            },
-          },
+          select: ChatsSelector.selectMessage(),
         },
         users: {
           where: { id: { not: userId } },
@@ -135,6 +145,39 @@ export class ChatAdapter implements ChatRepository {
     );
 
     return paginationChatAggregates;
+  }
+
+  async findMessages(
+    chatId: string,
+    dto: PaginationDto,
+  ): Promise<ChatMessage[]> {
+    const messages = await this.prismaService.message.findMany({
+      where: {
+        chatId,
+      },
+      select: ChatsSelector.selectMessage(),
+      orderBy: { createdAt: 'asc' },
+      skip: dto.skip,
+      take: dto.take,
+    });
+
+    return Promise.all(
+      messages.map((message) =>
+        MessageAggregate.create({
+          ...message,
+          createdAt: message.createdAt.toISOString(),
+          updatedAt: message.updatedAt.toISOString(),
+        }).getChatMessage(),
+      ),
+    );
+  }
+
+  async findMessagesCount(chatId: string): Promise<number> {
+    const messagesCount = await this.prismaService.message.count({
+      where: { chatId: chatId },
+    });
+
+    return messagesCount;
   }
 
   async connectUserToChat(

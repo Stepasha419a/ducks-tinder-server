@@ -17,7 +17,7 @@ import {
   SendMessageCommand,
   UnblockChatCommand,
 } from './legacy/commands';
-import { GetMessagesQuery, ValidateChatMemberQuery } from './legacy/queries';
+import { ValidateChatMemberQuery } from './legacy/queries';
 import {
   UseFilters,
   UseGuards,
@@ -29,7 +29,6 @@ import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
 import {
   DeleteMessageDto,
   EditMessageDto,
-  GetMessagesDto,
   SendMessageDto,
   ChatIdDto,
 } from './legacy/dto';
@@ -38,11 +37,12 @@ import {
   BlockChatSocketReturn,
   ChatSocketMessageReturn,
   ChatSocketReturn,
-  GetMessagesQueryReturn,
 } from './chats.interface';
 import { ChatsMapper } from './chats.mapper';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
+import { ChatFacade } from './application-services';
+import { GetMessagesDto } from './application-services/queries';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -55,6 +55,7 @@ export class ChatsGateway {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly facade: ChatFacade,
   ) {}
 
   @WebSocketServer()
@@ -114,9 +115,7 @@ export class ChatsGateway {
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
     @MessageBody() dto: GetMessagesDto,
   ) {
-    const data: GetMessagesQueryReturn = await this.queryBus.execute(
-      new GetMessagesQuery(user, dto),
-    );
+    const data = await this.facade.queries.getMessages(user.id, dto);
 
     this.wss.to(user.id).emit('get-messages', data);
   }

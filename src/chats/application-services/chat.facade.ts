@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateChatCommand } from './commands';
 import { PaginationDto } from 'libs/shared/dto';
-import { GetChatsQuery } from './queries';
-import { PaginationChatAggregate } from 'chats/domain';
+import { GetChatsQuery, GetMessagesDto, GetMessagesQuery } from './queries';
+import {
+  MessagesPaginationAggregate,
+  PaginationChatAggregate,
+} from 'chats/domain';
 
 @Injectable()
 export class ChatFacade {
@@ -19,6 +22,8 @@ export class ChatFacade {
   queries = {
     getChats: (userId: string, dto: PaginationDto) =>
       this.getChats(userId, dto),
+    getMessages: (userId: string, dto: GetMessagesDto) =>
+      this.getMessages(userId, dto),
   };
 
   private createChat(memberIds: string[]) {
@@ -30,6 +35,12 @@ export class ChatFacade {
   private getChats(userId: string, dto: PaginationDto) {
     return this.queryBus.execute<GetChatsQuery, PaginationChatAggregate[]>(
       new GetChatsQuery(userId, dto),
+    );
+  }
+
+  private getMessages(userId: string, dto: GetMessagesDto) {
+    return this.queryBus.execute<GetMessagesQuery, MessagesPaginationAggregate>(
+      new GetMessagesQuery(userId, dto),
     );
   }
 }

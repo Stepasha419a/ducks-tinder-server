@@ -39,7 +39,7 @@ import { UserAdapter } from './providers';
     forwardRef(() => ChatsModule),
     MapsModule,
   ],
-  exports: [UsersService, UserFacade],
+  exports: [UsersService],
 })
 export class UsersModule implements OnModuleInit {
   constructor(
