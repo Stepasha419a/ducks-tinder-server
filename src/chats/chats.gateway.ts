@@ -14,7 +14,6 @@ import {
   DeleteMessageCommand,
   EditMessageCommand,
   SaveLastSeenCommand,
-  SendMessageCommand,
   UnblockChatCommand,
 } from './legacy/commands';
 import { ValidateChatMemberQuery } from './legacy/queries';
@@ -26,12 +25,7 @@ import {
 } from '@nestjs/common';
 import { WsHttpExceptionFilter } from 'common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
-import {
-  DeleteMessageDto,
-  EditMessageDto,
-  SendMessageDto,
-  ChatIdDto,
-} from './legacy/dto';
+import { DeleteMessageDto, EditMessageDto, ChatIdDto } from './legacy/dto';
 import { User } from 'common/decorators';
 import {
   BlockChatSocketReturn,
@@ -43,6 +37,7 @@ import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
 import { GetMessagesDto } from './application-services/queries';
+import { SendMessageDto } from './application-services/commands';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -100,13 +95,9 @@ export class ChatsGateway {
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
     @MessageBody() dto: SendMessageDto,
   ) {
-    const data: ChatSocketMessageReturn = await this.commandBus.execute(
-      new SendMessageCommand(user, dto),
-    );
+    const data = await this.facade.commands.sendMessage(user.id, dto);
 
-    this.wss
-      .to(data.users)
-      .emit('send-message', ChatsMapper.mapWithoutUsers(data));
+    this.wss.to(data.userIds).emit('send-message', data.message);
   }
 
   @UseGuards(WsRefreshTokenGuard)

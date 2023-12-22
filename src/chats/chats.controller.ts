@@ -1,10 +1,11 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from './application-services/queries';
+import { SendMessageDto } from './application-services/commands';
 
 @Controller('chats')
 export class ChatsController {
@@ -24,5 +25,13 @@ export class ChatsController {
     @Body() dto: GetMessagesDto,
   ) {
     return this.facade.queries.getMessages(user.id, dto);
+  }
+
+  @Post('TEST/message')
+  sendMessage(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Body() dto: SendMessageDto,
+  ) {
+    return this.facade.commands.sendMessage(user.id, dto);
   }
 }

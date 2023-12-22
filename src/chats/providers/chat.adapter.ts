@@ -44,6 +44,34 @@ export class ChatAdapter implements ChatRepository {
     return ChatAggregate.create(saved);
   }
 
+  async saveMessage(message: MessageAggregate): Promise<MessageAggregate> {
+    const existingMessage = await this.findMessage(message.id);
+    if (existingMessage) {
+      const updatedMessage = await this.prismaService.message.update({
+        where: { id: existingMessage.id },
+        data: {
+          text: message.text,
+        },
+      });
+
+      return this.getMessageAggregate(updatedMessage);
+    }
+
+    const saved = await this.prismaService.message.create({
+      data: {
+        id: message.id,
+        text: message.text,
+        chatId: message.chatId,
+        repliedId: message.replied?.id,
+        userId: message.userId,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+      },
+    });
+
+    return this.getMessageAggregate(saved);
+  }
+
   async findOne(id: string): Promise<ChatAggregate | null> {
     const existingChat = await this.prismaService.chat
       .findUnique({
@@ -123,11 +151,7 @@ export class ChatAdapter implements ChatRepository {
     const paginationChatAggregates = await Promise.all(
       chats.map(async (chat) => {
         const lastMessage = chat.messages[0]
-          ? await MessageAggregate.create({
-              ...chat.messages[0],
-              createdAt: chat.messages[0].createdAt.toISOString(),
-              updatedAt: chat.messages[0].updatedAt.toISOString(),
-            }).getChatMessage()
+          ? await this.getMessageAggregate(chat.messages[0]).getChatMessage()
           : null;
 
         const avatar: string | null =
@@ -147,6 +171,33 @@ export class ChatAdapter implements ChatRepository {
     return paginationChatAggregates;
   }
 
+  async findChatUserIds(chatId: string): Promise<string[]> {
+    const users = await this.prismaService.user.findMany({
+      where: {
+        chats: {
+          some: { id: chatId },
+        },
+      },
+      select: { id: true },
+    });
+
+    return users.map((user) => user.id);
+  }
+
+  async findMessage(messageId: string): Promise<MessageAggregate | null> {
+    const message = await this.prismaService.message.findUnique({
+      where: {
+        id: messageId,
+      },
+    });
+
+    if (!message) {
+      return null;
+    }
+
+    return this.getMessageAggregate(message);
+  }
+
   async findMessages(
     chatId: string,
     dto: PaginationDto,
@@ -163,11 +214,7 @@ export class ChatAdapter implements ChatRepository {
 
     return Promise.all(
       messages.map((message) =>
-        MessageAggregate.create({
-          ...message,
-          createdAt: message.createdAt.toISOString(),
-          updatedAt: message.updatedAt.toISOString(),
-        }).getChatMessage(),
+        this.getMessageAggregate(message).getChatMessage(),
       ),
     );
   }
@@ -200,5 +247,13 @@ export class ChatAdapter implements ChatRepository {
 
   delete(id: string): Promise<boolean> {
     throw new Error('Method not implemented.');
+  }
+
+  private getMessageAggregate(message): MessageAggregate {
+    return MessageAggregate.create({
+      ...message,
+      createdAt: message.createdAt.toISOString(),
+      updatedAt: message.updatedAt.toISOString(),
+    });
   }
 }
