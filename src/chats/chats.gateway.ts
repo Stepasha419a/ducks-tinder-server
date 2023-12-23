@@ -95,9 +95,13 @@ export class ChatsGateway {
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
     @MessageBody() dto: SendMessageDto,
   ) {
-    const data = await this.facade.commands.sendMessage(user.id, dto);
+    const message = await this.facade.commands.sendMessage(user.id, dto);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      dto.chatId,
+    );
 
-    this.wss.to(data.userIds).emit('send-message', data.message);
+    this.wss.to(userIds).emit('send-message', message);
   }
 
   @UseGuards(WsRefreshTokenGuard)

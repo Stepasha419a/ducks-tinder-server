@@ -28,10 +28,16 @@ export class ChatsController {
   }
 
   @Post('TEST/message')
-  sendMessage(
+  async sendMessage(
     @User(CustomValidationPipe) user: ValidatedUserDto,
     @Body() dto: SendMessageDto,
   ) {
-    return this.facade.commands.sendMessage(user.id, dto);
+    const message = await this.facade.commands.sendMessage(user.id, dto);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      dto.chatId,
+    );
+
+    return { message, userIds };
   }
 }

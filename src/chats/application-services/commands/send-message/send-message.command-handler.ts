@@ -3,7 +3,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SendMessageCommand } from './send-message.command';
 import { ChatRepository } from 'chats/providers';
 import { MessageAggregate } from 'chats/domain';
-import { SendMessageOutput } from '../output-interface';
 
 @CommandHandler(SendMessageCommand)
 export class SendMessageCommandHandler
@@ -11,7 +10,7 @@ export class SendMessageCommandHandler
 {
   constructor(private readonly repository: ChatRepository) {}
 
-  async execute(command: SendMessageCommand): Promise<SendMessageOutput> {
+  async execute(command: SendMessageCommand): Promise<MessageAggregate> {
     const { userId, dto } = command;
 
     const chat = await this.repository.findOneHavingMember(dto.chatId, userId);
@@ -41,8 +40,6 @@ export class SendMessageCommandHandler
     });
     await this.repository.saveMessage(message);
 
-    const userIdsToNotify = await this.repository.findChatUserIds(chat.id);
-
-    return { message, userIds: userIdsToNotify };
+    return message;
   }
 }

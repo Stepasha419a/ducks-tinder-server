@@ -2,7 +2,6 @@ export { CreateChatCommand, CreateChatCommandHandler } from './create-chat';
 export { SendMessageCommand, SendMessageCommandHandler } from './send-message';
 
 export * from './dto';
-export * from './output-interface';
 
 import { Type } from '@nestjs/common';
 import { IQueryHandler } from '@nestjs/cqrs';
