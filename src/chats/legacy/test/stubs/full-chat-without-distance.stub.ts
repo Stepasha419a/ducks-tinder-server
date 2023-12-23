@@ -1,8 +1,7 @@
-import { FullChatWithoutDistance } from 'chats/chats.interface';
 import { shortUserStub } from 'users/test/stubs';
 import { shortUserWithLocationStub } from './short-user-with-location.stub';
 
-export const fullChatWithoutDistanceStub = (): FullChatWithoutDistance => ({
+export const fullChatWithoutDistanceStub = () => ({
   id: 'asdasd123123',
   users: [shortUserWithLocationStub()],
   messages: [

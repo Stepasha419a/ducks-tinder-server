@@ -1,6 +1,4 @@
-import { ShortUserWithLocation } from 'users/users.interface';
-
-export const shortUserWithLocationStub = (): ShortUserWithLocation => ({
+export const shortUserWithLocationStub = () => ({
   id: 'sdfhsdghj34259034578923',
   name: 'stepa',
   description: '',

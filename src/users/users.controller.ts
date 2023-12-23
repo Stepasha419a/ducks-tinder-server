@@ -17,12 +17,11 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShortUser } from './users.interface';
 import { ValidatedUserDto, NotValidatedUserDto } from './legacy/dto';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CommandBus } from '@nestjs/cqrs';
 import {
   CreatePairsCommand,
   DeletePairCommand,
   RemoveAllPairsCommand,
-  ReturnUserCommand,
 } from './legacy/commands';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
@@ -39,7 +38,6 @@ import { ResponseUser, ShortUserWithDistance } from './domain';
 export class UsersController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
     private readonly facade: UserFacade,
   ) {}
 
@@ -140,10 +138,16 @@ export class UsersController {
 
   @Put('return')
   @HttpCode(HttpStatus.OK)
-  returnUser(
+  async returnUser(
     @User(CustomValidationPipe) user: ValidatedUserDto,
-  ): Promise<void> {
-    return this.commandBus.execute(new ReturnUserCommand(user));
+  ): Promise<ShortUserWithDistance> {
+    const userCheckAggregate = await this.facade.commands.returnUser(user.id);
+    const returnedSortedUser = await this.facade.queries.getSorted(
+      user.id,
+      userCheckAggregate.checkedId,
+    );
+
+    return returnedSortedUser.getShortUserWithDistance();
   }
 
   @Get('pairs')

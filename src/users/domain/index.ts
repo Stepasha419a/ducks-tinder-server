@@ -5,4 +5,7 @@ export {
   ShortUser,
   ShortUserWithDistance,
 } from './user.interface';
+
 export * from './place';
+export * from './picture';
+export * from './user-check';

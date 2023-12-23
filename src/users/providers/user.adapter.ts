@@ -1,10 +1,20 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { User as PrismaUser, Picture as PrismaPicture } from 'prisma';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from './user.repository';
-import { User, UserAggregate } from 'users/domain';
+import {
+  PlaceAggregate,
+  User,
+  UserAggregate,
+  UserCheckAggregate,
+} from 'users/domain';
 import { UsersSelector } from 'users/users.selector';
-import { Prisma } from '@prisma/client';
+import {
+  User as PrismaUser,
+  CheckedUsers as PrismaUserCheck,
+  Picture as PrismaPicture,
+  Place as PrismaPlace,
+  Prisma,
+} from '@prisma/client';
 import { Picture, PictureAggregate } from 'users/domain/picture';
 
 @Injectable()
@@ -273,51 +283,6 @@ export class UserAdapter implements UserRepository {
     'zodiacSign',
   ];
 
-  private getUserPicturesUpdate(
-    newPictures: PictureAggregate[],
-    oldPictures: PictureAggregate[] | undefined = [],
-  ) {
-    const res = {
-      createMany: { data: [] },
-      deleteMany: { data: [] },
-    };
-    for (const newPicture of newPictures) {
-      if (
-        !oldPictures.some(
-          (oldPicture) =>
-            oldPicture.name === newPicture.name &&
-            oldPicture.order === newPicture.order,
-        )
-      ) {
-        res.createMany.data.push({
-          name: newPicture.name,
-          order: newPicture.order,
-        });
-      }
-    }
-
-    for (const oldPicture of oldPictures) {
-      if (
-        !newPictures.some(
-          (newPicture) =>
-            newPicture.name === oldPicture.name &&
-            newPicture.order === oldPicture.order,
-        )
-      ) {
-        res.deleteMany.data.push({
-          name: oldPicture.name,
-          order: oldPicture.order,
-        });
-      }
-    }
-
-    if (!res.createMany.data.length && !res.deleteMany.data.length) {
-      return {};
-    }
-
-    return res;
-  }
-
   async findOne(id: string): Promise<UserAggregate | null> {
     const existingUser = await this.prismaService.user
       .findUnique({
@@ -413,6 +378,31 @@ export class UserAdapter implements UserRepository {
     return checkedIds.concat(wasCheckedIds);
   }
 
+  async findUserNotPairCheck(
+    checkedByUserId: string,
+  ): Promise<UserCheckAggregate> {
+    const pairIds = (
+      await this.prismaService.user.findUnique({
+        where: { id: checkedByUserId },
+        select: { pairFor: { select: { id: true } } },
+      })
+    ).pairFor.map((pair) => pair.id);
+
+    const userCheck = await this.prismaService.checkedUsers.findFirst({
+      where: {
+        wasCheckedId: checkedByUserId,
+        checked: { id: { notIn: pairIds } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!userCheck) {
+      return null;
+    }
+
+    return this.getUserCheckAggregate(userCheck);
+  }
+
   async createPair(id: string, forId: string): Promise<UserAggregate> {
     const pair = await this.prismaService.user.update({
       where: { id: forId },
@@ -489,6 +479,14 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(sortedUser);
   }
 
+  async findPlace(userId: string): Promise<PlaceAggregate | null> {
+    const place = await this.prismaService.place.findUnique({
+      where: { id: userId },
+    });
+
+    return this.getPlaceAggregate(place);
+  }
+
   async delete(id: string): Promise<boolean> {
     const deletedUser = await this.prismaService.user
       .delete({ where: { id } })
@@ -509,6 +507,22 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedPair);
   }
 
+  async deleteUserCheck(
+    checkedId: string,
+    wasCheckedId: string,
+  ): Promise<boolean> {
+    const deletedUserCheck = await this.prismaService.checkedUsers.delete({
+      where: {
+        checkedId_wasCheckedId: {
+          checkedId: checkedId,
+          wasCheckedId: wasCheckedId,
+        },
+      },
+    });
+
+    return Boolean(deletedUserCheck);
+  }
+
   private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
     return PictureAggregate.create({
       ...picture,
@@ -522,6 +536,24 @@ export class UserAdapter implements UserRepository {
       ...user,
       updatedAt: user.updatedAt.toISOString(),
       createdAt: user.createdAt.toISOString(),
+    });
+  }
+
+  private getPlaceAggregate(place: PrismaPlace): PlaceAggregate {
+    return PlaceAggregate.create({
+      ...place,
+      updatedAt: place.updatedAt.toISOString(),
+      createdAt: place.createdAt.toISOString(),
+    });
+  }
+
+  private getUserCheckAggregate(
+    userCheck: PrismaUserCheck,
+  ): UserCheckAggregate {
+    return UserCheckAggregate.create({
+      ...userCheck,
+      createdAt: userCheck.createdAt.toISOString(),
+      updatedAt: userCheck.updatedAt.toISOString(),
     });
   }
 

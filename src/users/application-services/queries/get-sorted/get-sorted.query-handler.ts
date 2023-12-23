@@ -10,7 +10,11 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
   constructor(private readonly repository: UserRepository) {}
 
   async execute(query: GetSortedQuery): Promise<UserAggregate> {
-    const { userId } = query;
+    const { userId, sortedUserId } = query;
+
+    if (sortedUserId) {
+      return this.getCertainSortedUser(userId, sortedUserId);
+    }
 
     const user = await this.repository.findOne(userId);
 
@@ -42,6 +46,28 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
     const distance = getDistanceFromLatLonInKm(
       user.place.latitude,
       user.place.longitude,
+      sortedUser.place.latitude,
+      sortedUser.place.longitude,
+    );
+
+    sortedUser.setDistance(distance);
+
+    return sortedUser;
+  }
+
+  private async getCertainSortedUser(
+    userId: string,
+    sortedUserId: string,
+  ): Promise<UserAggregate> {
+    const sortedUser = await this.repository.findOne(sortedUserId);
+    if (!sortedUser) {
+      throw new NotFoundException();
+    }
+
+    const place = await this.repository.findPlace(userId);
+    const distance = getDistanceFromLatLonInKm(
+      place.latitude,
+      place.longitude,
       sortedUser.place.latitude,
       sortedUser.place.longitude,
     );

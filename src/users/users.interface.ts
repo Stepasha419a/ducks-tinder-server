@@ -20,15 +20,6 @@ export interface ShortUserWithoutDistance {
   pictures: PictureInterface[];
 }
 
-interface ShortUserLocationPlace extends PlaceName {
-  latitude: number;
-  longitude: number;
-}
-
-export interface ShortUserWithLocation extends ShortUserWithoutDistance {
-  place: ShortUserLocationPlace;
-}
-
 export interface ShortUser extends ShortUserWithoutDistance {
   distance: number;
 }

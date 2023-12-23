@@ -11,6 +11,7 @@ import {
   PatchUserDto,
   PatchUserPlaceCommand,
   PatchUserPlaceDto,
+  ReturnUserCommand,
   SavePictureCommand,
 } from './commands';
 import { CreateUserCommand, PatchUserCommand } from './commands';
@@ -20,7 +21,7 @@ import {
   GetUserByEmailQuery,
   GetUserQuery,
 } from './queries';
-import { UserAggregate } from 'users/domain';
+import { UserAggregate, UserCheckAggregate } from 'users/domain';
 
 @Injectable()
 export class UserFacade {
@@ -46,11 +47,13 @@ export class UserFacade {
       this.deletePicture(userId, pictureId),
     mixPictures: (userId: string, dto: MixPicturesDto) =>
       this.mixPictures(userId, dto),
+    returnUser: (userId: string) => this.returnUser(userId),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
     getUserByEmail: (email: string) => this.getUserByEmail(email),
-    getSorted: (id: string) => this.getSorted(id),
+    getSorted: (id: string, sortedUserId?: string) =>
+      this.getSorted(id, sortedUserId),
     getPairs: (id: string) => this.getPairs(id),
   };
 
@@ -108,6 +111,12 @@ export class UserFacade {
     );
   }
 
+  private returnUser(userId: string) {
+    return this.commandBus.execute<ReturnUserCommand, UserCheckAggregate>(
+      new ReturnUserCommand(userId),
+    );
+  }
+
   private getUser(id: string) {
     return this.queryBus.execute<GetUserQuery, UserAggregate | null>(
       new GetUserQuery(id),
@@ -120,9 +129,9 @@ export class UserFacade {
     );
   }
 
-  private getSorted(id: string) {
+  private getSorted(id: string, sortedUserId?: string) {
     return this.queryBus.execute<GetSortedQuery, UserAggregate>(
-      new GetSortedQuery(id),
+      new GetSortedQuery(id, sortedUserId),
     );
   }
 
