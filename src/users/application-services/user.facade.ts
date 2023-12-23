@@ -23,6 +23,7 @@ import {
   GetUserQuery,
 } from './queries';
 import { UserAggregate, UserCheckAggregate } from 'users/domain';
+import { CreatePairsCommand, RemoveAllPairsCommand } from './dev';
 
 @Injectable()
 export class UserFacade {
@@ -58,6 +59,11 @@ export class UserFacade {
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
     getPairs: (id: string) => this.getPairs(id),
+  };
+
+  dev = {
+    createPairsDEV: (id: string) => this.createPairsDEV(id),
+    removeAllPairsDEV: (id: string) => this.removeAllPairsDEV(id),
   };
 
   private createUser(dto: CreateUserDto) {
@@ -132,7 +138,7 @@ export class UserFacade {
     );
   }
 
-  private async getUserByEmail(email: string) {
+  private getUserByEmail(email: string) {
     return this.queryBus.execute<GetUserByEmailQuery, UserAggregate | null>(
       new GetUserByEmailQuery(email),
     );
@@ -147,6 +153,18 @@ export class UserFacade {
   private getPairs(id: string) {
     return this.queryBus.execute<GetPairsQuery, UserAggregate[]>(
       new GetPairsQuery(id),
+    );
+  }
+
+  private createPairsDEV(id: string) {
+    return this.commandBus.execute<CreatePairsCommand>(
+      new CreatePairsCommand(id),
+    );
+  }
+
+  private removeAllPairsDEV(id: string) {
+    return this.commandBus.execute<RemoveAllPairsCommand>(
+      new RemoveAllPairsCommand(id),
     );
   }
 }

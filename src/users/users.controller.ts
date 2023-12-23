@@ -17,7 +17,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ValidatedUserDto, NotValidatedUserDto } from './legacy/dto';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreatePairsCommand, RemoveAllPairsCommand } from './legacy/commands';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
@@ -183,13 +182,13 @@ export class UsersController {
   @Patch('removeAllPairs')
   @HttpCode(HttpStatus.OK)
   removeAllPairs(@User() user) {
-    return this.commandBus.execute(new RemoveAllPairsCommand(user));
+    return this.facade.dev.removeAllPairsDEV(user.id);
   }
 
   // for dev
   @Post('createPairs')
   @HttpCode(HttpStatus.OK)
   createPairs(@User() user) {
-    return this.commandBus.execute(new CreatePairsCommand(user));
+    return this.facade.dev.createPairsDEV(user.id);
   }
 }

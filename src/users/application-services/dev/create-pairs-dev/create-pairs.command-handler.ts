@@ -9,7 +9,12 @@ export class CreatePairsCommandHandler
   constructor(private readonly prismaService: PrismaService) {}
 
   async execute(command: CreatePairsCommand): Promise<void> {
-    const { user } = command;
+    const { userId } = command;
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: { id: true, sex: true },
+    });
 
     const pairs = await this.prismaService.user.findMany({
       take: 20,

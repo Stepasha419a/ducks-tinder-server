@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveAllPairsCommand } from './remove-all-pairs.command';
 import { PrismaService } from 'prisma/prisma.service';
 
-// for dev
 @CommandHandler(RemoveAllPairsCommand)
 export class RemoveAllPairsCommandHandler
   implements ICommandHandler<RemoveAllPairsCommand>
@@ -10,11 +9,11 @@ export class RemoveAllPairsCommandHandler
   constructor(private readonly prismaService: PrismaService) {}
 
   async execute(command: RemoveAllPairsCommand) {
-    const { user } = command;
+    const { userId } = command;
 
     const pairs = (
       await this.prismaService.user.findUnique({
-        where: { id: user.id },
+        where: { id: userId },
         select: { pairFor: { select: { id: true } } },
       })
     ).pairFor;
@@ -22,12 +21,12 @@ export class RemoveAllPairsCommandHandler
       pairs.map(async (pair) => {
         await this.prismaService.user.update({
           where: { id: pair.id },
-          data: { pairs: { disconnect: { id: user.id } } },
+          data: { pairs: { disconnect: { id: userId } } },
         });
       }),
     );
     await this.prismaService.checkedUsers.deleteMany({
-      where: { wasCheckedId: user.id },
+      where: { wasCheckedId: userId },
     });
   }
 }

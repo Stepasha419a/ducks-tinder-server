@@ -4,7 +4,6 @@ import { FilesModule } from '../files/files.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PrismaModule } from '../prisma/prisma.module';
-import { UserCommandHandlers } from './legacy/commands';
 import { ChatsModule } from 'chats/chats.module';
 import { MapsModule } from 'maps/maps.module';
 import { APP_FILTER } from '@nestjs/core';
@@ -18,7 +17,6 @@ import { UserAdapter } from './providers';
 @Module({
   providers: [
     UsersService,
-    ...UserCommandHandlers,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     {
