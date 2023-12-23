@@ -15,14 +15,9 @@ import {
   FileTypeValidator,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ShortUser } from './users.interface';
 import { ValidatedUserDto, NotValidatedUserDto } from './legacy/dto';
 import { CommandBus } from '@nestjs/cqrs';
-import {
-  CreatePairsCommand,
-  DeletePairCommand,
-  RemoveAllPairsCommand,
-} from './legacy/commands';
+import { CreatePairsCommand, RemoveAllPairsCommand } from './legacy/commands';
 import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
@@ -171,22 +166,17 @@ export class UsersController {
   async acceptPair(
     @User(CustomValidationPipe) user: ValidatedUserDto,
     @Param('id') pairId: string,
-  ): Promise<ShortUserWithDistance> {
-    const pairAggregate = await this.facade.commands.acceptPair(
-      user.id,
-      pairId,
-    );
-
-    return pairAggregate.getShortUserWithDistance();
+  ): Promise<string> {
+    return this.facade.commands.acceptPair(user.id, pairId);
   }
 
   @Put('pairs/:id')
   @HttpCode(HttpStatus.OK)
   deletePair(
     @User(CustomValidationPipe) user: ValidatedUserDto,
-    @Param('id') userPairId: string,
-  ): Promise<ShortUser[]> {
-    return this.commandBus.execute(new DeletePairCommand(user, userPairId));
+    @Param('id') pairId: string,
+  ): Promise<string> {
+    return this.facade.commands.deletePair(user.id, pairId);
   }
 
   // for dev

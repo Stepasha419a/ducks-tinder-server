@@ -1,6 +1,4 @@
-import { ShortUser } from 'users/users.interface';
-
-export const shortUserStub = (): ShortUser => ({
+export const shortUserStub = () => ({
   id: 'sdfhsdghj34259034578923',
   name: 'stepa',
   description: '',

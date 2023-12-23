@@ -3,8 +3,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { ChatsService } from 'chats/chats.service';
 import { UserRepository } from 'users/providers';
-import { UserAggregate } from 'users/domain';
-import { getDistanceFromLatLonInKm } from 'common/helpers';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler
@@ -16,7 +14,7 @@ export class AcceptPairCommandHandler
     private readonly chatsService: ChatsService,
   ) {}
 
-  async execute(command: AcceptPairCommand): Promise<UserAggregate> {
+  async execute(command: AcceptPairCommand): Promise<string> {
     const { userId, pairId } = command;
 
     const pair = await this.repository.findPair(pairId, userId);
@@ -28,15 +26,6 @@ export class AcceptPairCommandHandler
 
     await this.chatsService.createChat([userId, pair.id]);
 
-    const user = await this.repository.findOne(userId);
-    const distance = getDistanceFromLatLonInKm(
-      user.place.latitude,
-      user.place.longitude,
-      pair.place?.latitude,
-      pair.place?.longitude,
-    );
-    pair.setDistance(distance);
-
-    return pair;
+    return pair.id;
   }
 }

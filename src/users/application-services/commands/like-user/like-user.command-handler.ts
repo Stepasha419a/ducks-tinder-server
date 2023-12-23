@@ -30,7 +30,6 @@ export class LikeUserCommandHandler
       pairId,
     );
 
-    console.log({ checkedUsersIds });
     const isSomeonePairForAnotherOne = checkedUsersIds.find(
       (checkedUserId) => checkedUserId == userId || checkedUserId == pairId,
     );

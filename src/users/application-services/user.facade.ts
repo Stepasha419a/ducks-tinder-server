@@ -3,6 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   AcceptPairCommand,
   CreateUserDto,
+  DeletePairCommand,
   DeletePictureCommand,
   DislikeUserCommand,
   LikeUserCommand,
@@ -48,6 +49,8 @@ export class UserFacade {
     mixPictures: (userId: string, dto: MixPicturesDto) =>
       this.mixPictures(userId, dto),
     returnUser: (userId: string) => this.returnUser(userId),
+    deletePair: (userId: string, pairId: string) =>
+      this.deletePair(userId, pairId),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -88,8 +91,14 @@ export class UserFacade {
   }
 
   private acceptPair(userId: string, pairId: string) {
-    return this.commandBus.execute<AcceptPairCommand, UserAggregate>(
+    return this.commandBus.execute<AcceptPairCommand, string>(
       new AcceptPairCommand(userId, pairId),
+    );
+  }
+
+  private deletePair(userId: string, pairId: string) {
+    return this.commandBus.execute<DeletePairCommand, string>(
+      new DeletePairCommand(userId, pairId),
     );
   }
 

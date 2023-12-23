@@ -20,7 +20,7 @@ export class DislikeUserCommandHandler
       throw new BadRequestException(CAN_NOT_DISLIKE_YOURSELF);
     }
 
-    const userPair = await this.repository.findOne(userId);
+    const userPair = await this.repository.findOne(pairId);
     if (!userPair) {
       throw new NotFoundException();
     }
