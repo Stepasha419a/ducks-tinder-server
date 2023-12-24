@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateChatCommand,
+  EditMessageCommand,
+  EditMessageDto,
   SendMessageCommand,
   SendMessageDto,
 } from './commands';
@@ -29,6 +31,8 @@ export class ChatFacade {
     createChat: (memberIds: string[]) => this.createChat(memberIds),
     sendMessage: (userId: string, dto: SendMessageDto) =>
       this.sendMessage(userId, dto),
+    editMessage: (userId: string, dto: EditMessageDto) =>
+      this.editMessage(userId, dto),
   };
 
   queries = {
@@ -49,6 +53,12 @@ export class ChatFacade {
   private sendMessage(userId: string, dto: SendMessageDto) {
     return this.commandBus.execute<SendMessageCommand, MessageAggregate>(
       new SendMessageCommand(userId, dto),
+    );
+  }
+
+  private editMessage(userId: string, dto: EditMessageDto) {
+    return this.commandBus.execute<EditMessageCommand, MessageAggregate>(
+      new EditMessageCommand(userId, dto),
     );
   }
 

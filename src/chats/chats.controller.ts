@@ -1,11 +1,14 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from './application-services/queries';
-import { SendMessageDto } from './application-services/commands';
+import {
+  EditMessageDto,
+  SendMessageDto,
+} from './application-services/commands';
 
 @Controller('chats')
 export class ChatsController {
@@ -36,6 +39,20 @@ export class ChatsController {
     const userIds = await this.facade.queries.getChatMemberIds(
       user.id,
       dto.chatId,
+    );
+
+    return { message, userIds };
+  }
+
+  @Patch('TEST/message')
+  async editMessage(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Body() dto: EditMessageDto,
+  ) {
+    const message = await this.facade.commands.editMessage(user.id, dto);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      message.chatId,
     );
 
     return { message, userIds };

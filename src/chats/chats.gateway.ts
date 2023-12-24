@@ -12,7 +12,6 @@ import {
   BlockChatCommand,
   DeleteChatCommand,
   DeleteMessageCommand,
-  EditMessageCommand,
   SaveLastSeenCommand,
   UnblockChatCommand,
 } from './legacy/commands';
@@ -136,13 +135,13 @@ export class ChatsGateway {
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
     @MessageBody() dto: EditMessageDto,
   ) {
-    const data: ChatSocketMessageReturn = await this.commandBus.execute(
-      new EditMessageCommand(user, dto),
+    const message = await this.facade.commands.editMessage(user.id, dto);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      message.chatId,
     );
 
-    this.wss
-      .to(data.users)
-      .emit('edit-message', ChatsMapper.mapWithoutUsers(data));
+    this.wss.to(userIds).emit('edit-message', message);
   }
 
   @UseGuards(WsRefreshTokenGuard)
