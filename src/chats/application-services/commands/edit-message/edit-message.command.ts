@@ -1,4 +1,4 @@
-import { EditMessageDto } from 'chats/legacy/dto';
+import { EditMessageDto } from '../dto';
 
 export class EditMessageCommand {
   constructor(

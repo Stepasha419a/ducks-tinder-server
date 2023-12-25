@@ -31,4 +31,5 @@ export abstract class ChatRepository {
     userId: string,
   ): Promise<ChatAggregate | null>;
   abstract delete(id: string): Promise<boolean>;
+  abstract deleteMessage(messageId: string): Promise<boolean>;
 }

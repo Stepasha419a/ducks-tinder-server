@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
@@ -50,6 +59,23 @@ export class ChatsController {
     @Body() dto: EditMessageDto,
   ) {
     const message = await this.facade.commands.editMessage(user.id, dto);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      message.chatId,
+    );
+
+    return { message, userIds };
+  }
+
+  @Delete('TEST/message/:id')
+  async deleteMessage(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) messageId: string,
+  ) {
+    const message = await this.facade.commands.deleteMessage(
+      user.id,
+      messageId,
+    );
     const userIds = await this.facade.queries.getChatMemberIds(
       user.id,
       message.chatId,

@@ -249,6 +249,14 @@ export class ChatAdapter implements ChatRepository {
     throw new Error('Method not implemented.');
   }
 
+  async deleteMessage(messageId: string): Promise<boolean> {
+    const deletedMessage = await this.prismaService.message.delete({
+      where: { id: messageId },
+    });
+
+    return Boolean(deletedMessage);
+  }
+
   private getMessageAggregate(message): MessageAggregate {
     return MessageAggregate.create({
       ...message,

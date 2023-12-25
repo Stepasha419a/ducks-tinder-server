@@ -11,12 +11,12 @@ import { UserSocket } from 'common/types/user-socket';
 import {
   BlockChatCommand,
   DeleteChatCommand,
-  DeleteMessageCommand,
   SaveLastSeenCommand,
   UnblockChatCommand,
 } from './legacy/commands';
 import { ValidateChatMemberQuery } from './legacy/queries';
 import {
+  ParseUUIDPipe,
   UseFilters,
   UseGuards,
   UsePipes,
@@ -24,19 +24,18 @@ import {
 } from '@nestjs/common';
 import { WsHttpExceptionFilter } from 'common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
-import { DeleteMessageDto, EditMessageDto, ChatIdDto } from './legacy/dto';
+import { ChatIdDto } from './legacy/dto';
 import { User } from 'common/decorators';
-import {
-  BlockChatSocketReturn,
-  ChatSocketMessageReturn,
-  ChatSocketReturn,
-} from './chats.interface';
+import { BlockChatSocketReturn, ChatSocketReturn } from './chats.interface';
 import { ChatsMapper } from './chats.mapper';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
 import { GetMessagesDto } from './application-services/queries';
-import { SendMessageDto } from './application-services/commands';
+import {
+  EditMessageDto,
+  SendMessageDto,
+} from './application-services/commands';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -118,15 +117,18 @@ export class ChatsGateway {
   @SubscribeMessage('delete-message')
   async deleteMessage(
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: DeleteMessageDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) messageId: string,
   ) {
-    const data: ChatSocketMessageReturn = await this.commandBus.execute(
-      new DeleteMessageCommand(user, dto),
+    const message = await this.facade.commands.deleteMessage(
+      user.id,
+      messageId,
+    );
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      message.chatId,
     );
 
-    this.wss
-      .to(data.users)
-      .emit('delete-message', ChatsMapper.mapWithoutUsers(data));
+    this.wss.to(userIds).emit('delete-message', message);
   }
 
   @UseGuards(WsRefreshTokenGuard)

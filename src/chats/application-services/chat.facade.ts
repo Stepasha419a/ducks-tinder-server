@@ -19,6 +19,7 @@ import {
   MessagesPaginationAggregate,
   PaginationChatAggregate,
 } from 'chats/domain';
+import { DeleteMessageCommand } from './commands/delete-message';
 
 @Injectable()
 export class ChatFacade {
@@ -33,6 +34,8 @@ export class ChatFacade {
       this.sendMessage(userId, dto),
     editMessage: (userId: string, dto: EditMessageDto) =>
       this.editMessage(userId, dto),
+    deleteMessage: (userId: string, messageId: string) =>
+      this.deleteMessage(userId, messageId),
   };
 
   queries = {
@@ -59,6 +62,12 @@ export class ChatFacade {
   private editMessage(userId: string, dto: EditMessageDto) {
     return this.commandBus.execute<EditMessageCommand, MessageAggregate>(
       new EditMessageCommand(userId, dto),
+    );
+  }
+
+  private deleteMessage(userId: string, messageId: string) {
+    return this.commandBus.execute<DeleteMessageCommand, MessageAggregate>(
+      new DeleteMessageCommand(userId, messageId),
     );
   }
 
