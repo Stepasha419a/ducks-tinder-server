@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
+  BlockChatCommand,
   CreateChatCommand,
   EditMessageCommand,
   EditMessageDto,
@@ -15,6 +16,7 @@ import {
   GetMessagesQuery,
 } from './queries';
 import {
+  ChatAggregate,
   MessageAggregate,
   MessagesPaginationAggregate,
   PaginationChatAggregate,
@@ -36,6 +38,8 @@ export class ChatFacade {
       this.editMessage(userId, dto),
     deleteMessage: (userId: string, messageId: string) =>
       this.deleteMessage(userId, messageId),
+    blockChat: (userId: string, chatId: string) =>
+      this.blockChat(userId, chatId),
   };
 
   queries = {
@@ -68,6 +72,12 @@ export class ChatFacade {
   private deleteMessage(userId: string, messageId: string) {
     return this.commandBus.execute<DeleteMessageCommand, MessageAggregate>(
       new DeleteMessageCommand(userId, messageId),
+    );
+  }
+
+  private blockChat(userId: string, chatId: string) {
+    return this.commandBus.execute<BlockChatCommand, ChatAggregate>(
+      new BlockChatCommand(userId, chatId),
     );
   }
 

@@ -9,7 +9,6 @@ import {
 } from '@nestjs/websockets';
 import { UserSocket } from 'common/types/user-socket';
 import {
-  BlockChatCommand,
   DeleteChatCommand,
   SaveLastSeenCommand,
   UnblockChatCommand,
@@ -150,15 +149,15 @@ export class ChatsGateway {
   @SubscribeMessage('block-chat')
   async blockChat(
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: ChatIdDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const chat: BlockChatSocketReturn = await this.commandBus.execute(
-      new BlockChatCommand(user, dto),
+    const chat = await this.facade.commands.blockChat(user.id, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      chat.id,
     );
 
-    this.wss
-      .to(chat.users)
-      .emit('block-chat', ChatsMapper.mapWithoutUsers(chat));
+    this.wss.to(userIds).emit('block-chat', chat);
   }
 
   @UseGuards(WsRefreshTokenGuard)

@@ -83,4 +83,18 @@ export class ChatsController {
 
     return { message, userIds };
   }
+
+  @Patch('TEST/chat/block/:id')
+  async blockChat(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+  ) {
+    const chat = await this.facade.commands.blockChat(user.id, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      chat.id,
+    );
+
+    return { chat, userIds };
+  }
 }

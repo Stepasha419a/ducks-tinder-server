@@ -17,7 +17,7 @@ export class SendMessageCommandHandler
     if (!chat) {
       throw new NotFoundException();
     }
-    if (chat?.blocked) {
+    if (chat.blocked) {
       throw new ForbiddenException();
     }
 

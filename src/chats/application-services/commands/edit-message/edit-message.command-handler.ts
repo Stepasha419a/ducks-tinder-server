@@ -23,7 +23,7 @@ export class EditMessageCommandHandler
       message.chatId,
       userId,
     );
-    if (!chat || chat?.blocked || message.userId !== userId) {
+    if (!chat || chat.blocked || message.userId !== userId) {
       throw new ForbiddenException();
     }
 

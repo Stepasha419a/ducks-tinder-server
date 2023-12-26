@@ -5,6 +5,7 @@ export {
   DeleteMessageCommand,
   DeleteMessageCommandHandler,
 } from './delete-message';
+export { BlockChatCommand, BlockChatCommandHandler } from './block-chat';
 
 export * from './dto';
 
@@ -14,10 +15,12 @@ import { CreateChatCommandHandler } from './create-chat';
 import { SendMessageCommandHandler } from './send-message';
 import { EditMessageCommandHandler } from './edit-message';
 import { DeleteMessageCommandHandler } from './delete-message';
+import { BlockChatCommandHandler } from './block-chat';
 
 export const CHAT_COMMAND_HANDLERS: Type<IQueryHandler>[] = [
   CreateChatCommandHandler,
   SendMessageCommandHandler,
   EditMessageCommandHandler,
   DeleteMessageCommandHandler,
+  BlockChatCommandHandler,
 ];

@@ -18,14 +18,13 @@ export class ChatAdapter implements ChatRepository {
   async save(chat: ChatAggregate): Promise<ChatAggregate> {
     const existingChat = await this.findOne(chat.id);
     if (existingChat) {
-      const dataToUpdate =
-        (await existingChat.getPrimitiveFields()) as Prisma.Without<
-          Prisma.UserUpdateInput,
-          Prisma.UserUncheckedUpdateInput
-        > &
-          Prisma.UserUncheckedUpdateInput;
+      const dataToUpdate = (await chat.getPrimitiveFields()) as Prisma.Without<
+        Prisma.ChatUpdateInput,
+        Prisma.ChatUncheckedUpdateInput
+      > &
+        Prisma.ChatUncheckedUpdateInput;
 
-      const updatedChat = await this.prismaService.user.update({
+      const updatedChat = await this.prismaService.chat.update({
         where: { id: existingChat.id },
         data: dataToUpdate,
       });
