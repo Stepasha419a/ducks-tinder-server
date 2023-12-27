@@ -7,6 +7,7 @@ import {
   EditMessageDto,
   SendMessageCommand,
   SendMessageDto,
+  UnblockChatCommand,
 } from './commands';
 import { PaginationDto } from 'libs/shared/dto';
 import {
@@ -40,6 +41,8 @@ export class ChatFacade {
       this.deleteMessage(userId, messageId),
     blockChat: (userId: string, chatId: string) =>
       this.blockChat(userId, chatId),
+    unblockChat: (userId: string, chatId: string) =>
+      this.unblockChat(userId, chatId),
   };
 
   queries = {
@@ -78,6 +81,12 @@ export class ChatFacade {
   private blockChat(userId: string, chatId: string) {
     return this.commandBus.execute<BlockChatCommand, ChatAggregate>(
       new BlockChatCommand(userId, chatId),
+    );
+  }
+
+  private unblockChat(userId: string, chatId: string) {
+    return this.commandBus.execute<UnblockChatCommand, ChatAggregate>(
+      new UnblockChatCommand(userId, chatId),
     );
   }
 

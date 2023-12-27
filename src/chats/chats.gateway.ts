@@ -8,11 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { UserSocket } from 'common/types/user-socket';
-import {
-  DeleteChatCommand,
-  SaveLastSeenCommand,
-  UnblockChatCommand,
-} from './legacy/commands';
+import { DeleteChatCommand, SaveLastSeenCommand } from './legacy/commands';
 import { ValidateChatMemberQuery } from './legacy/queries';
 import {
   ParseUUIDPipe,
@@ -25,8 +21,7 @@ import { WsHttpExceptionFilter } from 'common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
 import { ChatIdDto } from './legacy/dto';
 import { User } from 'common/decorators';
-import { BlockChatSocketReturn, ChatSocketReturn } from './chats.interface';
-import { ChatsMapper } from './chats.mapper';
+import { ChatSocketReturn } from './chats.interface';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
@@ -164,15 +159,15 @@ export class ChatsGateway {
   @SubscribeMessage('unblock-chat')
   async unblockChat(
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: ChatIdDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const chat: BlockChatSocketReturn = await this.commandBus.execute(
-      new UnblockChatCommand(user, dto),
+    const chat = await this.facade.commands.unblockChat(user.id, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      chat.id,
     );
 
-    this.wss
-      .to(chat.users)
-      .emit('unblock-chat', ChatsMapper.mapWithoutUsers(chat));
+    this.wss.to(userIds).emit('unblock-chat', chat);
   }
 
   @UseGuards(WsRefreshTokenGuard)

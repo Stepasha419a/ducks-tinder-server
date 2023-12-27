@@ -36,21 +36,3 @@ export interface ChatSocketReturn {
   chatId: string;
   users: string[];
 }
-
-export interface BlockChatSocketReturn {
-  chatId: string;
-  users: string[];
-  blocked: boolean;
-  blockedById: string | null;
-}
-
-export interface ChatSocketMessageReturn {
-  chatId: string;
-  users: string[];
-  message: Message;
-}
-
-export interface GetMessagesQueryReturn {
-  chatId: string;
-  messages: Message[];
-}

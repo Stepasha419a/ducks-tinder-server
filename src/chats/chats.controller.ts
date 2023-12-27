@@ -97,4 +97,18 @@ export class ChatsController {
 
     return { chat, userIds };
   }
+
+  @Patch('TEST/chat/unblock/:id')
+  async unblockChat(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+  ) {
+    const chat = await this.facade.commands.unblockChat(user.id, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(
+      user.id,
+      chat.id,
+    );
+
+    return { chat, userIds };
+  }
 }

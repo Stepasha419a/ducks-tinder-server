@@ -1,10 +1,4 @@
-import {
-  BlockChatSocketReturn,
-  ChatSocketMessageReturn,
-  ChatSocketReturn,
-  GetMessagesQueryReturn,
-  Message,
-} from './chats.interface';
+import { ChatSocketReturn } from './chats.interface';
 
 interface ChatUser {
   id: string;
@@ -15,11 +9,6 @@ interface Chat {
   users: ChatUser[];
 }
 
-interface BlockChat extends Chat {
-  blocked: boolean;
-  blockedById: string | null;
-}
-
 export class ChatsMapper {
   static mapChat(chat: Chat): ChatSocketReturn {
     return {
@@ -28,36 +17,7 @@ export class ChatsMapper {
     };
   }
 
-  static mapBlockChat(chat: BlockChat): BlockChatSocketReturn {
-    return {
-      chatId: chat.id,
-      users: this.mapUserIds(chat.users),
-      blocked: chat.blocked,
-      blockedById: chat.blockedById,
-    };
-  }
-
-  static mapChatMessage(chat: Chat, message: Message): ChatSocketMessageReturn {
-    return {
-      chatId: chat.id,
-      message,
-      users: this.mapUserIds(chat.users),
-    };
-  }
-
-  static mapChatMessages(
-    chat: { id: string },
-    messages: Message[],
-  ): GetMessagesQueryReturn {
-    return {
-      chatId: chat.id,
-      messages,
-    };
-  }
-
-  static mapWithoutUsers(
-    data: ChatSocketMessageReturn | BlockChatSocketReturn | ChatSocketReturn,
-  ) {
+  static mapWithoutUsers(data: ChatSocketReturn) {
     return { ...data, users: undefined };
   }
 
