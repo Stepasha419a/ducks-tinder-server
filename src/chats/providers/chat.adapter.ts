@@ -6,6 +6,8 @@ import { ChatAggregate } from 'chats/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';
 import {
   ChatMessage,
+  ChatVisit,
+  ChatVisitAggregate,
   MessageAggregate,
   PaginationChatAggregate,
 } from 'chats/domain';
@@ -69,6 +71,33 @@ export class ChatAdapter implements ChatRepository {
     });
 
     return this.getMessageAggregate(saved);
+  }
+
+  async saveChatVisit(
+    chatVisit: ChatVisitAggregate,
+  ): Promise<ChatVisitAggregate> {
+    const existingChatVisit = await this.findChatVisit(
+      chatVisit.userId,
+      chatVisit.chatId,
+    );
+    if (existingChatVisit) {
+      const updatedChatVisit = await this.prismaService.chatVisit.update({
+        where: {
+          userId_chatId: { chatId: chatVisit.chatId, userId: chatVisit.userId },
+        },
+        data: {
+          lastSeen: chatVisit.lastSeen,
+        },
+      });
+
+      return this.getChatVisitAggregate(updatedChatVisit);
+    }
+
+    const saved = await this.prismaService.chatVisit.create({
+      data: chatVisit,
+    });
+
+    return this.getChatVisitAggregate(saved);
   }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
@@ -197,6 +226,23 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(message);
   }
 
+  async findChatVisit(
+    userId: string,
+    chatId: string,
+  ): Promise<ChatVisit | null> {
+    const chatVisit = await this.prismaService.chatVisit.findUnique({
+      where: {
+        userId_chatId: { chatId, userId },
+      },
+    });
+
+    if (!chatVisit) {
+      return null;
+    }
+
+    return this.getChatVisitAggregate(chatVisit);
+  }
+
   async findMessages(
     chatId: string,
     dto: PaginationDto,
@@ -261,6 +307,13 @@ export class ChatAdapter implements ChatRepository {
       ...message,
       createdAt: message.createdAt.toISOString(),
       updatedAt: message.updatedAt.toISOString(),
+    });
+  }
+
+  private getChatVisitAggregate(chatVisit): ChatVisitAggregate {
+    return ChatVisitAggregate.create({
+      ...chatVisit,
+      lastSeen: chatVisit.lastSeen.toISOString(),
     });
   }
 }

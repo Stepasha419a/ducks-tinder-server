@@ -12,7 +12,7 @@ export class ChatVisitAggregate extends AggregateRoot implements ChatVisit {
 
   @IsString()
   @IsNotEmpty()
-  lastSeen: string;
+  lastSeen: string = new Date().toISOString();
 
   private constructor() {
     super();

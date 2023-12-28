@@ -7,6 +7,10 @@ export {
 } from './delete-message';
 export { BlockChatCommand, BlockChatCommandHandler } from './block-chat';
 export { UnblockChatCommand, UnblockChatCommandHandler } from './unblock-chat';
+export {
+  SaveLastSeenCommand,
+  SaveLastSeenCommandHandler,
+} from './save-last-seen';
 
 export * from './dto';
 
@@ -18,6 +22,7 @@ import { EditMessageCommandHandler } from './edit-message';
 import { DeleteMessageCommandHandler } from './delete-message';
 import { BlockChatCommandHandler } from './block-chat';
 import { UnblockChatCommandHandler } from './unblock-chat';
+import { SaveLastSeenCommandHandler } from './save-last-seen';
 
 export const CHAT_COMMAND_HANDLERS: Type<IQueryHandler>[] = [
   CreateChatCommandHandler,
@@ -26,4 +31,5 @@ export const CHAT_COMMAND_HANDLERS: Type<IQueryHandler>[] = [
   DeleteMessageCommandHandler,
   BlockChatCommandHandler,
   UnblockChatCommandHandler,
+  SaveLastSeenCommandHandler,
 ];

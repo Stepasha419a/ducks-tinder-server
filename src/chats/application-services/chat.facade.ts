@@ -5,6 +5,7 @@ import {
   CreateChatCommand,
   EditMessageCommand,
   EditMessageDto,
+  SaveLastSeenCommand,
   SendMessageCommand,
   SendMessageDto,
   UnblockChatCommand,
@@ -43,6 +44,8 @@ export class ChatFacade {
       this.blockChat(userId, chatId),
     unblockChat: (userId: string, chatId: string) =>
       this.unblockChat(userId, chatId),
+    saveLastSeen: (userId: string, chatId: string) =>
+      this.saveLastSeen(userId, chatId),
   };
 
   queries = {
@@ -87,6 +90,12 @@ export class ChatFacade {
   private unblockChat(userId: string, chatId: string) {
     return this.commandBus.execute<UnblockChatCommand, ChatAggregate>(
       new UnblockChatCommand(userId, chatId),
+    );
+  }
+
+  private saveLastSeen(userId: string, chatId: string) {
+    return this.commandBus.execute<SaveLastSeenCommand>(
+      new SaveLastSeenCommand(userId, chatId),
     );
   }
 

@@ -8,7 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { UserSocket } from 'common/types/user-socket';
-import { DeleteChatCommand, SaveLastSeenCommand } from './legacy/commands';
+import { DeleteChatCommand } from './legacy/commands';
 import { ValidateChatMemberQuery } from './legacy/queries';
 import {
   ParseUUIDPipe,
@@ -64,10 +64,10 @@ export class ChatsGateway {
   async handleConnectChat(
     @ConnectedSocket() client: UserSocket,
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: ChatIdDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    await this.queryBus.execute(new ValidateChatMemberQuery(user, dto));
-    await this.commandBus.execute(new SaveLastSeenCommand(user, dto));
+    await this.queryBus.execute(new ValidateChatMemberQuery(user, { chatId }));
+    await this.facade.commands.saveLastSeen(user.id, chatId);
 
     client.emit('connect-chat');
   }
@@ -76,9 +76,9 @@ export class ChatsGateway {
   @SubscribeMessage('disconnect-chat')
   async handleDisconnectChat(
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: ChatIdDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    await this.commandBus.execute(new SaveLastSeenCommand(user, dto));
+    await this.facade.commands.saveLastSeen(user.id, chatId);
   }
 
   @UseGuards(WsRefreshTokenGuard)

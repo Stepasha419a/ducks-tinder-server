@@ -1,5 +1,6 @@
 import {
   ChatMessage,
+  ChatVisitAggregate,
   MessageAggregate,
   PaginationChatAggregate,
 } from 'chats/domain';
@@ -9,6 +10,9 @@ import { PaginationDto } from 'libs/shared/dto';
 export abstract class ChatRepository {
   abstract save(chat: ChatAggregate): Promise<ChatAggregate>;
   abstract saveMessage(message: MessageAggregate): Promise<MessageAggregate>;
+  abstract saveChatVisit(
+    chatVisit: ChatVisitAggregate,
+  ): Promise<ChatVisitAggregate>;
   abstract findOne(id: string): Promise<ChatAggregate | null>;
   abstract findOneHavingMember(
     id: string,
