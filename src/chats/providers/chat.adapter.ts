@@ -171,6 +171,7 @@ export class ChatAdapter implements ChatRepository {
           select: { name: true, pictures: { take: 1 } },
           orderBy: { pictures: { _count: 'desc' } },
         },
+        chatVisits: { where: { userId } },
         blocked: true,
         blockedById: true,
       },
@@ -182,6 +183,10 @@ export class ChatAdapter implements ChatRepository {
           ? await this.getMessageAggregate(chat.messages[0]).getChatMessage()
           : null;
 
+        const chatVisit = chat.chatVisits[0]
+          ? this.getChatVisitAggregate(chat.chatVisits[0])
+          : null;
+
         const avatar: string | null =
           chat.users[0]?.pictures?.[0]?.name || null;
 
@@ -191,6 +196,7 @@ export class ChatAdapter implements ChatRepository {
           name: chat.users[0].name,
           blocked: chat.blocked,
           blockedById: chat.blockedById,
+          chatVisit: chatVisit,
           lastMessage,
         });
       }),

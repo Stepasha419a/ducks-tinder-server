@@ -1,7 +1,6 @@
-import { FullChat } from 'chats/chats.interface';
 import { shortUserStub } from 'users/test/stubs';
 
-export const fullChatStub = (): FullChat => ({
+export const fullChatStub = () => ({
   id: 'asdasd123123',
   users: [shortUserStub()],
   messages: [

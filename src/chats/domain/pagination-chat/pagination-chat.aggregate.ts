@@ -12,6 +12,7 @@ import { PaginationChat } from './pagination-chat.interface';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ChatMessage, ChatMessageDto } from '../message';
 import { Type } from 'class-transformer';
+import { ChatVisit, ChatVisitAggregate } from '../chat-visit';
 
 export class PaginationChatAggregate
   extends AggregateRoot
@@ -33,6 +34,11 @@ export class PaginationChatAggregate
   @IsNotEmptyObject()
   @Type(() => ChatMessageDto)
   lastMessage?: ChatMessage;
+
+  @IsOptional()
+  @IsNotEmptyObject()
+  @Type(() => ChatVisitAggregate)
+  chatVisit?: ChatVisit;
 
   @IsBoolean()
   blocked: boolean;
