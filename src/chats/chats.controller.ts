@@ -111,4 +111,15 @@ export class ChatsController {
 
     return { chat, userIds };
   }
+
+  @Delete('TEST/chat/:id')
+  async deleteChat(
+    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+  ) {
+    const userIds = await this.facade.queries.getChatMemberIds(user.id, chatId);
+    const chat = await this.facade.commands.deleteChat(user.id, chatId);
+
+    return { chat, userIds };
+  }
 }

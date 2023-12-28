@@ -8,7 +8,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { UserSocket } from 'common/types/user-socket';
-import { DeleteChatCommand } from './legacy/commands';
 import { ValidateChatMemberQuery } from './legacy/queries';
 import {
   ParseUUIDPipe,
@@ -19,9 +18,7 @@ import {
 } from '@nestjs/common';
 import { WsHttpExceptionFilter } from 'common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
-import { ChatIdDto } from './legacy/dto';
 import { User } from 'common/decorators';
-import { ChatSocketReturn } from './chats.interface';
 import { CustomValidationPipe } from 'common/pipes';
 import { ValidatedUserDto } from 'users/legacy/dto';
 import { ChatFacade } from './application-services';
@@ -174,12 +171,11 @@ export class ChatsGateway {
   @SubscribeMessage('delete-chat')
   async deleteChat(
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
-    @MessageBody() dto: ChatIdDto,
+    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const chat: ChatSocketReturn = await this.commandBus.execute(
-      new DeleteChatCommand(user, dto),
-    );
+    const userIds = await this.facade.queries.getChatMemberIds(user.id, chatId);
+    const chat = await this.facade.commands.deleteChat(user.id, chatId);
 
-    this.wss.to(chat.users).emit('delete-chat', chat.chatId);
+    this.wss.to(userIds).emit('delete-chat', chat.id);
   }
 }

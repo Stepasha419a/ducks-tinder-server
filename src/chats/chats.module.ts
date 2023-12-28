@@ -5,7 +5,6 @@ import { ChatsController } from './chats.controller';
 import { ChatsService } from './chats.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { ChatCommandHandlers } from './legacy/commands';
 import { ChatQueryHandlers } from './legacy/queries';
 import { TokensModule } from 'tokens/tokens.module';
 import { UsersModule } from 'users/users.module';
@@ -19,7 +18,6 @@ import { ChatFacade } from './application-services';
   providers: [
     ChatsService,
     ChatsGateway,
-    ...ChatCommandHandlers,
     ...ChatQueryHandlers,
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,

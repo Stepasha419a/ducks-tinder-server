@@ -3,6 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   BlockChatCommand,
   CreateChatCommand,
+  DeleteChatCommand,
   EditMessageCommand,
   EditMessageDto,
   SaveLastSeenCommand,
@@ -46,6 +47,8 @@ export class ChatFacade {
       this.unblockChat(userId, chatId),
     saveLastSeen: (userId: string, chatId: string) =>
       this.saveLastSeen(userId, chatId),
+    deleteChat: (userId: string, chatId: string) =>
+      this.deleteChat(userId, chatId),
   };
 
   queries = {
@@ -96,6 +99,12 @@ export class ChatFacade {
   private saveLastSeen(userId: string, chatId: string) {
     return this.commandBus.execute<SaveLastSeenCommand>(
       new SaveLastSeenCommand(userId, chatId),
+    );
+  }
+
+  private deleteChat(userId: string, chatId: string) {
+    return this.commandBus.execute<DeleteChatCommand, ChatAggregate>(
+      new DeleteChatCommand(userId, chatId),
     );
   }
 
