@@ -4,6 +4,10 @@ export {
   GetChatMemberIdsQuery,
   GetChatMemberIdsQueryHandler,
 } from './get-chat-member-ids';
+export {
+  ValidateChatMemberQuery,
+  ValidateChatMemberQueryHandler,
+} from './validate-chat-member';
 
 export * from './dto';
 
@@ -12,9 +16,11 @@ import { IQueryHandler } from '@nestjs/cqrs';
 import { GetChatsQueryHandler } from './get-chats';
 import { GetMessagesQueryHandler } from './get-messages';
 import { GetChatMemberIdsQueryHandler } from './get-chat-member-ids';
+import { ValidateChatMemberQueryHandler } from './validate-chat-member';
 
 export const CHAT_QUERY_HANDLERS: Type<IQueryHandler>[] = [
   GetChatsQueryHandler,
   GetMessagesQueryHandler,
   GetChatMemberIdsQueryHandler,
+  ValidateChatMemberQueryHandler,
 ];

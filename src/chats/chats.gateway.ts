@@ -1,4 +1,3 @@
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Server } from 'socket.io';
 import {
   ConnectedSocket,
@@ -8,7 +7,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { UserSocket } from 'common/types/user-socket';
-import { ValidateChatMemberQuery } from './legacy/queries';
 import {
   ParseUUIDPipe,
   UseFilters,
@@ -36,11 +34,7 @@ import {
   cookie: true,
 })
 export class ChatsGateway {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-    private readonly facade: ChatFacade,
-  ) {}
+  constructor(private readonly facade: ChatFacade) {}
 
   @WebSocketServer()
   wss: Server;
@@ -63,7 +57,7 @@ export class ChatsGateway {
     @User({ isSocket: true }, CustomValidationPipe) user: ValidatedUserDto,
     @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    await this.queryBus.execute(new ValidateChatMemberQuery(user, { chatId }));
+    await this.facade.queries.validateChatMember(user.id, chatId);
     await this.facade.commands.saveLastSeen(user.id, chatId);
 
     client.emit('connect-chat');

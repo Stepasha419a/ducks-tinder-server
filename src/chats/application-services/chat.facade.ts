@@ -17,6 +17,7 @@ import {
   GetChatsQuery,
   GetMessagesDto,
   GetMessagesQuery,
+  ValidateChatMemberQuery,
 } from './queries';
 import {
   ChatAggregate,
@@ -58,6 +59,8 @@ export class ChatFacade {
       this.getMessages(userId, dto),
     getChatMemberIds: (userId: string, chatId: string) =>
       this.getChatMemberIds(userId, chatId),
+    validateChatMember: (userId: string, chatId: string) =>
+      this.validateChatMember(userId, chatId),
   };
 
   private createChat(memberIds: string[]) {
@@ -123,6 +126,12 @@ export class ChatFacade {
   private getChatMemberIds(userId: string, chatId: string) {
     return this.queryBus.execute<GetChatMemberIdsQuery, string[]>(
       new GetChatMemberIdsQuery(userId, chatId),
+    );
+  }
+
+  private validateChatMember(userId: string, chatId: string) {
+    return this.queryBus.execute<ValidateChatMemberQuery>(
+      new ValidateChatMemberQuery(userId, chatId),
     );
   }
 }

@@ -1,23 +1,18 @@
 import { NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ValidateChatMemberQuery } from './validate-chat-member.query';
+import { ChatRepository } from 'chats/providers';
 
 @QueryHandler(ValidateChatMemberQuery)
 export class ValidateChatMemberQueryHandler
   implements IQueryHandler<ValidateChatMemberQuery>
 {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly repository: ChatRepository) {}
 
   async execute(query: ValidateChatMemberQuery): Promise<void> {
-    const { user, dto } = query;
+    const { userId, chatId } = query;
 
-    const chat = await this.prismaService.chat.findFirst({
-      where: { id: dto.chatId, users: { some: { id: user.id } } },
-      select: {
-        id: true,
-      },
-    });
+    const chat = await this.repository.findOneHavingMember(chatId, userId);
     if (!chat) {
       throw new NotFoundException();
     }
