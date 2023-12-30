@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ValidatedUserDto } from 'users/legacy/dto';
+import { ValidatedUserDto } from 'user/legacy/dto';
 
 interface UserOptions {
   isSocket?: boolean;

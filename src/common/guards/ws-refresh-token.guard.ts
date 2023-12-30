@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { REFRESH_TOKEN_REGEX } from 'common/constants';
 import { TokensService } from 'tokens/tokens.service';
-import { UsersService } from 'users/users.service';
+import { UserService } from 'user/interface';
 
 @Injectable()
 export class WsRefreshTokenGuard implements CanActivate {
   constructor(
     private readonly tokensService: TokensService,
-    private readonly usersService: UsersService,
+    private readonly userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -26,7 +26,7 @@ export class WsRefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const user = await this.usersService.getUser(userData.userId);
+    const user = await this.userService.getUser(userData.userId);
 
     client.request.user = user;
     return true;

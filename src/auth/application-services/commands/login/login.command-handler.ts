@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
-import { UsersService } from 'users/users.service';
+import { UserService } from 'user/interface';
 import { TokensService } from 'tokens/tokens.service';
 import { ForbiddenException } from '@nestjs/common';
 import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
@@ -9,7 +9,7 @@ import { AuthUserAggregate } from 'auth/domain';
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
     private readonly refreshTokenService: TokensService,
   ) {}
 

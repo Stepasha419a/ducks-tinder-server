@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
-import { QueryBusMock } from 'users/test/mocks';
+import { QueryBusMock } from 'user/test/mocks';
 import { AccessTokenGuard } from 'common/guards';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatsGateway } from './chats.gateway';
 import { TokensModule } from 'tokens/tokens.module';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from 'users/users.module';
+import { UsersModule } from 'user/user.module';
 import { fullChatStub, messageStub, requestUserStub } from './test/stubs';
 import { CommandBusMock, UserSocketMock } from './test/mocks';
 import { GetMessagesQuery, ValidateChatMemberQuery } from './queries';

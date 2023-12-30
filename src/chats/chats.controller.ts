@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { User } from 'common/decorators';
 import { CustomValidationPipe } from 'common/pipes';
-import { ValidatedUserDto } from 'users/legacy/dto';
+import { ValidatedUserDto } from 'user/legacy/dto';
 import { ChatFacade } from './application-services';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from './application-services/queries';

@@ -5,7 +5,7 @@ import { ChatsPrismaMock } from 'chats/test/mocks';
 import { fullChatStub, messageStub, shortChatStub } from 'chats/test/stubs';
 import { SendMessageCommandHandler } from './send-message.command-handler';
 import { SendMessageCommand } from './send-message.command';
-import { requestUserStub } from 'users/test/stubs';
+import { requestUserStub } from 'user/test/stubs';
 import { SendMessageDto } from 'chats/legacy/dto';
 import { ChatSocketMessageReturn } from 'chats/chats.interface';
 import { ChatsSelector } from 'chats/chats.selector';

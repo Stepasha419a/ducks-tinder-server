@@ -6,7 +6,7 @@ import { ChatsService } from './chats.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { TokensModule } from 'tokens/tokens.module';
-import { UsersModule } from 'users/users.module';
+import { UserModule } from 'user/user.module';
 import { ChatAdapter, ChatRepository, chatFacadeFactory } from './providers';
 import { CHAT_COMMAND_HANDLERS } from './application-services/commands';
 import { CHAT_QUERY_HANDLERS } from './application-services/queries';
@@ -31,7 +31,7 @@ import { ChatFacade } from './application-services';
     CqrsModule,
     EventEmitterModule.forRoot(),
     TokensModule,
-    forwardRef(() => UsersModule),
+    forwardRef(() => UserModule),
   ],
   exports: [ChatsService],
 })

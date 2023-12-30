@@ -3,7 +3,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
 import { ChatsPrismaMock } from 'chats/test/mocks';
 import { shortChatStub } from 'chats/test/stubs';
-import { requestUserStub } from 'users/test/stubs';
+import { requestUserStub } from 'user/test/stubs';
 import { ValidateChatMemberQueryHandler } from './validate-chat-member.query-handler';
 import { ValidateChatMemberQuery } from './validate-chat-member.query';
 import { ChatIdDto } from 'chats/legacy/dto';

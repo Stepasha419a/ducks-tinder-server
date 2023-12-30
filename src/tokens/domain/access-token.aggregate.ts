@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AccessToken } from './access-token.interface';
 import { IsJWT, validateSync } from 'class-validator';
-import { DomainError } from 'users/errors';
+import { DomainError } from 'libs/shared/errors';
 
 export class AccessTokenAggregate extends AggregateRoot implements AccessToken {
   @IsJWT()

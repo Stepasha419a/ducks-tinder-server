@@ -1,6 +1,6 @@
 import { authUserStub } from 'auth/legacy/test/stubs';
 import prismaClient from 'prisma/test/prisma-client/prisma-client';
-import { userDtoStub } from 'users/test/stubs';
+import { userDtoStub } from 'user/legacy/test/stubs';
 
 export async function prepareBefore() {
   await prismaClient.user.create({

@@ -1,5 +1,5 @@
-import { ValidatedUserDto } from 'users/legacy/dto';
-import { userDtoStub } from 'users/test/stubs';
+import { ValidatedUserDto } from 'user/legacy/dto';
+import { userDtoStub } from 'user/legacy/test/stubs';
 
 export const requestUserStub = (): ValidatedUserDto => {
   const userStubObj = userDtoStub();
@@ -17,7 +17,7 @@ export const requestUserStub = (): ValidatedUserDto => {
     preferAgeFrom: userStubObj.preferAgeFrom,
     preferAgeTo: userStubObj.preferAgeTo,
     usersOnlyInDistance: userStubObj.usersOnlyInDistance,
-    preferSex: userStubObj.preferSex,
+    preferSex: userStubObj.preferSex as 'male' | 'female',
     place: {
       name: 'place-name',
       address: 'place-address',

@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { UsersService } from 'users/users.service';
-import { UsersModule } from 'users/users.module';
+import { UsersService } from 'user/interface/user.service';
+import { UsersModule } from 'user/user.module';
 import { TokensService } from 'tokens/tokens.service';
 import { TokensModule } from 'tokens/tokens.module';
 import { TokensServiceMock, UsersServiceMock } from 'auth/test/mocks';
 import { AuthDataReturn } from 'auth/auth.interface';
 import { RefreshCommand } from './refresh.command';
 import { userDataStub } from 'auth/test/stubs';
-import { userDtoStub } from 'users/test/stubs';
+import { userDtoStub } from 'user/test/stubs';
 import { RefreshCommandHandler } from './refresh.command-handler';
 
 describe('when refresh is called', () => {

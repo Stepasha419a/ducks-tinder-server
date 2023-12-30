@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { ChatsPrismaMock } from 'chats/test/mocks';
 import { fullChatStub } from 'chats/test/stubs';
 import { BlockChatSocketReturn } from 'chats/chats.interface';
-import { requestUserStub } from 'users/test/stubs';
+import { requestUserStub } from 'user/test/stubs';
 import { PrismaModule } from 'prisma/prisma.module';
 import { UnblockChatCommandHandler } from './unblock-chat.command-handler';
 import { UnblockChatCommand } from './unblock-chat.command';

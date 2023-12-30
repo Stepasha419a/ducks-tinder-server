@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { RefreshToken } from './refresh-token.interface';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { DomainError } from 'users/errors';
+import { DomainError } from 'libs/shared/errors';
 
 export class RefreshTokenAggregate
   extends AggregateRoot

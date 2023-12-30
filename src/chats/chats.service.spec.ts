@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { CommandBusMock } from './test/mocks';
 import { ChatsService } from 'chats/chats.service';
-import { userDtoStub } from 'users/test/stubs';
+import { userDtoStub } from 'user/test/stubs';
 import { CreateChatCommand } from 'chats/commands';
 
 describe('chats-service', () => {

@@ -1,4 +1,4 @@
-import { User } from 'users/domain';
+import { User } from 'user/domain';
 
 export interface AuthUserWithoutRefreshToken {
   user: User;

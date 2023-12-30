@@ -6,8 +6,8 @@ import {
   validateSync,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { User, UserAggregate } from 'users/domain';
-import { DomainError } from 'users/errors';
+import { User, UserAggregate } from 'user/domain';
+import { DomainError } from 'libs/shared/errors';
 import { AccessTokenAggregate, RefreshTokenAggregate } from 'tokens/domain';
 import { AuthUserServices } from './services';
 

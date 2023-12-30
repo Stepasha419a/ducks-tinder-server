@@ -1,9 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMessagesQuery } from './get-messages.query';
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException, forwardRef } from '@nestjs/common';
 import { ChatRepository } from 'chats/providers';
 import { ChatMessage, MessagesPaginationAggregate } from 'chats/domain';
-import { UsersService } from 'users/users.service';
+import { UserService } from 'user/interface';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler
@@ -11,7 +11,8 @@ export class GetMessagesQueryHandler
 {
   constructor(
     private readonly repository: ChatRepository,
-    private readonly userService: UsersService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
 
   async execute(query: GetMessagesQuery): Promise<MessagesPaginationAggregate> {

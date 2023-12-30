@@ -1,5 +1,5 @@
 import { AccessToken, RefreshToken } from 'tokens/domain';
-import { ResponseUser } from 'users/domain';
+import { ResponseUser } from 'user/domain';
 
 export interface AuthUser {
   user: ResponseUser;

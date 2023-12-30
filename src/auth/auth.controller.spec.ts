@@ -8,7 +8,7 @@ import {
 } from 'auth/test/values/auth.const.dto';
 import { Response } from 'express';
 import { CommandBusMock, RequestMock, ResponseMock } from 'auth/test/mocks';
-import { userDtoStub } from 'users/test/stubs';
+import { userDtoStub } from 'user/test/stubs';
 import { userDataStub } from 'auth/test/stubs';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';

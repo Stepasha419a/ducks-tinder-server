@@ -1,4 +1,4 @@
-import { shortUserStub } from 'users/test/stubs';
+import { shortUserStub } from 'user/legacy/test/stubs';
 import { shortUserWithLocationStub } from './short-user-with-location.stub';
 
 export const fullChatWithoutDistanceStub = () => ({

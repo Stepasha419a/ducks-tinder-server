@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { TokensServiceMock } from 'auth/test/mocks';
 import { TokensService } from 'tokens/tokens.service';
 import { userDataStub } from 'auth/test/stubs';
-import { UsersModule } from 'users/users.module';
+import { UsersModule } from 'user/user.module';
 import { TokensModule } from 'tokens/tokens.module';
 import { ConfigModule } from '@nestjs/config';
 import { LogoutCommandHandler } from './logout.command-handler';

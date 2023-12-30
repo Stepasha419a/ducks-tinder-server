@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { TokensService } from 'tokens/tokens.service';
-import { UsersService } from 'users/users.service';
+import { UserService } from 'user/interface';
 import { IS_PUBLIC_KEY } from 'common/constants';
 import { Request } from 'express';
 import { UserTokenDto } from 'tokens/application-services/commands';
@@ -16,7 +16,7 @@ export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly tokensService: TokensService,
-    private readonly usersService: UsersService,
+    private readonly userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -38,7 +38,7 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const user = await this.usersService.getUser(userData.userId);
+    const user = await this.userService.getUser(userData.userId);
     req.user = user;
     return true;
   }

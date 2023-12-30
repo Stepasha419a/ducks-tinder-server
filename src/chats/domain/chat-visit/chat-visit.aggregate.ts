@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
-import { DomainError } from 'users/errors';
+import { DomainError } from 'libs/shared/errors';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ChatVisit } from './chat-visit.interface';
 

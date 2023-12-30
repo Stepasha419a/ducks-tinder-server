@@ -5,7 +5,7 @@ import { NestApplication } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
 import prismaClient from 'prisma/test/prisma-client';
-import { userDtoStub } from 'users/test/stubs';
+import { userDtoStub } from 'user/test/stubs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { prepareAfter, prepareBefore } from './preparations';

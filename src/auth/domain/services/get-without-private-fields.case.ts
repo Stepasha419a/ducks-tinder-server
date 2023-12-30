@@ -1,4 +1,4 @@
-import { PictureAggregate } from 'users/domain/picture';
+import { PictureAggregate } from 'user/domain/picture';
 import { AuthUser } from '../auth-user.interface';
 
 export interface GetWithoutPrivateFields {

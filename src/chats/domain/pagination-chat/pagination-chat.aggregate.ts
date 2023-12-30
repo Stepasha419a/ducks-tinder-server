@@ -7,7 +7,7 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from 'users/errors';
+import { DomainError } from 'libs/shared/errors';
 import { PaginationChat } from './pagination-chat.interface';
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ChatMessage, ChatMessageDto } from '../message';

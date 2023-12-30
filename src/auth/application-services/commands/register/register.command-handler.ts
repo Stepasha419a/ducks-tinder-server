@@ -4,7 +4,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { USER_ALREADY_EXISTS } from 'common/constants/error';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { UsersService } from 'users/users.service';
+import { UserService } from 'user/interface';
 import { AuthUserAggregate } from 'auth/domain/auth-user.aggregate';
 import { TokensService } from 'tokens/tokens.service';
 
@@ -13,7 +13,7 @@ export class RegisterCommandHandler
   implements ICommandHandler<RegisterCommand>
 {
   constructor(
-    private readonly userService: UsersService,
+    private readonly userService: UserService,
     private readonly refreshTokenService: TokensService,
   ) {}
 
