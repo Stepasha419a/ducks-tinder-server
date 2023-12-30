@@ -1,8 +1,8 @@
-import { MapsService } from 'maps/maps.service';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
 import { UserRepository } from 'user/application/repository';
 import { PlaceAggregate, UserAggregate } from 'user/domain';
+import { MapApi } from 'user/application/adapter';
 
 @CommandHandler(PatchUserPlaceCommand)
 export class PatchUserPlaceCommandHandler
@@ -10,7 +10,7 @@ export class PatchUserPlaceCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly mapsService: MapsService,
+    private readonly mapApi: MapApi,
   ) {}
 
   /* idk how it works but browser maps api returns lat and long but geocode api requires
@@ -21,10 +21,7 @@ export class PatchUserPlaceCommandHandler
 
     const existingUser = await this.repository.findOne(userId);
 
-    const geocode = await this.mapsService.getCoordsGeocode(
-      dto.latitude,
-      dto.longitude,
-    );
+    const geocode = await this.mapApi.getGeocode(dto.latitude, dto.longitude);
 
     existingUser.setPlace(
       PlaceAggregate.create({

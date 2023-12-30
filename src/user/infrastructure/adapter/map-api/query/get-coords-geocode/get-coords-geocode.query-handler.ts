@@ -1,21 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { MapApi } from './map.api';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetCoordsGeocodeQuery } from './get-coords-geocode.query';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { GeocodeAggregate } from 'maps/domain';
 import { lastValueFrom, map } from 'rxjs';
+import { NotFoundException } from '@nestjs/common';
+import { Geocode } from 'user/application/adapter';
 
-@Injectable()
-export class MapApiAdapter implements MapApi {
+@QueryHandler(GetCoordsGeocodeQuery)
+export class GetCoordsGeocodeQueryHandler
+  implements IQueryHandler<GetCoordsGeocodeQuery>
+{
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {}
 
-  async getGeocode(
-    latitude: number,
-    longitude: number,
-  ): Promise<GeocodeAggregate> {
+  async execute(query: GetCoordsGeocodeQuery): Promise<Geocode> {
+    const { dto } = query;
+
     const response = await lastValueFrom(
       this.httpService
         .get(
@@ -23,7 +25,9 @@ export class MapApiAdapter implements MapApi {
             'GEOCODE_API_URL',
           )}?apikey=${this.configService.get<string>(
             'GEOCODE_API_KEY',
-          )}&geocode=${latitude},${longitude}&results=1&format=json&lang=en_US`,
+          )}&geocode=${dto.latitude},${
+            dto.longitude
+          }&results=1&format=json&lang=en_US`,
         )
         .pipe(map((res) => res.data)),
     );
@@ -39,6 +43,6 @@ export class MapApiAdapter implements MapApi {
       throw new NotFoundException();
     }
 
-    return GeocodeAggregate.create({ address, name });
+    return { address, name };
   }
 }
