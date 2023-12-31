@@ -1,9 +1,9 @@
-import { FilesService } from 'files/files.service';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletePictureCommand } from './delete-picture.command';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'user/application/repository';
 import { UserAggregate } from 'user/domain';
+import { FileAdapter } from 'user/application/adapter';
 
 @CommandHandler(DeletePictureCommand)
 export class DeletePictureCommandHandler
@@ -11,7 +11,7 @@ export class DeletePictureCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly filesService: FilesService,
+    private readonly fileAdapter: FileAdapter,
   ) {}
 
   async execute(command: DeletePictureCommand): Promise<UserAggregate> {
@@ -27,7 +27,7 @@ export class DeletePictureCommandHandler
       throw new NotFoundException();
     }
 
-    await this.filesService.deletePicture(existingPicture.name, userId);
+    await this.fileAdapter.deletePicture(existingPicture.name, userId);
     await userAggregate.deletePicture(pictureId);
 
     await userAggregate.sortPictureOrders(existingPicture.order);

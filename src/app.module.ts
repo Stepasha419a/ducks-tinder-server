@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UserModule } from 'user/user.module';
-import { FilesModule } from 'files/files.module';
 import { AuthModule } from 'auth/auth.module';
 import { TokensModule } from 'tokens/tokens.module';
 import { ChatModule } from 'chat/chat.module';
@@ -22,7 +21,6 @@ import { AccessTokenGuard } from 'common/guards';
     }),
     PrismaModule,
     UserModule,
-    FilesModule,
     AuthModule,
     TokensModule,
     ChatModule,

@@ -1,6 +1,5 @@
 import { Module, OnModuleInit, forwardRef } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { FilesModule } from '../files/files.module';
 import { UserController, UserService } from './interface';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ChatModule } from 'chat/chat.module';
@@ -16,13 +15,18 @@ import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from './infrastructure/adapter/map-api';
-import { MapApi } from './application/adapter';
+import { FileAdapter, MapApi } from './application/adapter';
 import { HttpModule } from '@nestjs/axios';
+import {
+  FILE_COMMAND_HANDLERS,
+  FileAdapterImplementation,
+} from './infrastructure/adapter/file';
 
 @Module({
   providers: [
     UserService,
     ...MAP_API_QUERY_HANDLERS,
+    ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     {
@@ -38,15 +42,13 @@ import { HttpModule } from '@nestjs/axios';
       provide: MapApi,
       useClass: MapApiImplementation,
     },
+    {
+      provide: FileAdapter,
+      useClass: FileAdapterImplementation,
+    },
   ],
   controllers: [UserController],
-  imports: [
-    PrismaModule,
-    HttpModule,
-    CqrsModule,
-    FilesModule,
-    forwardRef(() => ChatModule),
-  ],
+  imports: [PrismaModule, HttpModule, CqrsModule, forwardRef(() => ChatModule)],
   exports: [UserService],
 })
 export class UserModule implements OnModuleInit {
