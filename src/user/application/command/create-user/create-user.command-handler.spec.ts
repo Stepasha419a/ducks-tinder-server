@@ -3,7 +3,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
 import { UsersPrismaMock } from 'user/test/mocks';
 import { userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { CreateUserCommandHandler } from './create-user.command-handler';
 import { CreateUserCommand } from './create-user.command';
 import { CREATE_USER_DTO } from 'auth/test/values/auth.const.dto';

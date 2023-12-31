@@ -6,9 +6,9 @@ import { UserModule } from 'user/user.module';
 import { FilesModule } from 'files/files.module';
 import { AuthModule } from 'auth/auth.module';
 import { TokensModule } from 'tokens/tokens.module';
-import { ChatsModule } from 'chats/chats.module';
+import { ChatModule } from 'chat/chat.module';
 import { PrismaModule } from 'prisma/prisma.module';
-import * as path from 'path';
+import { resolve } from 'path';
 import { AccessTokenGuard } from 'common/guards';
 
 @Module({
@@ -18,14 +18,14 @@ import { AccessTokenGuard } from 'common/guards';
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(path.resolve(__dirname, '..', 'static')),
+      rootPath: resolve(resolve(__dirname, '..', 'static')),
     }),
     PrismaModule,
     UserModule,
     FilesModule,
     AuthModule,
     TokensModule,
-    ChatsModule,
+    ChatModule,
   ],
   providers: [
     { provide: APP_GUARD, useExisting: AccessTokenGuard },

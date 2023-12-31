@@ -1,4 +1,4 @@
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UserSelector } from 'user/infrastructure/repository/user.selector';
 import { USER_SORTS_DATA } from './users.const.dto';
 
 export const GET_SORTED_FIND_FIRST_CALLED = {
@@ -27,5 +27,5 @@ export const GET_SORTED_FIND_FIRST_CALLED = {
     sex: USER_SORTS_DATA.preferSex,
     preferSex: USER_SORTS_DATA.sex,
   },
-  select: UsersSelector.selectUser(),
+  select: UserSelector.selectUser(),
 };

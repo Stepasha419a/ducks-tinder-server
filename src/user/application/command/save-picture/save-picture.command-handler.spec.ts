@@ -7,7 +7,7 @@ import { UserDto } from 'user/legacy/dto';
 import { SavePictureCommandHandler } from './save-picture.command-handler';
 import { requestUserStub, userDtoStub } from 'user/test/stubs';
 import { SavePictureCommand } from './save-picture.command';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { FilesService } from 'files/files.service';
 
 describe('when save picture is called', () => {

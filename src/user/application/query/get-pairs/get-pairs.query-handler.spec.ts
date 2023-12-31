@@ -11,7 +11,7 @@ import {
 import { GetPairsQueryHandler } from './get-pairs.query-handler';
 import { GetPairsQuery } from './get-pairs.query';
 import { ShortUser } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 
 describe('when get pairs is called', () => {
   let prismaService: PrismaService;

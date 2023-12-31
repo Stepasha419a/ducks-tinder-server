@@ -9,7 +9,7 @@ import { DELETE_PICTURE_DTO } from 'user/test/values/users.const.dto';
 import { DeletePictureCommandHandler } from './delete-picture.command-handler';
 import { DeletePictureCommand } from './delete-picture.command';
 import { requestUserStub, userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 
 describe('when delete picture is called', () => {
   let prismaService: PrismaService;

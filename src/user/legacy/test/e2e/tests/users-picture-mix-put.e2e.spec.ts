@@ -11,7 +11,7 @@ import {
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { USERS_PICTURE_MIX_PUT_DTO } from 'user/test/values/users.e2e-const.dto';
 import { USERS_PICTURE_MIX_PUT_EXPECT } from 'user/test/values/users.e2e-const.expect';
 

@@ -9,7 +9,7 @@ import { PatchUserCommand } from './patch-user.command';
 import { requestUserStub, userDtoStub } from 'user/test/stubs';
 import { UPDATE_USER_DTO } from 'user/test/values/users.const.dto';
 import { USER_ALREADY_EXISTS } from 'common/constants/error';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 
 describe('when patch is called', () => {
   let prismaService: PrismaService;

@@ -5,11 +5,11 @@ import { PrismaService } from 'prisma/prisma.service';
 import { ChatsServiceMock, UsersPrismaMock } from 'user/test/mocks';
 import { requestUserStub, shortUserStub, userDtoStub } from 'user/test/stubs';
 import { ShortUserWithoutDistance } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
-import { ChatsModule } from 'chats/chats.module';
-import { ChatsService } from 'chats/chats.service';
+import { ChatsModule } from 'chat/chat.module';
+import { ChatsService } from 'chat/interface/chat.service';
 
 describe('when accept pair is called', () => {
   let prismaService: PrismaService;

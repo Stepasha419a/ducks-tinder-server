@@ -4,7 +4,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UsersPrismaMock } from 'user/test/mocks';
 import { requestUserStub, shortUserStub } from 'user/test/stubs';
 import { ShortUserWithoutDistance } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { DeletePairCommandHandler } from './delete-pair.command-handler';
 import { DeletePairCommand } from './delete-pair.command';
 

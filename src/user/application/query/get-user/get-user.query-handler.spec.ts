@@ -6,7 +6,7 @@ import { userDtoStub } from 'user/test/stubs';
 import { GetUserQueryHandler } from './get-user.query-handler';
 import { GetUserQuery } from './get-user.query';
 import { UserDto } from 'user/legacy/dto';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 
 describe('when get user is called', () => {
   let prismaService: PrismaService;

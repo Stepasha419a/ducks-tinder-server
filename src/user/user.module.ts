@@ -3,7 +3,7 @@ import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { FilesModule } from '../files/files.module';
 import { UserController, UserService } from './interface';
 import { PrismaModule } from '../prisma/prisma.module';
-import { ChatsModule } from 'chats/chats.module';
+import { ChatModule } from 'chat/chat.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './application/filter';
 import { USER_QUERY_HANDLERS } from './application/query';
@@ -14,7 +14,7 @@ import { UserAdapter } from 'user/infrastructure/repository';
 import { userFacadeFactory } from 'user/infrastructure/facade';
 import {
   MAP_API_QUERY_HANDLERS,
-  mapApiFactory,
+  MapApiImplementation,
 } from './infrastructure/adapter/map-api';
 import { MapApi } from './application/adapter';
 import { HttpModule } from '@nestjs/axios';
@@ -36,8 +36,7 @@ import { HttpModule } from '@nestjs/axios';
     },
     {
       provide: MapApi,
-      inject: [QueryBus],
-      useFactory: mapApiFactory,
+      useClass: MapApiImplementation,
     },
   ],
   controllers: [UserController],
@@ -46,7 +45,7 @@ import { HttpModule } from '@nestjs/axios';
     HttpModule,
     CqrsModule,
     FilesModule,
-    forwardRef(() => ChatsModule),
+    forwardRef(() => ChatModule),
   ],
   exports: [UserService],
 })

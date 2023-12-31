@@ -8,7 +8,7 @@ import { MapsService } from 'maps/maps.service';
 import { PatchUserPlaceDto, UserDto } from 'user/legacy/dto';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
 import { requestUserStub, userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { ConfigModule } from '@nestjs/config';
 describe('when patch user place is called', () => {
   let patchUserPlaceCommandHandler: PatchUserPlaceCommandHandler;

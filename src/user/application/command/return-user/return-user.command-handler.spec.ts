@@ -10,7 +10,7 @@ import {
 } from 'user/test/stubs';
 import { ReturnUserCommandHandler } from './return-user.command-handler';
 import { ReturnUserCommand } from './return-user.command';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 
 describe('when return user is called', () => {
   let prismaService: PrismaService;

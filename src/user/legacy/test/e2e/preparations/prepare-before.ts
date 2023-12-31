@@ -1,4 +1,4 @@
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UserSelector } from 'user/infrastructure/repository/user.selector';
 import prismaClient from 'prisma/test/prisma-client';
 
 export async function prepareBefore(currentUserId, secondUserId) {
@@ -57,11 +57,11 @@ export async function prepareBefore(currentUserId, secondUserId) {
 
   const currentUser = await prismaClient.user.findUnique({
     where: { id: currentUserId },
-    include: UsersSelector.selectUser(),
+    include: UserSelector.selectUser(),
   });
   const secondUser = await prismaClient.user.findUnique({
     where: { id: secondUserId },
-    include: UsersSelector.selectUser(),
+    include: UserSelector.selectUser(),
   });
 
   /* const currentUser = new UserDto(

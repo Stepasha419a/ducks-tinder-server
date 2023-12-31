@@ -7,7 +7,7 @@ import {
   UserAggregate,
   UserCheckAggregate,
 } from 'user/domain';
-import { UsersSelector } from './users.selector';
+import { UserSelector } from './user.selector';
 import {
   User as PrismaUser,
   CheckedUsers as PrismaUserCheck,
@@ -54,7 +54,7 @@ export class UserAdapter implements UserRepository {
       const updatedUser = await this.prismaService.user.update({
         where: { id: user.id },
         data: dataToUpdate,
-        include: UsersSelector.selectUser(),
+        include: UserSelector.selectUser(),
       });
 
       this.standardUser(updatedUser);
@@ -69,7 +69,7 @@ export class UserAdapter implements UserRepository {
         name: user.name,
         password: user.password,
       },
-      include: UsersSelector.selectUser(),
+      include: UserSelector.selectUser(),
     });
 
     this.standardUser(saved);
@@ -287,7 +287,7 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.prismaService.user
       .findUnique({
         where: { id },
-        include: UsersSelector.selectUser(),
+        include: UserSelector.selectUser(),
       })
       .catch((err) => {
         this.logger.error(err);
@@ -307,7 +307,7 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.prismaService.user
       .findUnique({
         where: { email },
-        include: UsersSelector.selectUser(),
+        include: UserSelector.selectUser(),
       })
       .catch((err) => {
         this.logger.error(err);
@@ -327,7 +327,7 @@ export class UserAdapter implements UserRepository {
     const pair = await this.prismaService.user
       .findFirst({
         where: { id, pairFor: { some: { id: forId } } },
-        include: UsersSelector.selectUser(),
+        include: UserSelector.selectUser(),
       })
       .catch((err) => {
         this.logger.error(err);
@@ -346,7 +346,7 @@ export class UserAdapter implements UserRepository {
   async findPairs(id: string): Promise<UserAggregate[]> {
     const pairs = await this.prismaService.user.findMany({
       where: { pairFor: { some: { id } } },
-      include: UsersSelector.selectUser(),
+      include: UserSelector.selectUser(),
     });
 
     return pairs.map((pair) => {
@@ -409,7 +409,7 @@ export class UserAdapter implements UserRepository {
       data: {
         pairs: { connect: { id } },
       },
-      include: UsersSelector.selectUser(),
+      include: UserSelector.selectUser(),
     });
 
     this.standardUser(pair);
@@ -467,7 +467,7 @@ export class UserAdapter implements UserRepository {
         sex: preferSex,
         preferSex: sex,
       },
-      include: UsersSelector.selectUser(),
+      include: UserSelector.selectUser(),
     });
 
     if (!sortedUser) {

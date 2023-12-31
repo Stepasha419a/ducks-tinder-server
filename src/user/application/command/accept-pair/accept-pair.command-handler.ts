@@ -1,7 +1,7 @@
 import { Inject, NotFoundException, forwardRef } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
-import { ChatsService } from 'chats/chats.service';
+import { ChatService } from 'chat/interface';
 import { UserRepository } from 'user/application/repository';
 
 @CommandHandler(AcceptPairCommand)
@@ -10,8 +10,8 @@ export class AcceptPairCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    @Inject(forwardRef(() => ChatsService))
-    private readonly chatsService: ChatsService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService,
   ) {}
 
   async execute(command: AcceptPairCommand): Promise<string> {
@@ -24,7 +24,7 @@ export class AcceptPairCommandHandler
 
     await this.repository.deletePair(pair.id, userId);
 
-    await this.chatsService.createChat([userId, pair.id]);
+    await this.chatService.createChat([userId, pair.id]);
 
     return pair.id;
   }

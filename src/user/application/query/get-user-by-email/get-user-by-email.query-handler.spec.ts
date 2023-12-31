@@ -4,7 +4,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
 import { UsersPrismaMock } from 'user/test/mocks';
 import { userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/users.selector';
+import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { GetUserByEmailQueryHandler } from './get-user-by-email.query-handler';
 import { GetUserByEmailQuery } from './get-user-by-email.query';
 

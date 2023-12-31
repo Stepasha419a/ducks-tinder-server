@@ -1,1 +1,1 @@
-export { MapApiImplementation, mapApiFactory } from './map-api';
+export { MapApiImplementation } from './map-api';

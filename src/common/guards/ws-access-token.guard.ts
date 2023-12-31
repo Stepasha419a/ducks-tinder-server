@@ -4,6 +4,8 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { TokensService } from 'tokens/tokens.service';
 import { UserService } from 'user/interface';
@@ -14,6 +16,7 @@ export class WsAccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly tokensService: TokensService,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 
