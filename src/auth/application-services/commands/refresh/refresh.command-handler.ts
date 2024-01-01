@@ -1,16 +1,12 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
-import { TokensService } from 'tokens/tokens.service';
 import { UserService } from 'user/interface';
 import { RefreshCommand } from './refresh.command';
 import { AuthUserAggregate } from 'auth/domain';
 
 @CommandHandler(RefreshCommand)
 export class RefreshCommandHandler {
-  constructor(
-    private readonly userService: UserService,
-    private readonly refreshTokenService: TokensService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   async execute(command: RefreshCommand): Promise<AuthUserAggregate> {
     const { refreshTokenValue } = command;
@@ -19,7 +15,7 @@ export class RefreshCommandHandler {
       throw new UnauthorizedException();
     }
 
-    const userData = await this.refreshTokenService.validateRefreshToken(
+    const userData = await this.userService.validateRefreshToken(
       refreshTokenValue,
     );
     if (!userData) {
@@ -28,7 +24,7 @@ export class RefreshCommandHandler {
 
     const user = await this.userService.getUser(userData.userId);
     const { accessTokenAggregate, refreshTokenAggregate } =
-      await this.refreshTokenService.generateTokens({
+      await this.userService.generateTokens({
         userId: user.id,
         email: user.email,
       });

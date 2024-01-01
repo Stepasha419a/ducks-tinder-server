@@ -7,17 +7,14 @@ import {
   Inject,
   forwardRef,
 } from '@nestjs/common';
-import { TokensService } from 'tokens/tokens.service';
 import { UserService } from 'user/interface';
 import { IS_PUBLIC_KEY } from 'common/constants';
 import { Request } from 'express';
-import { UserTokenDto } from 'tokens/application-services/commands';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly tokensService: TokensService,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
@@ -34,9 +31,7 @@ export class AccessTokenGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const accessToken = this.extractTokenFromHeader(req);
 
-    const userData: UserTokenDto = await this.tokensService.validateAccessToken(
-      accessToken,
-    );
+    const userData = await this.userService.validateAccessToken(accessToken);
     if (!userData) {
       throw new UnauthorizedException();
     }
