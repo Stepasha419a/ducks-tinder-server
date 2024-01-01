@@ -6,12 +6,16 @@ import { USER_ALREADY_EXISTS } from 'common/constants/error';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { UserService } from 'user/interface';
 import { AuthUserAggregate } from 'auth/domain/auth-user.aggregate';
+import { TokensService } from 'tokens/tokens.service';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
   implements ICommandHandler<RegisterCommand>
 {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly refreshTokenService: TokensService,
+  ) {}
 
   async execute(command: RegisterCommand): Promise<AuthUserAggregate> {
     const { dto } = command;
@@ -32,7 +36,7 @@ export class RegisterCommandHandler
     });
 
     const { accessTokenAggregate, refreshTokenAggregate } =
-      await this.userService.generateTokens({
+      await this.refreshTokenService.generateTokens({
         userId: user.id,
         email: user.email,
       });

@@ -6,13 +6,9 @@ import {
   validateSync,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import {
-  AccessTokenObjectValue,
-  RefreshTokenAggregate,
-  User,
-  UserAggregate,
-} from 'user/domain';
+import { User, UserAggregate } from 'user/domain';
 import { DomainError } from 'libs/shared/errors';
+import { AccessTokenAggregate, RefreshTokenAggregate } from 'tokens/domain';
 import { AuthUserServices } from './services';
 
 export class AuthUserAggregate extends AuthUserServices implements AuthUser {
@@ -25,8 +21,8 @@ export class AuthUserAggregate extends AuthUserServices implements AuthUser {
   @IsObject()
   @IsNotEmptyObject()
   @ValidateNested()
-  @Type(() => AccessTokenObjectValue)
-  accessToken: AccessTokenObjectValue;
+  @Type(() => AccessTokenAggregate)
+  accessToken: AccessTokenAggregate;
 
   @IsObject()
   @IsNotEmptyObject()

@@ -21,7 +21,6 @@ import {
   FILE_COMMAND_HANDLERS,
   FileAdapterImplementation,
 } from './infrastructure/adapter/file';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   providers: [
@@ -49,13 +48,7 @@ import { JwtModule } from '@nestjs/jwt';
     },
   ],
   controllers: [UserController],
-  imports: [
-    PrismaModule,
-    HttpModule,
-    JwtModule,
-    CqrsModule,
-    forwardRef(() => ChatModule),
-  ],
+  imports: [PrismaModule, HttpModule, CqrsModule, forwardRef(() => ChatModule)],
   exports: [UserService],
 })
 export class UserModule implements OnModuleInit {

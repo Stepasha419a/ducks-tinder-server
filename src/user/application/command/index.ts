@@ -15,19 +15,6 @@ export { MixPicturesCommand, MixPicturesCommandHandler } from './mix-pictures';
 export { AcceptPairCommand, AcceptPairCommandHandler } from './accept-pair';
 export { ReturnUserCommand, ReturnUserCommandHandler } from './return-user';
 export { DeletePairCommand, DeletePairCommandHandler } from './delete-pair';
-export {
-  GenerateTokensCommand,
-  GenerateTokensCommandHandler,
-} from './generate-tokens';
-export { RemoveTokenCommand, RemoveTokenCommandHandler } from './remove-token';
-export {
-  ValidateAccessTokenCommand,
-  ValidateAccessTokenCommandHandler,
-} from './validate-access-token';
-export {
-  ValidateRefreshTokenCommand,
-  ValidateRefreshTokenCommandHandler,
-} from './validate-refresh-token';
 
 export * from './dto';
 
@@ -44,10 +31,6 @@ import { MixPicturesCommandHandler } from './mix-pictures';
 import { AcceptPairCommandHandler } from './accept-pair';
 import { ReturnUserCommandHandler } from './return-user';
 import { DeletePairCommandHandler } from './delete-pair';
-import { GenerateTokensCommandHandler } from './generate-tokens';
-import { RemoveTokenCommandHandler } from './remove-token';
-import { ValidateAccessTokenCommandHandler } from './validate-access-token';
-import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token';
 
 export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   CreateUserCommandHandler,
@@ -61,8 +44,4 @@ export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   AcceptPairCommandHandler,
   ReturnUserCommandHandler,
   DeletePairCommandHandler,
-  GenerateTokensCommandHandler,
-  RemoveTokenCommandHandler,
-  ValidateAccessTokenCommandHandler,
-  ValidateRefreshTokenCommandHandler,
 ];

@@ -1,13 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
 import { UserService } from 'user/interface';
+import { TokensService } from 'tokens/tokens.service';
 import { ForbiddenException } from '@nestjs/common';
 import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
 import { AuthUserAggregate } from 'auth/domain';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly refreshTokenService: TokensService,
+  ) {}
 
   async execute(command: LoginCommand): Promise<AuthUserAggregate> {
     const { dto } = command;
@@ -23,7 +27,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     }
 
     const { accessTokenAggregate, refreshTokenAggregate } =
-      await this.userService.generateTokens({
+      await this.refreshTokenService.generateTokens({
         userId: user.id,
         email: user.email,
       });

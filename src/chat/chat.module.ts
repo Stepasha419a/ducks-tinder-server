@@ -3,6 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatController, ChatGateway, ChatService } from './interface';
 import { PrismaModule } from 'prisma/prisma.module';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
+import { TokensModule } from 'tokens/tokens.module';
 import { UserModule } from 'user/user.module';
 import { ChatRepository } from './application/repository';
 import { ChatAdapter } from './infrastructure/repository';
@@ -29,6 +30,7 @@ import { ChatFacade } from './application';
     PrismaModule,
     CqrsModule,
     EventEmitterModule.forRoot(),
+    TokensModule,
     forwardRef(() => UserModule),
   ],
   exports: [ChatService],

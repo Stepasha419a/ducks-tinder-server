@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UserModule } from 'user/user.module';
 import { AuthModule } from 'auth/auth.module';
+import { TokensModule } from 'tokens/tokens.module';
 import { ChatModule } from 'chat/chat.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { resolve } from 'path';
@@ -21,6 +22,7 @@ import { AccessTokenGuard } from 'common/guards';
     PrismaModule,
     UserModule,
     AuthModule,
+    TokensModule,
     ChatModule,
   ],
   providers: [

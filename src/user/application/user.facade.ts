@@ -6,19 +6,14 @@ import {
   DeletePairCommand,
   DeletePictureCommand,
   DislikeUserCommand,
-  GenerateTokensCommand,
   LikeUserCommand,
   MixPicturesCommand,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceCommand,
   PatchUserPlaceDto,
-  RemoveTokenCommand,
   ReturnUserCommand,
   SavePictureCommand,
-  UserTokenDto,
-  ValidateAccessTokenCommand,
-  ValidateRefreshTokenCommand,
 } from './command';
 import { CreateUserCommand, PatchUserCommand } from './command';
 import {
@@ -27,12 +22,7 @@ import {
   GetUserByEmailQuery,
   GetUserQuery,
 } from './query';
-import {
-  AccessTokenObjectValue,
-  RefreshTokenAggregate,
-  UserAggregate,
-  UserCheckAggregate,
-} from 'user/domain';
+import { UserAggregate, UserCheckAggregate } from 'user/domain';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 
 @Injectable()
@@ -62,13 +52,6 @@ export class UserFacade {
     returnUser: (userId: string) => this.returnUser(userId),
     deletePair: (userId: string, pairId: string) =>
       this.deletePair(userId, pairId),
-    generateTokens: (dto: UserTokenDto) => this.generateTokens(dto),
-    removeToken: (refreshTokenValue: string) =>
-      this.removeToken(refreshTokenValue),
-    validateRefreshToken: (refreshTokenValue: string) =>
-      this.validateRefreshToken(refreshTokenValue),
-    validateAccessToken: (accessTokenValue: string) =>
-      this.validateAccessToken(accessTokenValue),
   };
   queries = {
     getUser: (id: string) => this.getUser(id),
@@ -147,36 +130,6 @@ export class UserFacade {
     return this.commandBus.execute<ReturnUserCommand, UserCheckAggregate>(
       new ReturnUserCommand(userId),
     );
-  }
-
-  private generateTokens(dto: UserTokenDto) {
-    return this.commandBus.execute<
-      GenerateTokensCommand,
-      {
-        accessTokenAggregate: AccessTokenObjectValue;
-        refreshTokenAggregate: RefreshTokenAggregate;
-      }
-    >(new GenerateTokensCommand(dto));
-  }
-
-  private removeToken(refreshTokenValue: string) {
-    return this.commandBus.execute<RemoveTokenCommand>(
-      new RemoveTokenCommand(refreshTokenValue),
-    );
-  }
-
-  private validateRefreshToken(refreshTokenValue: string) {
-    return this.commandBus.execute<
-      ValidateRefreshTokenCommand,
-      UserTokenDto | null
-    >(new ValidateRefreshTokenCommand(refreshTokenValue));
-  }
-
-  private validateAccessToken(accessTokenValue: string) {
-    return this.commandBus.execute<
-      ValidateAccessTokenCommand,
-      UserTokenDto | null
-    >(new ValidateAccessTokenCommand(accessTokenValue));
   }
 
   private getUser(id: string) {

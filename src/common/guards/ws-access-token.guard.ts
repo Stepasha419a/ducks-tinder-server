@@ -7,6 +7,7 @@ import {
   Inject,
   forwardRef,
 } from '@nestjs/common';
+import { TokensService } from 'tokens/tokens.service';
 import { UserService } from 'user/interface';
 import { IS_PUBLIC_KEY } from 'common/constants';
 
@@ -14,6 +15,7 @@ import { IS_PUBLIC_KEY } from 'common/constants';
 export class WsAccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
+    private readonly tokensService: TokensService,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
@@ -30,7 +32,7 @@ export class WsAccessTokenGuard implements CanActivate {
     const client = context.switchToWs().getClient();
     const accessToken = client.handshake?.auth?.authorization;
 
-    const userData = await this.userService.validateAccessToken(accessToken);
+    const userData = await this.tokensService.validateAccessToken(accessToken);
     if (!userData) {
       throw new UnauthorizedException();
     }

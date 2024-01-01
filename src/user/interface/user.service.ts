@@ -1,6 +1,6 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { UserFacade } from '../application';
-import { CreateUserDto, UserTokenDto } from '../application/command';
+import { CreateUserDto } from '../application/command';
 
 @Injectable()
 export class UserService {
@@ -18,21 +18,5 @@ export class UserService {
 
   async createUser(dto: CreateUserDto) {
     return this.facade.commands.createUser(dto);
-  }
-
-  public async generateTokens(dto: UserTokenDto) {
-    return this.facade.commands.generateTokens(dto);
-  }
-
-  public async removeToken(refreshTokenValue: string) {
-    return this.facade.commands.removeToken(refreshTokenValue);
-  }
-
-  public async validateRefreshToken(refreshTokenValue: string) {
-    return this.facade.commands.validateRefreshToken(refreshTokenValue);
-  }
-
-  public validateAccessToken(accessTokenValue: string) {
-    return this.facade.commands.validateAccessToken(accessTokenValue);
   }
 }

@@ -1,4 +1,5 @@
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';
+import { TokensModule } from 'tokens/tokens.module';
 import { UserModule } from 'user/user.module';
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
@@ -16,6 +17,6 @@ import { AUTH_USER_COMMAND_HANDLERS } from './application-services/commands';
     },
   ],
   controllers: [AuthController],
-  imports: [CqrsModule, UserModule],
+  imports: [CqrsModule, UserModule, TokensModule],
 })
 export class AuthModule {}
