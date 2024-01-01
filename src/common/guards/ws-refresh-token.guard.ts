@@ -7,13 +7,11 @@ import {
   Inject,
 } from '@nestjs/common';
 import { REFRESH_TOKEN_REGEX } from 'common/constants';
-import { TokensService } from 'tokens/tokens.service';
 import { UserService } from 'user/interface';
 
 @Injectable()
 export class WsRefreshTokenGuard implements CanActivate {
   constructor(
-    private readonly tokensService: TokensService,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
@@ -22,9 +20,7 @@ export class WsRefreshTokenGuard implements CanActivate {
     const client = context.switchToWs().getClient();
     const refreshToken = this.getRefreshTokenFromWs(client);
 
-    const userData = await this.tokensService.validateRefreshToken(
-      refreshToken,
-    );
+    const userData = await this.userService.validateRefreshToken(refreshToken);
     if (!userData) {
       throw new UnauthorizedException();
     }

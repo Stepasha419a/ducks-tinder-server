@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
-import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
 import { AuthUserFacade } from './application-services';
 import { LoginUserDto, RegisterUserDto } from './application-services/commands';
 import { AuthUserWithoutRefreshToken } from './auth.interface';
@@ -81,9 +80,11 @@ export class AuthController {
     return res.json(withoutPrivateFields);
   }
 
+  private REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000;
+
   private setCookies(res: Response, refreshToken: string) {
     res.cookie('refreshToken', refreshToken, {
-      maxAge: REFRESH_TOKEN_TIME,
+      maxAge: this.REFRESH_TOKEN_TIME,
       httpOnly: true,
     });
   }
