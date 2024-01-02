@@ -15,13 +15,16 @@ import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from './infrastructure/adapter/map-api';
-import { FileAdapter, MapApi } from './application/adapter';
+import { AuthAdapter, FileAdapter, MapApi } from './application/adapter';
 import { HttpModule } from '@nestjs/axios';
 import {
   FILE_COMMAND_HANDLERS,
   FileAdapterImplementation,
 } from './infrastructure/adapter/file';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthAdapterImplementation } from './infrastructure/adapter';
+import { AuthController } from './interface/auth';
+import { AUTH_COMMAND_HANDLERS } from './infrastructure/adapter/auth';
 
 @Module({
   providers: [
@@ -30,6 +33,7 @@ import { JwtModule } from '@nestjs/jwt';
     ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
+    ...AUTH_COMMAND_HANDLERS,
     {
       provide: UserFacade,
       inject: [CommandBus, QueryBus],
@@ -47,8 +51,12 @@ import { JwtModule } from '@nestjs/jwt';
       provide: FileAdapter,
       useClass: FileAdapterImplementation,
     },
+    {
+      provide: AuthAdapter,
+      useClass: AuthAdapterImplementation,
+    },
   ],
-  controllers: [UserController],
+  controllers: [UserController, AuthController],
   imports: [
     PrismaModule,
     HttpModule,
