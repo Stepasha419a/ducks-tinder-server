@@ -10,17 +10,17 @@ import {
   Res,
 } from '@nestjs/common';
 import { Public } from 'common/decorators';
-import { AuthAdapter } from 'user/application/adapter';
+import { AuthUserWithoutRefreshToken } from './auth.interface';
+import { Request, Response } from 'express';
+import { AuthFacade } from 'user/application/facade/auth';
 import {
   LoginUserDto,
   RegisterUserDto,
-} from 'user/infrastructure/adapter/auth/command';
-import { AuthUserWithoutRefreshToken } from './auth.interface';
-import { Request, Response } from 'express';
+} from 'user/application/facade/auth/command';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly adapter: AuthAdapter) {}
+  constructor(private readonly facade: AuthFacade) {}
 
   @Public()
   @Post('registration')
@@ -29,7 +29,7 @@ export class AuthController {
     @Res() res: Response,
     @Body() dto: RegisterUserDto,
   ): Promise<Response<AuthUserWithoutRefreshToken>> {
-    const authUserAggregate = await this.adapter.register(dto);
+    const authUserAggregate = await this.facade.commands.register(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =
@@ -44,7 +44,7 @@ export class AuthController {
     @Res() res: Response,
     @Body() dto: LoginUserDto,
   ): Promise<Response<AuthUserWithoutRefreshToken>> {
-    const authUserAggregate = await this.adapter.login(dto);
+    const authUserAggregate = await this.facade.commands.login(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =
@@ -61,7 +61,7 @@ export class AuthController {
     const { refreshToken } = req.cookies;
 
     this.clearCookies(res);
-    await this.adapter.logout(refreshToken);
+    await this.facade.commands.logout(refreshToken);
 
     return res.end();
   }
@@ -75,7 +75,7 @@ export class AuthController {
   ): Promise<Response<AuthUserWithoutRefreshToken>> {
     const { refreshToken } = req.cookies;
 
-    const authUserAggregate = await this.adapter.refresh(refreshToken);
+    const authUserAggregate = await this.facade.commands.refresh(refreshToken);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =

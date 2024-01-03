@@ -7,33 +7,40 @@ import {
   RefreshCommand,
   RegisterCommand,
   RegisterUserDto,
-} from 'user/infrastructure/adapter/auth/command';
+} from './command';
 import { AuthUserAggregate } from 'user/domain/auth';
-import { AuthAdapter } from 'user/application/adapter';
 
 @Injectable()
-export class AuthAdapterImplementation implements AuthAdapter {
+export class AuthFacade {
   constructor(private readonly commandBus: CommandBus) {}
 
-  register(dto: RegisterUserDto): Promise<AuthUserAggregate> {
+  commands = {
+    register: (dto: RegisterUserDto) => this.register(dto),
+    login: (dto: LoginUserDto) => this.login(dto),
+    logout: (refreshTokenValue: string) => this.logout(refreshTokenValue),
+    refresh: (refreshTokenValue: string) => this.refresh(refreshTokenValue),
+  };
+  queries = {};
+
+  private register(dto: RegisterUserDto) {
     return this.commandBus.execute<RegisterCommand, AuthUserAggregate>(
       new RegisterCommand(dto),
     );
   }
 
-  login(dto: LoginUserDto): Promise<AuthUserAggregate> {
+  private login(dto: LoginUserDto) {
     return this.commandBus.execute<LoginCommand, AuthUserAggregate>(
       new LoginCommand(dto),
     );
   }
 
-  logout(refreshTokenValue: string): Promise<void> {
+  private logout(refreshTokenValue: string) {
     return this.commandBus.execute<LogoutCommand>(
       new LogoutCommand(refreshTokenValue),
     );
   }
 
-  refresh(refreshTokenValue: string): Promise<AuthUserAggregate> {
+  private refresh(refreshTokenValue: string) {
     return this.commandBus.execute<RefreshCommand, AuthUserAggregate>(
       new RefreshCommand(refreshTokenValue),
     );

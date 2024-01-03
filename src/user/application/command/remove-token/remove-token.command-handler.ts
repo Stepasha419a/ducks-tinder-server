@@ -19,6 +19,6 @@ export class RemoveTokenCommandHandler
       throw new UnauthorizedException();
     }
 
-    await this.repository.delete(existingRefreshToken.id);
+    await this.repository.deleteRefreshToken(existingRefreshToken.id);
   }
 }

@@ -15,16 +15,16 @@ import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from './infrastructure/adapter/map-api';
-import { AuthAdapter, FileAdapter, MapApi } from './application/adapter';
+import { FileAdapter, MapApi } from './application/adapter';
 import { HttpModule } from '@nestjs/axios';
 import {
   FILE_COMMAND_HANDLERS,
   FileAdapterImplementation,
 } from './infrastructure/adapter/file';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthAdapterImplementation } from './infrastructure/adapter';
 import { AuthController } from './interface/auth';
-import { AUTH_COMMAND_HANDLERS } from './infrastructure/adapter/auth';
+import { AUTH_COMMAND_HANDLERS, AuthFacade } from './application/facade/auth';
+import { authFacadeFactory } from './infrastructure/facade/auth';
 
 @Module({
   providers: [
@@ -52,8 +52,9 @@ import { AUTH_COMMAND_HANDLERS } from './infrastructure/adapter/auth';
       useClass: FileAdapterImplementation,
     },
     {
-      provide: AuthAdapter,
-      useClass: AuthAdapterImplementation,
+      provide: AuthFacade,
+      inject: [CommandBus, QueryBus],
+      useFactory: authFacadeFactory,
     },
   ],
   controllers: [UserController, AuthController],
