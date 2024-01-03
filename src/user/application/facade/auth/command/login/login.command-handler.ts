@@ -4,13 +4,13 @@ import { ForbiddenException } from '@nestjs/common';
 import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
 import { AuthUserAggregate } from 'user/domain/auth';
 import { UserRepository } from 'user/application/repository';
-import { UserService } from 'user/interface';
+import { TokenAdapter } from 'user/application/adapter';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     private readonly repository: UserRepository,
-    private readonly userService: UserService,
+    private readonly tokenAdapter: TokenAdapter,
   ) {}
 
   async execute(command: LoginCommand): Promise<AuthUserAggregate> {
@@ -27,7 +27,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     }
 
     const { accessTokenAggregate, refreshTokenAggregate } =
-      await this.userService.generateTokens({
+      await this.tokenAdapter.generateTokens({
         userId: user.id,
         email: user.email,
       });
