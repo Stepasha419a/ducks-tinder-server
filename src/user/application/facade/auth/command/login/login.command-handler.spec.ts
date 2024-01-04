@@ -1,84 +1,86 @@
 import { Test } from '@nestjs/testing';
-import { userDtoStub } from 'user/test/stubs';
-import { AuthDataReturn } from 'user/interface/auth/auth.interface';
-import { LOGIN_USER_DTO } from 'auth/test/values/auth.const.dto';
-import { UsersService } from 'user/interface/user.service';
-import { TokensServiceMock, UsersServiceMock } from 'auth/test/mocks';
-import { TokensService } from 'tokens/tokens.service';
-import { userDataStub } from 'auth/test/stubs';
-import { UsersModule } from 'user/user.module';
-import { TokensModule } from 'tokens/tokens.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
+import { UserModule } from 'user/user.module';
+import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
+import { TokenAdapter } from 'user/application/adapter';
+import { UserRepository } from 'user/application/repository';
+import { UserAggregateStub } from 'user/test/stub/user-aggregate.stub';
+import { AuthUserAggregate } from 'user/domain/auth';
+import { RefreshTokenValueObjectStub } from 'user/test/stub/refresh-token-value-object.stub';
+import { AccessTokenValueObjectStub } from 'user/test/stub/access-token-value-object.stub';
+import { AuthUserAggregateStub } from 'user/test/stub/auth-user-aggregate.stub';
 
 describe('when login is called', () => {
-  let usersService: UsersService;
-  let tokensService: TokensService;
+  let repository: UserRepository;
+  let tokenAdapter: TokenAdapter;
   let loginCommandHandler: LoginCommandHandler;
+  const userAggregate = UserAggregateStub();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [LoginCommandHandler],
+      providers: [
+        LoginCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+        { provide: TokenAdapter, useValue: TokenAdapterMock() },
+      ],
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
           envFilePath: `.env.${process.env.NODE_ENV}`,
         }),
-        UsersModule,
-        TokensModule,
+        UserModule,
       ],
-    })
-      .overrideProvider(UsersService)
-      .useValue(UsersServiceMock())
-      .overrideProvider(TokensService)
-      .useValue(TokensServiceMock())
-      .compile();
+    }).compile();
 
-    usersService = moduleRef.get<UsersService>(UsersService);
-    tokensService = moduleRef.get<TokensService>(TokensService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
+    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     loginCommandHandler =
       moduleRef.get<LoginCommandHandler>(LoginCommandHandler);
   });
 
   describe('when it is called correctly', () => {
     beforeAll(() => {
-      usersService.getUserByEmail = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-        pairsCount: 5,
-        password:
-          '$2a$07$HQtmk3r9h1Gg1YiOLO67duUs3GPDg5.KKCtPSm/152gqIALiRvs6q',
-        interests: [{ name: 'programming' }],
-      });
-      tokensService.generateTokens = jest.fn().mockResolvedValue({
-        refreshToken: userDataStub().refreshToken,
-        accessToken: userDataStub().data.accessToken,
+      repository.findOneByEmail = jest.fn().mockResolvedValue(userAggregate);
+      userAggregate.comparePasswords = jest.fn().mockResolvedValue(true);
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenAggregate: RefreshTokenValueObjectStub(),
+        accessTokenAggregate: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthDataReturn;
+    let data: AuthUserAggregate;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       data = await loginCommandHandler.execute(
-        new LoginCommand(LOGIN_USER_DTO),
+        new LoginCommand({
+          email: userAggregate.email,
+          password: userAggregate.password,
+        }),
       );
     });
 
-    it('should call usersService getUserByEmail', () => {
-      expect(usersService.getUserByEmail).toBeCalledWith(LOGIN_USER_DTO.email);
+    it('should call repository findOneByEmail', () => {
+      expect(repository.findOneByEmail).toBeCalledWith(userAggregate.email);
     });
 
-    it('should call tokensService generateTokens', () => {
-      expect(tokensService.generateTokens).toBeCalledWith({
-        id: userDtoStub().id,
-        email: userDtoStub().email,
+    it('should call aggregate comparePasswords', () => {
+      expect(userAggregate.comparePasswords).toBeCalledWith(
+        userAggregate.password,
+      );
+    });
+
+    it('should call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).toBeCalledWith({
+        userId: userAggregate.id,
+        email: userAggregate.email,
       });
     });
 
-    it('should return userData', () => {
-      expect(data).toEqual(userDataStub());
+    it('should return authUserAggregate', () => {
+      expect(JSON.parse(JSON.stringify(data))).toEqual(AuthUserAggregateStub());
     });
   });
 });

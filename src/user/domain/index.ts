@@ -10,4 +10,3 @@ export * from './value-object';
 export * from './place';
 export * from './picture';
 export * from './user-check';
-export * from './refresh-token';

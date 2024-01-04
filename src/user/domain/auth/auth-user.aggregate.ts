@@ -1,14 +1,9 @@
 import { AuthUser } from './auth-user.interface';
-import {
-  IsNotEmptyObject,
-  IsObject,
-  ValidateNested,
-  validateSync,
-} from 'class-validator';
+import { IsNotEmptyObject, IsObject, validateSync } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
-  AccessTokenObjectValue,
-  RefreshTokenAggregate,
+  AccessTokenValueObject,
+  RefreshTokenValueObject,
   User,
   UserAggregate,
 } from 'user/domain';
@@ -18,21 +13,18 @@ import { AuthUserServices } from './services';
 export class AuthUserAggregate extends AuthUserServices implements AuthUser {
   @IsObject()
   @IsNotEmptyObject()
-  @ValidateNested()
   @Type(() => UserAggregate)
   user: User;
 
   @IsObject()
   @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => AccessTokenObjectValue)
-  accessToken: AccessTokenObjectValue;
+  @Type(() => AccessTokenValueObject)
+  accessToken: AccessTokenValueObject;
 
   @IsObject()
   @IsNotEmptyObject()
-  @ValidateNested()
-  @Type(() => RefreshTokenAggregate)
-  refreshToken: RefreshTokenAggregate;
+  @Type(() => RefreshTokenValueObject)
+  refreshToken: RefreshTokenValueObject;
 
   private constructor() {
     super();

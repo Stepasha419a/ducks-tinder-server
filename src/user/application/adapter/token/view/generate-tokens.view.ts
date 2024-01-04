@@ -1,6 +1,6 @@
-import { AccessTokenObjectValue, RefreshTokenAggregate } from 'user/domain';
+import { AccessTokenValueObject, RefreshTokenValueObject } from 'user/domain';
 
 export interface GenerateTokensView {
-  accessTokenAggregate: AccessTokenObjectValue;
-  refreshTokenAggregate: RefreshTokenAggregate;
+  accessTokenAggregate: AccessTokenValueObject;
+  refreshTokenAggregate: RefreshTokenValueObject;
 }

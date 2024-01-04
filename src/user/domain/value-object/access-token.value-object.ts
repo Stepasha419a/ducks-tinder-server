@@ -1,12 +1,12 @@
 import { IsJWT, validateSync } from 'class-validator';
 import { DomainError } from 'libs/shared/errors';
 
-export class AccessTokenObjectValue {
+export class AccessTokenValueObject {
   @IsJWT()
   value: string;
 
-  static create(accessToken: Partial<AccessTokenObjectValue>) {
-    const _accessToken = new AccessTokenObjectValue();
+  static create(accessToken: Partial<AccessTokenValueObject>) {
+    const _accessToken = new AccessTokenValueObject();
 
     Object.assign(_accessToken, accessToken);
 

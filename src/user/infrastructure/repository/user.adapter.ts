@@ -3,7 +3,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from 'user/application/repository';
 import {
   PlaceAggregate,
-  RefreshTokenAggregate,
+  RefreshTokenValueObject,
   User,
   UserAggregate,
   UserCheckAggregate,
@@ -286,8 +286,8 @@ export class UserAdapter implements UserRepository {
   ];
 
   async saveRefreshToken(
-    refreshToken: RefreshTokenAggregate,
-  ): Promise<RefreshTokenAggregate> {
+    refreshToken: RefreshTokenValueObject,
+  ): Promise<RefreshTokenValueObject> {
     const existingRefreshToken = await this.findRefreshToken(refreshToken.id);
 
     if (existingRefreshToken) {
@@ -436,7 +436,7 @@ export class UserAdapter implements UserRepository {
     return this.getUserCheckAggregate(userCheck);
   }
 
-  async findRefreshToken(id: string): Promise<RefreshTokenAggregate> {
+  async findRefreshToken(id: string): Promise<RefreshTokenValueObject> {
     const existingRefreshToken = await this.prismaService.token
       .findUnique({
         where: { id },
@@ -452,7 +452,9 @@ export class UserAdapter implements UserRepository {
     return this.getRefreshTokenAggregate(existingRefreshToken);
   }
 
-  async findRefreshTokenByValue(value: string): Promise<RefreshTokenAggregate> {
+  async findRefreshTokenByValue(
+    value: string,
+  ): Promise<RefreshTokenValueObject> {
     const existingRefreshToken = await this.prismaService.token
       .findUnique({
         where: { refreshToken: value },
@@ -632,8 +634,10 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private getRefreshTokenAggregate(refreshToken: Token): RefreshTokenAggregate {
-    return RefreshTokenAggregate.create({
+  private getRefreshTokenAggregate(
+    refreshToken: Token,
+  ): RefreshTokenValueObject {
+    return RefreshTokenValueObject.create({
       ...refreshToken,
       value: refreshToken.refreshToken,
       updatedAt: refreshToken.updatedAt.toISOString(),

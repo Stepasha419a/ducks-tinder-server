@@ -5,14 +5,9 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { RefreshToken } from './refresh-token.interface';
-import { AggregateRoot } from '@nestjs/cqrs';
 import { DomainError } from 'libs/shared/errors';
 
-export class RefreshTokenAggregate
-  extends AggregateRoot
-  implements RefreshToken
-{
+export class RefreshTokenValueObject {
   @IsUUID()
   id: string;
 
@@ -27,12 +22,8 @@ export class RefreshTokenAggregate
   @IsNotEmpty()
   updatedAt = new Date().toISOString();
 
-  private constructor() {
-    super();
-  }
-
-  static create(refreshToken: Partial<RefreshToken>) {
-    const _refreshToken = new RefreshTokenAggregate();
+  static create(refreshToken: Partial<RefreshTokenValueObject>) {
+    const _refreshToken = new RefreshTokenValueObject();
 
     Object.assign(_refreshToken, refreshToken);
 

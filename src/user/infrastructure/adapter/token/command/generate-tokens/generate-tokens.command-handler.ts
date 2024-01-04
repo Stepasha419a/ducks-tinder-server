@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GenerateTokensCommand } from './generate-tokens.command';
 import { UserRepository } from 'user/application/repository';
-import { RefreshTokenAggregate, AccessTokenObjectValue } from 'user/domain';
+import { RefreshTokenValueObject, AccessTokenValueObject } from 'user/domain';
 
 @CommandHandler(GenerateTokensCommand)
 export class GenerateTokensCommandHandler
@@ -27,7 +27,7 @@ export class GenerateTokensCommandHandler
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
 
-    const accessTokenAggregate = AccessTokenObjectValue.create({
+    const accessTokenAggregate = AccessTokenValueObject.create({
       value: accessTokenValue,
     });
     const refreshTokenAggregate = await this.saveRefreshToken(
@@ -43,7 +43,7 @@ export class GenerateTokensCommandHandler
 
   private async saveRefreshToken(userId: string, refreshTokenValue: string) {
     const savedRefreshTokenAggregate = await this.repository.saveRefreshToken(
-      RefreshTokenAggregate.create({
+      RefreshTokenValueObject.create({
         id: userId,
         value: refreshTokenValue,
       }),

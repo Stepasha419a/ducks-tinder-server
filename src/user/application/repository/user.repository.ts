@@ -1,6 +1,6 @@
 import {
   PlaceAggregate,
-  RefreshTokenAggregate,
+  RefreshTokenValueObject,
   UserAggregate,
   UserCheckAggregate,
 } from 'user/domain';
@@ -9,8 +9,8 @@ import { PictureAggregate } from 'user/domain/picture';
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
   abstract saveRefreshToken(
-    refreshToken: RefreshTokenAggregate,
-  ): Promise<RefreshTokenAggregate>;
+    refreshToken: RefreshTokenValueObject,
+  ): Promise<RefreshTokenValueObject>;
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findOneByEmail(email: string): Promise<UserAggregate | null>;
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
@@ -35,7 +35,7 @@ export abstract class UserRepository {
   abstract findPlace(userId: string): Promise<PlaceAggregate | null>;
   abstract findRefreshTokenByValue(
     value: string,
-  ): Promise<RefreshTokenAggregate | null>;
+  ): Promise<RefreshTokenValueObject | null>;
   abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract makeChecked(id: string, forId: string): Promise<boolean>;
   abstract delete(id: string): Promise<boolean>;
