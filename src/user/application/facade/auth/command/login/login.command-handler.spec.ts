@@ -6,11 +6,13 @@ import { UserModule } from 'user/user.module';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
 import { TokenAdapter } from 'user/application/adapter';
 import { UserRepository } from 'user/application/repository';
-import { UserAggregateStub } from 'user/test/stub/user-aggregate.stub';
 import { AuthUserAggregate } from 'user/domain/auth';
-import { RefreshTokenValueObjectStub } from 'user/test/stub/refresh-token-value-object.stub';
-import { AccessTokenValueObjectStub } from 'user/test/stub/access-token-value-object.stub';
-import { AuthUserAggregateStub } from 'user/test/stub/auth-user-aggregate.stub';
+import {
+  AccessTokenValueObjectStub,
+  AuthUserAggregateStub,
+  RefreshTokenValueObjectStub,
+  UserAggregateStub,
+} from 'user/test/stub';
 
 describe('when login is called', () => {
   let repository: UserRepository;
@@ -80,7 +82,6 @@ describe('when login is called', () => {
     });
 
     it('should return authUserAggregate', () => {
-      console.log(data);
       expect(JSON.parse(JSON.stringify(data))).toStrictEqual(
         AuthUserAggregateStub(),
       );
