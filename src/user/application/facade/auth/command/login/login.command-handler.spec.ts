@@ -80,7 +80,10 @@ describe('when login is called', () => {
     });
 
     it('should return authUserAggregate', () => {
-      expect(JSON.parse(JSON.stringify(data))).toEqual(AuthUserAggregateStub());
+      console.log(data);
+      expect(JSON.parse(JSON.stringify(data))).toStrictEqual(
+        AuthUserAggregateStub(),
+      );
     });
   });
 });

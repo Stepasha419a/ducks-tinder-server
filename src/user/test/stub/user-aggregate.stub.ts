@@ -14,7 +14,6 @@ export const UserAggregateStub = () => ({
   deletePicture: jest.fn(),
   sortPictureOrders: jest.fn(),
   mixPictureOrders: jest.fn(),
-  autoCommit: false,
   publish: jest.fn(),
   publishAll: jest.fn(),
   commit: jest.fn(),
