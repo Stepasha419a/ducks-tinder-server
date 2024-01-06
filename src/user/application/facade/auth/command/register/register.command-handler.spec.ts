@@ -49,8 +49,8 @@ describe('when registration is called', () => {
       repository.findOneByEmail = jest.fn().mockResolvedValue(undefined);
       repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
-        refreshTokenAggregate: RefreshTokenValueObjectStub(),
-        accessTokenAggregate: AccessTokenValueObjectStub(),
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 

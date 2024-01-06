@@ -27,17 +27,17 @@ export class GenerateTokensCommandHandler
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
 
-    const accessTokenAggregate = AccessTokenValueObject.create({
+    const accessTokenValueObject = AccessTokenValueObject.create({
       value: accessTokenValue,
     });
-    const refreshTokenAggregate = await this.saveRefreshToken(
+    const refreshTokenValueObject = await this.saveRefreshToken(
       dto.userId,
       refreshTokenValue,
     );
 
     return {
-      accessTokenAggregate,
-      refreshTokenAggregate,
+      accessTokenValueObject,
+      refreshTokenValueObject,
     };
   }
 

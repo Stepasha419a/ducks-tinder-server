@@ -51,8 +51,8 @@ describe('when refresh is called', () => {
       });
       repository.findOne = jest.fn().mockResolvedValue(UserAggregateStub());
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
-        refreshTokenAggregate: RefreshTokenValueObjectStub(),
-        accessTokenAggregate: AccessTokenValueObjectStub(),
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 

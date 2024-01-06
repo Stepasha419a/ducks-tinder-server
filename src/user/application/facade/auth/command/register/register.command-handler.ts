@@ -34,7 +34,7 @@ export class RegisterCommandHandler
 
     const savedUser = await this.repository.save(createdUser);
 
-    const { accessTokenAggregate, refreshTokenAggregate } =
+    const { accessTokenValueObject, refreshTokenValueObject } =
       await this.tokenAdapter.generateTokens({
         userId: savedUser.id,
         email: savedUser.email,
@@ -42,8 +42,8 @@ export class RegisterCommandHandler
 
     return AuthUserAggregate.create({
       user: savedUser,
-      accessToken: accessTokenAggregate,
-      refreshToken: refreshTokenAggregate,
+      accessToken: accessTokenValueObject,
+      refreshToken: refreshTokenValueObject,
     });
   }
 }

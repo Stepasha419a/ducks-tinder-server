@@ -27,7 +27,7 @@ export class RefreshCommandHandler {
     }
 
     const user = await this.repository.findOne(userData.userId);
-    const { accessTokenAggregate, refreshTokenAggregate } =
+    const { accessTokenValueObject, refreshTokenValueObject } =
       await this.tokenAdapter.generateTokens({
         userId: user.id,
         email: user.email,
@@ -35,8 +35,8 @@ export class RefreshCommandHandler {
 
     return AuthUserAggregate.create({
       user,
-      accessToken: accessTokenAggregate,
-      refreshToken: refreshTokenAggregate,
+      accessToken: accessTokenValueObject,
+      refreshToken: refreshTokenValueObject,
     });
   }
 }
