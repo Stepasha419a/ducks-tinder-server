@@ -14,6 +14,8 @@ import {
   UserStub,
 } from 'user/test/stub';
 import { AuthUserAggregate } from 'user/domain/auth';
+import { USER_ALREADY_EXISTS } from 'common/constants/error';
+import { HttpStatus } from '@nestjs/common';
 
 describe('when registration is called', () => {
   let repository: UserRepository;
@@ -86,6 +88,57 @@ describe('when registration is called', () => {
       expect(JSON.parse(JSON.stringify(data))).toStrictEqual(
         AuthUserAggregateStub(),
       );
+    });
+  });
+
+  describe('when there is already using email', () => {
+    beforeAll(() => {
+      repository.findOneByEmail = jest
+        .fn()
+        .mockResolvedValue(UserAggregateStub());
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
+      });
+    });
+
+    let data: AuthUserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      const dto = {
+        email: userStub.email,
+        name: userStub.name,
+        password: userStub.password,
+      };
+      try {
+        data = await registerCommandHandler.execute(new RegisterCommand(dto));
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call repository findOneByEmail', () => {
+      expect(repository.findOneByEmail).toBeCalledWith(userStub.email);
+    });
+
+    it('should not call repository save', () => {
+      expect(repository.save).not.toBeCalled();
+    });
+
+    it('should not call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    });
+
+    it('should not return authUserAggregate', () => {
+      expect(data).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual(USER_ALREADY_EXISTS);
+      expect(error?.status).toEqual(HttpStatus.BAD_REQUEST);
     });
   });
 });
