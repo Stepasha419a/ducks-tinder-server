@@ -1,8 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
-import { UserModule } from 'user/user.module';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
 import { TokenAdapter } from 'user/application/adapter';
 import { UserRepository } from 'user/application/repository';
@@ -27,13 +25,6 @@ describe('when login is called', () => {
         LoginCommandHandler,
         { provide: UserRepository, useValue: UserRepositoryMock() },
         { provide: TokenAdapter, useValue: TokenAdapterMock() },
-      ],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        UserModule,
       ],
     }).compile();
 

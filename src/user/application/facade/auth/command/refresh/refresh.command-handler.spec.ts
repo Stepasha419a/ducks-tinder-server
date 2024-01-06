@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
 import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
 import { TokenAdapter } from 'user/application/adapter';
@@ -26,12 +25,6 @@ describe('when refresh is called', () => {
         RefreshCommandHandler,
         { provide: UserRepository, useValue: UserRepositoryMock() },
         { provide: TokenAdapter, useValue: TokenAdapterMock() },
-      ],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
       ],
     }).compile();
 

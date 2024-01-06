@@ -1,34 +1,23 @@
 import { Test } from '@nestjs/testing';
-import { TokensServiceMock } from 'auth/test/mocks';
-import { TokensService } from 'tokens/tokens.service';
-import { userDataStub } from 'auth/test/stubs';
-import { UsersModule } from 'user/user.module';
-import { TokensModule } from 'tokens/tokens.module';
-import { ConfigModule } from '@nestjs/config';
 import { LogoutCommandHandler } from './logout.command-handler';
 import { LogoutCommand } from './logout.command';
+import { TokenAdapter } from 'user/application/adapter';
+import { TokenAdapterMock } from 'user/test/mock';
+import { HttpStatus } from '@nestjs/common';
 
 describe('when logout is called', () => {
-  let tokensService: TokensService;
+  let tokenAdapter: TokenAdapter;
   let logoutCommandHandler: LogoutCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [LogoutCommandHandler],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        UsersModule,
-        TokensModule,
+      providers: [
+        LogoutCommandHandler,
+        { provide: TokenAdapter, useValue: TokenAdapterMock() },
       ],
-    })
-      .overrideProvider(TokensService)
-      .useValue(TokensServiceMock())
-      .compile();
+    }).compile();
 
-    tokensService = moduleRef.get<TokensService>(TokensService);
+    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     logoutCommandHandler =
       moduleRef.get<LogoutCommandHandler>(LogoutCommandHandler);
   });
@@ -39,18 +28,45 @@ describe('when logout is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
       response = await logoutCommandHandler.execute(
-        new LogoutCommand(userDataStub().refreshToken),
+        new LogoutCommand('refresh-token-value'),
       );
     });
 
-    it('should call tokensService removeToken', () => {
-      expect(tokensService.removeToken).toBeCalledWith(
-        userDataStub().refreshToken,
-      );
+    it('should call tokenAdapter removeToken', () => {
+      expect(tokenAdapter.removeToken).toBeCalledWith('refresh-token-value');
     });
 
     it('should return undefined', () => {
       expect(response).toEqual(undefined);
+    });
+  });
+
+  describe('when there is no refreshTokenValue', () => {
+    let response;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        response = await logoutCommandHandler.execute(
+          new LogoutCommand(undefined),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should not call tokenAdapter removeToken', () => {
+      expect(tokenAdapter.removeToken).not.toBeCalled();
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Unauthorized');
+      expect(error?.status).toEqual(HttpStatus.UNAUTHORIZED);
     });
   });
 });

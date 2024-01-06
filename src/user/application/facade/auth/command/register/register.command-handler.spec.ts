@@ -4,8 +4,6 @@ import { RegisterCommandHandler } from './register.command-handler';
 import { TokenAdapter } from 'user/application/adapter';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
 import { UserRepository } from 'user/application/repository';
-import { ConfigModule } from '@nestjs/config';
-import { UserModule } from 'user/user.module';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
@@ -29,13 +27,6 @@ describe('when registration is called', () => {
         RegisterCommandHandler,
         { provide: UserRepository, useValue: UserRepositoryMock() },
         { provide: TokenAdapter, useValue: TokenAdapterMock() },
-      ],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        UserModule,
       ],
     }).compile();
 
