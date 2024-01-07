@@ -1,5 +1,5 @@
 export const UserStub = () => ({
-  id: 'sdfhsdghj34259034578923',
+  id: '0961e385-fcf1-4390-bb32-1904718ccdef',
   password: '123123123',
   activationLink: 'asdadas23234234',
   email: '123@mail.ru',

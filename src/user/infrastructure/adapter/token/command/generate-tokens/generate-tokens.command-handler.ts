@@ -30,24 +30,16 @@ export class GenerateTokensCommandHandler
     const accessTokenValueObject = AccessTokenValueObject.create({
       value: accessTokenValue,
     });
-    const refreshTokenValueObject = await this.saveRefreshToken(
-      dto.userId,
-      refreshTokenValue,
-    );
+    const refreshTokenValueObject = RefreshTokenValueObject.create({
+      id: dto.userId,
+      value: refreshTokenValue,
+    });
+
+    await this.repository.saveRefreshToken(refreshTokenValueObject);
 
     return {
       accessTokenValueObject,
       refreshTokenValueObject,
     };
-  }
-
-  private async saveRefreshToken(userId: string, refreshTokenValue: string) {
-    const savedRefreshTokenAggregate = await this.repository.saveRefreshToken(
-      RefreshTokenValueObject.create({
-        id: userId,
-        value: refreshTokenValue,
-      }),
-    );
-    return savedRefreshTokenAggregate;
   }
 }

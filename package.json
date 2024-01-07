@@ -20,7 +20,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./jest.config.e2e.js",
-    "test:unit": "jest --config ./jest.config.unit.js"
+    "test:unit": "jest --config ./jest.config.unit.js",
+    "test:unit-refactoring": "jest --config ./jest.config.unit-refactoring.js"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",

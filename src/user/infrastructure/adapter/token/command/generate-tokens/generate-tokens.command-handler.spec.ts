@@ -24,6 +24,8 @@ describe('when generateTokens is called', () => {
   let generateTokensCommandHandler: GenerateTokensCommandHandler;
 
   beforeAll(async () => {
+    jest.useFakeTimers().setSystemTime(new Date('02-02-2002'));
+
     const moduleRef = await Test.createTestingModule({
       providers: [
         GenerateTokensCommandHandler,
@@ -41,6 +43,10 @@ describe('when generateTokens is called', () => {
     );
   });
 
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   let tokens;
   const dto = {
     email: UserStub().email,
@@ -51,7 +57,9 @@ describe('when generateTokens is called', () => {
     jest.clearAllMocks();
 
     configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
-    jwtService.sign = jest.fn().mockReturnValue('TOKEN');
+    jwtService.sign = jest
+      .fn()
+      .mockReturnValue(AccessTokenValueObjectStub().value);
 
     tokens = await generateTokensCommandHandler.execute(
       new GenerateTokensCommand(dto),
@@ -61,7 +69,7 @@ describe('when generateTokens is called', () => {
   it('should call jwtService sign', () => {
     expect(jwtService.sign).toBeCalledTimes(2);
     expect(jwtService.sign).toHaveBeenNthCalledWith(1, dto, {
-      expiresIn: '15m',
+      expiresIn: '60m',
       secret: 'TOKENS_SECRET',
     });
     expect(jwtService.sign).toHaveBeenNthCalledWith(2, dto, {
@@ -70,12 +78,12 @@ describe('when generateTokens is called', () => {
     });
   });
 
-  it('should call prismaService token findUnique', () => {
+  it('should call repository saveRefreshToken', () => {
     expect(repository.saveRefreshToken).toBeCalledTimes(1);
     expect(repository.saveRefreshToken).toHaveBeenCalledWith(
       RefreshTokenValueObject.create({
         id: dto.userId,
-        value: 'TOKEN',
+        value: AccessTokenValueObjectStub().value,
       }),
     );
   });
