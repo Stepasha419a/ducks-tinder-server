@@ -15,10 +15,6 @@ export { MixPicturesCommand, MixPicturesCommandHandler } from './mix-pictures';
 export { AcceptPairCommand, AcceptPairCommandHandler } from './accept-pair';
 export { ReturnUserCommand, ReturnUserCommandHandler } from './return-user';
 export { DeletePairCommand, DeletePairCommandHandler } from './delete-pair';
-export {
-  GenerateTokensCommand,
-  GenerateTokensCommandHandler,
-} from '../../infrastructure/adapter/token/command/generate-tokens';
 
 export * from './dto';
 

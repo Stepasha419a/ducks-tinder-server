@@ -23,6 +23,7 @@ import {
   MIX_PICTURE_ORDERS,
   MixPictureOrders,
 } from './mix-picture-orders.case';
+import { ACCEPT_PAIR, AcceptPair } from './accept-pair.case';
 
 export class UserServices
   extends AggregateRoot
@@ -37,7 +38,8 @@ export class UserServices
     AddPicture,
     DeletePicture,
     SortPictureOrders,
-    MixPictureOrders
+    MixPictureOrders,
+    AcceptPair
 {
   @IsDefined()
   setDescription = SET_DESCRIPTION;
@@ -71,4 +73,7 @@ export class UserServices
 
   @IsDefined()
   mixPictureOrders = MIX_PICTURE_ORDERS;
+
+  @IsDefined()
+  acceptPair = ACCEPT_PAIR;
 }

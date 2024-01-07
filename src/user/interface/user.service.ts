@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserFacade } from '../application';
 import { CreateUserDto } from '../application/command';
 import { TokenAdapter } from 'user/application/adapter';
@@ -6,7 +6,7 @@ import { TokenAdapter } from 'user/application/adapter';
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(forwardRef(() => UserFacade)) private readonly facade: UserFacade,
+    private readonly facade: UserFacade,
     private readonly tokenAdapter: TokenAdapter,
   ) {}
 

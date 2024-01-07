@@ -4,8 +4,6 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { UserService } from 'user/interface';
 import { IS_PUBLIC_KEY } from 'common/constants';
@@ -15,7 +13,6 @@ import { Request } from 'express';
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 

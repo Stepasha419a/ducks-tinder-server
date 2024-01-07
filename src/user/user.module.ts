@@ -1,8 +1,7 @@
-import { Module, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserController, UserService } from './interface';
 import { PrismaModule } from '../prisma/prisma.module';
-import { ChatModule } from 'chat/chat.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './application/filter';
 import { USER_QUERY_HANDLERS } from './application/query';
@@ -25,6 +24,7 @@ import {
   MapApiImplementation,
   TokenAdapterImplementation,
 } from './infrastructure/adapter';
+import { USER_DEV_HANDLERS } from './application/command/dev';
 
 @Module({
   providers: [
@@ -33,6 +33,7 @@ import {
     ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
+    ...USER_DEV_HANDLERS,
     ...TOKEN_COMMAND_HANDLERS,
     ...AUTH_COMMAND_HANDLERS,
     {
@@ -63,13 +64,7 @@ import {
     },
   ],
   controllers: [UserController, AuthController],
-  imports: [
-    PrismaModule,
-    HttpModule,
-    JwtModule,
-    CqrsModule,
-    forwardRef(() => ChatModule),
-  ],
+  imports: [PrismaModule, HttpModule, JwtModule, CqrsModule],
   exports: [UserService],
 })
 export class UserModule implements OnModuleInit {
