@@ -3,7 +3,7 @@ import { RegisterCommand } from './register.command';
 import { RegisterCommandHandler } from './register.command-handler';
 import { TokenAdapter } from 'user/application/adapter';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,

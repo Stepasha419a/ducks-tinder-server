@@ -2,7 +2,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
 import { AuthUserAggregate } from 'user/domain/auth';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { TokenAdapter } from 'user/application/adapter';
 
 @CommandHandler(RefreshCommand)

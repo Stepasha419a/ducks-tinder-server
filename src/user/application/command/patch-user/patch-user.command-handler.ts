@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserCommand } from './patch-user.command';
 import { ForbiddenException } from '@nestjs/common';
 import { USER_ALREADY_EXISTS } from 'common/constants/error';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAggregate } from 'user/domain';
 
 @CommandHandler(PatchUserCommand)

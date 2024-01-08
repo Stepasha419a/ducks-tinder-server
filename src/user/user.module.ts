@@ -7,7 +7,7 @@ import { AllExceptionsFilter } from './application/filter';
 import { USER_QUERY_HANDLERS } from './application/query';
 import { USER_COMMAND_HANDLERS } from './application/command';
 import { UserFacade } from './application';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAdapter } from 'user/infrastructure/repository';
 import { userFacadeFactory } from 'user/infrastructure/facade';
 import { MAP_API_QUERY_HANDLERS } from './infrastructure/adapter/map-api';

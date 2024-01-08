@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UnblockChatCommand } from './unblock-chat.command';
-import { ChatRepository } from 'chat/application/repository';
+import { ChatRepository } from 'chat/domain/repository';
 import { ChatAggregate } from 'chat/domain';
 
 @CommandHandler(UnblockChatCommand)

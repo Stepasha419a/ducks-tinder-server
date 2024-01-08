@@ -4,7 +4,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { USER_ALREADY_EXISTS } from 'common/constants/error';
 import { AuthUserAggregate } from 'user/domain/auth/auth-user.aggregate';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAggregate } from 'user/domain';
 import { TokenAdapter } from 'user/application/adapter';
 

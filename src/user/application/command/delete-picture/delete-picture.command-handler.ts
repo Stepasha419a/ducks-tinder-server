@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletePictureCommand } from './delete-picture.command';
 import { NotFoundException } from '@nestjs/common';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAggregate } from 'user/domain';
 import { FileAdapter } from 'user/application/adapter';
 

@@ -4,7 +4,7 @@ import { ChatController, ChatGateway } from './interface';
 import { PrismaModule } from 'prisma/prisma.module';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserModule } from 'user/user.module';
-import { ChatRepository } from './application/repository';
+import { ChatRepository } from './domain/repository';
 import { ChatAdapter } from './infrastructure/repository';
 import { chatFacadeFactory } from './infrastructure/facade';
 import { CHAT_COMMAND_HANDLERS } from 'chat/application/command';

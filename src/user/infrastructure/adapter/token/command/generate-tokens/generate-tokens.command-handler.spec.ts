@@ -3,7 +3,7 @@ import { GenerateTokensCommandHandler } from './generate-tokens.command-handler'
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokensCommand } from './generate-tokens.command';
 import { ConfigService } from '@nestjs/config';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,

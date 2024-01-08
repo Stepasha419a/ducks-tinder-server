@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPairsQuery } from './get-pairs.query';
 import { getDistanceFromLatLonInKm } from 'common/helpers';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAggregate } from 'user/domain';
 
 @QueryHandler(GetPairsQuery)

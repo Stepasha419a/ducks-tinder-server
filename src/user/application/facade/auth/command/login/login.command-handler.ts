@@ -3,7 +3,7 @@ import { LoginCommand } from './login.command';
 import { ForbiddenException } from '@nestjs/common';
 import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
 import { AuthUserAggregate } from 'user/domain/auth';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { TokenAdapter } from 'user/application/adapter';
 
 @CommandHandler(LoginCommand)

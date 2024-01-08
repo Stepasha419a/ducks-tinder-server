@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
 import { MAX_PICTURES_COUNT } from 'common/constants/error';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { PictureAggregate } from 'user/domain/picture';
 import { UserAggregate } from 'user/domain';
 import { FileAdapter } from 'user/application/adapter';

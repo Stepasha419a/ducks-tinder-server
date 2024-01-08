@@ -5,7 +5,7 @@ import {
   CAN_NOT_LIKE_YOURSELF,
   USER_ALREADY_CHECKED,
 } from 'common/constants/error';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 
 @CommandHandler(LikeUserCommand)
 export class LikeUserCommandHandler

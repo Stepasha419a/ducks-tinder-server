@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler

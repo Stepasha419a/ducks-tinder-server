@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletePairCommand } from './delete-pair.command';
 import { NotFoundException } from '@nestjs/common';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 
 @CommandHandler(DeletePairCommand)
 export class DeletePairCommandHandler

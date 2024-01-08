@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
 import { TokenAdapter } from 'user/application/adapter';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
 import { AuthUserAggregate } from 'user/domain/auth';
 import {

@@ -1,7 +1,7 @@
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SendMessageCommand } from './send-message.command';
-import { ChatRepository } from 'chat/application/repository';
+import { ChatRepository } from 'chat/domain/repository';
 import { MessageAggregate } from 'chat/domain';
 
 @CommandHandler(SendMessageCommand)

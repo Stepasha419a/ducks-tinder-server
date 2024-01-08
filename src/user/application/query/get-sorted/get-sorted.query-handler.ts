@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetSortedQuery } from './get-sorted.query';
 import { NotFoundException } from '@nestjs/common';
 import { getDistanceFromLatLonInKm, getSearchingCoords } from 'common/helpers';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { UserAggregate } from 'user/domain';
 
 @QueryHandler(GetSortedQuery)

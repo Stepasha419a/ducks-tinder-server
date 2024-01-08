@@ -3,7 +3,7 @@ import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
 import { TokenAdapterMock, UserRepositoryMock } from 'user/test/mock';
 import { TokenAdapter } from 'user/application/adapter';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 import { AuthUserAggregate } from 'user/domain/auth';
 import {
   AccessTokenValueObjectStub,

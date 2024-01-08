@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { ChatRepository } from '../../application/repository/chat.repository';
+import { ChatRepository } from '../../domain/repository/chat.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { ChatAggregate } from 'chat/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';

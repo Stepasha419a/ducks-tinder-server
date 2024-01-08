@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlockChatCommand } from './block-chat.command';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { ChatRepository } from 'chat/application/repository';
+import { ChatRepository } from 'chat/domain/repository';
 import { ChatAggregate } from 'chat/domain';
 
 @CommandHandler(BlockChatCommand)

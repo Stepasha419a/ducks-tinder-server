@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveTokenCommand } from './remove-token.command';
 import { UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from 'user/application/repository';
+import { UserRepository } from 'user/domain/repository';
 
 @CommandHandler(RemoveTokenCommand)
 export class RemoveTokenCommandHandler
