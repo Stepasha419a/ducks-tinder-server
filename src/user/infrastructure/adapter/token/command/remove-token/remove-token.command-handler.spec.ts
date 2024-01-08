@@ -1,69 +1,104 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
 import { RemoveTokenCommandHandler } from './remove-token.command-handler';
 import { RemoveTokenCommand } from './remove-token.command';
-import { TokensPrismaMock } from 'tokens/legacy/test/mocks';
-import { tokensStub } from 'tokens/legacy/test/stubs';
+import { UserRepository } from 'user/domain/repository';
+import { UserRepositoryMock } from 'user/test/mock';
+import { RefreshTokenValueObjectStub } from 'user/test/stub';
+import { HttpStatus } from '@nestjs/common';
 
-describe('when generateTokens is called', () => {
-  let prismaService: PrismaService;
+describe('when removeToken is called', () => {
+  let repository: UserRepository;
 
   let removeTokenCommandHandler: RemoveTokenCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [RemoveTokenCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(TokensPrismaMock())
-      .compile();
+      providers: [
+        RemoveTokenCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     removeTokenCommandHandler = moduleRef.get<RemoveTokenCommandHandler>(
       RemoveTokenCommandHandler,
     );
   });
 
-  let response;
+  describe('when it is called correctly', () => {
+    let response;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
+    beforeEach(async () => {
+      jest.clearAllMocks();
 
-    prismaService.token.findUnique = jest.fn().mockResolvedValue({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+      repository.findRefreshTokenByValue = jest
+        .fn()
+        .mockResolvedValue(RefreshTokenValueObjectStub());
+
+      repository.deleteRefreshToken = jest.fn().mockResolvedValue(true);
+
+      response = await removeTokenCommandHandler.execute(
+        new RemoveTokenCommand(RefreshTokenValueObjectStub().value),
+      );
     });
 
-    prismaService.token.delete = jest.fn().mockResolvedValue({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+    it('should call repository findRefreshTokenByValue', () => {
+      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
+      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().value,
+      );
     });
 
-    response = await removeTokenCommandHandler.execute(
-      new RemoveTokenCommand(tokensStub().refreshToken),
-    );
+    it('should call repository deleteRefreshToken', () => {
+      expect(repository.deleteRefreshToken).toBeCalledTimes(1);
+      expect(repository.deleteRefreshToken).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().id,
+      );
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
   });
 
-  it('should call prismaService token findUnique', () => {
-    expect(prismaService.token.findUnique).toBeCalledTimes(1);
-    expect(prismaService.token.findUnique).toHaveBeenCalledWith({
-      where: { refreshToken: tokensStub().refreshToken },
-    });
-  });
+  describe('when there is no existingRefreshToken', () => {
+    let response;
+    let error;
 
-  it('should call prismaService token delete', () => {
-    expect(prismaService.token.delete).toBeCalledTimes(1);
-    expect(prismaService.token.delete).toHaveBeenCalledWith({
-      where: { refreshToken: tokensStub().refreshToken },
-    });
-  });
+    beforeEach(async () => {
+      jest.clearAllMocks();
 
-  it('should return tokens', () => {
-    expect(response).toEqual({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+      repository.findRefreshTokenByValue = jest.fn().mockResolvedValue(false);
+
+      repository.deleteRefreshToken = jest.fn().mockResolvedValue(true);
+
+      try {
+        response = await removeTokenCommandHandler.execute(
+          new RemoveTokenCommand(RefreshTokenValueObjectStub().value),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call repository findRefreshTokenByValue', () => {
+      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
+      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().value,
+      );
+    });
+
+    it('should not call repository deleteRefreshToken', () => {
+      expect(repository.deleteRefreshToken).not.toBeCalled();
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Unauthorized');
+      expect(error?.status).toEqual(HttpStatus.UNAUTHORIZED);
     });
   });
 });
