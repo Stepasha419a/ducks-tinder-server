@@ -27,7 +27,7 @@ export class ValidateRefreshTokenCommandHandler
     }
 
     try {
-      const userData: UserTokenDto = await this.jwtService.verifyAsync(
+      const userData: UserTokenDto = await this.jwtService.verify(
         existingRefreshToken.value,
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

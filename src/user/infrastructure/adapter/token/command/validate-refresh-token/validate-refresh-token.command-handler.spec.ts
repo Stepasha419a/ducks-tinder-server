@@ -1,19 +1,20 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
+import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token.command-handler';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { UserRepository } from 'user/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
-  TokensPrismaMock,
-} from 'tokens/test/mocks';
-import { tokensStub } from 'tokens/test/stubs';
-import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
-import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token.command-handler';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+  UserRepositoryMock,
+} from 'user/test/mock';
+import { RefreshTokenValueObjectStub, UserStub } from 'user/test/stub';
+import { UserTokenDto } from 'user/application/adapter';
+import { HttpStatus } from '@nestjs/common';
 
 describe('when validateRefreshToken is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let jwtService: JwtService;
   let configService: ConfigService;
 
@@ -21,26 +22,16 @@ describe('when validateRefreshToken is called', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [ValidateRefreshTokenCommandHandler],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        PrismaModule,
-        JwtModule.register({}),
+      providers: [
+        ValidateRefreshTokenCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+        { provide: JwtService, useValue: JwtServiceMock() },
+        { provide: ConfigService, useValue: ConfigServiceMock() },
       ],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(TokensPrismaMock())
-      .overrideProvider(JwtService)
-      .useValue(JwtServiceMock())
-      .overrideProvider(ConfigService)
-      .useValue(ConfigServiceMock())
-      .compile();
+    }).compile();
 
+    repository = moduleRef.get<UserRepository>(UserRepository);
     jwtService = moduleRef.get<JwtService>(JwtService);
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
     configService = moduleRef.get<ConfigService>(ConfigService);
     validateRefreshTokenCommandHandler =
       moduleRef.get<ValidateRefreshTokenCommandHandler>(
@@ -48,44 +39,147 @@ describe('when validateRefreshToken is called', () => {
       );
   });
 
-  let response;
+  describe('when it is called correctly', () => {
+    let response;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
+    beforeEach(async () => {
+      jest.clearAllMocks();
 
-    configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
-    prismaService.token.findUnique = jest.fn().mockResolvedValue({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+      repository.findRefreshTokenByValue = jest
+        .fn()
+        .mockResolvedValue(RefreshTokenValueObjectStub());
+      configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
+      jwtService.verify = jest.fn().mockResolvedValue({
+        email: UserStub().email,
+        userId: UserStub().id,
+      } as UserTokenDto);
+
+      response = await validateRefreshTokenCommandHandler.execute(
+        new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+      );
     });
-    jwtService.verify = jest.fn().mockResolvedValue({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+
+    it('should call repository findRefreshTokenByValue', () => {
+      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
+      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().value,
+      );
     });
 
-    response = await validateRefreshTokenCommandHandler.execute(
-      new ValidateRefreshTokenCommand(tokensStub().refreshToken),
-    );
+    it('should call jwtService verify', () => {
+      expect(jwtService.verify).toBeCalledTimes(1);
+      expect(jwtService.verify).toBeCalledWith(
+        RefreshTokenValueObjectStub().value,
+        {
+          secret: 'TOKENS_SECRET',
+        },
+      );
+    });
+
+    it('should call configService get', () => {
+      expect(configService.get).toBeCalledTimes(1);
+      expect(configService.get).toBeCalledWith('JWT_REFRESH_SECRET');
+    });
+
+    it('should return tokens', () => {
+      expect(response).toEqual({
+        email: UserStub().email,
+        userId: UserStub().id,
+      });
+    });
   });
 
-  it('should call prismaService token findUnique', () => {
-    expect(prismaService.token.findUnique).toBeCalledTimes(1);
-    expect(prismaService.token.findUnique).toHaveBeenCalledWith({
-      where: { refreshToken: tokensStub().refreshToken },
+  describe('when there is no existingRefreshToken', () => {
+    let response;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+
+      repository.findRefreshTokenByValue = jest.fn().mockResolvedValue(null);
+      configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
+      jwtService.verify = jest.fn().mockResolvedValue({
+        email: UserStub().email,
+        userId: UserStub().id,
+      } as UserTokenDto);
+
+      try {
+        response = await validateRefreshTokenCommandHandler.execute(
+          new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call repository findRefreshTokenByValue', () => {
+      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
+      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().value,
+      );
+    });
+
+    it('should not call jwtService verify', () => {
+      expect(jwtService.verify).not.toBeCalled();
+    });
+
+    it('should not call configService get', () => {
+      expect(configService.get).not.toBeCalled();
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Unauthorized');
+      expect(error?.status).toEqual(HttpStatus.UNAUTHORIZED);
     });
   });
 
-  it('should call jwtService verify', () => {
-    expect(jwtService.verify).toBeCalledTimes(1);
-    expect(jwtService.verify).toBeCalledWith(tokensStub().refreshToken, {
-      secret: 'TOKENS_SECRET',
-    });
-  });
+  describe('when there is no valid token', () => {
+    let response;
 
-  it('should return tokens', () => {
-    expect(response).toEqual({
-      id: 'token-id',
-      refreshToken: tokensStub().refreshToken,
+    beforeEach(async () => {
+      jest.clearAllMocks();
+
+      repository.findRefreshTokenByValue = jest
+        .fn()
+        .mockResolvedValue(RefreshTokenValueObjectStub());
+      configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
+      jwtService.verify = jest.fn().mockImplementation(() => {
+        throw new Error('Token is not valid');
+      });
+
+      response = await validateRefreshTokenCommandHandler.execute(
+        new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+      );
+    });
+
+    it('should call repository findRefreshTokenByValue', () => {
+      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
+      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+        RefreshTokenValueObjectStub().value,
+      );
+    });
+
+    it('should call jwtService verify', () => {
+      expect(jwtService.verify).toBeCalledTimes(1);
+      expect(jwtService.verify).toBeCalledWith(
+        RefreshTokenValueObjectStub().value,
+        {
+          secret: 'TOKENS_SECRET',
+        },
+      );
+    });
+
+    it('should call configService get', () => {
+      expect(configService.get).toBeCalledTimes(1);
+      expect(configService.get).toBeCalledWith('JWT_REFRESH_SECRET');
+    });
+
+    it('should return null', () => {
+      expect(response).toEqual(null);
     });
   });
 });
