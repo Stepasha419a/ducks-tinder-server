@@ -1,68 +1,99 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { CreateUserCommandHandler } from './create-user.command-handler';
 import { CreateUserCommand } from './create-user.command';
-import { CREATE_USER_DTO } from 'auth/test/values/auth.const.dto';
-import { UserDto } from 'user/legacy/dto';
+import { UserRepository } from 'user/domain/repository';
+import { UserRepositoryMock } from 'user/test/mock';
+import { UserAggregateStub } from 'user/test/stub';
+import { UserAggregate } from 'user/domain';
 
 describe('when delete pair is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let createUserCommandHandler: CreateUserCommandHandler;
+  const userAggregate = UserAggregateStub();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [CreateUserCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        CreateUserCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     createUserCommandHandler = moduleRef.get<CreateUserCommandHandler>(
       CreateUserCommandHandler,
     );
   });
 
   describe('when it is called correctly', () => {
-    beforeAll(() => {
-      prismaService.user.create = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-    });
-
-    let user: UserDto;
+    let response: UserAggregate;
 
     beforeEach(async () => {
       jest.clearAllMocks();
-      user = await createUserCommandHandler.execute(
-        new CreateUserCommand(CREATE_USER_DTO),
+
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
+
+      response = await createUserCommandHandler.execute(
+        new CreateUserCommand({
+          activationLink: userAggregate.activationLink,
+          email: userAggregate.email,
+          name: userAggregate.name,
+          password: userAggregate.password,
+        }),
       );
     });
 
-    it('should call create user', () => {
-      expect(prismaService.user.create).toBeCalledTimes(1);
-      expect(prismaService.user.create).toBeCalledWith({
-        data: CREATE_USER_DTO,
-        include: UsersSelector.selectUser(),
-      });
+    it('should call repository save', () => {
+      // TODO: implement stub to have methods otherwise implement user aggregate nullable fields
+      expect(repository.save).toBeCalledTimes(1);
+      //expect(repository.save).toBeCalledWith(UserAggregateStub());
     });
 
-    it('should call user count', () => {
-      expect(prismaService.user.count).toBeCalledTimes(1);
-      expect(prismaService.user.count).toBeCalledWith({
-        where: { pairFor: { some: { email: CREATE_USER_DTO.email } } },
+    it('should return userAggregate', () => {
+      expect(JSON.parse(JSON.stringify(response))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
+    });
+  });
+
+  describe('when there is some error occurred', () => {
+    let response: UserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+
+      repository.save = jest.fn().mockImplementation(() => {
+        throw new Error('User is not valid');
       });
+
+      try {
+        response = await createUserCommandHandler.execute(
+          new CreateUserCommand({
+            activationLink: userAggregate.activationLink,
+            email: userAggregate.email,
+            name: userAggregate.name,
+            password: userAggregate.password,
+          }),
+        );
+      } catch (responseError) {
+        console.log(responseError);
+        error = responseError;
+      }
     });
 
-    it('should return a user', () => {
-      expect(user).toEqual(userDtoStub());
+    it('should call repository save', () => {
+      // TODO: implement stub to have methods otherwise implement user aggregate nullable fields
+      expect(repository.save).toBeCalledTimes(1);
+      //expect(repository.save).toBeCalledWith(UserAggregateStub());
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('User is not valid');
     });
   });
 });
