@@ -1,27 +1,25 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { requestUserStub, shortUserStub } from 'user/test/stubs';
-import { ShortUserWithoutDistance } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
 import { DeletePairCommandHandler } from './delete-pair.command-handler';
 import { DeletePairCommand } from './delete-pair.command';
+import { UserRepository } from 'user/domain/repository';
+import { UserRepositoryMock } from 'user/test/mock';
+import { UserAggregateStub, UserStub } from 'user/test/stub';
+import { HttpStatus } from '@nestjs/common';
 
 describe('when delete pair is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let deletePairCommandHandler: DeletePairCommandHandler;
+  const userPairId = '34545656';
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [DeletePairCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        DeletePairCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     deletePairCommandHandler = moduleRef.get<DeletePairCommandHandler>(
       DeletePairCommandHandler,
     );
@@ -29,107 +27,70 @@ describe('when delete pair is called', () => {
 
   describe('when it is called correctly', () => {
     beforeAll(() => {
-      prismaService.user.findFirst = jest.fn().mockResolvedValue({
-        id: '34545656',
-      });
-      prismaService.user.findUnique = jest
+      repository.findPair = jest
         .fn()
-        .mockResolvedValue({ ...shortUserStub(), distance: undefined });
+        .mockResolvedValue({ ...UserAggregateStub(), id: userPairId });
     });
 
-    let pair: ShortUserWithoutDistance;
-    const userPairId = '34545656';
+    let response: string;
 
     beforeEach(async () => {
       jest.clearAllMocks();
-      pair = await deletePairCommandHandler.execute(
-        new DeletePairCommand(requestUserStub(), userPairId),
+      response = await deletePairCommandHandler.execute(
+        new DeletePairCommand(UserStub().id, userPairId),
       );
     });
 
-    it('should call user find first', () => {
-      expect(prismaService.user.findFirst).toBeCalledTimes(1);
-      expect(prismaService.user.findFirst).toBeCalledWith({
-        where: {
-          id: userPairId,
-          pairFor: { some: { id: requestUserStub().id } },
-        },
-        select: { id: true },
-      });
+    it('should call repository findPair', () => {
+      expect(repository.findPair).toBeCalledTimes(1);
+      expect(repository.findPair).toBeCalledWith(userPairId, UserStub().id);
     });
 
-    it('should call user update', () => {
-      expect(prismaService.user.update).toBeCalledTimes(1);
-      expect(prismaService.user.update).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        data: {
-          pairs: { disconnect: { id: userPairId } },
-        },
-      });
+    it('should call repository deletePair', () => {
+      expect(repository.deletePair).toBeCalledTimes(1);
+      expect(repository.deletePair).toBeCalledWith(userPairId, UserStub().id);
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: userPairId },
-        select: UsersSelector.selectShortUser(),
-      });
-    });
-
-    it('should return deleted pair', () => {
-      expect(pair).toEqual({ ...shortUserStub(), distance: undefined });
+    it('should return deleted pair id', () => {
+      expect(response).toEqual(userPairId);
     });
   });
 
   describe('when there is no pair', () => {
     beforeAll(() => {
-      prismaService.user.findFirst = jest.fn().mockResolvedValue(undefined);
-      prismaService.user.findUnique = jest
-        .fn()
-        .mockResolvedValue({ ...shortUserStub(), distance: undefined });
+      repository.findPair = jest.fn().mockResolvedValue(null);
     });
 
-    let pair: ShortUserWithoutDistance;
+    let response: string;
     let error;
-    const userPairId = '34545656';
 
     beforeEach(async () => {
       jest.clearAllMocks();
       try {
-        pair = await deletePairCommandHandler.execute(
-          new DeletePairCommand(requestUserStub(), userPairId),
+        response = await deletePairCommandHandler.execute(
+          new DeletePairCommand(UserStub().id, userPairId),
         );
       } catch (responseError) {
         error = responseError;
       }
     });
 
-    it('should call user find first', () => {
-      expect(prismaService.user.findFirst).toBeCalledTimes(1);
-      expect(prismaService.user.findFirst).toBeCalledWith({
-        where: {
-          id: userPairId,
-          pairFor: { some: { id: requestUserStub().id } },
-        },
-        select: { id: true },
-      });
+    it('should call repository findPair', () => {
+      expect(repository.findPair).toBeCalledTimes(1);
+      expect(repository.findPair).toBeCalledWith(userPairId, UserStub().id);
     });
 
-    it('should not call user update', () => {
-      expect(prismaService.user.update).not.toBeCalled();
-    });
-
-    it('should not call user find unique', () => {
-      expect(prismaService.user.findUnique).not.toBeCalled();
-    });
-
-    it('should throw an error', () => {
-      expect(error.status).toEqual(404);
-      expect(error.message).toEqual('Not Found');
+    it('should not call repository deletePair', () => {
+      expect(repository.deletePair).not.toBeCalled();
     });
 
     it('should return undefined', () => {
-      expect(pair).toEqual(undefined);
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error.message).toEqual('Not Found');
+      expect(error.status).toEqual(HttpStatus.NOT_FOUND);
     });
   });
 });

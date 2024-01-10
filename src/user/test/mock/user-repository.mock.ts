@@ -14,6 +14,7 @@ export const UserRepositoryMock = jest.fn().mockReturnValue({
   createPair: jest.fn(),
   makeChecked: jest.fn(),
   delete: jest.fn(),
+  deletePair: jest.fn(),
   deleteUserCheck: jest.fn(),
   deleteRefreshToken: jest.fn(),
 });
