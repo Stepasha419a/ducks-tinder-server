@@ -397,6 +397,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
+    // TODO: optimize by not getting an array with many checks (too big arrays)
     const checkedUsers = await this.prismaService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { checkedId: checkId }] },
       select: {

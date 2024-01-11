@@ -1,25 +1,26 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { requestUserStub, userDtoStub } from 'user/test/stubs';
 import { DislikeUserCommand } from './dislike-user.command';
 import { DislikeUserCommandHandler } from './dislike-user.command-handler';
+import { UserRepository } from 'user/domain/repository';
+import { UserRepositoryMock } from 'user/test/mock';
+import { UserAggregateStub, UserStub } from 'user/test/stub';
+import { HttpStatus } from '@nestjs/common';
+import { USER_ALREADY_CHECKED } from 'common/constants/error';
 
 describe('when dislike user is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let dislikeUserCommandHandler: DislikeUserCommandHandler;
+  const pairId = '34545656';
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [DislikeUserCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        DislikeUserCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     dislikeUserCommandHandler = moduleRef.get<DislikeUserCommandHandler>(
       DislikeUserCommandHandler,
     );
@@ -27,10 +28,8 @@ describe('when dislike user is called', () => {
 
   describe('when it is called correctly', () => {
     beforeAll(() => {
-      prismaService.user.findUnique = jest
-        .fn()
-        .mockResolvedValue(userDtoStub());
-      prismaService.checkedUsers.findMany = jest.fn().mockResolvedValue([]);
+      repository.findOne = jest.fn().mockResolvedValue(UserAggregateStub());
+      repository.findCheckedUserIds = jest.fn().mockResolvedValue([]);
     });
 
     let response;
@@ -38,39 +37,120 @@ describe('when dislike user is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
       response = await dislikeUserCommandHandler.execute(
-        new DislikeUserCommand(requestUserStub(), '34545656'),
+        new DislikeUserCommand(UserStub().id, pairId),
       );
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: '34545656' },
-      });
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toBeCalledTimes(1);
+      expect(repository.findOne).toBeCalledWith(pairId);
     });
 
-    it('should call checkedUsers find many', () => {
-      expect(prismaService.checkedUsers.findMany).toBeCalledTimes(1);
-      expect(prismaService.checkedUsers.findMany).toBeCalledWith({
-        where: {
-          OR: [{ checkedId: requestUserStub().id }, { checkedId: '34545656' }],
-        },
-        select: {
-          checked: { select: { id: true } },
-          wasChecked: { select: { id: true } },
-        },
-      });
+    it('should call repository findCheckedUserIds', () => {
+      expect(repository.findCheckedUserIds).toBeCalledTimes(1);
+      expect(repository.findCheckedUserIds).toBeCalledWith(
+        UserStub().id,
+        pairId,
+      );
     });
 
-    it('should call checkedUsers create', () => {
-      expect(prismaService.checkedUsers.create).toBeCalledTimes(1);
-      expect(prismaService.checkedUsers.create).toBeCalledWith({
-        data: { wasCheckedId: requestUserStub().id, checkedId: '34545656' },
-      });
+    it('should call repository makeChecked', () => {
+      expect(repository.makeChecked).toBeCalledTimes(1);
+      expect(repository.makeChecked).toBeCalledWith(pairId, UserStub().id);
     });
 
     it('should return undefined', () => {
       expect(response).toEqual(undefined);
+    });
+  });
+
+  describe('when there is no such user', () => {
+    beforeAll(() => {
+      repository.findOne = jest.fn().mockResolvedValue(null);
+      repository.findCheckedUserIds = jest.fn().mockResolvedValue([]);
+    });
+
+    let response;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        response = await dislikeUserCommandHandler.execute(
+          new DislikeUserCommand(UserStub().id, pairId),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toBeCalledTimes(1);
+      expect(repository.findOne).toBeCalledWith(pairId);
+    });
+
+    it('should not call repository findCheckedUserIds', () => {
+      expect(repository.findCheckedUserIds).not.toBeCalled();
+    });
+
+    it('should call repository makeChecked', () => {
+      expect(repository.makeChecked).not.toBeCalled();
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Not Found');
+      expect(error?.status).toEqual(HttpStatus.NOT_FOUND);
+    });
+  });
+
+  describe('when there is already checked user', () => {
+    beforeAll(() => {
+      repository.findOne = jest.fn().mockResolvedValue(UserAggregateStub());
+      repository.findCheckedUserIds = jest.fn().mockResolvedValue([pairId]);
+    });
+
+    let response;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        response = await dislikeUserCommandHandler.execute(
+          new DislikeUserCommand(UserStub().id, pairId),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toBeCalledTimes(1);
+      expect(repository.findOne).toBeCalledWith(pairId);
+    });
+
+    it('should call repository findCheckedUserIds', () => {
+      expect(repository.findCheckedUserIds).toBeCalledTimes(1);
+      expect(repository.findCheckedUserIds).toBeCalledWith(
+        UserStub().id,
+        pairId,
+      );
+    });
+
+    it('should not call repository makeChecked', () => {
+      expect(repository.makeChecked).not.toBeCalled();
+    });
+
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual(USER_ALREADY_CHECKED);
+      expect(error?.status).toEqual(HttpStatus.BAD_REQUEST);
     });
   });
 });
