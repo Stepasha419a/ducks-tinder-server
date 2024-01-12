@@ -7,6 +7,7 @@ import { ChatModule } from 'chat/chat.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { resolve } from 'path';
 import { AccessTokenGuard } from 'common/guards';
+import { AuthModule } from 'auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AccessTokenGuard } from 'common/guards';
     }),
     PrismaModule,
     UserModule,
+    AuthModule,
     ChatModule,
   ],
   providers: [

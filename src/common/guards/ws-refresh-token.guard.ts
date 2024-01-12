@@ -4,18 +4,22 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
+import { TokenAdapter } from 'auth/application/adapter/token';
 import { REFRESH_TOKEN_REGEX } from 'common/constants';
 import { UserService } from 'user/interface';
 
 @Injectable()
 export class WsRefreshTokenGuard implements CanActivate {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly tokenAdapter: TokenAdapter,
+    private readonly userService: UserService,
+  ) {}
 
   async canActivate(context: ExecutionContext) {
     const client = context.switchToWs().getClient();
     const refreshToken = this.getRefreshTokenFromWs(client);
 
-    const userData = await this.userService.validateRefreshToken(refreshToken);
+    const userData = await this.tokenAdapter.validateRefreshToken(refreshToken);
     if (!userData) {
       throw new UnauthorizedException();
     }

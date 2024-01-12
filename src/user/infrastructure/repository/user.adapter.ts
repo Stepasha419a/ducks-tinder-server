@@ -3,7 +3,6 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from 'user/domain/repository';
 import {
   PlaceAggregate,
-  RefreshTokenValueObject,
   User,
   UserAggregate,
   UserCheckAggregate,
@@ -15,7 +14,6 @@ import {
   Picture as PrismaPicture,
   Place as PrismaPlace,
   Prisma,
-  Token,
 } from '@prisma/client';
 import { Picture, PictureAggregate } from 'user/domain/picture';
 
@@ -285,37 +283,6 @@ export class UserAdapter implements UserRepository {
     'zodiacSign',
   ];
 
-  async saveRefreshToken(
-    refreshToken: RefreshTokenValueObject,
-  ): Promise<RefreshTokenValueObject> {
-    const existingRefreshToken = await this.findRefreshToken(refreshToken.id);
-
-    if (existingRefreshToken) {
-      const { id, ...toUpdate } = refreshToken;
-      const updatedRefreshToken = await this.prismaService.token.update({
-        where: { id },
-        data: {
-          refreshToken: toUpdate.value,
-          createdAt: toUpdate.createdAt,
-          updatedAt: toUpdate.updatedAt,
-        },
-      });
-
-      return this.getRefreshTokenAggregate(updatedRefreshToken);
-    }
-
-    const savedRefreshToken = await this.prismaService.token.create({
-      data: {
-        id: refreshToken.id,
-        refreshToken: refreshToken.value,
-        createdAt: refreshToken.createdAt,
-        updatedAt: refreshToken.updatedAt,
-      },
-    });
-
-    return this.getRefreshTokenAggregate(savedRefreshToken);
-  }
-
   async findOne(id: string): Promise<UserAggregate | null> {
     const existingUser = await this.prismaService.user
       .findUnique({
@@ -435,40 +402,6 @@ export class UserAdapter implements UserRepository {
     }
 
     return this.getUserCheckAggregate(userCheck);
-  }
-
-  async findRefreshToken(id: string): Promise<RefreshTokenValueObject> {
-    const existingRefreshToken = await this.prismaService.token
-      .findUnique({
-        where: { id },
-      })
-      .catch(() => {
-        return null;
-      });
-
-    if (!existingRefreshToken) {
-      return null;
-    }
-
-    return this.getRefreshTokenAggregate(existingRefreshToken);
-  }
-
-  async findRefreshTokenByValue(
-    value: string,
-  ): Promise<RefreshTokenValueObject> {
-    const existingRefreshToken = await this.prismaService.token
-      .findUnique({
-        where: { refreshToken: value },
-      })
-      .catch(() => {
-        return null;
-      });
-
-    if (!existingRefreshToken) {
-      return null;
-    }
-
-    return this.getRefreshTokenAggregate(existingRefreshToken);
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
@@ -591,16 +524,6 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedUserCheck);
   }
 
-  async deleteRefreshToken(id: string): Promise<boolean> {
-    const deletedRefreshToken = await this.prismaService.token
-      .delete({ where: { id } })
-      .catch(() => {
-        return false;
-      });
-
-    return Boolean(deletedRefreshToken);
-  }
-
   private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
     return PictureAggregate.create({
       ...picture,
@@ -632,17 +555,6 @@ export class UserAdapter implements UserRepository {
       ...userCheck,
       createdAt: userCheck.createdAt.toISOString(),
       updatedAt: userCheck.updatedAt.toISOString(),
-    });
-  }
-
-  private getRefreshTokenAggregate(
-    refreshToken: Token,
-  ): RefreshTokenValueObject {
-    return RefreshTokenValueObject.create({
-      ...refreshToken,
-      value: refreshToken.refreshToken,
-      updatedAt: refreshToken.updatedAt.toISOString(),
-      createdAt: refreshToken.createdAt.toISOString(),
     });
   }
 

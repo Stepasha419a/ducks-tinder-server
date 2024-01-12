@@ -1,0 +1,1 @@
+export { TokenAdapterImplementation } from './token';

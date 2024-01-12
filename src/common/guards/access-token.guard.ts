@@ -8,11 +8,13 @@ import {
 import { UserService } from 'user/interface';
 import { IS_PUBLIC_KEY } from 'common/constants';
 import { Request } from 'express';
+import { TokenAdapter } from 'auth/application/adapter/token';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
+    private readonly tokenAdapter: TokenAdapter,
     private readonly userService: UserService,
   ) {}
 
@@ -28,7 +30,7 @@ export class AccessTokenGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const accessToken = this.extractTokenFromHeader(req);
 
-    const userData = await this.userService.validateAccessToken(accessToken);
+    const userData = await this.tokenAdapter.validateAccessToken(accessToken);
     if (!userData) {
       throw new UnauthorizedException();
     }

@@ -11,6 +11,7 @@ import { CHAT_COMMAND_HANDLERS } from 'chat/application/command';
 import { CHAT_QUERY_HANDLERS } from 'chat/application/query';
 import { ChatFacade } from './application';
 import { CHAT_EVENT_HANDLERS } from './application/event';
+import { AuthModule } from 'auth/auth.module';
 
 @Module({
   controllers: [ChatController],
@@ -26,6 +27,12 @@ import { CHAT_EVENT_HANDLERS } from './application/event';
       useFactory: chatFacadeFactory,
     },
   ],
-  imports: [PrismaModule, CqrsModule, EventEmitterModule.forRoot(), UserModule],
+  imports: [
+    PrismaModule,
+    CqrsModule,
+    EventEmitterModule.forRoot(),
+    UserModule,
+    AuthModule,
+  ],
 })
 export class ChatModule {}
