@@ -1,86 +1,179 @@
 import { Test } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
-import { UsersService } from 'users/users.service';
-import { UsersModule } from 'users/users.module';
-import { TokensService } from 'tokens/tokens.service';
-import { TokensModule } from 'tokens/tokens.module';
-import { TokensServiceMock, UsersServiceMock } from 'auth/test/mocks';
-import { AuthDataReturn } from 'auth/auth.interface';
 import { RefreshCommand } from './refresh.command';
-import { userDataStub } from 'auth/test/stubs';
-import { userDtoStub } from 'users/test/stubs';
 import { RefreshCommandHandler } from './refresh.command-handler';
+import { UserAggregateStub, UserStub } from 'user/test/stub';
+import { HttpStatus } from '@nestjs/common';
+import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
+import {
+  AccessTokenValueObjectStub,
+  AuthUserAggregateStub,
+  RefreshTokenValueObjectStub,
+} from 'auth/test/stub';
+import { AuthUserAggregate } from 'auth/domain';
+import { UserService } from 'user/interface';
 
 describe('when refresh is called', () => {
-  let tokensService: TokensService;
-  let usersService: UsersService;
+  let tokenAdapter: TokenAdapter;
+  let userService: UserService;
   let refreshCommandHandler: RefreshCommandHandler;
+  const userStub = UserStub();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [RefreshCommandHandler],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        UsersModule,
-        TokensModule,
+      providers: [
+        RefreshCommandHandler,
+        {
+          provide: UserService,
+          useValue: UserServiceMock(),
+        },
+        { provide: TokenAdapter, useValue: TokenAdapterMock() },
       ],
-    })
-      .overrideProvider(UsersService)
-      .useValue(UsersServiceMock())
-      .overrideProvider(TokensService)
-      .useValue(TokensServiceMock())
-      .compile();
+    }).compile();
 
-    tokensService = moduleRef.get<TokensService>(TokensService);
-    usersService = moduleRef.get<UsersService>(UsersService);
+    userService = moduleRef.get<UserService>(UserService);
+    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     refreshCommandHandler = moduleRef.get<RefreshCommandHandler>(
       RefreshCommandHandler,
     );
   });
 
-  let data: AuthDataReturn;
-
   describe('when it is called correctly', () => {
     beforeAll(async () => {
-      usersService.getUser = jest.fn().mockResolvedValue(userDtoStub());
-      tokensService.generateTokens = jest.fn().mockResolvedValue({
-        refreshToken: userDataStub().refreshToken,
-        accessToken: userDataStub().data.accessToken,
+      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
+        userId: UserStub().id,
       });
-      tokensService.validateRefreshToken = jest.fn().mockResolvedValue({
-        id: userDtoStub().id,
+      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
+
+    let data: AuthUserAggregate;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       data = await refreshCommandHandler.execute(
-        new RefreshCommand(userDataStub().refreshToken),
+        new RefreshCommand('refresh-token-value'),
       );
     });
 
-    it('should call tokensService validateRefreshToken', () => {
-      expect(tokensService.validateRefreshToken).toBeCalledWith(
-        userDataStub().refreshToken,
+    it('should call tokenAdapter validateRefreshToken', () => {
+      expect(tokenAdapter.validateRefreshToken).toBeCalledWith(
+        'refresh-token-value',
       );
     });
 
-    it('should call usersService getUser', () => {
-      expect(usersService.getUser).toBeCalledWith(userDtoStub().id);
+    it('should call userService getUser', () => {
+      expect(userService.getUser).toBeCalledWith(userStub.id);
     });
 
-    it('should call tokensService generateTokens', () => {
-      expect(tokensService.generateTokens).toBeCalledWith({
-        id: userDtoStub().id,
-        email: userDtoStub().email,
+    it('should call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).toBeCalledWith({
+        userId: userStub.id,
+        email: userStub.email,
       });
     });
 
-    it('should return userData', () => {
-      expect(data).toEqual(userDataStub());
+    it('should return AuthUserAggregate', () => {
+      expect(JSON.parse(JSON.stringify(data))).toEqual(AuthUserAggregateStub());
+    });
+  });
+
+  describe('when there is no refreshTokenValue', () => {
+    beforeAll(async () => {
+      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
+        userId: UserStub().id,
+      });
+      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
+      });
+    });
+
+    let data: AuthUserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        data = await refreshCommandHandler.execute(
+          new RefreshCommand(undefined),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should not call tokenAdapter validateRefreshToken', () => {
+      expect(tokenAdapter.validateRefreshToken).not.toBeCalled();
+    });
+
+    it('should not call userService getUser', () => {
+      expect(userService.getUser).not.toBeCalled();
+    });
+
+    it('should not call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    });
+
+    it('should not return AuthUserAggregate', () => {
+      expect(data).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Unauthorized');
+      expect(error?.status).toEqual(HttpStatus.UNAUTHORIZED);
+    });
+  });
+
+  describe('when there is no userData', () => {
+    beforeAll(async () => {
+      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue(null);
+      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
+      });
+    });
+
+    let data: AuthUserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        data = await refreshCommandHandler.execute(
+          new RefreshCommand('refresh-token-value'),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call tokenAdapter validateRefreshToken', () => {
+      expect(tokenAdapter.validateRefreshToken).toBeCalledWith(
+        'refresh-token-value',
+      );
+    });
+
+    it('should not call userService getUser', () => {
+      expect(userService.getUser).not.toBeCalled();
+    });
+
+    it('should not call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    });
+
+    it('should not return AuthUserAggregate', () => {
+      expect(data).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Unauthorized');
+      expect(error?.status).toEqual(HttpStatus.UNAUTHORIZED);
     });
   });
 });

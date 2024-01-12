@@ -1,84 +1,191 @@
 import { Test } from '@nestjs/testing';
-import { userDtoStub } from 'users/test/stubs';
-import { AuthDataReturn } from 'auth/auth.interface';
-import { LOGIN_USER_DTO } from 'auth/test/values/auth.const.dto';
-import { UsersService } from 'users/users.service';
-import { TokensServiceMock, UsersServiceMock } from 'auth/test/mocks';
-import { TokensService } from 'tokens/tokens.service';
-import { userDataStub } from 'auth/test/stubs';
-import { UsersModule } from 'users/users.module';
-import { TokensModule } from 'tokens/tokens.module';
-import { ConfigModule } from '@nestjs/config';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
+import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
+import { HttpStatus } from '@nestjs/common';
+import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
+import {
+  AccessTokenValueObjectStub,
+  AuthUserAggregateStub,
+  RefreshTokenValueObjectStub,
+  UserAggregateStub,
+} from 'auth/test/stub';
+import { AuthUserAggregate } from 'auth/domain';
+import { UserService } from 'user/interface';
 
 describe('when login is called', () => {
-  let usersService: UsersService;
-  let tokensService: TokensService;
+  let userService: UserService;
+  let tokenAdapter: TokenAdapter;
   let loginCommandHandler: LoginCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [LoginCommandHandler],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        UsersModule,
-        TokensModule,
+      providers: [
+        LoginCommandHandler,
+        { provide: UserService, useValue: UserServiceMock() },
+        { provide: TokenAdapter, useValue: TokenAdapterMock() },
       ],
-    })
-      .overrideProvider(UsersService)
-      .useValue(UsersServiceMock())
-      .overrideProvider(TokensService)
-      .useValue(TokensServiceMock())
-      .compile();
+    }).compile();
 
-    usersService = moduleRef.get<UsersService>(UsersService);
-    tokensService = moduleRef.get<TokensService>(TokensService);
+    userService = moduleRef.get<UserService>(UserService);
+    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     loginCommandHandler =
       moduleRef.get<LoginCommandHandler>(LoginCommandHandler);
   });
 
   describe('when it is called correctly', () => {
+    const userAggregate = UserAggregateStub();
+
     beforeAll(() => {
-      usersService.getUserByEmail = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-        pairsCount: 5,
-        password:
-          '$2a$07$HQtmk3r9h1Gg1YiOLO67duUs3GPDg5.KKCtPSm/152gqIALiRvs6q',
-        interests: [{ name: 'programming' }],
-      });
-      tokensService.generateTokens = jest.fn().mockResolvedValue({
-        refreshToken: userDataStub().refreshToken,
-        accessToken: userDataStub().data.accessToken,
+      userService.getUserByEmail = jest.fn().mockResolvedValue(userAggregate);
+      userAggregate.comparePasswords = jest.fn().mockResolvedValue(true);
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthDataReturn;
+    let data: AuthUserAggregate;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       data = await loginCommandHandler.execute(
-        new LoginCommand(LOGIN_USER_DTO),
+        new LoginCommand({
+          email: userAggregate.email,
+          password: userAggregate.password,
+        }),
       );
     });
 
-    it('should call usersService getUserByEmail', () => {
-      expect(usersService.getUserByEmail).toBeCalledWith(LOGIN_USER_DTO.email);
+    it('should call userService getUserByEmail', () => {
+      expect(userService.getUserByEmail).toBeCalledTimes(1);
+      expect(userService.getUserByEmail).toBeCalledWith(userAggregate.email);
     });
 
-    it('should call tokensService generateTokens', () => {
-      expect(tokensService.generateTokens).toBeCalledWith({
-        id: userDtoStub().id,
-        email: userDtoStub().email,
+    it('should call aggregate comparePasswords', () => {
+      expect(userAggregate.comparePasswords).toBeCalledTimes(1);
+      expect(userAggregate.comparePasswords).toBeCalledWith(
+        userAggregate.password,
+      );
+    });
+
+    it('should call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).toBeCalledTimes(1);
+      expect(tokenAdapter.generateTokens).toBeCalledWith({
+        userId: userAggregate.id,
+        email: userAggregate.email,
       });
     });
 
-    it('should return userData', () => {
-      expect(data).toEqual(userDataStub());
+    it('should return authUserAggregate', () => {
+      expect(JSON.parse(JSON.stringify(data))).toStrictEqual(
+        AuthUserAggregateStub(),
+      );
+    });
+  });
+
+  describe('when there is no such user', () => {
+    const userAggregate = UserAggregateStub();
+
+    beforeAll(() => {
+      userService.getUserByEmail = jest.fn().mockResolvedValue(undefined);
+      userAggregate.comparePasswords = jest.fn().mockResolvedValue(true);
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
+      });
+    });
+
+    let data: AuthUserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        data = await loginCommandHandler.execute(
+          new LoginCommand({
+            email: userAggregate.email,
+            password: userAggregate.password,
+          }),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call userService getUserByEmail', () => {
+      expect(userService.getUserByEmail).toBeCalledWith(userAggregate.email);
+    });
+
+    it('should not call aggregate comparePasswords', () => {
+      expect(userAggregate.comparePasswords).not.toBeCalled();
+    });
+
+    it('should not call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    });
+
+    it('should not return authUserAggregate', () => {
+      expect(data).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual(INCORRECT_EMAIL_OR_PASSWORD);
+      expect(error?.status).toEqual(HttpStatus.FORBIDDEN);
+    });
+  });
+
+  describe('when there is a wrong password', () => {
+    const userAggregate = UserAggregateStub();
+
+    beforeAll(() => {
+      userService.getUserByEmail = jest.fn().mockResolvedValue(userAggregate);
+      userAggregate.comparePasswords = jest.fn().mockResolvedValue(false);
+      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+        refreshTokenValueObject: RefreshTokenValueObjectStub(),
+        accessTokenValueObject: AccessTokenValueObjectStub(),
+      });
+    });
+
+    let data: AuthUserAggregate;
+    let error;
+
+    beforeEach(async () => {
+      jest.clearAllMocks();
+      try {
+        data = await loginCommandHandler.execute(
+          new LoginCommand({
+            email: userAggregate.email,
+            password: userAggregate.password,
+          }),
+        );
+      } catch (responseError) {
+        error = responseError;
+      }
+    });
+
+    it('should call userService getUserByEmail', () => {
+      expect(userService.getUserByEmail).toBeCalledWith(userAggregate.email);
+    });
+
+    it('should call aggregate comparePasswords', () => {
+      expect(userAggregate.comparePasswords).toBeCalledWith(
+        userAggregate.password,
+      );
+    });
+
+    it('should not call tokenAdapter generateTokens', () => {
+      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    });
+
+    it('should not return authUserAggregate', () => {
+      expect(data).toEqual(undefined);
+    });
+
+    it('should throw an error', () => {
+      expect(error?.message).toEqual(INCORRECT_EMAIL_OR_PASSWORD);
+      expect(error?.status).toEqual(HttpStatus.FORBIDDEN);
     });
   });
 });
