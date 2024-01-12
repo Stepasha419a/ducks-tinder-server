@@ -1,7 +1,10 @@
 module.exports = {
   roots: ['<rootDir>'],
   moduleFileExtensions: ['js', 'json', 'ts'],
-  testMatch: ['**/auth/command/**/*.spec.ts', '**/token/command/**/*.spec.ts'],
+  testMatch: [
+    '**/auth/application/command/**/*.spec.ts',
+    '**/token/command/**/*.spec.ts',
+  ],
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },

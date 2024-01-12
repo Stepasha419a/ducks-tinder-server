@@ -1,13 +1,13 @@
 import { Test } from '@nestjs/testing';
 import { RemoveTokenCommandHandler } from './remove-token.command-handler';
 import { RemoveTokenCommand } from './remove-token.command';
-import { UserRepository } from 'user/domain/repository';
-import { UserRepositoryMock } from 'user/test/mock';
-import { RefreshTokenValueObjectStub } from 'user/test/stub';
 import { HttpStatus } from '@nestjs/common';
+import { RefreshTokenRepository } from 'auth/domain/repository';
+import { RefreshTokenRepositoryMock } from 'auth/test/mock';
+import { RefreshTokenValueObjectStub } from 'auth/test/stub';
 
 describe('when removeToken is called', () => {
-  let repository: UserRepository;
+  let repository: RefreshTokenRepository;
 
   let removeTokenCommandHandler: RemoveTokenCommandHandler;
 
@@ -15,11 +15,14 @@ describe('when removeToken is called', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         RemoveTokenCommandHandler,
-        { provide: UserRepository, useValue: UserRepositoryMock() },
+        {
+          provide: RefreshTokenRepository,
+          useValue: RefreshTokenRepositoryMock(),
+        },
       ],
     }).compile();
 
-    repository = moduleRef.get<UserRepository>(UserRepository);
+    repository = moduleRef.get<RefreshTokenRepository>(RefreshTokenRepository);
     removeTokenCommandHandler = moduleRef.get<RemoveTokenCommandHandler>(
       RemoveTokenCommandHandler,
     );
@@ -31,27 +34,26 @@ describe('when removeToken is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
-      repository.findRefreshTokenByValue = jest
+      repository.findOneByValue = jest
         .fn()
         .mockResolvedValue(RefreshTokenValueObjectStub());
-
-      repository.deleteRefreshToken = jest.fn().mockResolvedValue(true);
+      repository.delete = jest.fn().mockResolvedValue(true);
 
       response = await removeTokenCommandHandler.execute(
         new RemoveTokenCommand(RefreshTokenValueObjectStub().value),
       );
     });
 
-    it('should call repository findRefreshTokenByValue', () => {
-      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
-      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+    it('should call repository findOneByValue', () => {
+      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
 
-    it('should call repository deleteRefreshToken', () => {
-      expect(repository.deleteRefreshToken).toBeCalledTimes(1);
-      expect(repository.deleteRefreshToken).toHaveBeenCalledWith(
+    it('should call repository delete', () => {
+      expect(repository.delete).toBeCalledTimes(1);
+      expect(repository.delete).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().id,
       );
     });
@@ -68,9 +70,8 @@ describe('when removeToken is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
-      repository.findRefreshTokenByValue = jest.fn().mockResolvedValue(false);
-
-      repository.deleteRefreshToken = jest.fn().mockResolvedValue(true);
+      repository.findOneByValue = jest.fn().mockResolvedValue(false);
+      repository.delete = jest.fn().mockResolvedValue(true);
 
       try {
         response = await removeTokenCommandHandler.execute(
@@ -81,15 +82,15 @@ describe('when removeToken is called', () => {
       }
     });
 
-    it('should call repository findRefreshTokenByValue', () => {
-      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
-      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+    it('should call repository findOneByValue', () => {
+      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
 
-    it('should not call repository deleteRefreshToken', () => {
-      expect(repository.deleteRefreshToken).not.toBeCalled();
+    it('should not call repository delete', () => {
+      expect(repository.delete).not.toBeCalled();
     });
 
     it('should return undefined', () => {

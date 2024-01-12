@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { AuthFacade } from 'auth/application';
-import { LoginUserDto, RegisterUserDto } from 'auth/application/commands';
+import { LoginUserDto, RegisterUserDto } from 'auth/application/command';
 import { AuthUserWithoutRefreshToken } from 'auth/interface/auth.interface';
 
 @Controller('auth')

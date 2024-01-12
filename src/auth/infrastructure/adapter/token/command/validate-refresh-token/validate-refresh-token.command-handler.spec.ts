@@ -3,18 +3,18 @@ import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
 import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token.command-handler';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserRepository } from 'user/domain/repository';
+import { HttpStatus } from '@nestjs/common';
+import { RefreshTokenRepository } from 'auth/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
-  UserRepositoryMock,
-} from 'user/test/mock';
-import { RefreshTokenValueObjectStub, UserStub } from 'user/test/stub';
-import { UserTokenDto } from 'user/application/adapter';
-import { HttpStatus } from '@nestjs/common';
+  RefreshTokenRepositoryMock,
+} from 'auth/test/mock';
+import { RefreshTokenValueObjectStub, UserStub } from 'auth/test/stub';
+import { UserTokenDto } from 'auth/application/adapter/token';
 
 describe('when validateRefreshToken is called', () => {
-  let repository: UserRepository;
+  let repository: RefreshTokenRepository;
   let jwtService: JwtService;
   let configService: ConfigService;
 
@@ -24,13 +24,16 @@ describe('when validateRefreshToken is called', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         ValidateRefreshTokenCommandHandler,
-        { provide: UserRepository, useValue: UserRepositoryMock() },
+        {
+          provide: RefreshTokenRepository,
+          useValue: RefreshTokenRepositoryMock(),
+        },
         { provide: JwtService, useValue: JwtServiceMock() },
         { provide: ConfigService, useValue: ConfigServiceMock() },
       ],
     }).compile();
 
-    repository = moduleRef.get<UserRepository>(UserRepository);
+    repository = moduleRef.get<RefreshTokenRepository>(RefreshTokenRepository);
     jwtService = moduleRef.get<JwtService>(JwtService);
     configService = moduleRef.get<ConfigService>(ConfigService);
     validateRefreshTokenCommandHandler =
@@ -45,7 +48,7 @@ describe('when validateRefreshToken is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
-      repository.findRefreshTokenByValue = jest
+      repository.findOneByValue = jest
         .fn()
         .mockResolvedValue(RefreshTokenValueObjectStub());
       configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
@@ -59,9 +62,9 @@ describe('when validateRefreshToken is called', () => {
       );
     });
 
-    it('should call repository findRefreshTokenByValue', () => {
-      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
-      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+    it('should call repository findOneByValue', () => {
+      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
@@ -96,7 +99,7 @@ describe('when validateRefreshToken is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
-      repository.findRefreshTokenByValue = jest.fn().mockResolvedValue(null);
+      repository.findOneByValue = jest.fn().mockResolvedValue(null);
       configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
       jwtService.verify = jest.fn().mockResolvedValue({
         email: UserStub().email,
@@ -112,9 +115,9 @@ describe('when validateRefreshToken is called', () => {
       }
     });
 
-    it('should call repository findRefreshTokenByValue', () => {
-      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
-      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+    it('should call repository findOneByValue', () => {
+      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
@@ -143,7 +146,7 @@ describe('when validateRefreshToken is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
-      repository.findRefreshTokenByValue = jest
+      repository.findOneByValue = jest
         .fn()
         .mockResolvedValue(RefreshTokenValueObjectStub());
       configService.get = jest.fn().mockReturnValue('TOKENS_SECRET');
@@ -156,9 +159,9 @@ describe('when validateRefreshToken is called', () => {
       );
     });
 
-    it('should call repository findRefreshTokenByValue', () => {
-      expect(repository.findRefreshTokenByValue).toBeCalledTimes(1);
-      expect(repository.findRefreshTokenByValue).toHaveBeenCalledWith(
+    it('should call repository findOneByValue', () => {
+      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });

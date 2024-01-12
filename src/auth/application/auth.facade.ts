@@ -7,7 +7,7 @@ import {
   RefreshCommand,
   RegisterCommand,
   RegisterUserDto,
-} from './commands';
+} from './command';
 import { AuthUserAggregate } from 'auth/domain';
 
 @Injectable()

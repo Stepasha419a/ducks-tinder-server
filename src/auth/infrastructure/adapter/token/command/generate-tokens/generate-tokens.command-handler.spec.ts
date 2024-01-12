@@ -3,21 +3,21 @@ import { GenerateTokensCommandHandler } from './generate-tokens.command-handler'
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokensCommand } from './generate-tokens.command';
 import { ConfigService } from '@nestjs/config';
-import { UserRepository } from 'user/domain/repository';
+import { RefreshTokenValueObject } from 'auth/domain';
+import { RefreshTokenRepository } from 'auth/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
-  UserRepositoryMock,
-} from 'user/test/mock';
+  RefreshTokenRepositoryMock,
+} from 'auth/test/mock';
 import {
   AccessTokenValueObjectStub,
   RefreshTokenValueObjectStub,
   UserStub,
-} from 'user/test/stub';
-import { RefreshTokenValueObject } from 'user/domain';
+} from 'auth/test/stub';
 
 describe('when generateTokens is called', () => {
-  let repository: UserRepository;
+  let repository: RefreshTokenRepository;
   let jwtService: JwtService;
   let configService: ConfigService;
 
@@ -29,13 +29,16 @@ describe('when generateTokens is called', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         GenerateTokensCommandHandler,
-        { provide: UserRepository, useValue: UserRepositoryMock() },
+        {
+          provide: RefreshTokenRepository,
+          useValue: RefreshTokenRepositoryMock(),
+        },
         { provide: JwtService, useValue: JwtServiceMock() },
         { provide: ConfigService, useValue: ConfigServiceMock() },
       ],
     }).compile();
 
-    repository = moduleRef.get<UserRepository>(UserRepository);
+    repository = moduleRef.get<RefreshTokenRepository>(RefreshTokenRepository);
     jwtService = moduleRef.get<JwtService>(JwtService);
     configService = moduleRef.get<ConfigService>(ConfigService);
     generateTokensCommandHandler = moduleRef.get<GenerateTokensCommandHandler>(
@@ -78,9 +81,9 @@ describe('when generateTokens is called', () => {
     });
   });
 
-  it('should call repository saveRefreshToken', () => {
-    expect(repository.saveRefreshToken).toBeCalledTimes(1);
-    expect(repository.saveRefreshToken).toHaveBeenCalledWith(
+  it('should call repository save', () => {
+    expect(repository.save).toBeCalledTimes(1);
+    expect(repository.save).toHaveBeenCalledWith(
       RefreshTokenValueObject.create({
         id: dto.userId,
         value: AccessTokenValueObjectStub().value,

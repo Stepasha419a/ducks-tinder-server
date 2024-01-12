@@ -1,7 +1,7 @@
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { Module } from '@nestjs/common';
 import { AuthController } from './interface/auth.controller';
-import { AUTH_COMMAND_HANDLERS } from './application/commands';
+import { AUTH_COMMAND_HANDLERS } from './application/command';
 import { AuthFacade } from './application';
 import { authFacadeFactory } from './infrastructure/facade';
 import { UserModule } from 'user/user.module';
