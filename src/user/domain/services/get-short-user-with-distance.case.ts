@@ -1,4 +1,4 @@
-import { PictureAggregate } from '../picture';
+import { UserPictureInfo } from 'user/infrastructure/mapper';
 import { ShortUserWithDistance, User } from '../user.interface';
 
 export interface GetShortUserWithDistance {
@@ -9,8 +9,13 @@ export async function GET_SHORT_USER_WITH_DISTANCE(
   this: User,
 ): Promise<ShortUserWithDistance> {
   const pictures = await Promise.all(
-    this.pictures.map((picture) =>
-      PictureAggregate.create(picture).getUserPictureInfo(),
+    this.pictures.map(
+      (picture) =>
+        ({
+          id: picture.id,
+          name: picture.name,
+          order: picture.order,
+        } as UserPictureInfo),
     ),
   );
 

@@ -3,9 +3,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
 import { MAX_PICTURES_COUNT } from 'common/constants/error';
 import { UserRepository } from 'user/domain/repository';
-import { PictureAggregate } from 'user/domain/picture';
 import { UserAggregate } from 'user/domain';
 import { FileAdapter } from 'user/application/adapter';
+import { PictureValueObject } from 'user/domain/value-object';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler
@@ -28,13 +28,13 @@ export class SavePictureCommandHandler
 
     const userAggregate = await this.repository.findOne(userId);
 
-    const pictureAggregate = PictureAggregate.create({
+    const pictureValueObject = PictureValueObject.create({
       name: fileName,
       userId,
       order: pictures.length,
     });
 
-    await userAggregate.addPicture(pictureAggregate);
+    await userAggregate.addPicture(pictureValueObject);
 
     const updatedUser = await this.repository.save(userAggregate);
 

@@ -1,4 +1,3 @@
-import { PictureAggregate } from 'user/domain';
 import { AuthUser } from '../auth-user.interface';
 
 export interface GetWithoutPrivateFields {
@@ -8,11 +7,5 @@ export interface GetWithoutPrivateFields {
 export async function GET_WITHOUT_PRIVATE_FIELDS(
   this: AuthUser,
 ): Promise<Partial<AuthUser>> {
-  const pictures = await Promise.all(
-    this.user.pictures.map((picture) =>
-      PictureAggregate.create(picture).getUserPictureInfo(),
-    ),
-  );
-
-  return { user: { ...this.user, pictures }, accessToken: this.accessToken };
+  return { user: this.user, accessToken: this.accessToken };
 }

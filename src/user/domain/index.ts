@@ -5,5 +5,3 @@ export {
   ShortUser,
   ShortUserWithDistance,
 } from './user.interface';
-
-export * from './picture';

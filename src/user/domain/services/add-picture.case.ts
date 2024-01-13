@@ -1,16 +1,15 @@
-import { PictureAggregate } from '../picture';
 import { User } from '../user.interface';
+import { PictureValueObject } from '../value-object';
 
 export interface AddPicture {
-  addPicture(picture: PictureAggregate): Promise<PictureAggregate>;
+  addPicture(picture: PictureValueObject): Promise<PictureValueObject>;
 }
 
 export async function ADD_PICTURE(
   this: User,
-  picture: PictureAggregate,
-): Promise<PictureAggregate> {
-  const pictureInfo = await picture.getPicture();
-  this.pictures.push(pictureInfo);
+  picture: PictureValueObject,
+): Promise<PictureValueObject> {
+  this.pictures.push(picture);
 
   return picture;
 }

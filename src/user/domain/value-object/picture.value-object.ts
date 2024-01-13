@@ -8,11 +8,9 @@ import {
   Min,
   validateSync,
 } from 'class-validator';
-import { Picture } from './picture.interface';
 import { DomainError } from 'libs/shared/errors';
-import { PictureServices } from './services';
 
-export class PictureAggregate extends PictureServices implements Picture {
+export class PictureValueObject {
   @IsUUID()
   id: string = randomStringGenerator();
 
@@ -36,8 +34,8 @@ export class PictureAggregate extends PictureServices implements Picture {
   @IsNotEmpty()
   updatedAt = new Date().toISOString();
 
-  static create(picture: Partial<Picture>) {
-    const _picture = new PictureAggregate();
+  static create(picture: Partial<PictureValueObject>) {
+    const _picture = new PictureValueObject();
 
     Object.assign(_picture, picture);
 

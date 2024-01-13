@@ -10,8 +10,8 @@ import {
   Place as PrismaPlace,
   Prisma,
 } from '@prisma/client';
-import { Picture, PictureAggregate } from 'user/domain/picture';
 import {
+  PictureValueObject,
   PlaceValueObject,
   UserCheckValueObject,
 } from 'user/domain/value-object';
@@ -81,22 +81,18 @@ export class UserAdapter implements UserRepository {
     existingUser: UserAggregate,
   ) {
     const toDeleteIds: string[] = [];
-    const toCreatePictures: Picture[] = [];
+    const toCreatePictures: PictureValueObject[] = [];
 
-    await Promise.all(
-      user.pictures.map(async (picture) => {
-        if (
-          !existingUser.pictures.find(
-            (existingPicture) => existingPicture.id === picture.id,
-          )
-        ) {
-          const createdPicture = await PictureAggregate.create(
-            picture,
-          ).getPicture();
-          toCreatePictures.push(createdPicture);
-        }
-      }),
-    );
+    user.pictures.forEach((picture) => {
+      if (
+        !existingUser.pictures.find(
+          (existingPicture) => existingPicture.id === picture.id,
+        )
+      ) {
+        const createdPicture = PictureValueObject.create(picture);
+        toCreatePictures.push(createdPicture);
+      }
+    });
 
     existingUser.pictures.forEach((existingPicture) => {
       if (!user.pictures.find((picture) => picture.id === existingPicture.id)) {
@@ -117,7 +113,7 @@ export class UserAdapter implements UserRepository {
     });
 
     await Promise.all(
-      user.pictures.map((newPicture: Picture) => {
+      user.pictures.map((newPicture: PictureValueObject) => {
         const picture = updatedPictures.find(
           (item) => item.id === newPicture.id,
         );
@@ -359,12 +355,12 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findManyPictures(userId: string): Promise<PictureAggregate[]> {
+  async findManyPictures(userId: string): Promise<PictureValueObject[]> {
     const pictures = await this.prismaService.picture.findMany({
       where: { userId },
     });
 
-    return pictures.map((picture) => this.getPictureAggregate(picture));
+    return pictures.map((picture) => this.getPictureValueObject(picture));
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
@@ -528,8 +524,8 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedUserCheck);
   }
 
-  private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
-    return PictureAggregate.create({
+  private getPictureValueObject(picture: PrismaPicture): PictureValueObject {
+    return PictureValueObject.create({
       ...picture,
       updatedAt: picture.updatedAt.toISOString(),
       createdAt: picture.createdAt.toISOString(),

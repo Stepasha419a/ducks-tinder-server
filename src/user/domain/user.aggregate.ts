@@ -21,8 +21,7 @@ import {
 } from 'class-validator';
 import { DomainError } from 'libs/shared/errors';
 import { Type } from 'class-transformer';
-import { Picture, PictureAggregate } from './picture';
-import { PlaceValueObject } from './value-object';
+import { PictureValueObject, PlaceValueObject } from './value-object';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -177,8 +176,8 @@ export class UserAggregate extends UserServices implements User {
 
   @IsOptional()
   @IsArray()
-  @Type(() => PictureAggregate)
-  pictures: Picture[];
+  @Type(() => PictureValueObject)
+  pictures: PictureValueObject[];
 
   @IsString()
   @IsNotEmpty()

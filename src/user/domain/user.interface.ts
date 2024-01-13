@@ -1,5 +1,5 @@
-import { Picture, UserPictureInfo } from './picture';
-import { PlaceValueObject } from './value-object';
+import { UserPictureInfo } from 'user/infrastructure/mapper';
+import { PictureValueObject, PlaceValueObject } from './value-object';
 
 export type Sex = 'male' | 'female';
 
@@ -37,7 +37,7 @@ export interface User {
 
   place: PlaceValueObject;
 
-  pictures: Picture[];
+  pictures: PictureValueObject[];
 
   createdAt: string;
   updatedAt: string;

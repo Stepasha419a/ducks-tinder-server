@@ -17,8 +17,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { User } from 'user/domain';
-import { Picture } from 'user/domain/picture';
-import { PlaceValueObject } from 'user/domain/value-object';
+import { PictureValueObject, PlaceValueObject } from 'user/domain/value-object';
 
 export class NotValidatedUserDto
   implements
@@ -166,5 +165,5 @@ export class NotValidatedUserDto
 
   @IsArray()
   @ArrayMaxSize(9)
-  pictures: Picture[];
+  pictures: PictureValueObject[];
 }

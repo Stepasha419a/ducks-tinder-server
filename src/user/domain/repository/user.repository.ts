@@ -1,6 +1,9 @@
 import { UserAggregate } from 'user/domain';
-import { PictureAggregate } from 'user/domain/picture';
-import { PlaceValueObject, UserCheckValueObject } from '../value-object';
+import {
+  PictureValueObject,
+  PlaceValueObject,
+  UserCheckValueObject,
+} from '../value-object';
 
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
@@ -24,7 +27,7 @@ export abstract class UserRepository {
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null>;
-  abstract findManyPictures(userId: string): Promise<PictureAggregate[]>;
+  abstract findManyPictures(userId: string): Promise<PictureValueObject[]>;
   abstract findPlace(userId: string): Promise<PlaceValueObject | null>;
   abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract makeChecked(id: string, forId: string): Promise<boolean>;

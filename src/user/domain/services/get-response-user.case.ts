@@ -1,4 +1,4 @@
-import { PictureAggregate } from '../picture';
+import { UserPictureInfo } from 'user/infrastructure/mapper';
 import { ResponseUser, User } from '../user.interface';
 
 export interface GetResponseUser {
@@ -7,8 +7,13 @@ export interface GetResponseUser {
 
 export async function GET_RESPONSE_USER(this: User): Promise<ResponseUser> {
   const pictures = await Promise.all(
-    this.pictures.map((picture) =>
-      PictureAggregate.create(picture).getUserPictureInfo(),
+    this.pictures.map(
+      (picture) =>
+        ({
+          id: picture.id,
+          name: picture.name,
+          order: picture.order,
+        } as UserPictureInfo),
     ),
   );
 
