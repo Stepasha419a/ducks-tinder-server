@@ -6,11 +6,9 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { Place } from './place.interface';
 import { DomainError } from 'libs/shared/errors';
-import { PlaceServices } from './services';
 
-export class PlaceAggregate extends PlaceServices implements Place {
+export class PlaceValueObject {
   @IsUUID()
   id: string;
 
@@ -36,12 +34,8 @@ export class PlaceAggregate extends PlaceServices implements Place {
   @IsNotEmpty()
   updatedAt = new Date().toISOString();
 
-  private constructor() {
-    super();
-  }
-
-  static create(place: Partial<Place>) {
-    const _place = new PlaceAggregate();
+  static create(place: Partial<PlaceValueObject>) {
+    const _place = new PlaceValueObject();
 
     Object.assign(_place, place);
 

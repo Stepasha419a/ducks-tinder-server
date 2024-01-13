@@ -19,10 +19,13 @@ export const requestUserStub = (): ValidatedUserDto => {
     usersOnlyInDistance: userStubObj.usersOnlyInDistance,
     preferSex: userStubObj.preferSex as 'male' | 'female',
     place: {
+      id: 'sdfhsdghj34259034578923',
       name: 'place-name',
       address: 'place-address',
       latitude: 12.3456789,
       longitude: 12.3456789,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     },
     interests: ['interest-1', 'interest-2'],
     zodiacSign: 'zodiac-sign',

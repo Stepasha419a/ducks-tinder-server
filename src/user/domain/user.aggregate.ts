@@ -21,9 +21,8 @@ import {
 } from 'class-validator';
 import { DomainError } from 'libs/shared/errors';
 import { Type } from 'class-transformer';
-import { PlaceAggregate } from './place/place.aggregate';
-import { UserPlaceInfo } from './place/place.interface';
 import { Picture, PictureAggregate } from './picture';
+import { PlaceValueObject } from './value-object';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -103,8 +102,8 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsObject()
   @IsNotEmptyObject()
-  @Type(() => PlaceAggregate)
-  place: UserPlaceInfo;
+  @Type(() => PlaceValueObject)
+  place: PlaceValueObject;
 
   @IsOptional()
   @IsString()

@@ -1,5 +1,4 @@
 import { PictureAggregate } from '../picture';
-import { PlaceAggregate } from '../place';
 import { ShortUserWithDistance, User } from '../user.interface';
 
 export interface GetShortUserWithDistance {
@@ -9,13 +8,6 @@ export interface GetShortUserWithDistance {
 export async function GET_SHORT_USER_WITH_DISTANCE(
   this: User,
 ): Promise<ShortUserWithDistance> {
-  const placeAggregate = PlaceAggregate.create({
-    ...this.place,
-    id: this.id,
-  });
-
-  const place = await placeAggregate.getShortUserPlaceInfo();
-
   const pictures = await Promise.all(
     this.pictures.map((picture) =>
       PictureAggregate.create(picture).getUserPictureInfo(),
@@ -45,7 +37,7 @@ export async function GET_SHORT_USER_WITH_DISTANCE(
     communicationStyle: this.communicationStyle,
     attentionSign: this.attentionSign,
 
-    place,
+    place: this.place,
 
     pictures,
   };

@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ReturnUserCommand } from './return-user.command';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'user/domain/repository';
-import { UserCheckAggregate } from 'user/domain';
+import { UserCheckValueObject } from 'user/domain/value-object';
 
 @CommandHandler(ReturnUserCommand)
 export class ReturnUserCommandHandler
@@ -10,7 +10,7 @@ export class ReturnUserCommandHandler
 {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(command: ReturnUserCommand): Promise<UserCheckAggregate> {
+  async execute(command: ReturnUserCommand): Promise<UserCheckValueObject> {
     const { userId } = command;
 
     const userCheck = await this.repository.findUserNotPairCheck(userId);

@@ -1,5 +1,5 @@
 import { Picture, UserPictureInfo } from './picture';
-import { ShortUserPlaceInfo, UserPlaceInfo } from './place/place.interface';
+import { PlaceValueObject } from './value-object';
 
 export type Sex = 'male' | 'female';
 
@@ -35,7 +35,7 @@ export interface User {
   communicationStyle?: string;
   attentionSign?: string;
 
-  place: UserPlaceInfo;
+  place: PlaceValueObject;
 
   pictures: Picture[];
 
@@ -75,7 +75,7 @@ export interface ShortUser {
 
   pictures: UserPictureInfo[];
 
-  place: ShortUserPlaceInfo;
+  place: PlaceValueObject;
 }
 
 export interface ShortUserWithDistance extends ShortUser {

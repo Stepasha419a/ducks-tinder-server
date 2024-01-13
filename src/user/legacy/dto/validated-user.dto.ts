@@ -16,8 +16,9 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { PlaceAggregate, User, UserPlaceInfo } from 'user/domain';
+import { User } from 'user/domain';
 import { Picture } from 'user/domain/picture';
+import { PlaceValueObject } from 'user/domain/value-object';
 
 export class ValidatedUserDto
   implements
@@ -83,8 +84,8 @@ export class ValidatedUserDto
 
   @IsDefined()
   @IsNotEmptyObject()
-  @Type(() => PlaceAggregate)
-  place: UserPlaceInfo;
+  @Type(() => PlaceValueObject)
+  place: PlaceValueObject;
 
   @IsOptional()
   @IsArray()

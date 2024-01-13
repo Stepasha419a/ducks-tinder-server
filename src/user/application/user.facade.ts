@@ -22,8 +22,9 @@ import {
   GetUserByEmailQuery,
   GetUserQuery,
 } from './query';
-import { UserAggregate, UserCheckAggregate } from 'user/domain';
+import { UserAggregate } from 'user/domain';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
+import { UserCheckValueObject } from 'user/domain/value-object';
 
 @Injectable()
 export class UserFacade {
@@ -127,7 +128,7 @@ export class UserFacade {
   }
 
   private returnUser(userId: string) {
-    return this.commandBus.execute<ReturnUserCommand, UserCheckAggregate>(
+    return this.commandBus.execute<ReturnUserCommand, UserCheckValueObject>(
       new ReturnUserCommand(userId),
     );
   }

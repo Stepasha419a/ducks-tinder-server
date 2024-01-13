@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
 import { UserRepository } from 'user/domain/repository';
-import { PlaceAggregate, UserAggregate } from 'user/domain';
+import { UserAggregate } from 'user/domain';
 import { MapApi } from 'user/application/adapter';
+import { PlaceValueObject } from 'user/domain/value-object';
 
 @CommandHandler(PatchUserPlaceCommand)
 export class PatchUserPlaceCommandHandler
@@ -24,7 +25,7 @@ export class PatchUserPlaceCommandHandler
     const geocode = await this.mapApi.getGeocode(dto.latitude, dto.longitude);
 
     existingUser.setPlace(
-      PlaceAggregate.create({
+      PlaceValueObject.create({
         id: userId,
         address: geocode.address,
         name: geocode.name,

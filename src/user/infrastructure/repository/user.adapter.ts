@@ -1,12 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserRepository } from 'user/domain/repository';
-import {
-  PlaceAggregate,
-  User,
-  UserAggregate,
-  UserCheckAggregate,
-} from 'user/domain';
+import { User, UserAggregate } from 'user/domain';
 import { UserSelector } from './user.selector';
 import {
   User as PrismaUser,
@@ -16,6 +11,10 @@ import {
   Prisma,
 } from '@prisma/client';
 import { Picture, PictureAggregate } from 'user/domain/picture';
+import {
+  PlaceValueObject,
+  UserCheckValueObject,
+} from 'user/domain/value-object';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -138,7 +137,12 @@ export class UserAdapter implements UserRepository {
     await this.prismaService.place.upsert({
       where: { id: user.id },
       create: {
-        ...place,
+        name: place.name,
+        address: place.address,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        createdAt: place.createdAt,
+        updatedAt: place.updatedAt,
         user: { connect: { id: user.id } },
       },
       update: place,
@@ -381,7 +385,7 @@ export class UserAdapter implements UserRepository {
 
   async findUserNotPairCheck(
     checkedByUserId: string,
-  ): Promise<UserCheckAggregate> {
+  ): Promise<UserCheckValueObject> {
     const pairIds = (
       await this.prismaService.user.findUnique({
         where: { id: checkedByUserId },
@@ -401,7 +405,7 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getUserCheckAggregate(userCheck);
+    return this.getUserCheckValueObject(userCheck);
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
@@ -480,12 +484,12 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(sortedUser);
   }
 
-  async findPlace(userId: string): Promise<PlaceAggregate | null> {
+  async findPlace(userId: string): Promise<PlaceValueObject | null> {
     const place = await this.prismaService.place.findUnique({
       where: { id: userId },
     });
 
-    return this.getPlaceAggregate(place);
+    return this.getPlaceValueObject(place);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -540,18 +544,18 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private getPlaceAggregate(place: PrismaPlace): PlaceAggregate {
-    return PlaceAggregate.create({
+  private getPlaceValueObject(place: PrismaPlace): PlaceValueObject {
+    return PlaceValueObject.create({
       ...place,
       updatedAt: place.updatedAt.toISOString(),
       createdAt: place.createdAt.toISOString(),
     });
   }
 
-  private getUserCheckAggregate(
+  private getUserCheckValueObject(
     userCheck: PrismaUserCheck,
-  ): UserCheckAggregate {
-    return UserCheckAggregate.create({
+  ): UserCheckValueObject {
+    return UserCheckValueObject.create({
       ...userCheck,
       createdAt: userCheck.createdAt.toISOString(),
       updatedAt: userCheck.updatedAt.toISOString(),

@@ -16,8 +16,9 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PlaceAggregate, User, UserPlaceInfo } from 'user/domain';
+import { User } from 'user/domain';
 import { Picture } from 'user/domain/picture';
+import { PlaceValueObject } from 'user/domain/value-object';
 
 export class NotValidatedUserDto
   implements
@@ -69,8 +70,8 @@ export class NotValidatedUserDto
   @IsOptional()
   @IsDefined()
   @IsNotEmptyObject()
-  @Type(() => PlaceAggregate)
-  place: UserPlaceInfo | null;
+  @Type(() => PlaceValueObject)
+  place: PlaceValueObject | null;
 
   @IsBoolean()
   usersOnlyInDistance: boolean;
