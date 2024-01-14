@@ -31,17 +31,14 @@ export class GetMessagesQueryHandler
     const messages = await this.repository.findMessages(chat.id, dto);
 
     const userIds = this.getUniqueUserIds(messages, userId);
-    const shortUsers = await Promise.all(
-      userIds.map(async (userId) => {
-        const userAggregate = await this.userService.getUser(userId);
-        return userAggregate.getShortUserWithDistance();
-      }),
+    const users = await Promise.all(
+      userIds.map((userId) => this.userService.getUser(userId)),
     );
 
     const messagesPaginationAggregate = MessagesPaginationAggregate.create({
       chatId: chat.id,
       messages,
-      users: shortUsers,
+      users,
     });
 
     return messagesPaginationAggregate;

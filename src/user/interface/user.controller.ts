@@ -25,20 +25,24 @@ import {
   PatchUserDto,
   PatchUserPlaceDto,
 } from '../application/command';
-import { ResponseUser, ShortUserWithDistance } from '../domain';
+import { UserMapper, WithoutPrivateFields } from 'user/infrastructure/mapper';
+import { ShortUserWithDistance } from 'user/infrastructure/mapper/interface/short-user-with-distance';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly facade: UserFacade) {}
+  constructor(
+    private readonly facade: UserFacade,
+    private readonly mapper: UserMapper,
+  ) {}
 
   @Patch()
   @HttpCode(HttpStatus.OK)
   async patch(
     @User(ParseUUIDPipe) userId: string,
     @Body(OptionalValidationPipe) dto: PatchUserDto,
-  ): Promise<ResponseUser> {
+  ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.patchUser(userId, dto);
-    return userAggregate.getResponseUser();
+    return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
   @Patch('place')
@@ -46,12 +50,12 @@ export class UserController {
   async patchPlace(
     @User(ParseUUIDPipe) userId: string,
     @Body() dto: PatchUserPlaceDto,
-  ): Promise<ResponseUser> {
+  ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.patchUserPlace(
       userId,
       dto,
     );
-    return userAggregate.getResponseUser();
+    return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
   @Get('sorted')
@@ -60,7 +64,7 @@ export class UserController {
     @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance> {
     const userAggregate = await this.facade.queries.getSorted(userId);
-    return userAggregate.getShortUserWithDistance();
+    return this.mapper.getShortUserWithDistance(userAggregate);
   }
 
   @Post('picture')
@@ -77,12 +81,12 @@ export class UserController {
       }),
     )
     picture: Express.Multer.File,
-  ): Promise<ResponseUser> {
+  ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.savePicture(
       userId,
       picture,
     );
-    return userAggregate.getResponseUser();
+    return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
   @Put('picture/mix')
@@ -90,9 +94,9 @@ export class UserController {
   async mixPictures(
     @User(ParseUUIDPipe) userId: string,
     @Body() dto: MixPicturesDto,
-  ): Promise<ResponseUser> {
+  ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.mixPictures(userId, dto);
-    return userAggregate.getResponseUser();
+    return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
   @Put('picture/:id')
@@ -100,12 +104,12 @@ export class UserController {
   async deletePicture(
     @User(ParseUUIDPipe) userId: string,
     @Param('id') pictureId: string,
-  ): Promise<ResponseUser> {
+  ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.deletePicture(
       userId,
       pictureId,
     );
-    return userAggregate.getResponseUser();
+    return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
   @Post('like/:id')
@@ -137,7 +141,7 @@ export class UserController {
       userCheckAggregate.checkedId,
     );
 
-    return returnedSortedUser.getShortUserWithDistance();
+    return this.mapper.getShortUserWithDistance(returnedSortedUser);
   }
 
   @Get('pairs')
@@ -149,7 +153,7 @@ export class UserController {
 
     const pairs = await Promise.all(
       pairsWithDistance.map((pair) => {
-        return pair.getShortUserWithDistance();
+        return this.mapper.getShortUserWithDistance(pair);
       }),
     );
 

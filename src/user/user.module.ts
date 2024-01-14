@@ -20,6 +20,7 @@ import {
   MapApiImplementation,
 } from './infrastructure/adapter';
 import { USER_DEV_HANDLERS } from './application/command/dev';
+import { UserMapper } from './infrastructure/mapper';
 
 @Module({
   providers: [
@@ -29,6 +30,7 @@ import { USER_DEV_HANDLERS } from './application/command/dev';
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
+    UserMapper,
     {
       provide: UserFacade,
       inject: [CommandBus, QueryBus],

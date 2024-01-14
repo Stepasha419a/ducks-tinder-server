@@ -1,8 +1,8 @@
-import { ShortUser } from 'user/domain';
+import { User } from 'user/domain';
 import { ChatMessage } from '../message';
 
 export interface MessagesPagination {
   chatId: string;
-  users: ShortUser[];
+  users: User[];
   messages: ChatMessage[];
 }

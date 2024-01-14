@@ -1,11 +1,11 @@
-import { ResponseUser } from 'user/domain';
+import { User } from 'user/domain';
 import {
   AccessTokenValueObject,
   RefreshTokenValueObject,
 } from './value-object';
 
 export interface AuthUser {
-  user: ResponseUser;
+  user: User;
   refreshToken: RefreshTokenValueObject;
   accessToken: AccessTokenValueObject;
 }

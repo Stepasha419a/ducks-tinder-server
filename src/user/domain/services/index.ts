@@ -8,11 +8,6 @@ import {
   GET_PRIMITIVE_FIELDS,
   GetPrimitiveFields,
 } from './get-primitive-fields.case';
-import { GET_RESPONSE_USER, GetResponseUser } from './get-response-user.case';
-import {
-  GET_SHORT_USER_WITH_DISTANCE,
-  GetShortUserWithDistance,
-} from './get-short-user-with-distance.case';
 import { ADD_PICTURE, AddPicture } from './add-picture.case';
 import { DELETE_PICTURE, DeletePicture } from './delete-picture.case';
 import {
@@ -37,8 +32,6 @@ export class UserServices
     SetPlace,
     SetDistance,
     GetPrimitiveFields,
-    GetResponseUser,
-    GetShortUserWithDistance,
     AddPicture,
     DeletePicture,
     SortPictureOrders,
@@ -60,12 +53,6 @@ export class UserServices
 
   @IsDefined()
   getPrimitiveFields = GET_PRIMITIVE_FIELDS;
-
-  @IsDefined()
-  getResponseUser = GET_RESPONSE_USER;
-
-  @IsDefined()
-  getShortUserWithDistance = GET_SHORT_USER_WITH_DISTANCE;
 
   @IsDefined()
   addPicture = ADD_PICTURE;

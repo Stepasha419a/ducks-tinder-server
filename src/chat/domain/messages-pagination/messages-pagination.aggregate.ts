@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { IsArray, IsUUID, validateSync } from 'class-validator';
 import { MessagesPagination } from './messages-pagination.interface';
-import { ShortUser, UserAggregate } from 'user/domain';
+import { User, UserAggregate } from 'user/domain';
 import { Type } from 'class-transformer';
 import { ChatMessage, ChatMessageDto } from '../message/chat-message';
 import { DomainError } from 'libs/shared/errors';
@@ -16,7 +16,7 @@ export class MessagesPaginationAggregate
   @IsArray()
   @IsArray()
   @Type(() => UserAggregate)
-  users: ShortUser[];
+  users: User[];
 
   @IsArray()
   @IsArray()
