@@ -6,14 +6,10 @@ import {
 } from '@nestjs/common';
 import { TokenAdapter } from 'auth/application/adapter/token';
 import { REFRESH_TOKEN_REGEX } from 'common/constants';
-import { UserService } from 'user/interface';
 
 @Injectable()
 export class WsRefreshTokenGuard implements CanActivate {
-  constructor(
-    private readonly tokenAdapter: TokenAdapter,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly tokenAdapter: TokenAdapter) {}
 
   async canActivate(context: ExecutionContext) {
     const client = context.switchToWs().getClient();
@@ -24,9 +20,7 @@ export class WsRefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const user = await this.userService.getUser(userData.userId);
-
-    client.request.user = user;
+    client.request.userId = userData.userId;
     return true;
   }
 

@@ -1,7 +1,6 @@
-import { ValidatedUserDto } from 'user/legacy/dto';
 import { userDtoStub } from 'user/legacy/test/stubs';
 
-export const requestUserStub = (): ValidatedUserDto => {
+export const requestUserStub = () => {
   const userStubObj = userDtoStub();
 
   return {

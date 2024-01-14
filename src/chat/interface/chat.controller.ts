@@ -9,8 +9,6 @@ import {
   Post,
 } from '@nestjs/common';
 import { User } from 'common/decorators';
-import { CustomValidationPipe } from 'common/pipes';
-import { ValidatedUserDto } from 'user/legacy/dto';
 import { ChatFacade } from 'chat/application';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from 'chat/application/query';
@@ -21,29 +19,26 @@ export class ChatController {
   constructor(private readonly facade: ChatFacade) {}
 
   @Get()
-  getChats(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
-    @Body() dto: PaginationDto,
-  ) {
-    return this.facade.queries.getChats(user.id, dto);
+  getChats(@User(ParseUUIDPipe) userId: string, @Body() dto: PaginationDto) {
+    return this.facade.queries.getChats(userId, dto);
   }
 
   @Get('TEST/messages')
   getMessages(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body() dto: GetMessagesDto,
   ) {
-    return this.facade.queries.getMessages(user.id, dto);
+    return this.facade.queries.getMessages(userId, dto);
   }
 
   @Post('TEST/message')
   async sendMessage(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body() dto: SendMessageDto,
   ) {
-    const message = await this.facade.commands.sendMessage(user.id, dto);
+    const message = await this.facade.commands.sendMessage(userId, dto);
     const userIds = await this.facade.queries.getChatMemberIds(
-      user.id,
+      userId,
       dto.chatId,
     );
 
@@ -52,12 +47,12 @@ export class ChatController {
 
   @Patch('TEST/message')
   async editMessage(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body() dto: EditMessageDto,
   ) {
-    const message = await this.facade.commands.editMessage(user.id, dto);
+    const message = await this.facade.commands.editMessage(userId, dto);
     const userIds = await this.facade.queries.getChatMemberIds(
-      user.id,
+      userId,
       message.chatId,
     );
 
@@ -66,15 +61,12 @@ export class ChatController {
 
   @Delete('TEST/message/:id')
   async deleteMessage(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) messageId: string,
   ) {
-    const message = await this.facade.commands.deleteMessage(
-      user.id,
-      messageId,
-    );
+    const message = await this.facade.commands.deleteMessage(userId, messageId);
     const userIds = await this.facade.queries.getChatMemberIds(
-      user.id,
+      userId,
       message.chatId,
     );
 
@@ -83,39 +75,33 @@ export class ChatController {
 
   @Patch('TEST/chat/block/:id')
   async blockChat(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const chat = await this.facade.commands.blockChat(user.id, chatId);
-    const userIds = await this.facade.queries.getChatMemberIds(
-      user.id,
-      chat.id,
-    );
+    const chat = await this.facade.commands.blockChat(userId, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(userId, chat.id);
 
     return { chat, userIds };
   }
 
   @Patch('TEST/chat/unblock/:id')
   async unblockChat(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const chat = await this.facade.commands.unblockChat(user.id, chatId);
-    const userIds = await this.facade.queries.getChatMemberIds(
-      user.id,
-      chat.id,
-    );
+    const chat = await this.facade.commands.unblockChat(userId, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(userId, chat.id);
 
     return { chat, userIds };
   }
 
   @Delete('TEST/chat/:id')
   async deleteChat(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
-    const userIds = await this.facade.queries.getChatMemberIds(user.id, chatId);
-    const chat = await this.facade.commands.deleteChat(user.id, chatId);
+    const userIds = await this.facade.queries.getChatMemberIds(userId, chatId);
+    const chat = await this.facade.commands.deleteChat(userId, chatId);
 
     return { chat, userIds };
   }

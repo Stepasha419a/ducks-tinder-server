@@ -13,10 +13,10 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ValidatedUserDto, NotValidatedUserDto } from '../legacy/dto';
-import { CustomValidationPipe, OptionalValidationPipe } from 'common/pipes';
+import { OptionalValidationPipe } from 'common/pipes';
 import { ONE_MB_SIZE } from 'common/constants';
 import { User } from 'common/decorators';
 import { UserFacade } from '../application';
@@ -34,21 +34,21 @@ export class UserController {
   @Patch()
   @HttpCode(HttpStatus.OK)
   async patch(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body(OptionalValidationPipe) dto: PatchUserDto,
   ): Promise<ResponseUser> {
-    const userAggregate = await this.facade.commands.patchUser(user.id, dto);
+    const userAggregate = await this.facade.commands.patchUser(userId, dto);
     return userAggregate.getResponseUser();
   }
 
   @Patch('place')
   @HttpCode(HttpStatus.OK)
   async patchPlace(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body() dto: PatchUserPlaceDto,
   ): Promise<ResponseUser> {
     const userAggregate = await this.facade.commands.patchUserPlace(
-      user.id,
+      userId,
       dto,
     );
     return userAggregate.getResponseUser();
@@ -57,9 +57,9 @@ export class UserController {
   @Get('sorted')
   @HttpCode(HttpStatus.OK)
   async getSortedUser(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance> {
-    const userAggregate = await this.facade.queries.getSorted(user.id);
+    const userAggregate = await this.facade.queries.getSorted(userId);
     return userAggregate.getShortUserWithDistance();
   }
 
@@ -67,7 +67,7 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('picture'))
   async savePicture(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -79,7 +79,7 @@ export class UserController {
     picture: Express.Multer.File,
   ): Promise<ResponseUser> {
     const userAggregate = await this.facade.commands.savePicture(
-      user.id,
+      userId,
       picture,
     );
     return userAggregate.getResponseUser();
@@ -88,21 +88,21 @@ export class UserController {
   @Put('picture/mix')
   @HttpCode(HttpStatus.OK)
   async mixPictures(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Body() dto: MixPicturesDto,
   ): Promise<ResponseUser> {
-    const userAggregate = await this.facade.commands.mixPictures(user.id, dto);
+    const userAggregate = await this.facade.commands.mixPictures(userId, dto);
     return userAggregate.getResponseUser();
   }
 
   @Put('picture/:id')
   @HttpCode(HttpStatus.OK)
   async deletePicture(
-    @User(CustomValidationPipe) user: NotValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id') pictureId: string,
   ): Promise<ResponseUser> {
     const userAggregate = await this.facade.commands.deletePicture(
-      user.id,
+      userId,
       pictureId,
     );
     return userAggregate.getResponseUser();
@@ -111,29 +111,29 @@ export class UserController {
   @Post('like/:id')
   @HttpCode(HttpStatus.OK)
   likeUser(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
   ): Promise<void> {
-    return this.facade.commands.likeUser(user.id, pairId);
+    return this.facade.commands.likeUser(userId, pairId);
   }
 
   @Post('dislike/:id')
   @HttpCode(HttpStatus.OK)
   dislikeUser(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
   ): Promise<void> {
-    return this.facade.commands.dislikeUser(user.id, pairId);
+    return this.facade.commands.dislikeUser(userId, pairId);
   }
 
   @Put('return')
   @HttpCode(HttpStatus.OK)
   async returnUser(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance> {
-    const userCheckAggregate = await this.facade.commands.returnUser(user.id);
+    const userCheckAggregate = await this.facade.commands.returnUser(userId);
     const returnedSortedUser = await this.facade.queries.getSorted(
-      user.id,
+      userId,
       userCheckAggregate.checkedId,
     );
 
@@ -143,9 +143,9 @@ export class UserController {
   @Get('pairs')
   @HttpCode(HttpStatus.OK)
   async getPairs(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance[]> {
-    const pairsWithDistance = await this.facade.queries.getPairs(user.id);
+    const pairsWithDistance = await this.facade.queries.getPairs(userId);
 
     const pairs = await Promise.all(
       pairsWithDistance.map((pair) => {
@@ -159,32 +159,32 @@ export class UserController {
   @Post('pairs/:id')
   @HttpCode(HttpStatus.OK)
   async acceptPair(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
   ): Promise<string> {
-    return this.facade.commands.acceptPair(user.id, pairId);
+    return this.facade.commands.acceptPair(userId, pairId);
   }
 
   @Put('pairs/:id')
   @HttpCode(HttpStatus.OK)
   deletePair(
-    @User(CustomValidationPipe) user: ValidatedUserDto,
+    @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
   ): Promise<string> {
-    return this.facade.commands.deletePair(user.id, pairId);
+    return this.facade.commands.deletePair(userId, pairId);
   }
 
   // for dev
   @Patch('removeAllPairs')
   @HttpCode(HttpStatus.OK)
-  removeAllPairs(@User() user) {
-    return this.facade.dev.removeAllPairsDEV(user.id);
+  removeAllPairs(@User(ParseUUIDPipe) userId: string) {
+    return this.facade.dev.removeAllPairsDEV(userId);
   }
 
   // for dev
   @Post('createPairs')
   @HttpCode(HttpStatus.OK)
-  createPairs(@User() user) {
-    return this.facade.dev.createPairsDEV(user.id);
+  createPairs(@User(ParseUUIDPipe) userId: string) {
+    return this.facade.dev.createPairsDEV(userId);
   }
 }
