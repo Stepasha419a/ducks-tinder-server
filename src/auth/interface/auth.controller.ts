@@ -13,11 +13,14 @@ import { Request, Response } from 'express';
 import { Public } from 'common/decorators';
 import { AuthFacade } from 'auth/application';
 import { LoginUserDto, RegisterUserDto } from 'auth/application/command';
-import { AuthUserWithoutRefreshToken } from 'auth/interface/auth.interface';
+import { AuthMapper, WithoutPrivateFields } from 'auth/infrastructure/mapper';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly facade: AuthFacade) {}
+  constructor(
+    private readonly facade: AuthFacade,
+    private readonly mapper: AuthMapper,
+  ) {}
 
   @Public()
   @Post('registration')
@@ -25,12 +28,12 @@ export class AuthController {
   async registration(
     @Res() res: Response,
     @Body() dto: RegisterUserDto,
-  ): Promise<Response<AuthUserWithoutRefreshToken>> {
+  ): Promise<Response<WithoutPrivateFields>> {
     const authUserAggregate = await this.facade.commands.register(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =
-      await authUserAggregate.getWithoutPrivateFields();
+      this.mapper.getWithoutPrivateFields(authUserAggregate);
     return res.json(withoutPrivateFields);
   }
 
@@ -40,12 +43,12 @@ export class AuthController {
   async login(
     @Res() res: Response,
     @Body() dto: LoginUserDto,
-  ): Promise<Response<AuthUserWithoutRefreshToken>> {
+  ): Promise<Response<WithoutPrivateFields>> {
     const authUserAggregate = await this.facade.commands.login(dto);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =
-      await authUserAggregate.getWithoutPrivateFields();
+      this.mapper.getWithoutPrivateFields(authUserAggregate);
     return res.json(withoutPrivateFields);
   }
 
@@ -69,14 +72,14 @@ export class AuthController {
   async refresh(
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<Response<AuthUserWithoutRefreshToken>> {
+  ): Promise<Response<WithoutPrivateFields>> {
     const { refreshToken } = req.cookies;
 
     const authUserAggregate = await this.facade.commands.refresh(refreshToken);
     this.setCookies(res, authUserAggregate.refreshToken.value);
 
     const withoutPrivateFields =
-      await authUserAggregate.getWithoutPrivateFields();
+      this.mapper.getWithoutPrivateFields(authUserAggregate);
     return res.json(withoutPrivateFields);
   }
 

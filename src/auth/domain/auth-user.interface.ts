@@ -4,8 +4,7 @@ import {
   RefreshTokenValueObject,
 } from './value-object';
 
-export interface AuthUser {
-  user: User;
+export interface AuthUser extends User {
   refreshToken: RefreshTokenValueObject;
   accessToken: AccessTokenValueObject;
 }

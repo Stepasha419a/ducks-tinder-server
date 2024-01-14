@@ -12,11 +12,13 @@ import { RefreshTokenRepository } from './domain/repository';
 import { RefreshTokenAdapter } from './infrastructure/repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'prisma/prisma.module';
+import { AuthMapper } from './infrastructure/mapper';
 
 @Module({
   providers: [
     ...AUTH_COMMAND_HANDLERS,
     ...TOKEN_COMMAND_HANDLERS,
+    AuthMapper,
     {
       provide: AuthFacade,
       inject: [CommandBus],

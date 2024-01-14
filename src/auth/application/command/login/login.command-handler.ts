@@ -33,7 +33,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
       });
 
     return AuthUserAggregate.create({
-      user,
+      ...user,
       accessToken: accessTokenValueObject,
       refreshToken: refreshTokenValueObject,
     });

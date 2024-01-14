@@ -34,7 +34,7 @@ export class RefreshCommandHandler {
       });
 
     return AuthUserAggregate.create({
-      user,
+      ...user,
       accessToken: accessTokenValueObject,
       refreshToken: refreshTokenValueObject,
     });
