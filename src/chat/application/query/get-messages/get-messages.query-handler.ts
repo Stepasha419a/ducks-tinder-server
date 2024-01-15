@@ -2,8 +2,9 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMessagesQuery } from './get-messages.query';
 import { NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'chat/domain/repository';
-import { ChatMessage, MessagesPaginationAggregate } from 'chat/domain';
+import { Message } from 'chat/domain';
 import { UserService } from 'user/interface';
+import { MessagesPaginationValueObject } from 'chat/domain/value-object';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler
@@ -14,7 +15,9 @@ export class GetMessagesQueryHandler
     private readonly userService: UserService,
   ) {}
 
-  async execute(query: GetMessagesQuery): Promise<MessagesPaginationAggregate> {
+  async execute(
+    query: GetMessagesQuery,
+  ): Promise<MessagesPaginationValueObject> {
     const { userId, dto } = query;
 
     const chat = await this.repository.findOneHavingMember(dto.chatId, userId);
@@ -35,7 +38,7 @@ export class GetMessagesQueryHandler
       userIds.map((userId) => this.userService.getUser(userId)),
     );
 
-    const messagesPaginationAggregate = MessagesPaginationAggregate.create({
+    const messagesPaginationAggregate = MessagesPaginationValueObject.create({
       chatId: chat.id,
       messages,
       users,
@@ -44,7 +47,7 @@ export class GetMessagesQueryHandler
     return messagesPaginationAggregate;
   }
 
-  private getUniqueUserIds(messages: ChatMessage[], currentUserId: string) {
+  private getUniqueUserIds(messages: Message[], currentUserId: string) {
     const userIds = [];
 
     messages.forEach((message) => {

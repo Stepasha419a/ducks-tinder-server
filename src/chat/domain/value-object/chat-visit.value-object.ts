@@ -1,9 +1,7 @@
 import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
 import { DomainError } from 'libs/shared/errors';
-import { AggregateRoot } from '@nestjs/cqrs';
-import { ChatVisit } from './chat-visit.interface';
 
-export class ChatVisitAggregate extends AggregateRoot implements ChatVisit {
+export class ChatVisitValueObject {
   @IsUUID()
   userId: string;
 
@@ -14,18 +12,14 @@ export class ChatVisitAggregate extends AggregateRoot implements ChatVisit {
   @IsNotEmpty()
   lastSeen: string = new Date().toISOString();
 
-  private constructor() {
-    super();
-  }
-
-  static create(chatVisit: Partial<ChatVisit>) {
-    const _chatVisit = new ChatVisitAggregate();
+  static create(chatVisit: Partial<ChatVisitValueObject>) {
+    const _chatVisit = new ChatVisitValueObject();
 
     Object.assign(_chatVisit, chatVisit);
 
     const errors = validateSync(_chatVisit, { whitelist: true });
     if (errors.length) {
-      throw new DomainError(errors, 'Chat-visit is invalid');
+      throw new DomainError(errors, 'Chat visit is invalid');
     }
 
     return _chatVisit;

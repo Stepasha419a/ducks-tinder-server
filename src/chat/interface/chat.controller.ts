@@ -13,22 +13,40 @@ import { ChatFacade } from 'chat/application';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from 'chat/application/query';
 import { EditMessageDto, SendMessageDto } from 'chat/application/command';
+import { ChatMapper } from 'chat/infrastructure/mapper';
 
 @Controller('chat')
 export class ChatController {
-  constructor(private readonly facade: ChatFacade) {}
+  constructor(
+    private readonly facade: ChatFacade,
+    private readonly mapper: ChatMapper,
+  ) {}
 
   @Get()
-  getChats(@User(ParseUUIDPipe) userId: string, @Body() dto: PaginationDto) {
-    return this.facade.queries.getChats(userId, dto);
+  async getChats(
+    @User(ParseUUIDPipe) userId: string,
+    @Body() dto: PaginationDto,
+  ) {
+    const chatPagination = await this.facade.queries.getChats(userId, dto);
+
+    return chatPagination.map((chat) =>
+      this.mapper.getShortChatPagination(chat),
+    );
   }
 
   @Get('TEST/messages')
-  getMessages(
+  async getMessages(
     @User(ParseUUIDPipe) userId: string,
     @Body() dto: GetMessagesDto,
   ) {
-    return this.facade.queries.getMessages(userId, dto);
+    const messagesPaginationValueObject = await this.facade.queries.getMessages(
+      userId,
+      dto,
+    );
+
+    return this.mapper.getShortMessagesPagination(
+      messagesPaginationValueObject,
+    );
   }
 
   @Post('TEST/message')

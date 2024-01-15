@@ -1,18 +1,17 @@
-import {
-  ChatMessage,
-  ChatVisitAggregate,
-  MessageAggregate,
-  PaginationChatAggregate,
-} from 'chat/domain';
+import { Message, MessageAggregate } from 'chat/domain';
 import { ChatAggregate } from 'chat/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';
+import {
+  ChatVisitValueObject,
+  ChatPaginationValueObject,
+} from '../value-object';
 
 export abstract class ChatRepository {
   abstract save(chat: ChatAggregate): Promise<ChatAggregate>;
   abstract saveMessage(message: MessageAggregate): Promise<MessageAggregate>;
   abstract saveChatVisit(
-    chatVisit: ChatVisitAggregate,
-  ): Promise<ChatVisitAggregate>;
+    chatVisit: ChatVisitValueObject,
+  ): Promise<ChatVisitValueObject>;
   abstract findOne(id: string): Promise<ChatAggregate | null>;
   abstract findOneHavingMember(
     id: string,
@@ -22,12 +21,9 @@ export abstract class ChatRepository {
   abstract findMany(
     userId: string,
     dto: PaginationDto,
-  ): Promise<PaginationChatAggregate[]>;
+  ): Promise<ChatPaginationValueObject[]>;
   abstract findMessage(messageId: string): Promise<MessageAggregate | null>;
-  abstract findMessages(
-    chatId: string,
-    dto: PaginationDto,
-  ): Promise<ChatMessage[]>;
+  abstract findMessages(chatId: string, dto: PaginationDto): Promise<Message[]>;
   abstract findMessagesCount(chatId: string): Promise<number>;
   abstract findChatUserIds(chatId: string): Promise<string[]>;
   abstract connectUserToChat(

@@ -4,14 +4,12 @@ import { ChatRepository } from '../../domain/repository/chat.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { ChatAggregate } from 'chat/domain/chat.aggregate';
 import { PaginationDto } from 'libs/shared/dto';
-import {
-  ChatMessage,
-  ChatVisit,
-  ChatVisitAggregate,
-  MessageAggregate,
-  PaginationChatAggregate,
-} from 'chat/domain';
+import { MessageAggregate } from 'chat/domain';
 import { ChatSelector } from './chat.selector';
+import {
+  ChatVisitValueObject,
+  ChatPaginationValueObject,
+} from 'chat/domain/value-object';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
@@ -74,8 +72,8 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async saveChatVisit(
-    chatVisit: ChatVisitAggregate,
-  ): Promise<ChatVisitAggregate> {
+    chatVisit: ChatVisitValueObject,
+  ): Promise<ChatVisitValueObject> {
     const existingChatVisit = await this.findChatVisit(
       chatVisit.userId,
       chatVisit.chatId,
@@ -90,14 +88,14 @@ export class ChatAdapter implements ChatRepository {
         },
       });
 
-      return this.getChatVisitAggregate(updatedChatVisit);
+      return this.getChatVisitValueObject(updatedChatVisit);
     }
 
     const saved = await this.prismaService.chatVisit.create({
       data: chatVisit,
     });
 
-    return this.getChatVisitAggregate(saved);
+    return this.getChatVisitValueObject(saved);
   }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
@@ -154,7 +152,7 @@ export class ChatAdapter implements ChatRepository {
   async findMany(
     userId: string,
     dto: PaginationDto,
-  ): Promise<PaginationChatAggregate[]> {
+  ): Promise<ChatPaginationValueObject[]> {
     const chats = await this.prismaService.chat.findMany({
       where: { users: { some: { id: userId } } },
       take: dto.take,
@@ -180,23 +178,23 @@ export class ChatAdapter implements ChatRepository {
     const paginationChatAggregates = await Promise.all(
       chats.map(async (chat) => {
         const lastMessage = chat.messages[0]
-          ? await this.getMessageAggregate(chat.messages[0]).getChatMessage()
+          ? this.getMessageAggregate(chat.messages[0])
           : null;
 
         const chatVisit = chat.chatVisits[0]
-          ? this.getChatVisitAggregate(chat.chatVisits[0])
+          ? this.getChatVisitValueObject(chat.chatVisits[0])
           : null;
 
         const avatar: string | null =
           chat.users[0]?.pictures?.[0]?.name || null;
 
-        return PaginationChatAggregate.create({
+        return ChatPaginationValueObject.create({
           id: chat.id,
           avatar,
           name: chat.users[0].name,
           blocked: chat.blocked,
           blockedById: chat.blockedById,
-          chatVisit: chatVisit,
+          chatVisit,
           lastMessage,
         });
       }),
@@ -235,7 +233,7 @@ export class ChatAdapter implements ChatRepository {
   async findChatVisit(
     userId: string,
     chatId: string,
-  ): Promise<ChatVisit | null> {
+  ): Promise<ChatVisitValueObject | null> {
     const chatVisit = await this.prismaService.chatVisit.findUnique({
       where: {
         userId_chatId: { chatId, userId },
@@ -246,13 +244,13 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    return this.getChatVisitAggregate(chatVisit);
+    return this.getChatVisitValueObject(chatVisit);
   }
 
   async findMessages(
     chatId: string,
     dto: PaginationDto,
-  ): Promise<ChatMessage[]> {
+  ): Promise<MessageAggregate[]> {
     const messages = await this.prismaService.message.findMany({
       where: {
         chatId,
@@ -263,11 +261,7 @@ export class ChatAdapter implements ChatRepository {
       take: dto.take,
     });
 
-    return Promise.all(
-      messages.map((message) =>
-        this.getMessageAggregate(message).getChatMessage(),
-      ),
-    );
+    return messages.map((message) => this.getMessageAggregate(message));
   }
 
   async findMessagesCount(chatId: string): Promise<number> {
@@ -323,8 +317,8 @@ export class ChatAdapter implements ChatRepository {
     });
   }
 
-  private getChatVisitAggregate(chatVisit): ChatVisitAggregate {
-    return ChatVisitAggregate.create({
+  private getChatVisitValueObject(chatVisit): ChatVisitValueObject {
+    return ChatVisitValueObject.create({
       ...chatVisit,
       lastSeen: chatVisit.lastSeen.toISOString(),
     });

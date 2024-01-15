@@ -20,6 +20,7 @@ import { User } from 'common/decorators';
 import { ChatFacade } from 'chat/application';
 import { GetMessagesDto } from 'chat/application/query';
 import { EditMessageDto, SendMessageDto } from 'chat/application/command';
+import { ChatMapper } from 'chat/infrastructure/mapper';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -29,7 +30,10 @@ import { EditMessageDto, SendMessageDto } from 'chat/application/command';
   cookie: true,
 })
 export class ChatGateway {
-  constructor(private readonly facade: ChatFacade) {}
+  constructor(
+    private readonly facade: ChatFacade,
+    private readonly mapper: ChatMapper,
+  ) {}
 
   @WebSocketServer()
   wss: Server;
@@ -90,7 +94,9 @@ export class ChatGateway {
   ) {
     const data = await this.facade.queries.getMessages(userId, dto);
 
-    this.wss.to(userId).emit('get-messages', data);
+    this.wss
+      .to(userId)
+      .emit('get-messages', this.mapper.getShortMessagesPagination(data));
   }
 
   @UseGuards(WsRefreshTokenGuard)

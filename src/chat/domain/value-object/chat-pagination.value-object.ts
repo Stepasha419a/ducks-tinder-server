@@ -8,16 +8,11 @@ import {
   validateSync,
 } from 'class-validator';
 import { DomainError } from 'libs/shared/errors';
-import { PaginationChat } from './pagination-chat.interface';
-import { AggregateRoot } from '@nestjs/cqrs';
-import { ChatMessage, ChatMessageDto } from '../message';
 import { Type } from 'class-transformer';
-import { ChatVisit, ChatVisitAggregate } from '../chat-visit';
+import { Message, MessageAggregate } from '../message';
+import { ChatVisitValueObject } from './chat-visit.value-object';
 
-export class PaginationChatAggregate
-  extends AggregateRoot
-  implements PaginationChat
-{
+export class ChatPaginationValueObject {
   @IsUUID()
   id: string;
 
@@ -32,13 +27,13 @@ export class PaginationChatAggregate
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => ChatMessageDto)
-  lastMessage?: ChatMessage;
+  @Type(() => MessageAggregate)
+  lastMessage?: Message;
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => ChatVisitAggregate)
-  chatVisit?: ChatVisit;
+  @Type(() => ChatVisitValueObject)
+  chatVisit?: ChatVisitValueObject;
 
   @IsBoolean()
   blocked: boolean;
@@ -47,12 +42,8 @@ export class PaginationChatAggregate
   @IsUUID()
   blockedById?: string;
 
-  private constructor() {
-    super();
-  }
-
-  static create(chat: Partial<PaginationChat>) {
-    const _chat = new PaginationChatAggregate();
+  static create(chat: Partial<ChatPaginationValueObject>) {
+    const _chat = new ChatPaginationValueObject();
 
     Object.assign(_chat, chat);
 

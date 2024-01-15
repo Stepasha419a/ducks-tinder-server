@@ -1,15 +1,11 @@
-import { AggregateRoot } from '@nestjs/cqrs';
 import { IsArray, IsUUID, validateSync } from 'class-validator';
-import { MessagesPagination } from './messages-pagination.interface';
 import { User, UserAggregate } from 'user/domain';
 import { Type } from 'class-transformer';
-import { ChatMessage, ChatMessageDto } from '../message/chat-message';
 import { DomainError } from 'libs/shared/errors';
+import { MessageAggregate } from '../message/message.aggregate';
+import { Message } from '../message';
 
-export class MessagesPaginationAggregate
-  extends AggregateRoot
-  implements MessagesPagination
-{
+export class MessagesPaginationValueObject {
   @IsUUID()
   chatId: string;
 
@@ -20,15 +16,11 @@ export class MessagesPaginationAggregate
 
   @IsArray()
   @IsArray()
-  @Type(() => ChatMessageDto)
-  messages: ChatMessage[];
+  @Type(() => MessageAggregate)
+  messages: Message[];
 
-  private constructor() {
-    super();
-  }
-
-  static create(messagesPagination: Partial<MessagesPagination>) {
-    const _messagesPagination = new MessagesPaginationAggregate();
+  static create(messagesPagination: Partial<MessagesPaginationValueObject>) {
+    const _messagesPagination = new MessagesPaginationValueObject();
 
     Object.assign(_messagesPagination, messagesPagination);
 

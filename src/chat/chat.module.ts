@@ -12,6 +12,7 @@ import { CHAT_QUERY_HANDLERS } from 'chat/application/query';
 import { ChatFacade } from './application';
 import { CHAT_EVENT_HANDLERS } from './application/event';
 import { AuthModule } from 'auth/auth.module';
+import { ChatMapper } from './infrastructure/mapper/chat.mapper';
 
 @Module({
   controllers: [ChatController],
@@ -20,6 +21,7 @@ import { AuthModule } from 'auth/auth.module';
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,
     ...CHAT_EVENT_HANDLERS,
+    ChatMapper,
     { provide: ChatRepository, useClass: ChatAdapter },
     {
       provide: ChatFacade,
