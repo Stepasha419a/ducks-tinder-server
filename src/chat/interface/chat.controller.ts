@@ -34,7 +34,7 @@ export class ChatController {
     );
   }
 
-  @Get('TEST/messages')
+  @Get('messages')
   async getMessages(
     @User(ParseUUIDPipe) userId: string,
     @Body() dto: GetMessagesDto,

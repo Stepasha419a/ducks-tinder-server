@@ -18,9 +18,7 @@ import { WsHttpExceptionFilter } from 'common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
 import { User } from 'common/decorators';
 import { ChatFacade } from 'chat/application';
-import { GetMessagesDto } from 'chat/application/query';
 import { EditMessageDto, SendMessageDto } from 'chat/application/command';
-import { ChatMapper } from 'chat/infrastructure/mapper';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -30,10 +28,7 @@ import { ChatMapper } from 'chat/infrastructure/mapper';
   cookie: true,
 })
 export class ChatGateway {
-  constructor(
-    private readonly facade: ChatFacade,
-    private readonly mapper: ChatMapper,
-  ) {}
+  constructor(private readonly facade: ChatFacade) {}
 
   @WebSocketServer()
   wss: Server;
@@ -84,19 +79,6 @@ export class ChatGateway {
     );
 
     this.wss.to(userIds).emit('send-message', message);
-  }
-
-  @UseGuards(WsRefreshTokenGuard)
-  @SubscribeMessage('get-messages')
-  async getMessages(
-    @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody() dto: GetMessagesDto,
-  ) {
-    const data = await this.facade.queries.getMessages(userId, dto);
-
-    this.wss
-      .to(userId)
-      .emit('get-messages', this.mapper.getShortMessagesPagination(data));
   }
 
   @UseGuards(WsRefreshTokenGuard)
