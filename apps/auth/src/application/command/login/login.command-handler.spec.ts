@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
-import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
+import { INCORRECT_EMAIL_OR_PASSWORD } from '@app/common/constants/error';
 import { HttpStatus } from '@nestjs/common';
 import { TokenAdapter } from 'auth/application/adapter/token';
 import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
@@ -12,7 +12,7 @@ import {
   UserAggregateStub,
 } from 'auth/test/stub';
 import { AuthUserAggregate } from 'auth/domain';
-import { UserService } from 'user/interface';
+import { UserService } from 'apps/user/src/interface';
 
 describe('when login is called', () => {
   let userService: UserService;

@@ -1,17 +1,17 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
+import { UsersPrismaMock } from 'apps/user/src/test/mocks';
 import {
   requestUserStub,
   shortUserStub,
   shortUserWithLocationStub,
   userDtoStub,
-} from 'user/test/stubs';
+} from 'apps/user/src/test/stubs';
 import { GetPairsQueryHandler } from './get-pairs.query-handler';
 import { GetPairsQuery } from './get-pairs.query';
-import { ShortUser } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { ShortUser } from 'apps/user/src/users.interface';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 
 describe('when get pairs is called', () => {
   let prismaService: PrismaService;

@@ -22,9 +22,9 @@ import {
   GetUserByEmailQuery,
   GetUserQuery,
 } from './query';
-import { UserAggregate } from 'user/domain';
+import { UserAggregate } from 'apps/user/src/domain';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
-import { UserCheckValueObject } from 'user/domain/value-object';
+import { UserCheckValueObject } from 'apps/user/src/domain/value-object';
 
 @Injectable()
 export class UserFacade {

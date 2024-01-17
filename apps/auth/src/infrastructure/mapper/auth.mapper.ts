@@ -1,5 +1,5 @@
 import { AuthUser } from 'auth/domain';
-import { UserPictureInfo } from 'user/infrastructure/mapper';
+import { UserPictureInfo } from 'apps/user/src/infrastructure/mapper';
 
 export class AuthMapper {
   getWithoutPrivateFields(authUser: AuthUser) {

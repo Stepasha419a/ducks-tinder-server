@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { RegisterCommand } from './register.command';
 import { RegisterCommandHandler } from './register.command-handler';
-import { UserAggregateStub, UserStub } from 'user/test/stub';
-import { USER_ALREADY_EXISTS } from 'common/constants/error';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
+import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
 import { HttpStatus } from '@nestjs/common';
-import { UserService } from 'user/interface';
+import { UserService } from 'apps/user/src/interface';
 import { TokenAdapter } from 'auth/application/adapter/token';
 import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
 import { AuthUserAggregate } from 'auth/domain';

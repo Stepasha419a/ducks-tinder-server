@@ -24,8 +24,11 @@ import {
 } from './value-object';
 import { DomainError } from 'libs/shared/errors';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { Sex } from 'user/domain/user.interface';
-import { PictureValueObject, PlaceValueObject } from 'user/domain/value-object';
+import { Sex } from 'apps/user/src/domain/user.interface';
+import {
+  PictureValueObject,
+  PlaceValueObject,
+} from 'apps/user/src/domain/value-object';
 import { AggregateRoot } from '@nestjs/cqrs';
 
 export class AuthUserAggregate extends AggregateRoot implements AuthUser {

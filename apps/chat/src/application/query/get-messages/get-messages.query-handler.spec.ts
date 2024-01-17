@@ -6,7 +6,7 @@ import { ChatsPrismaMock } from 'chat/test/mocks';
 import { fullChatStub, messageStub, shortChatStub } from 'chat/test/stubs';
 import { GetMessagesQueryHandler } from './get-messages.query-handler';
 import { GetMessagesQuery } from './get-messages.query';
-import { requestUserStub } from 'user/test/stubs';
+import { requestUserStub } from 'apps/user/src/test/stubs';
 import { GetMessagesDto } from 'chat/legacy/dto';
 import { GetMessagesQueryReturn } from 'chat/chats.interface';
 

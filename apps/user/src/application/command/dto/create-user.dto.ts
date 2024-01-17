@@ -1,4 +1,4 @@
-import { User } from 'user/domain';
+import { User } from 'apps/user/src/domain';
 
 export type CreateUserDto = Pick<
   User,

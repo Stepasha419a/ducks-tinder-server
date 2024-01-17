@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
-import { UserAggregateStub, UserStub } from 'user/test/stub';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 import { HttpStatus } from '@nestjs/common';
 import { TokenAdapter } from 'auth/application/adapter/token';
 import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
@@ -11,7 +11,7 @@ import {
   RefreshTokenValueObjectStub,
 } from 'auth/test/stub';
 import { AuthUserAggregate } from 'auth/domain';
-import { UserService } from 'user/interface';
+import { UserService } from 'apps/user/src/interface';
 
 describe('when refresh is called', () => {
   let tokenAdapter: TokenAdapter;

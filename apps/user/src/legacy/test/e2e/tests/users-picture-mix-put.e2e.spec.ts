@@ -5,15 +5,15 @@ import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
 import prismaClient from 'prisma/test/prisma-client';
-import { UserDto } from 'user/legacy/dto';
+import { UserDto } from 'apps/user/src/legacy/dto';
 import {
   prepareAccessTokens,
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
-import { USERS_PICTURE_MIX_PUT_DTO } from 'user/test/values/users.e2e-const.dto';
-import { USERS_PICTURE_MIX_PUT_EXPECT } from 'user/test/values/users.e2e-const.expect';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
+import { USERS_PICTURE_MIX_PUT_DTO } from 'apps/user/src/test/values/users.e2e-const.dto';
+import { USERS_PICTURE_MIX_PUT_EXPECT } from 'apps/user/src/test/values/users.e2e-const.expect';
 
 const currentUserId = 'picture_mix_current_user_id';
 const secondUserId = 'picture_mix_second_user_id';

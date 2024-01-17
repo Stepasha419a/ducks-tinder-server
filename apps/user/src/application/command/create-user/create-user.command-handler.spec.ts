@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { CreateUserCommandHandler } from './create-user.command-handler';
 import { CreateUserCommand } from './create-user.command';
-import { UserRepository } from 'user/domain/repository';
-import { UserRepositoryMock } from 'user/test/mock';
-import { UserAggregateStub } from 'user/test/stub';
-import { UserAggregate } from 'user/domain';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserAggregateStub } from 'apps/user/src/test/stub';
+import { UserAggregate } from 'apps/user/src/domain';
 
 describe('when delete pair is called', () => {
   let repository: UserRepository;

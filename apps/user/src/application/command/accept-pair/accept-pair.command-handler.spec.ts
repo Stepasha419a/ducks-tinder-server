@@ -2,10 +2,14 @@ import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { ChatsServiceMock, UsersPrismaMock } from 'user/test/mocks';
-import { requestUserStub, shortUserStub, userDtoStub } from 'user/test/stubs';
-import { ShortUserWithoutDistance } from 'user/users.interface';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { ChatsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
+import {
+  requestUserStub,
+  shortUserStub,
+  userDtoStub,
+} from 'apps/user/src/test/stubs';
+import { ShortUserWithoutDistance } from 'apps/user/src/users.interface';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
 import { ChatsModule } from 'chat/chat.module';

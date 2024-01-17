@@ -5,8 +5,8 @@ import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
 import prismaClient from 'prisma/test/prisma-client';
-import { UPDATE_USER_RELATIONS_DTO } from 'user/test/values/users.const.dto';
-import { USERS_PATCH_RELATIONS_EXPECT } from 'user/test/values/users.e2e-const.expect';
+import { UPDATE_USER_RELATIONS_DTO } from 'apps/user/src/test/values/users.const.dto';
+import { USERS_PATCH_RELATIONS_EXPECT } from 'apps/user/src/test/values/users.e2e-const.expect';
 import {
   prepareAccessTokens,
   prepareAfter,

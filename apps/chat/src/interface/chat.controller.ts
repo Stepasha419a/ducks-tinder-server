@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { User } from 'common/decorators';
+import { User } from '@app/common/decorators';
 import { ChatFacade } from 'chat/application';
 import { PaginationDto } from 'libs/shared/dto';
 import { GetMessagesDto } from 'chat/application/query';

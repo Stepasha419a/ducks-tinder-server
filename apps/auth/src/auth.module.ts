@@ -4,7 +4,7 @@ import { AuthController } from './interface/auth.controller';
 import { AUTH_COMMAND_HANDLERS } from './application/command';
 import { AuthFacade } from './application';
 import { authFacadeFactory } from './infrastructure/facade';
-import { UserModule } from 'user/user.module';
+import { UserModule } from 'apps/user/src/user.module';
 import { TokenAdapter } from './application/adapter/token';
 import { TokenAdapterImplementation } from './infrastructure/adapter';
 import { TOKEN_COMMAND_HANDLERS } from './infrastructure/adapter/token';

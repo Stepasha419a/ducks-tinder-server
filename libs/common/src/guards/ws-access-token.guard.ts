@@ -5,7 +5,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IS_PUBLIC_KEY } from 'common/constants';
+import { IS_PUBLIC_KEY } from '@app/common/constants';
 import { TokenAdapter } from 'auth/application/adapter/token';
 
 @Injectable()

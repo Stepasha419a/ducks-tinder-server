@@ -16,17 +16,20 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { OptionalValidationPipe } from 'common/pipes';
-import { ONE_MB_SIZE } from 'common/constants';
-import { User } from 'common/decorators';
+import { OptionalValidationPipe } from '@app/common/pipes';
+import { ONE_MB_SIZE } from '@app/common/constants';
+import { User } from '@app/common/decorators';
 import { UserFacade } from '../application';
 import {
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
 } from '../application/command';
-import { UserMapper, WithoutPrivateFields } from 'user/infrastructure/mapper';
-import { ShortUserWithDistance } from 'user/infrastructure/mapper/interface/short-user-with-distance';
+import {
+  UserMapper,
+  WithoutPrivateFields,
+} from 'apps/user/src/infrastructure/mapper';
+import { ShortUserWithDistance } from 'apps/user/src/infrastructure/mapper/interface/short-user-with-distance';
 
 @Controller('user')
 export class UserController {

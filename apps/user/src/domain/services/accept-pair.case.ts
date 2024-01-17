@@ -1,4 +1,4 @@
-import { AcceptPairEvent } from 'user/domain/event';
+import { AcceptPairEvent } from 'apps/user/src/domain/event';
 import { UserAggregate } from '../user.aggregate';
 
 export interface AcceptPair {

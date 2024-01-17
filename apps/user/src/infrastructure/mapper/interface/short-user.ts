@@ -1,4 +1,4 @@
-import { PlaceValueObject } from 'user/domain/value-object';
+import { PlaceValueObject } from 'apps/user/src/domain/value-object';
 import { UserPictureInfo } from './user-picture-info';
 
 export interface ShortUser {

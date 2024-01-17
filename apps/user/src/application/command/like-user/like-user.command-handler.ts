@@ -4,8 +4,8 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import {
   CAN_NOT_LIKE_YOURSELF,
   USER_ALREADY_CHECKED,
-} from 'common/constants/error';
-import { UserRepository } from 'user/domain/repository';
+} from '@app/common/constants/error';
+import { UserRepository } from 'apps/user/src/domain/repository';
 
 @CommandHandler(LikeUserCommand)
 export class LikeUserCommandHandler

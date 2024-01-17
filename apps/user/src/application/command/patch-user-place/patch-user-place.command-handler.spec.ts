@@ -3,12 +3,12 @@ import { PatchUserPlaceCommandHandler } from './patch-user-place.command-handler
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { MapsModule } from 'maps/maps.module';
-import { MapsServiceMock, UsersPrismaMock } from 'user/test/mocks';
+import { MapsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
 import { MapsService } from 'maps/maps.service';
-import { PatchUserPlaceDto, UserDto } from 'user/legacy/dto';
+import { PatchUserPlaceDto, UserDto } from 'apps/user/src/legacy/dto';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
-import { requestUserStub, userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { ConfigModule } from '@nestjs/config';
 describe('when patch user place is called', () => {
   let patchUserPlaceCommandHandler: PatchUserPlaceCommandHandler;

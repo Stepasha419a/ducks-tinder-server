@@ -10,7 +10,7 @@ import {
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { USERS_SORTED_GET_EXPECT } from 'user/test/values/users.e2e-const.expect';
+import { USERS_SORTED_GET_EXPECT } from 'apps/user/src/test/values/users.e2e-const.expect';
 
 const currentUserId = 'sorted_current_user_id';
 const secondUserId = 'sorted_second_user_id';

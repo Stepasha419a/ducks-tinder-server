@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ReturnUserCommand } from './return-user.command';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { UserRepository } from 'user/domain/repository';
-import { UserCheckValueObject } from 'user/domain/value-object';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserCheckValueObject } from 'apps/user/src/domain/value-object';
 
 @CommandHandler(ReturnUserCommand)
 export class ReturnUserCommandHandler

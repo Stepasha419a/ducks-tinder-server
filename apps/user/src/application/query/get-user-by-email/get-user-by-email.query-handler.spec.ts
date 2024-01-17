@@ -2,9 +2,9 @@ import { Test } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { UsersPrismaMock } from 'apps/user/src/test/mocks';
+import { userDtoStub } from 'apps/user/src/test/stubs';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { GetUserByEmailQueryHandler } from './get-user-by-email.query-handler';
 import { GetUserByEmailQuery } from './get-user-by-email.query';
 

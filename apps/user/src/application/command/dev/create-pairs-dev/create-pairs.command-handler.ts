@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePairsCommand } from './create-pairs.command';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 
 @CommandHandler(CreatePairsCommand)
 export class CreatePairsCommandHandler

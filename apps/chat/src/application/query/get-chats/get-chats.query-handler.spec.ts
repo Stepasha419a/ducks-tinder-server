@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { requestUserStub } from 'user/test/stubs';
+import { requestUserStub } from 'apps/user/src/test/stubs';
 import { ChatsPrismaMock } from 'chat/test/mocks';
 import { GetChatsQuery } from './get-chats.query';
 import { GetChatsQueryHandler } from './get-chats.query-handler';
 import { ShortChat } from 'chat/chats.interface';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { shortChatStub } from 'chat/test/stubs';
 import { ChatsSelector } from 'chat/chats.selector';
 

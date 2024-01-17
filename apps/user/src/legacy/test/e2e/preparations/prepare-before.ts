@@ -1,5 +1,5 @@
-import { UserSelector } from 'user/infrastructure/repository/user.selector';
-import prismaClient from 'prisma/test/prisma-client';
+import { UserSelector } from 'apps/user/src/infrastructure/repository/user.selector';
+import prismaClient from '@app/common/prisma/test/prisma-client';
 
 export async function prepareBefore(currentUserId, secondUserId) {
   await prismaClient.$transaction([

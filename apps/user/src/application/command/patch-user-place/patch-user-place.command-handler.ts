@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
-import { UserRepository } from 'user/domain/repository';
-import { UserAggregate } from 'user/domain';
-import { MapApi } from 'user/application/adapter';
-import { PlaceValueObject } from 'user/domain/value-object';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserAggregate } from 'apps/user/src/domain';
+import { MapApi } from 'apps/user/src/application/adapter';
+import { PlaceValueObject } from 'apps/user/src/domain/value-object';
 
 @CommandHandler(PatchUserPlaceCommand)
 export class PatchUserPlaceCommandHandler

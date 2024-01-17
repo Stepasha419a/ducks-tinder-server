@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { requestUserStub, userDtoStub } from 'user/test/stubs';
+import { UsersPrismaMock } from 'apps/user/src/test/mocks';
+import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
 import { LikeUserCommandHandler } from './like-user.command-handler';
 import { LikeUserCommand } from './like-user.command';
 

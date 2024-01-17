@@ -1,15 +1,15 @@
 import { Test } from '@nestjs/testing';
 import { FilesModule } from 'files/files.module';
-import { ShortUser } from 'user/users.interface';
+import { ShortUser } from 'apps/user/src/users.interface';
 import { FilesService } from 'files/files.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { FilesServiceMock, UsersPrismaMock } from 'user/test/mocks';
-import { DELETE_PICTURE_DTO } from 'user/test/values/users.const.dto';
+import { FilesServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
+import { DELETE_PICTURE_DTO } from 'apps/user/src/test/values/users.const.dto';
 import { DeletePictureCommandHandler } from './delete-picture.command-handler';
 import { DeletePictureCommand } from './delete-picture.command';
-import { requestUserStub, userDtoStub } from 'user/test/stubs';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 
 describe('when delete picture is called', () => {
   let prismaService: PrismaService;

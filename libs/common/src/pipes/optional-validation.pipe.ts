@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { NOTHING_PASSED } from 'common/constants/error';
+import { NOTHING_PASSED } from '@app/common/constants/error';
 
 @Injectable()
 export class OptionalValidationPipe implements PipeTransform {

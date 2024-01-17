@@ -6,7 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { UserSocket } from 'common/types/user-socket';
+import { UserSocket } from '@app/common/types/user-socket';
 import {
   ParseUUIDPipe,
   UseFilters,
@@ -14,9 +14,9 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { WsHttpExceptionFilter } from 'common/filters';
-import { WsAccessTokenGuard, WsRefreshTokenGuard } from 'common/guards';
-import { User } from 'common/decorators';
+import { WsHttpExceptionFilter } from '@app/common/filters';
+import { WsAccessTokenGuard, WsRefreshTokenGuard } from '@app/common/guards';
+import { User } from '@app/common/decorators';
 import { ChatFacade } from 'chat/application';
 import { EditMessageDto, SendMessageDto } from 'chat/application/command';
 

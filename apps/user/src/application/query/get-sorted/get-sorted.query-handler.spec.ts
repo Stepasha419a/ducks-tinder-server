@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { ShortUser } from 'user/users.interface';
+import { ShortUser } from 'apps/user/src/users.interface';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
-import { shortUserStub } from 'user/test/stubs';
+import { UsersPrismaMock } from 'apps/user/src/test/mocks';
+import { shortUserStub } from 'apps/user/src/test/stubs';
 import { GetSortedQueryHandler } from './get-sorted.query-handler';
 import { GetSortedQuery } from './get-sorted.query';
-import { GET_SORTED_FIND_FIRST_CALLED } from 'user/test/values/users.const.expect';
-import { shortUserWithLocationStub } from 'user/test/stubs';
-import { USER_SORTS_DATA } from 'user/test/values/users.const.dto';
+import { GET_SORTED_FIND_FIRST_CALLED } from 'apps/user/src/test/values/users.const.expect';
+import { shortUserWithLocationStub } from 'apps/user/src/test/stubs';
+import { USER_SORTS_DATA } from 'apps/user/src/test/values/users.const.dto';
 
 describe('when get sorted is called', () => {
   let prismaService: PrismaService;

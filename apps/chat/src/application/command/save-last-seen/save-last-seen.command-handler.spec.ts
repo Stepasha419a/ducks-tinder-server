@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { ChatsPrismaMock } from 'chat/test/mocks';
 import { SaveLastSeenCommand } from './save-last-seen.command';
-import { requestUserStub } from 'user/test/stubs';
+import { requestUserStub } from 'apps/user/src/test/stubs';
 import { ChatIdDto } from 'chat/legacy/dto';
 import { fullChatStub } from 'chat/test/stubs';
 

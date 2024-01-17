@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
-import { UserRepository } from 'user/domain/repository';
-import { User, UserAggregate } from 'user/domain';
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { User, UserAggregate } from 'apps/user/src/domain';
 import { UserSelector } from './user.selector';
 import {
   User as PrismaUser,
@@ -14,7 +14,7 @@ import {
   PictureValueObject,
   PlaceValueObject,
   UserCheckValueObject,
-} from 'user/domain/value-object';
+} from 'apps/user/src/domain/value-object';
 
 @Injectable()
 export class UserAdapter implements UserRepository {

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { TokenAdapter } from 'auth/application/adapter/token';
-import { REFRESH_TOKEN_REGEX } from 'common/constants';
+import { REFRESH_TOKEN_REGEX } from '@app/common/constants';
 
 @Injectable()
 export class WsRefreshTokenGuard implements CanActivate {

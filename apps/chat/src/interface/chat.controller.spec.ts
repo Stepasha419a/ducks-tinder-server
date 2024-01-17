@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { AccessTokenGuard } from 'common/guards';
+import { AccessTokenGuard } from '@app/common/guards';
 import { CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatsController } from './chat.controller';
 import { requestUserStub, shortChatStub } from './test/stubs';

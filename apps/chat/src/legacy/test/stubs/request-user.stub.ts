@@ -1,4 +1,4 @@
-import { userDtoStub } from 'user/legacy/test/stubs';
+import { userDtoStub } from 'apps/user/src/legacy/test/stubs';
 
 export const requestUserStub = () => {
   const userStubObj = userDtoStub();

@@ -5,7 +5,7 @@ import { ChatsPrismaMock } from 'chat/test/mocks';
 import { fullChatStub } from 'chat/test/stubs';
 import { BlockChatSocketReturn } from 'chat/chats.interface';
 import { BlockChatCommand } from './block-chat.command';
-import { requestUserStub } from 'user/test/stubs';
+import { requestUserStub } from 'apps/user/src/test/stubs';
 import { PrismaModule } from 'prisma/prisma.module';
 import { fullChatWithoutDistanceStub } from 'chat/test/stubs/full-chat-without-distance.stub';
 import { ChatIdDto } from 'chat/legacy/dto';

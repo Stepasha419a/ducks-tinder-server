@@ -14,7 +14,7 @@ import {
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { USERS_PICTURE_PUT_EXPECT } from 'user/test/values/users.e2e-const.expect';
+import { USERS_PICTURE_PUT_EXPECT } from 'apps/user/src/test/values/users.e2e-const.expect';
 
 const currentUserId = 'users_picture_put_current_user_id';
 const secondUserId = 'users_picture_put_second_user_id';

@@ -1,15 +1,19 @@
 import { Test } from '@nestjs/testing';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { User } from '@prisma/client';
-import { UsersService } from 'user/interface/user.service';
+import { UsersService } from 'apps/user/src/interface/user.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UserDto } from 'user/legacy/dto';
-import { UsersPrismaMock, CommandBusMock, QueryBusMock } from 'user/test/mocks';
-import { userDtoStub } from 'user/test/stubs';
-import { CREATE_USER_DTO } from 'user/test/values/users.const.dto';
-import { CreateUserCommand } from 'user/commands';
-import { GetUserByEmailQuery, GetUserQuery } from 'user/queries';
+import { UserDto } from 'apps/user/src/legacy/dto';
+import {
+  UsersPrismaMock,
+  CommandBusMock,
+  QueryBusMock,
+} from 'apps/user/src/test/mocks';
+import { userDtoStub } from 'apps/user/src/test/stubs';
+import { CREATE_USER_DTO } from 'apps/user/src/test/values/users.const.dto';
+import { CreateUserCommand } from 'apps/user/src/commands';
+import { GetUserByEmailQuery, GetUserQuery } from 'apps/user/src/queries';
 
 describe('user-service', () => {
   let service: UsersService;

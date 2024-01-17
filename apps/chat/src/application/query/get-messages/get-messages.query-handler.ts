@@ -3,7 +3,7 @@ import { GetMessagesQuery } from './get-messages.query';
 import { NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'chat/domain/repository';
 import { Message } from 'chat/domain';
-import { UserService } from 'user/interface';
+import { UserService } from 'apps/user/src/interface';
 import { MessagesPaginationValueObject } from 'chat/domain/value-object';
 
 @QueryHandler(GetMessagesQuery)

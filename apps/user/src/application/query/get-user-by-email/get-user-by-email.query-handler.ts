@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetUserByEmailQuery } from './get-user-by-email.query';
-import { UserRepository } from 'user/domain/repository';
-import { UserAggregate } from 'user/domain';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserAggregate } from 'apps/user/src/domain';
 
 @QueryHandler(GetUserByEmailQuery)
 export class GetUserByEmailQueryHandler

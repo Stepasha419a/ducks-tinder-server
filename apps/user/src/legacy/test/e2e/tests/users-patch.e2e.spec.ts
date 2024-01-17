@@ -6,7 +6,7 @@ import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
 import prismaClient from 'prisma/test/prisma-client';
-import { UPDATE_USER_DTO } from 'user/test/values/users.const.dto';
+import { UPDATE_USER_DTO } from 'apps/user/src/test/values/users.const.dto';
 import {
   prepareAccessTokens,
   prepareAfter,

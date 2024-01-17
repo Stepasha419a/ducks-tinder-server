@@ -1,10 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { UsersController } from 'user/interface/user.controller';
-import { CommandBusMock, QueryBusMock } from 'user/test/mocks';
-import { AccessTokenGuard } from 'common/guards';
-import { requestUserStub, shortUserStub, userDtoStub } from 'user/test/stubs';
-import { UserDto } from 'user/legacy/dto';
-import { ShortUser } from 'user/users.interface';
+import { UsersController } from 'apps/user/src/interface/user.controller';
+import { CommandBusMock, QueryBusMock } from 'apps/user/src/test/mocks';
+import { AccessTokenGuard } from '@app/common/guards';
+import {
+  requestUserStub,
+  shortUserStub,
+  userDtoStub,
+} from 'apps/user/src/test/stubs';
+import { UserDto } from 'apps/user/src/legacy/dto';
+import { ShortUser } from 'apps/user/src/users.interface';
 import {
   DELETE_PICTURE_DTO,
   MIX_PICTURES_DTO,
@@ -12,7 +16,7 @@ import {
   UPDATE_USER_PLACE_DTO,
   UPDATE_USER_RELATIONS_DTO,
   USER_SORTS_DATA,
-} from 'user/test/values/users.const.dto';
+} from 'apps/user/src/test/values/users.const.dto';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import {
   DeletePairCommand,
@@ -26,8 +30,8 @@ import {
   AcceptPairCommand,
   PatchUserPlaceCommand,
   PatchUserRelationsCommand,
-} from 'user/commands';
-import { GetPairsQuery, GetSortedQuery } from 'user/queries';
+} from 'apps/user/src/commands';
+import { GetPairsQuery, GetSortedQuery } from 'apps/user/src/queries';
 
 describe('users-controller', () => {
   let usersController: UsersController;

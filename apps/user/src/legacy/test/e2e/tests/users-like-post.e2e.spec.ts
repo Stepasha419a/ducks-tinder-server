@@ -5,13 +5,13 @@ import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
 import prismaClient from 'prisma/test/prisma-client';
-import { UserDto } from 'user/legacy/dto';
+import { UserDto } from 'apps/user/src/legacy/dto';
 import {
   prepareAccessTokens,
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { USER_ALREADY_CHECKED } from 'common/constants/error/user-already-checked.constant';
+import { USER_ALREADY_CHECKED } from '@app/common/constants/error/user-already-checked.constant';
 
 const currentUserId = 'like_post_current_user_id';
 const secondUserId = 'like_post_second_user_id';

@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveAllPairsCommand } from './remove-all-pairs.command';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 
 @CommandHandler(RemoveAllPairsCommand)
 export class RemoveAllPairsCommandHandler

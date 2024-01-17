@@ -1,7 +1,7 @@
-import { User } from 'user/domain';
+import { User } from 'apps/user/src/domain';
 import { UserPictureInfo, WithoutPrivateFields } from './interface';
 import { ShortUserWithDistance } from './interface/short-user-with-distance';
-import { PictureValueObject } from 'user/domain/value-object';
+import { PictureValueObject } from 'apps/user/src/domain/value-object';
 
 export class UserMapper {
   getWithoutPrivateFields(user: User): WithoutPrivateFields {

@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { DislikeUserCommand } from './dislike-user.command';
 import { DislikeUserCommandHandler } from './dislike-user.command-handler';
-import { UserRepository } from 'user/domain/repository';
-import { UserRepositoryMock } from 'user/test/mock';
-import { UserAggregateStub, UserStub } from 'user/test/stub';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 import { HttpStatus } from '@nestjs/common';
-import { USER_ALREADY_CHECKED } from 'common/constants/error';
+import { USER_ALREADY_CHECKED } from '@app/common/constants/error';
 
 describe('when dislike user is called', () => {
   let repository: UserRepository;

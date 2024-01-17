@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
 import { ForbiddenException } from '@nestjs/common';
-import { INCORRECT_EMAIL_OR_PASSWORD } from 'common/constants/error';
+import { INCORRECT_EMAIL_OR_PASSWORD } from '@app/common/constants/error';
 import { AuthUserAggregate } from 'auth/domain';
-import { UserService } from 'user/interface';
+import { UserService } from 'apps/user/src/interface';
 import { TokenAdapter } from 'auth/application/adapter/token';
 
 @CommandHandler(LoginCommand)

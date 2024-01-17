@@ -1,4 +1,4 @@
-import { UserAggregate } from 'user/domain';
+import { UserAggregate } from 'apps/user/src/domain';
 import {
   PictureValueObject,
   PlaceValueObject,

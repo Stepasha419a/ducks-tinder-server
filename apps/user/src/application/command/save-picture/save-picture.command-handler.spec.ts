@@ -2,12 +2,12 @@ import { Test } from '@nestjs/testing';
 import { FilesModule } from 'files/files.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { FilesServiceMock, UsersPrismaMock } from 'user/test/mocks';
-import { UserDto } from 'user/legacy/dto';
+import { FilesServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
+import { UserDto } from 'apps/user/src/legacy/dto';
 import { SavePictureCommandHandler } from './save-picture.command-handler';
-import { requestUserStub, userDtoStub } from 'user/test/stubs';
+import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
 import { SavePictureCommand } from './save-picture.command';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { FilesService } from 'files/files.service';
 
 describe('when save picture is called', () => {

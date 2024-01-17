@@ -1,16 +1,16 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from 'prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
-import { UsersPrismaMock } from 'user/test/mocks';
+import { UsersPrismaMock } from 'apps/user/src/test/mocks';
 import {
   requestUserStub,
   shortUserStub,
   shortUserWithLocationStub,
   userDtoStub,
-} from 'user/test/stubs';
+} from 'apps/user/src/test/stubs';
 import { ReturnUserCommandHandler } from './return-user.command-handler';
 import { ReturnUserCommand } from './return-user.command';
-import { UsersSelector } from 'user/infrastructure/repository/user.selector';
+import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 
 describe('when return user is called', () => {
   let prismaService: PrismaService;

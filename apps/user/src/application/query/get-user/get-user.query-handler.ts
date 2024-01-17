@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetUserQuery } from './get-user.query';
-import { UserAggregate } from 'user/domain';
-import { UserRepository } from 'user/domain/repository';
+import { UserAggregate } from 'apps/user/src/domain';
+import { UserRepository } from 'apps/user/src/domain/repository';
 
 @QueryHandler(GetUserQuery)
 export class GetUserQueryHandler
