@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { IS_PUBLIC_KEY } from '@app/common/constants';
 import { Request } from 'express';
-import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

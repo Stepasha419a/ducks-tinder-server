@@ -3,15 +3,15 @@ import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
 import { INCORRECT_EMAIL_OR_PASSWORD } from '@app/common/constants/error';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'auth/application/adapter/token';
-import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapterMock, UserServiceMock } from 'apps/auth/src/test/mock';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
   UserAggregateStub,
-} from 'auth/test/stub';
-import { AuthUserAggregate } from 'auth/domain';
+} from 'apps/auth/src/test/stub';
+import { AuthUserAggregate } from 'apps/auth/src/domain';
 import { UserService } from 'apps/user/src/interface';
 
 describe('when login is called', () => {

@@ -1,4 +1,7 @@
-import { AccessTokenValueObject, RefreshTokenValueObject } from 'auth/domain';
+import {
+  AccessTokenValueObject,
+  RefreshTokenValueObject,
+} from 'apps/auth/src/domain';
 
 export interface GenerateTokensView {
   accessTokenValueObject: AccessTokenValueObject;

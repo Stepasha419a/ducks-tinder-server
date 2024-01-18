@@ -3,18 +3,18 @@ import { GenerateTokensCommandHandler } from './generate-tokens.command-handler'
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokensCommand } from './generate-tokens.command';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenValueObject } from 'auth/domain';
-import { RefreshTokenRepository } from 'auth/domain/repository';
+import { RefreshTokenValueObject } from 'apps/auth/src/domain';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
   RefreshTokenRepositoryMock,
-} from 'auth/test/mock';
+} from 'apps/auth/src/test/mock';
 import {
   AccessTokenValueObjectStub,
   RefreshTokenValueObjectStub,
   UserStub,
-} from 'auth/test/stub';
+} from 'apps/auth/src/test/stub';
 
 describe('when generateTokens is called', () => {
   let repository: RefreshTokenRepository;

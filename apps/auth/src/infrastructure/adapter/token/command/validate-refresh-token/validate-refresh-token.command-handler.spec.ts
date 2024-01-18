@@ -4,14 +4,14 @@ import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token.com
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { HttpStatus } from '@nestjs/common';
-import { RefreshTokenRepository } from 'auth/domain/repository';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
   RefreshTokenRepositoryMock,
-} from 'auth/test/mock';
-import { RefreshTokenValueObjectStub, UserStub } from 'auth/test/stub';
-import { UserTokenDto } from 'auth/application/adapter/token';
+} from 'apps/auth/src/test/mock';
+import { RefreshTokenValueObjectStub, UserStub } from 'apps/auth/src/test/stub';
+import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
 
 describe('when validateRefreshToken is called', () => {
   let repository: RefreshTokenRepository;

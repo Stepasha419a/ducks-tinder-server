@@ -11,7 +11,7 @@ import { TOKEN_COMMAND_HANDLERS } from './infrastructure/adapter/token';
 import { RefreshTokenRepository } from './domain/repository';
 import { RefreshTokenAdapter } from './infrastructure/repository';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaModule } from 'prisma/prisma.module';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
 import { AuthMapper } from './infrastructure/mapper';
 
 @Module({

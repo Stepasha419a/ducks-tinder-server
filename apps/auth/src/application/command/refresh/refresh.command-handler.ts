@@ -1,9 +1,9 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
-import { AuthUserAggregate } from 'auth/domain';
+import { AuthUserAggregate } from 'apps/auth/src/domain';
 import { UserService } from 'apps/user/src/interface';
-import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
 
 @CommandHandler(RefreshCommand)
 export class RefreshCommandHandler {

@@ -3,8 +3,8 @@ import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenRepository } from 'auth/domain/repository';
-import { UserTokenDto } from 'auth/application/adapter/token';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
+import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
 
 @CommandHandler(ValidateRefreshTokenCommand)
 export class ValidateRefreshTokenCommandHandler

@@ -1,15 +1,19 @@
 import { Test } from '@nestjs/testing';
-import { AuthController } from 'auth/interface/auth.controller';
+import { AuthController } from 'apps/auth/src/interface/auth.controller';
 import { AccessTokenGuard } from '@app/common/guards';
 import { UserData } from '../auth.interface';
 import {
   CREATE_USER_DTO,
   LOGIN_USER_DTO,
-} from 'auth/test/values/auth.const.dto';
+} from 'apps/auth/src/test/values/auth.const.dto';
 import { Response } from 'express';
-import { CommandBusMock, RequestMock, ResponseMock } from 'auth/test/mocks';
+import {
+  CommandBusMock,
+  RequestMock,
+  ResponseMock,
+} from 'apps/auth/src/test/mocks';
 import { userDtoStub } from 'users/test/stubs';
-import { userDataStub } from 'auth/test/stubs';
+import { userDataStub } from 'apps/auth/src/test/stubs';
 import { REFRESH_TOKEN_TIME } from 'tokens/tokens.constants';
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import {
@@ -17,7 +21,7 @@ import {
   LogoutCommand,
   RefreshCommand,
   RegisterCommand,
-} from 'auth/commands';
+} from 'apps/auth/src/commands';
 
 describe('auth-controller', () => {
   let authController: AuthController;

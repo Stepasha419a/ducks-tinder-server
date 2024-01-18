@@ -1,5 +1,5 @@
-import { authUserStub } from 'auth/legacy/test/stubs';
-import prismaClient from 'prisma/test/prisma-client/prisma-client';
+import { authUserStub } from 'apps/auth/src/legacy/test/stubs';
+import prismaClient from '@app/common/prisma/test/prisma-client/prisma-client';
 
 export async function prepareAfter() {
   await prismaClient.$transaction([

@@ -11,7 +11,7 @@ import { CHAT_COMMAND_HANDLERS } from 'chat/application/command';
 import { CHAT_QUERY_HANDLERS } from 'chat/application/query';
 import { ChatFacade } from './application';
 import { CHAT_EVENT_HANDLERS } from './application/event';
-import { AuthModule } from 'auth/auth.module';
+import { AuthModule } from 'apps/auth/src/auth.module';
 import { ChatMapper } from './infrastructure/mapper/chat.mapper';
 
 @Module({

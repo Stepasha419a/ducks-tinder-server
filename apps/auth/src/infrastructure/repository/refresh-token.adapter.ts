@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { Token } from '@prisma/client';
-import { RefreshTokenRepository } from 'auth/domain/repository';
-import { RefreshTokenValueObject } from 'auth/domain';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
+import { RefreshTokenValueObject } from 'apps/auth/src/domain';
 
 @Injectable()
 export class RefreshTokenAdapter implements RefreshTokenRepository {

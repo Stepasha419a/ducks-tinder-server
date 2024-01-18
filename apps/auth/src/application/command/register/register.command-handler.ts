@@ -4,9 +4,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { AuthUserAggregate } from 'auth/domain/auth-user.aggregate';
+import { AuthUserAggregate } from 'apps/auth/src/domain/auth-user.aggregate';
 import { UserService } from 'apps/user/src/interface';
-import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler

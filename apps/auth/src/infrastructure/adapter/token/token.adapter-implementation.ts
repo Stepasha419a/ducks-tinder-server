@@ -10,7 +10,7 @@ import {
   GenerateTokensView,
   TokenAdapter,
   UserTokenDto,
-} from 'auth/application/adapter/token';
+} from 'apps/auth/src/application/adapter/token';
 
 @Injectable()
 export class TokenAdapterImplementation implements TokenAdapter {

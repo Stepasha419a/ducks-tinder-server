@@ -1,4 +1,4 @@
-import { AuthUser } from 'auth/domain';
+import { AuthUser } from 'apps/auth/src/domain';
 import { UserPictureInfo } from 'apps/user/src/infrastructure/mapper';
 
 export class AuthMapper {

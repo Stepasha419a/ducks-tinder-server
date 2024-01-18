@@ -11,9 +11,15 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Public } from '@app/common/decorators';
-import { AuthFacade } from 'auth/application';
-import { LoginUserDto, RegisterUserDto } from 'auth/application/command';
-import { AuthMapper, WithoutPrivateFields } from 'auth/infrastructure/mapper';
+import { AuthFacade } from 'apps/auth/src/application';
+import {
+  LoginUserDto,
+  RegisterUserDto,
+} from 'apps/auth/src/application/command';
+import {
+  AuthMapper,
+  WithoutPrivateFields,
+} from 'apps/auth/src/infrastructure/mapper';
 
 @Controller('auth')
 export class AuthController {

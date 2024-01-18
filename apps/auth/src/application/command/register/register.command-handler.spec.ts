@@ -5,14 +5,14 @@ import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
 import { HttpStatus } from '@nestjs/common';
 import { UserService } from 'apps/user/src/interface';
-import { TokenAdapter } from 'auth/application/adapter/token';
-import { TokenAdapterMock, UserServiceMock } from 'auth/test/mock';
-import { AuthUserAggregate } from 'auth/domain';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapterMock, UserServiceMock } from 'apps/auth/src/test/mock';
+import { AuthUserAggregate } from 'apps/auth/src/domain';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
-} from 'auth/test/stub';
+} from 'apps/auth/src/test/stub';
 
 describe('when registration is called', () => {
   let userService: UserService;

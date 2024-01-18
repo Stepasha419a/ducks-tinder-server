@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { TokenAdapter } from 'auth/application/adapter/token';
+import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
 import { REFRESH_TOKEN_REGEX } from '@app/common/constants';
 
 @Injectable()

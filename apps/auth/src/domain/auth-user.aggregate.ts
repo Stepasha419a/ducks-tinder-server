@@ -22,7 +22,7 @@ import {
   AccessTokenValueObject,
   RefreshTokenValueObject,
 } from './value-object';
-import { DomainError } from 'libs/shared/errors';
+import { DomainError } from '@app/common/errors';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { Sex } from 'apps/user/src/domain/user.interface';
 import {

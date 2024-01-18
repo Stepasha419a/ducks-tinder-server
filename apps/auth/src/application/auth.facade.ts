@@ -8,7 +8,7 @@ import {
   RegisterCommand,
   RegisterUserDto,
 } from './command';
-import { AuthUserAggregate } from 'auth/domain';
+import { AuthUserAggregate } from 'apps/auth/src/domain';
 
 @Injectable()
 export class AuthFacade {

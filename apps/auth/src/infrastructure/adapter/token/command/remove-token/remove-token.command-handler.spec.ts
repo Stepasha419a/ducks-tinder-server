@@ -2,9 +2,9 @@ import { Test } from '@nestjs/testing';
 import { RemoveTokenCommandHandler } from './remove-token.command-handler';
 import { RemoveTokenCommand } from './remove-token.command';
 import { HttpStatus } from '@nestjs/common';
-import { RefreshTokenRepository } from 'auth/domain/repository';
-import { RefreshTokenRepositoryMock } from 'auth/test/mock';
-import { RefreshTokenValueObjectStub } from 'auth/test/stub';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
+import { RefreshTokenRepositoryMock } from 'apps/auth/src/test/mock';
+import { RefreshTokenValueObjectStub } from 'apps/auth/src/test/stub';
 
 describe('when removeToken is called', () => {
   let repository: RefreshTokenRepository;
