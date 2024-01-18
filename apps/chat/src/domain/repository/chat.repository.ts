@@ -1,6 +1,6 @@
-import { Message, MessageAggregate } from 'chat/domain';
-import { ChatAggregate } from 'chat/domain/chat.aggregate';
-import { PaginationDto } from 'libs/shared/dto';
+import { Message, MessageAggregate } from 'apps/chat/src/domain';
+import { ChatAggregate } from 'apps/chat/src/domain/chat.aggregate';
+import { PaginationDto } from '@app/common/dto';
 import {
   ChatVisitValueObject,
   ChatPaginationValueObject,

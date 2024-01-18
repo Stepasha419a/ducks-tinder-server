@@ -13,6 +13,8 @@ import { RefreshTokenAdapter } from './infrastructure/repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from '@app/common/prisma/prisma.module';
 import { AuthMapper } from './infrastructure/mapper';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from '@app/common/guards';
 
 @Module({
   providers: [
@@ -31,6 +33,10 @@ import { AuthMapper } from './infrastructure/mapper';
     {
       provide: RefreshTokenRepository,
       useClass: RefreshTokenAdapter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
     },
   ],
   controllers: [AuthController],

@@ -1,12 +1,12 @@
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { SaveLastSeenCommandHandler } from './save-last-seen.command-handler';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { ChatsPrismaMock } from 'chat/test/mocks';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
 import { SaveLastSeenCommand } from './save-last-seen.command';
 import { requestUserStub } from 'apps/user/src/test/stubs';
-import { ChatIdDto } from 'chat/legacy/dto';
-import { fullChatStub } from 'chat/test/stubs';
+import { ChatIdDto } from 'apps/chat/src/legacy/dto';
+import { fullChatStub } from 'apps/chat/src/test/stubs';
 
 describe('when save last seen is called', () => {
   let saveLastSeenCommandHandler: SaveLastSeenCommandHandler;

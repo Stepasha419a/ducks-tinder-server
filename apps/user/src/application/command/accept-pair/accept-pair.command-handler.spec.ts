@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { ChatsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
 import {
   requestUserStub,
@@ -12,8 +12,8 @@ import { ShortUserWithoutDistance } from 'apps/user/src/users.interface';
 import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
-import { ChatsModule } from 'chat/chat.module';
-import { ChatsService } from 'chat/interface/chat.service';
+import { ChatsModule } from 'apps/chat/src/chat.module';
+import { ChatsService } from 'apps/chat/src/interface/chat.service';
 
 describe('when accept pair is called', () => {
   let prismaService: PrismaService;

@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
-import { ChatsPrismaMock } from 'chat/test/mocks';
-import { fullChatStub, messageStub } from 'chat/test/stubs';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
+import { fullChatStub, messageStub } from 'apps/chat/src/test/stubs';
 import { requestUserStub } from 'apps/user/src/test/stubs';
-import { ChatSocketMessageReturn } from 'chat/chats.interface';
+import { ChatSocketMessageReturn } from 'apps/chat/src/chats.interface';
 import { EditMessageCommandHandler } from './edit-message.command-handler';
 import { EditMessageCommand } from './edit-message.command';
-import { EDIT_MESSAGE_DTO } from 'chat/test/values/chats.const.dto';
-import { ChatsSelector } from 'chat/chats.selector';
+import { EDIT_MESSAGE_DTO } from 'apps/chat/src/test/values/chats.const.dto';
+import { ChatsSelector } from 'apps/chat/src/chats.selector';
 
 describe('when edit message is called', () => {
   let prismaService: PrismaService;

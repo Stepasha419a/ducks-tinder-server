@@ -1,4 +1,4 @@
-import prismaClient from 'prisma/test/prisma-client';
+import prismaClient from '@app/common/prisma/test/prisma-client';
 
 export async function prepareBefore(currentUserId, secondUserId, chatId) {
   await prismaClient.$transaction([

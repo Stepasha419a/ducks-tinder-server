@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { ShortUser } from 'apps/user/src/users.interface';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { UsersPrismaMock } from 'apps/user/src/test/mocks';
 import { shortUserStub } from 'apps/user/src/test/stubs';
 import { GetSortedQueryHandler } from './get-sorted.query-handler';

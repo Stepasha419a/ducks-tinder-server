@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { FilesModule } from 'files/files.module';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { FilesServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
 import { UserDto } from 'apps/user/src/legacy/dto';
 import { SavePictureCommandHandler } from './save-picture.command-handler';

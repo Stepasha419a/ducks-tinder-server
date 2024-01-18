@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetChatMemberIdsQuery } from './get-chat-member-ids.query';
-import { ChatRepository } from 'chat/domain/repository';
+import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(GetChatMemberIdsQuery)

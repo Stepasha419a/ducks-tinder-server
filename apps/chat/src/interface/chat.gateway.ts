@@ -17,8 +17,11 @@ import {
 import { WsHttpExceptionFilter } from '@app/common/filters';
 import { WsAccessTokenGuard, WsRefreshTokenGuard } from '@app/common/guards';
 import { User } from '@app/common/decorators';
-import { ChatFacade } from 'chat/application';
-import { EditMessageDto, SendMessageDto } from 'chat/application/command';
+import { ChatFacade } from 'apps/chat/src/application';
+import {
+  EditMessageDto,
+  SendMessageDto,
+} from 'apps/chat/src/application/command';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)

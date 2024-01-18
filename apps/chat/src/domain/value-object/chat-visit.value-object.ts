@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
-import { DomainError } from 'libs/shared/errors';
+import { DomainError } from '@app/common/errors';
 
 export class ChatVisitValueObject {
   @IsUUID()

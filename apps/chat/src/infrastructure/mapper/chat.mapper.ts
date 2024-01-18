@@ -1,8 +1,8 @@
-import { Message } from 'chat/domain';
+import { Message } from 'apps/chat/src/domain';
 import {
   ChatPaginationValueObject,
   MessagesPaginationValueObject,
-} from 'chat/domain/value-object';
+} from 'apps/chat/src/domain/value-object';
 import { ShortUser } from 'apps/user/src/infrastructure/mapper/interface/short-user';
 import { User } from 'apps/user/src/domain';
 import { PictureValueObject } from 'apps/user/src/domain/value-object';

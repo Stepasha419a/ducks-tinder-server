@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { EditMessageCommand } from './edit-message.command';
 import { getDatesHourDiff } from '@app/common/helpers';
-import { ChatRepository } from 'chat/domain/repository';
-import { MessageAggregate } from 'chat/domain';
+import { ChatRepository } from 'apps/chat/src/domain/repository';
+import { MessageAggregate } from 'apps/chat/src/domain';
 
 @CommandHandler(EditMessageCommand)
 export class EditMessageCommandHandler

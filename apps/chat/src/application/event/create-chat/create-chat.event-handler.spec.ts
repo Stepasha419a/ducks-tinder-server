@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { userDtoStub } from 'apps/user/src/test/stubs';
 import { CreateChatCommand } from './create-chat.command';
 import { CreateChatCommandHandler } from './create-chat.command-handler';
-import { ChatsPrismaMock } from 'chat/test/mocks';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
 
 describe('when create chat is called', () => {
   let prismaService: PrismaService;

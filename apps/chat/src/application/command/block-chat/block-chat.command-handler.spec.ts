@@ -1,14 +1,14 @@
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { BlockChatCommandHandler } from './block-chat.command-handler';
 import { Test } from '@nestjs/testing';
-import { ChatsPrismaMock } from 'chat/test/mocks';
-import { fullChatStub } from 'chat/test/stubs';
-import { BlockChatSocketReturn } from 'chat/chats.interface';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
+import { fullChatStub } from 'apps/chat/src/test/stubs';
+import { BlockChatSocketReturn } from 'apps/chat/src/chats.interface';
 import { BlockChatCommand } from './block-chat.command';
 import { requestUserStub } from 'apps/user/src/test/stubs';
-import { PrismaModule } from 'prisma/prisma.module';
-import { fullChatWithoutDistanceStub } from 'chat/test/stubs/full-chat-without-distance.stub';
-import { ChatIdDto } from 'chat/legacy/dto';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { fullChatWithoutDistanceStub } from 'apps/chat/src/test/stubs/full-chat-without-distance.stub';
+import { ChatIdDto } from 'apps/chat/src/legacy/dto';
 
 describe('when block chat is called', () => {
   let prismaService: PrismaService;

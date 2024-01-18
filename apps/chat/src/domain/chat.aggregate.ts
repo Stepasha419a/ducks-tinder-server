@@ -1,6 +1,6 @@
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { IsBoolean, IsOptional, IsUUID, validateSync } from 'class-validator';
-import { DomainError } from 'libs/shared/errors';
+import { DomainError } from '@app/common/errors';
 import { Chat } from './chat.interface';
 import { ChatServices } from './services';
 

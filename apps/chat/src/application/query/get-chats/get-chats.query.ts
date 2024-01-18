@@ -1,4 +1,4 @@
-import { PaginationDto } from 'libs/shared/dto';
+import { PaginationDto } from '@app/common/dto';
 
 export class GetChatsQuery {
   constructor(

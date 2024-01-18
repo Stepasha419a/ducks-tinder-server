@@ -4,13 +4,13 @@ import { NestApplication } from '@nestjs/core';
 import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
-import prismaClient from 'prisma/test/prisma-client';
+import prismaClient from '@app/common/prisma/test/prisma-client';
 import {
   prepareAccessTokens,
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { GET_FULL_CHAT_EXPECTED } from 'chat/test/values/chats.const.expect';
+import { GET_FULL_CHAT_EXPECTED } from 'apps/chat/src/test/values/chats.const.expect';
 
 const currentUserId = 'chat_get_current_user_id';
 const secondUserId = 'chat_get_second_user_id';

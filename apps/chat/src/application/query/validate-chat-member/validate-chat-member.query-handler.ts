@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ValidateChatMemberQuery } from './validate-chat-member.query';
-import { ChatRepository } from 'chat/domain/repository';
+import { ChatRepository } from 'apps/chat/src/domain/repository';
 
 @QueryHandler(ValidateChatMemberQuery)
 export class ValidateChatMemberQueryHandler

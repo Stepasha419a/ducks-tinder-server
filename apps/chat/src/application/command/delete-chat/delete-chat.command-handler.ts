@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { DeleteChatCommand } from './delete-chat.command';
-import { ChatRepository } from 'chat/domain/repository';
-import { ChatAggregate } from 'chat/domain';
+import { ChatRepository } from 'apps/chat/src/domain/repository';
+import { ChatAggregate } from 'apps/chat/src/domain';
 
 @CommandHandler(DeleteChatCommand)
 export class DeleteChatCommandHandler

@@ -1,4 +1,4 @@
-import { RepliedMessage } from 'chat/domain';
+import { RepliedMessage } from 'apps/chat/src/domain';
 
 export interface ChatMessage {
   id: string;

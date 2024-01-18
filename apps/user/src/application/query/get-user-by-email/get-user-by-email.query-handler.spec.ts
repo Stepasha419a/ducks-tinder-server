@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { User } from '@prisma/client';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { UsersPrismaMock } from 'apps/user/src/test/mocks';
 import { userDtoStub } from 'apps/user/src/test/stubs';
 import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';

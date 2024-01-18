@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { ChatRepository } from 'chat/domain/repository';
-import { ChatAggregate } from 'chat/domain';
+import { ChatRepository } from 'apps/chat/src/domain/repository';
+import { ChatAggregate } from 'apps/chat/src/domain';
 import { AcceptPairEvent } from 'apps/user/src/domain/event';
 
 @EventsHandler(AcceptPairEvent)

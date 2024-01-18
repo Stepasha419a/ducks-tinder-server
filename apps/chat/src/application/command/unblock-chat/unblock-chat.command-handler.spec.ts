@@ -1,13 +1,13 @@
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '@app/common/prisma/prisma.service';
 import { Test } from '@nestjs/testing';
-import { ChatsPrismaMock } from 'chat/test/mocks';
-import { fullChatStub } from 'chat/test/stubs';
-import { BlockChatSocketReturn } from 'chat/chats.interface';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
+import { fullChatStub } from 'apps/chat/src/test/stubs';
+import { BlockChatSocketReturn } from 'apps/chat/src/chats.interface';
 import { requestUserStub } from 'apps/user/src/test/stubs';
-import { PrismaModule } from 'prisma/prisma.module';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
 import { UnblockChatCommandHandler } from './unblock-chat.command-handler';
 import { UnblockChatCommand } from './unblock-chat.command';
-import { ChatIdDto } from 'chat/legacy/dto';
+import { ChatIdDto } from 'apps/chat/src/legacy/dto';
 
 describe('when unblock chat is called', () => {
   let prismaService: PrismaService;

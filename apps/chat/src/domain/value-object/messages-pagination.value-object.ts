@@ -1,7 +1,7 @@
 import { IsArray, IsUUID, validateSync } from 'class-validator';
 import { User, UserAggregate } from 'apps/user/src/domain';
 import { Type } from 'class-transformer';
-import { DomainError } from 'libs/shared/errors';
+import { DomainError } from '@app/common/errors';
 import { MessageAggregate } from '../message/message.aggregate';
 import { Message } from '../message';
 

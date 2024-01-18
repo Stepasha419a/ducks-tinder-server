@@ -4,7 +4,7 @@ import { HttpServer } from '@nestjs/common';
 import { NestApplication } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
-import prismaClient from 'prisma/test/prisma-client';
+import prismaClient from '@app/common/prisma/test/prisma-client';
 import { userDtoStub } from 'users/test/stubs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';

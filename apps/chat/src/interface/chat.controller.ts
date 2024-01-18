@@ -9,11 +9,14 @@ import {
   Post,
 } from '@nestjs/common';
 import { User } from '@app/common/decorators';
-import { ChatFacade } from 'chat/application';
-import { PaginationDto } from 'libs/shared/dto';
-import { GetMessagesDto } from 'chat/application/query';
-import { EditMessageDto, SendMessageDto } from 'chat/application/command';
-import { ChatMapper } from 'chat/infrastructure/mapper';
+import { ChatFacade } from 'apps/chat/src/application';
+import { PaginationDto } from '@app/common/dto';
+import { GetMessagesDto } from 'apps/chat/src/application/query';
+import {
+  EditMessageDto,
+  SendMessageDto,
+} from 'apps/chat/src/application/command';
+import { ChatMapper } from 'apps/chat/src/infrastructure/mapper';
 
 @Controller('chat')
 export class ChatController {

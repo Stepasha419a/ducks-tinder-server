@@ -10,7 +10,7 @@ import {
   SendMessageDto,
   UnblockChatCommand,
 } from './command';
-import { PaginationDto } from 'libs/shared/dto';
+import { PaginationDto } from '@app/common/dto';
 import {
   GetChatMemberIdsQuery,
   GetChatsQuery,
@@ -18,12 +18,12 @@ import {
   GetMessagesQuery,
   ValidateChatMemberQuery,
 } from './query';
-import { ChatAggregate, MessageAggregate } from 'chat/domain';
+import { ChatAggregate, MessageAggregate } from 'apps/chat/src/domain';
 import { DeleteMessageCommand } from './command/delete-message';
 import {
   MessagesPaginationValueObject,
   ChatPaginationValueObject,
-} from 'chat/domain/value-object';
+} from 'apps/chat/src/domain/value-object';
 
 @Injectable()
 export class ChatFacade {

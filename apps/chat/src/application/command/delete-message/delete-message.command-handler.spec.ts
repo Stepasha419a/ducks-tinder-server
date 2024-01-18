@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from 'prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
-import { ChatsPrismaMock } from 'chat/test/mocks';
-import { fullChatStub, messageStub } from 'chat/test/stubs';
+import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaService } from '@app/common/prisma/prisma.service';
+import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
+import { fullChatStub, messageStub } from 'apps/chat/src/test/stubs';
 import { requestUserStub } from 'apps/user/src/test/stubs';
 import { DeleteMessageCommandHandler } from './delete-message.command-handler';
 import { DeleteMessageCommand } from './delete-message.command';
-import { ChatSocketMessageReturn } from 'chat/chats.interface';
-import { ChatsSelector } from 'chat/chats.selector';
-import { DeleteMessageDto } from 'chat/legacy/dto';
+import { ChatSocketMessageReturn } from 'apps/chat/src/chats.interface';
+import { ChatsSelector } from 'apps/chat/src/chats.selector';
+import { DeleteMessageDto } from 'apps/chat/src/legacy/dto';
 
 describe('when delete message is called', () => {
   let prismaService: PrismaService;
