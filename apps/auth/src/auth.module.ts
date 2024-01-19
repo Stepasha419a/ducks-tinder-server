@@ -15,6 +15,8 @@ import { DatabaseModule } from '@app/common/database';
 import { AuthMapper } from './infrastructure/mapper';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/guards';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   providers: [
@@ -40,7 +42,23 @@ import { AccessTokenGuard } from '@app/common/guards';
     },
   ],
   controllers: [AuthController],
-  imports: [CqrsModule, JwtModule, DatabaseModule, UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `./apps/auth/.env.${process.env.NODE_ENV}`,
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
+        PORT: Joi.number().default(5000),
+        JWT_ACCESS_SECRET: Joi.string().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+      }),
+    }),
+    CqrsModule,
+    JwtModule,
+    DatabaseModule,
+    UserModule,
+  ],
   exports: [TokenAdapter],
 })
 export class AuthModule {}

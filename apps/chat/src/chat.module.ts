@@ -13,6 +13,8 @@ import { ChatFacade } from './application';
 import { CHAT_EVENT_HANDLERS } from './application/event';
 import { AuthModule } from 'apps/auth/src/auth.module';
 import { ChatMapper } from './infrastructure/mapper/chat.mapper';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   controllers: [ChatController],
@@ -30,6 +32,15 @@ import { ChatMapper } from './infrastructure/mapper/chat.mapper';
     },
   ],
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `./apps/chat/.env.${process.env.NODE_ENV}`,
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
+        PORT: Joi.number().default(5000),
+      }),
+    }),
     DatabaseModule,
     CqrsModule,
     EventEmitterModule.forRoot(),

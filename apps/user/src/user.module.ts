@@ -2,7 +2,7 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserController, UserService } from './interface';
 import { DatabaseModule } from '@app/common/database';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './application/filter';
 import { USER_QUERY_HANDLERS } from './application/query';
 import { USER_COMMAND_HANDLERS } from './application/command';
@@ -21,6 +21,9 @@ import {
 } from './infrastructure/adapter';
 import { USER_DEV_HANDLERS } from './application/command/dev';
 import { UserMapper } from './infrastructure/mapper';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+import { AccessTokenGuard } from '@app/common/guards';
 
 @Module({
   providers: [
@@ -50,7 +53,23 @@ import { UserMapper } from './infrastructure/mapper';
     },
   ],
   controllers: [UserController],
-  imports: [DatabaseModule, HttpModule, JwtModule, CqrsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `./apps/user/.env.${process.env.NODE_ENV}`,
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
+        PORT: Joi.number().default(5000),
+        GEOCODE_API_URL: Joi.string().required(),
+        GEOCODE_API_KEY: Joi.string().required(),
+      }),
+    }),
+    DatabaseModule,
+    HttpModule,
+    JwtModule,
+    CqrsModule,
+  ],
   exports: [UserService],
 })
 export class UserModule implements OnModuleInit {
