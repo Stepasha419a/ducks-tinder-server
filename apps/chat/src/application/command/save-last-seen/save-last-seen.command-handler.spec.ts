@@ -1,7 +1,7 @@
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaService } from '@app/common/database/database.service';
 import { SaveLastSeenCommandHandler } from './save-last-seen.command-handler';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaModule } from '@app/common/database/database.module';
 import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
 import { SaveLastSeenCommand } from './save-last-seen.command';
 import { requestUserStub } from 'apps/user/src/test/stubs';

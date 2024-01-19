@@ -1,7 +1,7 @@
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaService } from '@app/common/database/database.service';
 import { PatchUserPlaceCommandHandler } from './patch-user-place.command-handler';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { PrismaModule } from '@app/common/database/database.module';
 import { MapsModule } from 'maps/maps.module';
 import { MapsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
 import { MapsService } from 'maps/maps.service';

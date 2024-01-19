@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatController, ChatGateway } from './interface';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { DatabaseModule } from '@app/common/database';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserModule } from 'apps/user/src/user.module';
 import { ChatRepository } from './domain/repository';
@@ -30,7 +30,7 @@ import { ChatMapper } from './infrastructure/mapper/chat.mapper';
     },
   ],
   imports: [
-    PrismaModule,
+    DatabaseModule,
     CqrsModule,
     EventEmitterModule.forRoot(),
     UserModule,

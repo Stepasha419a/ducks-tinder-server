@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { DatabaseService } from '@app/common/database';
 import { Token } from '@prisma/client';
 import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
 import { RefreshTokenValueObject } from 'apps/auth/src/domain';
@@ -7,7 +7,7 @@ import { RefreshTokenValueObject } from 'apps/auth/src/domain';
 @Injectable()
 export class RefreshTokenAdapter implements RefreshTokenRepository {
   private readonly logger = new Logger(RefreshTokenAdapter.name);
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async save(
     refreshToken: RefreshTokenValueObject,
@@ -16,7 +16,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
 
     if (existingRefreshToken) {
       const { id, ...toUpdate } = refreshToken;
-      const updatedRefreshToken = await this.prismaService.token.update({
+      const updatedRefreshToken = await this.databaseService.token.update({
         where: { id },
         data: {
           refreshToken: toUpdate.value,
@@ -28,7 +28,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
       return this.getRefreshTokenValueObject(updatedRefreshToken);
     }
 
-    const savedRefreshToken = await this.prismaService.token.create({
+    const savedRefreshToken = await this.databaseService.token.create({
       data: {
         id: refreshToken.id,
         refreshToken: refreshToken.value,
@@ -41,7 +41,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
   }
 
   async findOne(id: string): Promise<RefreshTokenValueObject | null> {
-    const existingRefreshToken = await this.prismaService.token
+    const existingRefreshToken = await this.databaseService.token
       .findUnique({
         where: { id },
       })
@@ -57,7 +57,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
   }
 
   async findOneByValue(value: string): Promise<RefreshTokenValueObject> {
-    const existingRefreshToken = await this.prismaService.token
+    const existingRefreshToken = await this.databaseService.token
       .findUnique({
         where: { refreshToken: value },
       })
@@ -73,7 +73,7 @@ export class RefreshTokenAdapter implements RefreshTokenRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const deletedRefreshToken = await this.prismaService.token
+    const deletedRefreshToken = await this.databaseService.token
       .delete({ where: { id } })
       .catch(() => {
         return false;

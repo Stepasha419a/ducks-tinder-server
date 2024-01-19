@@ -1,7 +1,7 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaModule } from '@app/common/database/database.module';
+import { PrismaService } from '@app/common/database/database.service';
 import { ChatsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
 import {
   requestUserStub,

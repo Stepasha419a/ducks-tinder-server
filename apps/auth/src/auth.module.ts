@@ -11,7 +11,7 @@ import { TOKEN_COMMAND_HANDLERS } from './infrastructure/adapter/token';
 import { RefreshTokenRepository } from './domain/repository';
 import { RefreshTokenAdapter } from './infrastructure/repository';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { DatabaseModule } from '@app/common/database';
 import { AuthMapper } from './infrastructure/mapper';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/guards';
@@ -40,7 +40,7 @@ import { AccessTokenGuard } from '@app/common/guards';
     },
   ],
   controllers: [AuthController],
-  imports: [CqrsModule, JwtModule, PrismaModule, UserModule],
+  imports: [CqrsModule, JwtModule, DatabaseModule, UserModule],
   exports: [TokenAdapter],
 })
 export class AuthModule {}

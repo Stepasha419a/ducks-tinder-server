@@ -2,8 +2,8 @@ import { Test } from '@nestjs/testing';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { User } from '@prisma/client';
 import { UsersService } from 'users/users.service';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaModule } from '@app/common/database/database.module';
+import { PrismaService } from '@app/common/database/database.service';
 import { UserDto } from 'users/legacy/dto';
 import {
   UsersPrismaMock,

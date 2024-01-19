@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaModule } from '@app/common/database/database.module';
+import { PrismaService } from '@app/common/database/database.service';
 import { requestUserStub } from 'apps/user/src/test/stubs';
 import { ChatsPrismaMock } from 'apps/chat/src/test/mocks';
 import { GetChatsQuery } from './get-chats.query';

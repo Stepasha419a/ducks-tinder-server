@@ -6,7 +6,7 @@ import { NestApplication } from '@nestjs/core';
 import { HttpServer } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'app.module';
-import prismaClient from '@app/common/prisma/test/prisma-client';
+import prismaClient from '@app/common/database/test/database-client';
 import { UserDto } from 'apps/user/src/legacy/dto';
 import {
   prepareAccessTokens,

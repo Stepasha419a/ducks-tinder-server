@@ -1,27 +1,27 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePairsCommand } from './create-pairs.command';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { DatabaseService } from '@app/common/database';
 
 @CommandHandler(CreatePairsCommand)
 export class CreatePairsCommandHandler
   implements ICommandHandler<CreatePairsCommand>
 {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async execute(command: CreatePairsCommand): Promise<void> {
     const { userId } = command;
 
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.databaseService.user.findUnique({
       where: { id: userId },
       select: { id: true, sex: true },
     });
 
-    const pairs = await this.prismaService.user.findMany({
+    const pairs = await this.databaseService.user.findMany({
       take: 20,
       where: { preferSex: user.sex },
     });
 
-    await this.prismaService.user.update({
+    await this.databaseService.user.update({
       where: { id: user.id },
       data: {
         pairs: {

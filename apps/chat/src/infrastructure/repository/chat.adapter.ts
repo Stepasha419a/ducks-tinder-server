@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ChatRepository } from '../../domain/repository/chat.repository';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { DatabaseService } from '@app/common/database';
 import { ChatAggregate } from 'apps/chat/src/domain/chat.aggregate';
 import { PaginationDto } from '@app/common/dto';
 import { MessageAggregate } from 'apps/chat/src/domain';
@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async save(chat: ChatAggregate): Promise<ChatAggregate> {
     const existingChat = await this.findOne(chat.id);
@@ -24,7 +24,7 @@ export class ChatAdapter implements ChatRepository {
       > &
         Prisma.ChatUncheckedUpdateInput;
 
-      const updatedChat = await this.prismaService.chat.update({
+      const updatedChat = await this.databaseService.chat.update({
         where: { id: existingChat.id },
         data: dataToUpdate,
       });
@@ -32,7 +32,7 @@ export class ChatAdapter implements ChatRepository {
       return ChatAggregate.create(updatedChat);
     }
 
-    const saved = await this.prismaService.chat.create({
+    const saved = await this.databaseService.chat.create({
       data: {
         id: chat.id,
         blocked: chat.blocked,
@@ -46,7 +46,7 @@ export class ChatAdapter implements ChatRepository {
   async saveMessage(message: MessageAggregate): Promise<MessageAggregate> {
     const existingMessage = await this.findMessage(message.id);
     if (existingMessage) {
-      const updatedMessage = await this.prismaService.message.update({
+      const updatedMessage = await this.databaseService.message.update({
         where: { id: existingMessage.id },
         data: {
           text: message.text,
@@ -56,7 +56,7 @@ export class ChatAdapter implements ChatRepository {
       return this.getMessageAggregate(updatedMessage);
     }
 
-    const saved = await this.prismaService.message.create({
+    const saved = await this.databaseService.message.create({
       data: {
         id: message.id,
         text: message.text,
@@ -79,7 +79,7 @@ export class ChatAdapter implements ChatRepository {
       chatVisit.chatId,
     );
     if (existingChatVisit) {
-      const updatedChatVisit = await this.prismaService.chatVisit.update({
+      const updatedChatVisit = await this.databaseService.chatVisit.update({
         where: {
           userId_chatId: { chatId: chatVisit.chatId, userId: chatVisit.userId },
         },
@@ -91,7 +91,7 @@ export class ChatAdapter implements ChatRepository {
       return this.getChatVisitValueObject(updatedChatVisit);
     }
 
-    const saved = await this.prismaService.chatVisit.create({
+    const saved = await this.databaseService.chatVisit.create({
       data: chatVisit,
     });
 
@@ -99,7 +99,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
-    const existingChat = await this.prismaService.chat
+    const existingChat = await this.databaseService.chat
       .findUnique({
         where: { id },
       })
@@ -115,7 +115,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async findOneByUserIds(userIds: string[]): Promise<ChatAggregate | null> {
-    const existingChat = await this.prismaService.chat
+    const existingChat = await this.databaseService.chat
       .findFirst({
         where: { users: { every: { id: { in: userIds } } } },
       })
@@ -134,7 +134,7 @@ export class ChatAdapter implements ChatRepository {
     id: string,
     userId: string,
   ): Promise<ChatAggregate | null> {
-    const existingChat = await this.prismaService.chat
+    const existingChat = await this.databaseService.chat
       .findFirst({
         where: { id, users: { some: { id: userId } } },
       })
@@ -153,7 +153,7 @@ export class ChatAdapter implements ChatRepository {
     userId: string,
     dto: PaginationDto,
   ): Promise<ChatPaginationValueObject[]> {
-    const chats = await this.prismaService.chat.findMany({
+    const chats = await this.databaseService.chat.findMany({
       where: { users: { some: { id: userId } } },
       take: dto.take,
       skip: dto.skip,
@@ -204,7 +204,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async findChatUserIds(chatId: string): Promise<string[]> {
-    const users = await this.prismaService.user.findMany({
+    const users = await this.databaseService.user.findMany({
       where: {
         chats: {
           some: { id: chatId },
@@ -217,7 +217,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async findMessage(messageId: string): Promise<MessageAggregate | null> {
-    const message = await this.prismaService.message.findUnique({
+    const message = await this.databaseService.message.findUnique({
       where: {
         id: messageId,
       },
@@ -234,7 +234,7 @@ export class ChatAdapter implements ChatRepository {
     userId: string,
     chatId: string,
   ): Promise<ChatVisitValueObject | null> {
-    const chatVisit = await this.prismaService.chatVisit.findUnique({
+    const chatVisit = await this.databaseService.chatVisit.findUnique({
       where: {
         userId_chatId: { chatId, userId },
       },
@@ -251,7 +251,7 @@ export class ChatAdapter implements ChatRepository {
     chatId: string,
     dto: PaginationDto,
   ): Promise<MessageAggregate[]> {
-    const messages = await this.prismaService.message.findMany({
+    const messages = await this.databaseService.message.findMany({
       where: {
         chatId,
       },
@@ -265,7 +265,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async findMessagesCount(chatId: string): Promise<number> {
-    const messagesCount = await this.prismaService.message.count({
+    const messagesCount = await this.databaseService.message.count({
       where: { chatId: chatId },
     });
 
@@ -282,7 +282,7 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    await this.prismaService.chat.update({
+    await this.databaseService.chat.update({
       where: { id: chatId },
       data: { users: { connect: { id: userId } } },
     });
@@ -291,10 +291,10 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    await this.prismaService.chatVisit.deleteMany({
+    await this.databaseService.chatVisit.deleteMany({
       where: { chatId: id },
     });
-    const deletedChat = await this.prismaService.chat.delete({
+    const deletedChat = await this.databaseService.chat.delete({
       where: { id },
     });
 
@@ -302,7 +302,7 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async deleteMessage(messageId: string): Promise<boolean> {
-    const deletedMessage = await this.prismaService.message.delete({
+    const deletedMessage = await this.databaseService.message.delete({
       where: { id: messageId },
     });
 

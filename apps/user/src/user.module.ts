@@ -1,7 +1,7 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserController, UserService } from './interface';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
+import { DatabaseModule } from '@app/common/database';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './application/filter';
 import { USER_QUERY_HANDLERS } from './application/query';
@@ -50,7 +50,7 @@ import { UserMapper } from './infrastructure/mapper';
     },
   ],
   controllers: [UserController],
-  imports: [PrismaModule, HttpModule, JwtModule, CqrsModule],
+  imports: [DatabaseModule, HttpModule, JwtModule, CqrsModule],
   exports: [UserService],
 })
 export class UserModule implements OnModuleInit {

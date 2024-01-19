@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { DatabaseService } from '@app/common/database';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { User, UserAggregate } from 'apps/user/src/domain';
 import { UserSelector } from './user.selector';
@@ -19,7 +19,7 @@ import {
 @Injectable()
 export class UserAdapter implements UserRepository {
   private readonly logger = new Logger(UserAdapter.name);
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly databaseService: DatabaseService) {}
 
   async save(user: UserAggregate): Promise<UserAggregate | null> {
     const existingUser = await this.findOne(user.id);
@@ -50,7 +50,7 @@ export class UserAdapter implements UserRepository {
       > &
         Prisma.UserUncheckedUpdateInput;
 
-      const updatedUser = await this.prismaService.user.update({
+      const updatedUser = await this.databaseService.user.update({
         where: { id: user.id },
         data: dataToUpdate,
         include: UserSelector.selectUser(),
@@ -61,7 +61,7 @@ export class UserAdapter implements UserRepository {
       return this.getUserAggregate(updatedUser);
     }
 
-    const saved = await this.prismaService.user.create({
+    const saved = await this.databaseService.user.create({
       data: {
         id: user.id,
         email: user.email,
@@ -100,15 +100,15 @@ export class UserAdapter implements UserRepository {
       }
     });
 
-    await this.prismaService.picture.deleteMany({
+    await this.databaseService.picture.deleteMany({
       where: { id: { in: toDeleteIds } },
     });
 
-    await this.prismaService.picture.createMany({
+    await this.databaseService.picture.createMany({
       data: toCreatePictures,
     });
 
-    const updatedPictures = await this.prismaService.picture.findMany({
+    const updatedPictures = await this.databaseService.picture.findMany({
       where: { userId: existingUser.id },
     });
 
@@ -119,7 +119,7 @@ export class UserAdapter implements UserRepository {
         );
 
         if (newPicture.order !== picture.order) {
-          return this.prismaService.picture.update({
+          return this.databaseService.picture.update({
             where: { id: picture.id },
             data: { order: newPicture.order },
           });
@@ -130,7 +130,7 @@ export class UserAdapter implements UserRepository {
 
   private async updatePlace(user: UserAggregate) {
     const place = user.place;
-    await this.prismaService.place.upsert({
+    await this.databaseService.place.upsert({
       where: { id: user.id },
       create: {
         name: place.name,
@@ -156,7 +156,7 @@ export class UserAdapter implements UserRepository {
       let existingRelationId = null;
       if (user[fieldToUpdate] !== null) {
         existingRelationId = (
-          await this.prismaService[fieldToUpdate].findUnique({
+          await this.databaseService[fieldToUpdate].findUnique({
             where: { name: user[fieldToUpdate] },
             select: { id: true },
           })
@@ -167,7 +167,7 @@ export class UserAdapter implements UserRepository {
         throw new NotFoundException();
       }
 
-      await this.prismaService.user.update({
+      await this.databaseService.user.update({
         where: { id: user.id },
         data: {
           [`${fieldToUpdate}Id`]: existingRelationId,
@@ -182,7 +182,7 @@ export class UserAdapter implements UserRepository {
     }
 
     const allExistingInterests = (
-      await this.prismaService.interest.findMany({
+      await this.databaseService.interest.findMany({
         select: { name: true },
       })
     ).map((interestObject) => interestObject.name);
@@ -194,9 +194,9 @@ export class UserAdapter implements UserRepository {
     );
 
     if (toConnect.length) {
-      await this.prismaService.$transaction(
+      await this.databaseService.$transaction(
         toConnect.map((interest) =>
-          this.prismaService.user.update({
+          this.databaseService.user.update({
             where: { id: user.id },
             data: { interests: { connect: { name: interest } } },
           }),
@@ -204,9 +204,9 @@ export class UserAdapter implements UserRepository {
       );
     }
     if (toDisconnect.length) {
-      await this.prismaService.$transaction(
+      await this.databaseService.$transaction(
         toDisconnect.map((interest) =>
-          this.prismaService.user.update({
+          this.databaseService.user.update({
             where: { id: user.id },
             data: { interests: { disconnect: { name: interest } } },
           }),
@@ -284,7 +284,7 @@ export class UserAdapter implements UserRepository {
   ];
 
   async findOne(id: string): Promise<UserAggregate | null> {
-    const existingUser = await this.prismaService.user
+    const existingUser = await this.databaseService.user
       .findUnique({
         where: { id },
         include: UserSelector.selectUser(),
@@ -304,7 +304,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findOneByEmail(email: string): Promise<UserAggregate | null> {
-    const existingUser = await this.prismaService.user
+    const existingUser = await this.databaseService.user
       .findUnique({
         where: { email },
         include: UserSelector.selectUser(),
@@ -324,7 +324,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findPair(id: string, forId: string): Promise<UserAggregate | null> {
-    const pair = await this.prismaService.user
+    const pair = await this.databaseService.user
       .findFirst({
         where: { id, pairFor: { some: { id: forId } } },
         include: UserSelector.selectUser(),
@@ -344,7 +344,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findPairs(id: string): Promise<UserAggregate[]> {
-    const pairs = await this.prismaService.user.findMany({
+    const pairs = await this.databaseService.user.findMany({
       where: { pairFor: { some: { id } } },
       include: UserSelector.selectUser(),
     });
@@ -356,7 +356,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findManyPictures(userId: string): Promise<PictureValueObject[]> {
-    const pictures = await this.prismaService.picture.findMany({
+    const pictures = await this.databaseService.picture.findMany({
       where: { userId },
     });
 
@@ -365,7 +365,7 @@ export class UserAdapter implements UserRepository {
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
     // TODO: optimize by not getting an array with many checks (too big arrays)
-    const checkedUsers = await this.prismaService.checkedUsers.findMany({
+    const checkedUsers = await this.databaseService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { checkedId: checkId }] },
       select: {
         checked: { select: { id: true } },
@@ -383,13 +383,13 @@ export class UserAdapter implements UserRepository {
     checkedByUserId: string,
   ): Promise<UserCheckValueObject> {
     const pairIds = (
-      await this.prismaService.user.findUnique({
+      await this.databaseService.user.findUnique({
         where: { id: checkedByUserId },
         select: { pairFor: { select: { id: true } } },
       })
     ).pairFor.map((pair) => pair.id);
 
-    const userCheck = await this.prismaService.checkedUsers.findFirst({
+    const userCheck = await this.databaseService.checkedUsers.findFirst({
       where: {
         wasCheckedId: checkedByUserId,
         checked: { id: { notIn: pairIds } },
@@ -405,7 +405,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
-    const pair = await this.prismaService.user.update({
+    const pair = await this.databaseService.user.update({
       where: { id: forId },
       data: {
         pairs: { connect: { id } },
@@ -419,7 +419,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async makeChecked(id: string, forId: string): Promise<boolean> {
-    const result = await this.prismaService.checkedUsers.create({
+    const result = await this.databaseService.checkedUsers.create({
       data: { wasCheckedId: forId, checkedId: id },
     });
 
@@ -438,7 +438,7 @@ export class UserAdapter implements UserRepository {
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null> {
-    const checkedUsers = await this.prismaService.checkedUsers.findMany({
+    const checkedUsers = await this.databaseService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { wasCheckedId: id }] },
       select: {
         checked: { select: { id: true } },
@@ -448,7 +448,7 @@ export class UserAdapter implements UserRepository {
     const checkedIds = checkedUsers.map((user) => user.checked.id);
     const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
 
-    const sortedUser = await this.prismaService.user.findFirst({
+    const sortedUser = await this.databaseService.user.findFirst({
       where: {
         id: { notIn: [...checkedIds, ...wasCheckedIds, id] },
         place: {
@@ -481,7 +481,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async findPlace(userId: string): Promise<PlaceValueObject | null> {
-    const place = await this.prismaService.place.findUnique({
+    const place = await this.databaseService.place.findUnique({
       where: { id: userId },
     });
 
@@ -489,7 +489,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const deletedUser = await this.prismaService.user
+    const deletedUser = await this.databaseService.user
       .delete({ where: { id } })
       .catch((err) => {
         this.logger.error(err);
@@ -500,7 +500,7 @@ export class UserAdapter implements UserRepository {
   }
 
   async deletePair(id: string, forId: string): Promise<boolean> {
-    const deletedPair = await this.prismaService.user.update({
+    const deletedPair = await this.databaseService.user.update({
       where: { id: forId },
       data: { pairs: { disconnect: { id } } },
     });
@@ -512,7 +512,7 @@ export class UserAdapter implements UserRepository {
     checkedId: string,
     wasCheckedId: string,
   ): Promise<boolean> {
-    const deletedUserCheck = await this.prismaService.checkedUsers.delete({
+    const deletedUserCheck = await this.databaseService.checkedUsers.delete({
       where: {
         checkedId_wasCheckedId: {
           checkedId: checkedId,

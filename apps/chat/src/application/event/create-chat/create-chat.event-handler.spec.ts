@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/prisma/prisma.module';
-import { PrismaService } from '@app/common/prisma/prisma.service';
+import { PrismaModule } from '@app/common/database/database.module';
+import { PrismaService } from '@app/common/database/database.service';
 import { userDtoStub } from 'apps/user/src/test/stubs';
 import { CreateChatCommand } from './create-chat.command';
 import { CreateChatCommandHandler } from './create-chat.command-handler';
