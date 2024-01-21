@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GenerateTokensCommand } from './generate-tokens.command';
-import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
+import { RefreshTokenRepository } from 'apps/auth/src/domain/repository/refresh-token.repository';
 import {
   AccessTokenValueObject,
   RefreshTokenValueObject,

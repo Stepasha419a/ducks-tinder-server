@@ -2,7 +2,7 @@ module.exports = {
   roots: ['<rootDir>'],
   moduleFileExtensions: ['js', 'json', 'ts'],
   testMatch: [
-    '**/auth/application/command/**/*.spec.ts',
+    '**/auth/src/application/command/**/*.spec.ts',
     '**/token/command/**/*.spec.ts',
   ],
   transform: {
@@ -12,4 +12,8 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleDirectories: ['node_modules', 'src'],
+  moduleNameMapper: {
+    '^apps/(.*)$': '<rootDir>/apps/$1',
+    '^@app/common/(.*)$': '<rootDir>/libs/common/src/$1',
+  },
 };

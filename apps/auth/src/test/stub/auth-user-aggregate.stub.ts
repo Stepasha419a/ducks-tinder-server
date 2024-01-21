@@ -3,7 +3,7 @@ import { AccessTokenValueObjectStub } from './access-token-value-object.stub';
 import { UserStub } from 'apps/user/src/test/stub/user-stub';
 
 export const AuthUserAggregateStub = () => ({
-  user: UserStub(),
+  ...UserStub(),
   refreshToken: RefreshTokenValueObjectStub(),
   accessToken: AccessTokenValueObjectStub(),
 });
