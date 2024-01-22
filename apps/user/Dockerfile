@@ -1,6 +1,6 @@
-FROM node:18-alpine as development
+FROM node:alpine as development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -10,23 +10,16 @@ COPY . .
 
 RUN npx prisma generate
 
-RUN npm run build
+COPY prisma ./prisma/
 
-FROM node:18-alpine as production
+RUN npm run build user
 
-ARG NODE_ENV=prod
-ENV NODE_ENV=${NODE_ENV}
+FROM node:alpine
 
-WORKDIR /usr/src/app
+COPY --from=development /app/node_modules ./node_modules
+COPY --from=development /app/package*.json ./
+COPY --from=development /app/dist ./dist
 
-COPY package*.json ./
+EXPOSE 5000
 
-RUN npm install --only=production
-
-COPY . .
-
-RUN npx prisma generate
-
-COPY --from=development /usr/src/app/dist ./dist
-
-CMD ["node", "dist/apps/user/main"]
+CMD [ "npm", "run", "start:prod", "user" ]

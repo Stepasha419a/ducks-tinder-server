@@ -1,8 +1,7 @@
-version: '3.5'
-
 name: 'ducks-tinder'
 services:
   user:
+    container_name: user-service
     build:
       context: .
       dockerfile: ./apps/user/Dockerfile
@@ -16,22 +15,21 @@ services:
       - .:/usr/src/apps
       - /usr/src/app/node_modules
     ports:
-      - '${PORT}:${PORT}'
-
-  postgres:
-    container_name: postgres-tests
-    image: postgres:13
-    restart: always
-    environment:
-      POSTGRES_USER: prisma
-      POSTGRES_PASSWORD: prisma
-      POSTGRES_DB: tests
-    ports:
-      - '5433:5432'
-
+      - '5000:5000'
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq
     env_file:
       - ./.env.dev
     ports:
       - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
+  postgres:
+    container_name: ducks-tinder-postgres
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'

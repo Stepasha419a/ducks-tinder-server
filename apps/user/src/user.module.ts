@@ -54,13 +54,14 @@ import { RabbitMQModule } from '@app/common/rabbitmq';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `./apps/user/.env`,
+      envFilePath: './apps/user/.env',
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
         PORT: Joi.number().default(5000),
         GEOCODE_API_URL: Joi.string().required(),
         GEOCODE_API_KEY: Joi.string().required(),
+        RABBIT_MQ_URI: Joi.string().required(),
       }),
     }),
     DatabaseModule,
