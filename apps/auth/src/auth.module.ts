@@ -45,13 +45,15 @@ import * as Joi from 'joi';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `./apps/auth/.env.${process.env.NODE_ENV}`,
+      envFilePath: './apps/auth/.env',
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
         PORT: Joi.number().default(5000),
         JWT_ACCESS_SECRET: Joi.string().required(),
         JWT_REFRESH_SECRET: Joi.string().required(),
+        RABBIT_MQ_USER_QUEUE: Joi.string().required(),
+        RABBIT_MQ_URI: Joi.string().required(),
       }),
     }),
     CqrsModule,

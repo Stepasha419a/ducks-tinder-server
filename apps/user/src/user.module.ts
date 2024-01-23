@@ -61,6 +61,7 @@ import { RabbitMQModule } from '@app/common/rabbitmq';
         PORT: Joi.number().default(5000),
         GEOCODE_API_URL: Joi.string().required(),
         GEOCODE_API_KEY: Joi.string().required(),
+        RABBIT_MQ_USER_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
       }),
     }),

@@ -1,5 +1,19 @@
 name: 'ducks-tinder'
 services:
+  auth:
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/usr/src/apps
+      - /usr/src/app/node_modules
+    ports:
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
   user:
     container_name: user-service
     build:
@@ -7,20 +21,16 @@ services:
       dockerfile: ./apps/user/Dockerfile
       target: development
     command: npm run start:dev user
-    env_file:
-      - ./apps/user/.env
     depends_on:
       - rabbitmq
     volumes:
       - .:/usr/src/apps
       - /usr/src/app/node_modules
     ports:
-      - '5000:5000'
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq
-    env_file:
-      - ./.env.dev
     ports:
       - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
   postgres:
