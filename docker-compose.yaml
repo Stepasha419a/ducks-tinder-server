@@ -1,5 +1,19 @@
 name: 'ducks-tinder'
 services:
+  chat:
+    container_name: chat-service
+    build:
+      context: .
+      dockerfile: ./apps/chat/Dockerfile
+      target: development
+    command: npm run start:dev chat
+    depends_on:
+      - rabbitmq
+    volumes:
+      - .:/usr/src/apps
+      - /usr/src/app/node_modules
+    ports:
+      - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
   auth:
     container_name: auth-service
     build:
@@ -34,7 +48,7 @@ services:
     ports:
       - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
   postgres:
-    container_name: ducks-tinder-postgres
+    container_name: postgres
     image: postgres:13
     restart: always
     environment:
