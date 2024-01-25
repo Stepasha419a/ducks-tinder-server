@@ -9,10 +9,14 @@ import {
   RegisterUserDto,
 } from './command';
 import { AuthUserAggregate } from 'apps/auth/src/domain';
+import { TokenAdapter } from './adapter/token';
 
 @Injectable()
 export class AuthFacade {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly tokenAdapter: TokenAdapter,
+  ) {}
 
   commands = {
     register: (dto: RegisterUserDto) => this.register(dto),
@@ -20,7 +24,10 @@ export class AuthFacade {
     logout: (refreshTokenValue: string) => this.logout(refreshTokenValue),
     refresh: (refreshTokenValue: string) => this.refresh(refreshTokenValue),
   };
-  queries = {};
+  queries = {
+    validateAccessToken: (accessTokenValue: string) =>
+      this.validateAccessToken(accessTokenValue),
+  };
 
   private register(dto: RegisterUserDto) {
     return this.commandBus.execute<RegisterCommand, AuthUserAggregate>(
@@ -44,5 +51,9 @@ export class AuthFacade {
     return this.commandBus.execute<RefreshCommand, AuthUserAggregate>(
       new RefreshCommand(refreshTokenValue),
     );
+  }
+
+  private validateAccessToken(accessTokenValue: string) {
+    return this.tokenAdapter.validateAccessToken(accessTokenValue);
   }
 }

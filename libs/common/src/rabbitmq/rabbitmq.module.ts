@@ -1,6 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { RabbitMQService } from './rabbitmq.service';
-import { Module as ModuleType } from '@nestjs/core/injector/module';
 import { ClientsModule, RmqOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
@@ -9,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
   exports: [RabbitMQService],
 })
 export class RabbitMQModule {
-  static create({ name }: ModuleType): DynamicModule {
+  static register(name: string): DynamicModule {
     return {
       module: RabbitMQModule,
       imports: [

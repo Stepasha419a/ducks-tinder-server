@@ -4,16 +4,19 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
-import { IS_PUBLIC_KEY } from '@app/common/constants';
+import { IS_PUBLIC_KEY, SERVICES } from '@app/common/constants';
 import { Request } from 'express';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { ClientProxy } from '@nestjs/microservices';
+import { catchError, tap } from 'rxjs';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly tokenAdapter: TokenAdapter,
+    @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -26,19 +29,31 @@ export class AccessTokenGuard implements CanActivate {
     }
 
     const req = context.switchToHttp().getRequest();
-    const accessToken = this.extractTokenFromHeader(req);
+    const accessTokenValue = this.extractTokenFromHeader(req);
 
-    const userData = await this.tokenAdapter.validateAccessToken(accessToken);
-    if (!userData) {
+    if (!accessTokenValue) {
       throw new UnauthorizedException();
     }
 
-    req.userId = userData.userId;
+    await this.authClient.send('validate_access_token', accessTokenValue).pipe(
+      tap((userData: UserTokenDto) => {
+        this.attachUserId(userData.userId, context);
+      }),
+      catchError(() => {
+        throw new UnauthorizedException();
+      }),
+    );
+
     return true;
   }
 
   private extractTokenFromHeader(req: Request): string | undefined {
     const [type, token] = req.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  private attachUserId(userId: string, context: ExecutionContext) {
+    const req = context.switchToHttp().getRequest();
+    req.userId = userId;
   }
 }

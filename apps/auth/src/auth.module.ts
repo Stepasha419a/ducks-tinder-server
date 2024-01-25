@@ -17,6 +17,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/guards';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { RabbitMQModule } from '@app/common/rabbitmq';
+import { SERVICES } from '@app/common/constants';
 
 @Module({
   providers: [
@@ -25,7 +27,7 @@ import * as Joi from 'joi';
     AuthMapper,
     {
       provide: AuthFacade,
-      inject: [CommandBus],
+      inject: [CommandBus, TokenAdapter],
       useFactory: authFacadeFactory,
     },
     {
@@ -59,6 +61,7 @@ import * as Joi from 'joi';
     CqrsModule,
     JwtModule,
     DatabaseModule,
+    RabbitMQModule.register(SERVICES.USER),
     UserModule,
   ],
   exports: [TokenAdapter],

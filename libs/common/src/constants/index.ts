@@ -6,3 +6,4 @@ export {
 } from './tokens-regex.constant';
 export { ONE_KB_SIZE } from './one-kb-size.constant';
 export { ONE_MB_SIZE } from './one-mb-size.constant';
+export { SERVICES } from './services';

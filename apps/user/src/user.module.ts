@@ -22,6 +22,9 @@ import { UserMapper } from './infrastructure/mapper';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
+import { SERVICES } from '@app/common/constants';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from '@app/common/guards';
 
 @Module({
   providers: [
@@ -49,6 +52,10 @@ import { RabbitMQModule } from '@app/common/rabbitmq';
       provide: FileAdapter,
       useClass: FileAdapterImplementation,
     },
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
   ],
   controllers: [UserController],
   imports: [
@@ -70,6 +77,7 @@ import { RabbitMQModule } from '@app/common/rabbitmq';
     HttpModule,
     JwtModule,
     CqrsModule,
+    RabbitMQModule.register(SERVICES.AUTH),
   ],
   exports: [UserService],
 })
