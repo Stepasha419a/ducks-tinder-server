@@ -22,10 +22,11 @@ import {
 import { DomainError } from '@app/common/errors';
 import { Type } from 'class-transformer';
 import { PictureValueObject, PlaceValueObject } from './value-object';
+import { randomUUID } from 'crypto';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
-  id: string = randomStringGenerator();
+  id: string = randomUUID();
 
   @IsString()
   @IsNotEmpty()
@@ -197,6 +198,8 @@ export class UserAggregate extends UserServices implements User {
     Object.assign(_user, user);
 
     _user.updatedAt = _user?.id ? new Date().toISOString() : _user.updatedAt;
+
+    console.log(_user);
     const errors = validateSync(_user, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'User is invalid');
