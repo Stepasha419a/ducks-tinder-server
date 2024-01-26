@@ -23,17 +23,17 @@ import {
   RefreshTokenValueObject,
 } from './value-object';
 import { DomainError } from '@app/common/errors';
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { Sex } from 'apps/user/src/domain/user.interface';
 import {
   PictureValueObject,
   PlaceValueObject,
 } from 'apps/user/src/domain/value-object';
 import { AggregateRoot } from '@nestjs/cqrs';
+import { randomUUID } from 'crypto';
 
 export class AuthUserAggregate extends AggregateRoot implements AuthUser {
   @IsUUID()
-  id: string = randomStringGenerator();
+  id: string = randomUUID();
 
   @IsString()
   @IsNotEmpty()
@@ -64,7 +64,7 @@ export class AuthUserAggregate extends AggregateRoot implements AuthUser {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  activationLink: string = randomStringGenerator();
+  activationLink: string = randomUUID();
 
   @IsOptional()
   @IsNumber()

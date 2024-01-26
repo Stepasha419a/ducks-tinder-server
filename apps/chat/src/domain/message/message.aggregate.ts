@@ -1,4 +1,3 @@
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import {
   IsNotEmpty,
   IsNotEmptyObject,
@@ -12,10 +11,11 @@ import { Message } from './message.interface';
 import { Type } from 'class-transformer';
 import { RepliedMessage, RepliedMessageDto } from './replied-message';
 import { MessageServices } from './services';
+import { randomUUID } from 'crypto';
 
 export class MessageAggregate extends MessageServices implements Message {
   @IsUUID()
-  id: string = randomStringGenerator();
+  id: string = randomUUID();
 
   @IsString()
   @IsNotEmpty()

@@ -1,4 +1,3 @@
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import {
   IsNotEmpty,
   IsNumber,
@@ -9,10 +8,11 @@ import {
   validateSync,
 } from 'class-validator';
 import { DomainError } from '@app/common/errors';
+import { randomUUID } from 'crypto';
 
 export class PictureValueObject {
   @IsUUID()
-  id: string = randomStringGenerator();
+  id: string = randomUUID();
 
   @IsUUID()
   userId: string;

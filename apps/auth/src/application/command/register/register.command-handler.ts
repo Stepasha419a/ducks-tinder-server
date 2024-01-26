@@ -3,10 +3,10 @@ import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { AuthUserAggregate } from 'apps/auth/src/domain/auth-user.aggregate';
 import { UserService } from 'apps/user/src/interface';
 import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { randomUUID } from 'crypto';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
@@ -27,7 +27,7 @@ export class RegisterCommandHandler
 
     const hashPassword = await bcrypt.hash(dto.password, 7);
 
-    const activationLink = randomStringGenerator();
+    const activationLink = randomUUID();
 
     const user = await this.userService.createUser({
       ...dto,

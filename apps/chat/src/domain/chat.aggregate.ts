@@ -1,12 +1,12 @@
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { IsBoolean, IsOptional, IsUUID, validateSync } from 'class-validator';
 import { DomainError } from '@app/common/errors';
 import { Chat } from './chat.interface';
 import { ChatServices } from './services';
+import { randomUUID } from 'crypto';
 
 export class ChatAggregate extends ChatServices implements Chat {
   @IsUUID()
-  id: string = randomStringGenerator();
+  id: string = randomUUID();
 
   @IsBoolean()
   blocked: boolean;

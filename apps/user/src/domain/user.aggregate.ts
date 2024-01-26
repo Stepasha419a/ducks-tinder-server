@@ -1,4 +1,3 @@
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { Sex, User } from './user.interface';
 import { UserServices } from './services';
 import {
@@ -57,7 +56,7 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  activationLink: string = randomStringGenerator();
+  activationLink: string = randomUUID();
 
   @IsOptional()
   @IsNumber()

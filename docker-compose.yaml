@@ -1,35 +1,8 @@
 name: 'ducks-tinder'
 services:
-  chat:
-    container_name: chat-service
-    build:
-      context: .
-      dockerfile: ./apps/chat/Dockerfile
-      target: development
-    command: npm run start:dev chat
-    depends_on:
-      - rabbitmq
-    volumes:
-      - .:/usr/src/apps
-      - /usr/src/app/node_modules
-    ports:
-      - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
-  auth:
-    container_name: auth-service
-    build:
-      context: .
-      dockerfile: ./apps/auth/Dockerfile
-      target: development
-    command: npm run start:dev auth
-    depends_on:
-      - rabbitmq
-    volumes:
-      - .:/usr/src/apps
-      - /usr/src/app/node_modules
-    ports:
-      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
   user:
     container_name: user-service
+    restart: always
     build:
       context: .
       dockerfile: ./apps/user/Dockerfile

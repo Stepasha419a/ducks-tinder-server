@@ -1,6 +1,6 @@
 FROM node:alpine as development
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
@@ -16,8 +16,6 @@ RUN npm run build auth
 
 FROM node:alpine
 
-COPY --from=development /app/node_modules ./node_modules
-COPY --from=development /app/package*.json ./
-COPY --from=development /app/dist ./dist
+COPY --from=development /usr/src/app/dist ./dist
 
-CMD [ "npm", "run", "start:prod", "auth" ]
+CMD ["node", "dist/apps/auth/main"]
