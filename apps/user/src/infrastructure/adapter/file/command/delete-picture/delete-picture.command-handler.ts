@@ -16,10 +16,6 @@ export class DeletePictureCommandHandler
         '..',
         '..',
         '..',
-        '..',
-        '..',
-        '..',
-        '..',
         `static\\${userId}`,
         fileName,
       );

@@ -35,9 +35,10 @@ services:
       - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq
+    image: rabbitmq:management
     ports:
       - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
+      - '15672:15672'
   postgres:
     container_name: postgres
     image: postgres:13

@@ -10,7 +10,7 @@ import { IS_PUBLIC_KEY, SERVICES } from '@app/common/constants';
 import { Request } from 'express';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, tap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -35,14 +35,15 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    await this.authClient.send('validate_access_token', accessTokenValue).pipe(
-      tap((userData: UserTokenDto) => {
-        this.attachUserId(userData.userId, context);
-      }),
-      catchError(() => {
-        throw new UnauthorizedException();
-      }),
+    const userTokenDto = await firstValueFrom<UserTokenDto | null>(
+      this.authClient.send('validate_access_token', accessTokenValue),
     );
+
+    if (!userTokenDto) {
+      throw new UnauthorizedException();
+    }
+
+    req.userId = userTokenDto.userId;
 
     return true;
   }
@@ -50,10 +51,5 @@ export class AccessTokenGuard implements CanActivate {
   private extractTokenFromHeader(req: Request): string | undefined {
     const [type, token] = req.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
-  }
-
-  private attachUserId(userId: string, context: ExecutionContext) {
-    const req = context.switchToHttp().getRequest();
-    req.userId = userId;
   }
 }
