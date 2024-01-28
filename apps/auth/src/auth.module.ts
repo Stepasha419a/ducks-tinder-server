@@ -62,6 +62,7 @@ import { SERVICES } from '@app/common/constants';
     JwtModule,
     DatabaseModule,
     RabbitMQModule.register(SERVICES.USER),
+    RabbitMQModule.register(SERVICES.AUTH),
     UserModule,
   ],
   exports: [TokenAdapter],

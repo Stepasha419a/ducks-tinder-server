@@ -25,7 +25,7 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
 
-  const port = configService.get('PORT');
+  const port = configService.get('AUTH_SERVICE_PORT');
 
   await app.listen(port);
 }
