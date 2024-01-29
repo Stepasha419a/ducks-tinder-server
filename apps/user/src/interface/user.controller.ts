@@ -189,6 +189,11 @@ export class UserController {
     return this.facade.queries.getUser(id);
   }
 
+  @MessagePattern('get_many_users')
+  getManyUsers(@Payload() ids: string[]): Promise<UserAggregate[]> {
+    return this.facade.queries.getManyUsers(ids);
+  }
+
   @MessagePattern('get_user_by_email')
   getUserByEmail(@Payload() email: string): Promise<UserAggregate> {
     return this.facade.queries.getUserByEmail(email);

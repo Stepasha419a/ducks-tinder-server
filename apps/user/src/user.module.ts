@@ -1,6 +1,6 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { UserController, UserService } from './interface';
+import { UserController } from './interface';
 import { DatabaseModule } from '@app/common/database';
 import { USER_QUERY_HANDLERS } from './application/query';
 import { USER_COMMAND_HANDLERS } from './application/command';
@@ -28,7 +28,6 @@ import { AccessTokenGuard } from '@app/common/guards';
 
 @Module({
   providers: [
-    UserService,
     ...MAP_API_QUERY_HANDLERS,
     ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
@@ -79,7 +78,6 @@ import { AccessTokenGuard } from '@app/common/guards';
     CqrsModule,
     RabbitMQModule.register(SERVICES.AUTH),
   ],
-  exports: [UserService],
 })
 export class UserModule implements OnModuleInit {
   constructor(

@@ -3,7 +3,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatController, ChatGateway } from './interface';
 import { DatabaseModule } from '@app/common/database';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { UserModule } from 'apps/user/src/user.module';
 import { ChatRepository } from './domain/repository';
 import { ChatAdapter } from './infrastructure/repository';
 import { chatFacadeFactory } from './infrastructure/facade';
@@ -15,6 +14,8 @@ import { AuthModule } from 'apps/auth/src/auth.module';
 import { ChatMapper } from './infrastructure/mapper/chat.mapper';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { RabbitMQModule } from '@app/common/rabbitmq';
+import { SERVICES } from '@app/common/constants';
 
 @Module({
   controllers: [ChatController],
@@ -46,7 +47,7 @@ import * as Joi from 'joi';
     DatabaseModule,
     CqrsModule,
     EventEmitterModule.forRoot(),
-    UserModule,
+    RabbitMQModule.register(SERVICES.USER),
     AuthModule,
   ],
 })

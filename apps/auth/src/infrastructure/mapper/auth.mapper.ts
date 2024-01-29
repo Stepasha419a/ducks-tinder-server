@@ -9,7 +9,7 @@ export class AuthMapper {
           id: picture.id,
           name: picture.name,
           order: picture.order,
-        } as UserPictureInfo),
+        }) as UserPictureInfo,
     );
 
     return {
@@ -18,6 +18,9 @@ export class AuthMapper {
       name: authUser.name,
       age: authUser.age,
       sex: authUser.sex,
+      preferSex: authUser.preferSex,
+      preferAgeFrom: authUser.preferAgeFrom,
+      preferAgeTo: authUser.preferAgeTo,
       description: authUser.description,
       distance: authUser.distance,
       isActivated: authUser.isActivated,

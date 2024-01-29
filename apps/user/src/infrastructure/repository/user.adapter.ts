@@ -323,6 +323,23 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(existingUser);
   }
 
+  async findMany(ids: string[]): Promise<UserAggregate[]> {
+    const users = await this.databaseService.user
+      .findMany({
+        where: { id: { in: ids } },
+        include: UserSelector.selectUser(),
+      })
+      .catch((err) => {
+        this.logger.error(err);
+        return null;
+      });
+
+    return users.map((user) => {
+      this.standardUser(user);
+      return this.getUserAggregate(user);
+    });
+  }
+
   async findPair(id: string, forId: string): Promise<UserAggregate | null> {
     const pair = await this.databaseService.user
       .findFirst({

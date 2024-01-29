@@ -1,10 +1,13 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMessagesQuery } from './get-messages.query';
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { Message } from 'apps/chat/src/domain';
-import { UserService } from 'apps/user/src/interface';
 import { MessagesPaginationValueObject } from 'apps/chat/src/domain/value-object';
+import { ClientProxy } from '@nestjs/microservices';
+import { SERVICES } from '@app/common/constants';
+import { firstValueFrom } from 'rxjs';
+import { UserAggregate } from 'apps/user/src/domain';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler
@@ -12,7 +15,7 @@ export class GetMessagesQueryHandler
 {
   constructor(
     private readonly repository: ChatRepository,
-    private readonly userService: UserService,
+    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
   ) {}
 
   async execute(
@@ -34,8 +37,8 @@ export class GetMessagesQueryHandler
     const messages = await this.repository.findMessages(chat.id, dto);
 
     const userIds = this.getUniqueUserIds(messages, userId);
-    const users = await Promise.all(
-      userIds.map((userId) => this.userService.getUser(userId)),
+    const users = await firstValueFrom<UserAggregate[]>(
+      this.userClient.send('get_many_users', userIds),
     );
 
     const messagesPaginationAggregate = MessagesPaginationValueObject.create({

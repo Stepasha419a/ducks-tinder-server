@@ -17,6 +17,7 @@ import {
 } from './command';
 import { CreateUserCommand, PatchUserCommand } from './command';
 import {
+  GetManyUsersQuery,
   GetPairsQuery,
   GetSortedQuery,
   GetUserByEmailQuery,
@@ -57,6 +58,7 @@ export class UserFacade {
   queries = {
     getUser: (id: string) => this.getUser(id),
     getUserByEmail: (email: string) => this.getUserByEmail(email),
+    getManyUsers: (ids: string[]) => this.getManyUsers(ids),
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
     getPairs: (id: string) => this.getPairs(id),
@@ -142,6 +144,12 @@ export class UserFacade {
   private getUserByEmail(email: string) {
     return this.queryBus.execute<GetUserByEmailQuery, UserAggregate | null>(
       new GetUserByEmailQuery(email),
+    );
+  }
+
+  private getManyUsers(ids: string[]) {
+    return this.queryBus.execute<GetManyUsersQuery, UserAggregate[]>(
+      new GetManyUsersQuery(ids),
     );
   }
 
