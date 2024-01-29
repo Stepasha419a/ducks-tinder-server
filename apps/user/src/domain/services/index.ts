@@ -1,7 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { IsDefined } from 'class-validator';
 import { SET_DESCRIPTION, SetDescription } from './set-description.case';
-import { COMPARE_PASSWORDS, ComparePasswords } from './compare-passwords.case';
 import { SET_PLACE, SetPlace } from './set-place.case';
 import { SET_DISTANCE, SetDistance } from './set-distance.case';
 import {
@@ -28,7 +27,6 @@ export class UserServices
   extends AggregateRoot
   implements
     SetDescription,
-    ComparePasswords,
     SetPlace,
     SetDistance,
     GetPrimitiveFields,
@@ -41,9 +39,6 @@ export class UserServices
 {
   @IsDefined()
   setDescription = SET_DESCRIPTION;
-
-  @IsDefined()
-  comparePasswords = COMPARE_PASSWORDS;
 
   @IsDefined()
   setPlace = SET_PLACE;
