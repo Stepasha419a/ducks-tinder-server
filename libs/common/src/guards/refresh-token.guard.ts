@@ -12,7 +12,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class AccessTokenGuard implements CanActivate {
+export class RefreshTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy,
@@ -27,14 +27,14 @@ export class AccessTokenGuard implements CanActivate {
       return true;
     }
 
-    const accessTokenValue = this.extractTokenFromHeader(context);
+    const refreshTokenValue = this.extractTokenFromCookie(context);
 
-    if (!accessTokenValue) {
+    if (!refreshTokenValue) {
       throw new UnauthorizedException();
     }
 
     const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.authClient.send('validate_access_token', accessTokenValue),
+      this.authClient.send('validate_refresh_token', refreshTokenValue),
     );
 
     if (!userTokenDto) {
@@ -46,20 +46,20 @@ export class AccessTokenGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(
+  private extractTokenFromCookie(
     context: ExecutionContext,
   ): string | undefined {
-    let authorization: string;
+    let refreshToken: string;
     if (context.getType() === 'ws') {
-      authorization = context.switchToWs().getClient().handshake
-        ?.auth?.authorization;
+      refreshToken = context
+        .switchToWs()
+        .getClient()
+        ?.handshake?.headers?.cookie.match(this.REFRESH_TOKEN_REGEX)?.[1];
     } else if (context.getType() === 'http') {
-      authorization = context.switchToHttp().getRequest()
-        .headers?.authorization;
+      refreshToken = context.switchToHttp().getRequest().cookies?.refreshToken;
     }
 
-    const [type, token] = authorization.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    return refreshToken;
   }
 
   private addUserId(userId: string, context: ExecutionContext) {
@@ -69,4 +69,6 @@ export class AccessTokenGuard implements CanActivate {
       context.switchToHttp().getRequest().userId = userId;
     }
   }
+
+  private readonly REFRESH_TOKEN_REGEX = /(?:refreshToken)=([\w\.\d-_]+)/;
 }

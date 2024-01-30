@@ -95,6 +95,11 @@ export class AuthController {
     return this.facade.queries.validateAccessToken(accessTokenValue);
   }
 
+  @MessagePattern('validate_refresh_token')
+  async validateRefreshToken(@Payload() refreshTokenValue: string) {
+    return this.facade.queries.validateRefreshToken(refreshTokenValue);
+  }
+
   private REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000;
 
   private setCookies(res: Response, refreshToken: string) {

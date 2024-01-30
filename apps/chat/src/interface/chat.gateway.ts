@@ -15,7 +15,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { WsHttpExceptionFilter } from '@app/common/filters';
-import { WsAccessTokenGuard, WsRefreshTokenGuard } from '@app/common/guards';
+import { AccessTokenGuard, RefreshTokenGuard } from '@app/common/guards';
 import { User } from '@app/common/decorators';
 import { ChatFacade } from 'apps/chat/src/application';
 import {
@@ -36,7 +36,7 @@ export class ChatGateway {
   @WebSocketServer()
   wss: Server;
 
-  @UseGuards(WsAccessTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage('connect-chats')
   async handleConnectChats(
     @ConnectedSocket() client: UserSocket,
@@ -47,7 +47,7 @@ export class ChatGateway {
     client.emit('connect-chats');
   }
 
-  @UseGuards(WsAccessTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage('connect-chat')
   async handleConnectChat(
     @ConnectedSocket() client: UserSocket,
@@ -60,7 +60,7 @@ export class ChatGateway {
     client.emit('connect-chat');
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('disconnect-chat')
   async handleDisconnectChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -69,7 +69,7 @@ export class ChatGateway {
     await this.facade.commands.saveLastSeen(userId, chatId);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('send-message')
   async sendMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -84,7 +84,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit('send-message', message);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('delete-message')
   async deleteMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -99,7 +99,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit('delete-message', message);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('edit-message')
   async editMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -114,7 +114,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit('edit-message', message);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('block-chat')
   async blockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -126,7 +126,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit('block-chat', chat);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('unblock-chat')
   async unblockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -138,7 +138,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit('unblock-chat', chat);
   }
 
-  @UseGuards(WsRefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard)
   @SubscribeMessage('delete-chat')
   async deleteChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,

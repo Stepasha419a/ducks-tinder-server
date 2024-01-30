@@ -53,6 +53,7 @@ import { SERVICES } from '@app/common/constants';
         PORT: Joi.number().default(5000),
         JWT_ACCESS_SECRET: Joi.string().required(),
         JWT_REFRESH_SECRET: Joi.string().required(),
+        RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
         RABBIT_MQ_USER_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
       }),

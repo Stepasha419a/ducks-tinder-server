@@ -27,6 +27,8 @@ export class AuthFacade {
   queries = {
     validateAccessToken: (accessTokenValue: string) =>
       this.validateAccessToken(accessTokenValue),
+    validateRefreshToken: (refreshTokenValue: string) =>
+      this.validateRefreshToken(refreshTokenValue),
   };
 
   private register(dto: RegisterUserDto) {
@@ -55,5 +57,9 @@ export class AuthFacade {
 
   private validateAccessToken(accessTokenValue: string) {
     return this.tokenAdapter.validateAccessToken(accessTokenValue);
+  }
+
+  private validateRefreshToken(refreshTokenValue: string) {
+    return this.tokenAdapter.validateRefreshToken(refreshTokenValue);
   }
 }
