@@ -17,7 +17,6 @@ import {
   MIX_PICTURE_ORDERS,
   MixPictureOrders,
 } from './mix-picture-orders.case';
-import { ACCEPT_PAIR, AcceptPair } from './accept-pair.case';
 import {
   DECREASE_PICTURE_ORDER,
   DecreasePictureOrder,
@@ -34,7 +33,6 @@ export class UserServices
     DeletePicture,
     SortPictureOrders,
     MixPictureOrders,
-    AcceptPair,
     DecreasePictureOrder
 {
   @IsDefined()
@@ -60,9 +58,6 @@ export class UserServices
 
   @IsDefined()
   mixPictureOrders = MIX_PICTURE_ORDERS;
-
-  @IsDefined()
-  acceptPair = ACCEPT_PAIR;
 
   @IsDefined()
   decreasePictureOrder = DECREASE_PICTURE_ORDER;

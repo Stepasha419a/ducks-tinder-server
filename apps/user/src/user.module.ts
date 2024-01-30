@@ -77,6 +77,7 @@ import { AccessTokenGuard } from '@app/common/guards';
     JwtModule,
     CqrsModule,
     RabbitMQModule.register(SERVICES.AUTH),
+    RabbitMQModule.register(SERVICES.CHAT),
   ],
 })
 export class UserModule implements OnModuleInit {

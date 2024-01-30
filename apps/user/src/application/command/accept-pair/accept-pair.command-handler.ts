@@ -1,7 +1,9 @@
-import { NotFoundException } from '@nestjs/common';
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { Inject, NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'apps/user/src/domain/repository';
+import { ClientProxy } from '@nestjs/microservices';
+import { SERVICES } from '@app/common/constants';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler
@@ -9,7 +11,7 @@ export class AcceptPairCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly eventPublisher: EventPublisher,
+    @Inject(SERVICES.CHAT) private readonly chatClient: ClientProxy,
   ) {}
 
   async execute(command: AcceptPairCommand): Promise<string> {
@@ -20,14 +22,9 @@ export class AcceptPairCommandHandler
       throw new NotFoundException();
     }
 
-    const user = this.eventPublisher.mergeObjectContext(
-      await this.repository.findOne(userId),
-    );
+    this.chatClient.emit('create_chat', [userId, pairId]);
 
     await this.repository.deletePair(pair.id, userId);
-
-    user.acceptPair(pairId);
-    user.commit();
 
     return pair.id;
   }

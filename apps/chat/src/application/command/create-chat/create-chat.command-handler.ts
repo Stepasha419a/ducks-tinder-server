@@ -1,18 +1,18 @@
-import { Logger } from '@nestjs/common';
-import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { ChatAggregate } from 'apps/chat/src/domain';
-import { AcceptPairEvent } from 'apps/user/src/domain/event';
+import { CreateChatCommand } from './create-chat.command';
+import { Logger } from '@nestjs/common';
 
-@EventsHandler(AcceptPairEvent)
-export class CreateChatEventHandler implements IEventHandler<AcceptPairEvent> {
-  constructor(private repository: ChatRepository) {}
+@CommandHandler(CreateChatCommand)
+export class CreateChatCommandHandler
+  implements ICommandHandler<CreateChatCommand>
+{
   logger: Logger = new Logger();
+  constructor(private repository: ChatRepository) {}
 
-  async handle(event: AcceptPairEvent) {
-    const { id, pairId } = event;
-
-    const memberIds = [id, pairId];
+  async execute(command: CreateChatCommand) {
+    const { memberIds } = command;
 
     const chatCandidate = await this.repository.findOneByUserIds(memberIds);
     if (chatCandidate) {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   BlockChatCommand,
+  CreateChatCommand,
   DeleteChatCommand,
   EditMessageCommand,
   EditMessageDto,
@@ -45,6 +46,7 @@ export class ChatFacade {
       this.unblockChat(userId, chatId),
     saveLastSeen: (userId: string, chatId: string) =>
       this.saveLastSeen(userId, chatId),
+    createChat: (memberIds: string[]) => this.createChat(memberIds),
     deleteChat: (userId: string, chatId: string) =>
       this.deleteChat(userId, chatId),
   };
@@ -93,6 +95,12 @@ export class ChatFacade {
   private saveLastSeen(userId: string, chatId: string) {
     return this.commandBus.execute<SaveLastSeenCommand>(
       new SaveLastSeenCommand(userId, chatId),
+    );
+  }
+
+  private createChat(memberIds: string[]) {
+    return this.commandBus.execute<CreateChatCommand>(
+      new CreateChatCommand(memberIds),
     );
   }
 

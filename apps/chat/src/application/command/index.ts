@@ -10,6 +10,7 @@ export {
   SaveLastSeenCommand,
   SaveLastSeenCommandHandler,
 } from './save-last-seen';
+export { CreateChatCommand, CreateChatCommandHandler } from './create-chat';
 export { DeleteChatCommand, DeleteChatCommandHandler } from './delete-chat';
 
 export * from './dto';
@@ -22,6 +23,7 @@ import { DeleteMessageCommandHandler } from './delete-message';
 import { BlockChatCommandHandler } from './block-chat';
 import { UnblockChatCommandHandler } from './unblock-chat';
 import { SaveLastSeenCommandHandler } from './save-last-seen';
+import { CreateChatCommandHandler } from './create-chat';
 import { DeleteChatCommandHandler } from './delete-chat';
 
 export const CHAT_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
@@ -31,5 +33,6 @@ export const CHAT_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
   BlockChatCommandHandler,
   UnblockChatCommandHandler,
   SaveLastSeenCommandHandler,
+  CreateChatCommandHandler,
   DeleteChatCommandHandler,
 ];

@@ -17,6 +17,7 @@ import {
   SendMessageDto,
 } from 'apps/chat/src/application/command';
 import { ChatMapper } from 'apps/chat/src/infrastructure/mapper';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('chat')
 export class ChatController {
@@ -125,5 +126,10 @@ export class ChatController {
     const chat = await this.facade.commands.deleteChat(userId, chatId);
 
     return { chat, userIds };
+  }
+
+  @EventPattern('create_chat')
+  createChat(@Payload() memberIds: string[]) {
+    this.facade.commands.createChat(memberIds);
   }
 }
