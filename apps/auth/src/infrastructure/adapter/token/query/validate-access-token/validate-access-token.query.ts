@@ -1,3 +1,3 @@
-export class ValidateAccessTokenCommand {
+export class ValidateAccessTokenQuery {
   constructor(public readonly accessTokenValue: string) {}
 }

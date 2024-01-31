@@ -6,7 +6,10 @@ import { AuthFacade } from './application';
 import { authFacadeFactory } from './infrastructure/facade';
 import { TokenAdapter } from './application/adapter/token';
 import { TokenAdapterImplementation } from './infrastructure/adapter';
-import { TOKEN_COMMAND_HANDLERS } from './infrastructure/adapter/token';
+import {
+  TOKEN_COMMAND_HANDLERS,
+  TOKEN_QUERY_HANDLERS,
+} from './infrastructure/adapter/token';
 import { RefreshTokenRepository } from './domain/repository';
 import { RefreshTokenAdapter } from './infrastructure/repository';
 import { JwtModule } from '@nestjs/jwt';
@@ -23,6 +26,7 @@ import { SERVICES } from '@app/common/constants';
   providers: [
     ...AUTH_COMMAND_HANDLERS,
     ...TOKEN_COMMAND_HANDLERS,
+    ...TOKEN_QUERY_HANDLERS,
     AuthMapper,
     {
       provide: AuthFacade,
@@ -64,6 +68,5 @@ import { SERVICES } from '@app/common/constants';
     RabbitMQModule.register(SERVICES.USER),
     RabbitMQModule.register(SERVICES.AUTH),
   ],
-  exports: [TokenAdapter],
 })
 export class AuthModule {}

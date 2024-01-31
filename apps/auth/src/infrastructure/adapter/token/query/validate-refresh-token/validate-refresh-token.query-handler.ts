@@ -1,14 +1,14 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenRepository } from 'apps/auth/src/domain/repository';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
 
-@CommandHandler(ValidateRefreshTokenCommand)
-export class ValidateRefreshTokenCommandHandler
-  implements ICommandHandler<ValidateRefreshTokenCommand>
+@QueryHandler(ValidateRefreshTokenQuery)
+export class ValidateRefreshTokenQueryHandler
+  implements IQueryHandler<ValidateRefreshTokenQuery>
 {
   constructor(
     private readonly repository: RefreshTokenRepository,
@@ -16,8 +16,8 @@ export class ValidateRefreshTokenCommandHandler
     private readonly configService: ConfigService,
   ) {}
 
-  async execute(command: ValidateRefreshTokenCommand) {
-    const { value } = command;
+  async execute(query: ValidateRefreshTokenQuery) {
+    const { value } = query;
 
     const existingRefreshToken = await this.repository.findOneByValue(value);
     if (!existingRefreshToken) {

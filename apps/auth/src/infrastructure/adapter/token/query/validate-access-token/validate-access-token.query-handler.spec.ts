@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ValidateAccessTokenCommand } from './validate-access-token.command';
-import { ValidateAccessTokenCommandHandler } from './validate-access-token.command-handler';
+import { ValidateAccessTokenCommand } from './validate-access-token.query';
+import { ValidateAccessTokenCommandHandler } from './validate-access-token.query-handler';
 import { ConfigServiceMock, JwtServiceMock } from 'apps/auth/src/test/mock';
 import { AccessTokenValueObjectStub, UserStub } from 'apps/auth/src/test/stub';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';

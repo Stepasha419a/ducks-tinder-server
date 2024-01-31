@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
-import {
-  GenerateTokensCommand,
-  RemoveTokenCommand,
-  ValidateRefreshTokenCommand,
-  ValidateAccessTokenCommand,
-} from './command';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { GenerateTokensCommand, RemoveTokenCommand } from './command';
 import {
   GenerateTokensView,
   TokenAdapter,
   UserTokenDto,
 } from 'apps/auth/src/application/adapter/token';
+import { ValidateAccessTokenQuery, ValidateRefreshTokenQuery } from './query';
 
 @Injectable()
 export class TokenAdapterImplementation implements TokenAdapter {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   generateTokens(dto: UserTokenDto): Promise<GenerateTokensView> {
     return this.commandBus.execute<GenerateTokensCommand, GenerateTokensView>(
@@ -29,16 +28,15 @@ export class TokenAdapterImplementation implements TokenAdapter {
   }
 
   validateRefreshToken(refreshTokenValue: string): Promise<UserTokenDto> {
-    return this.commandBus.execute<
-      ValidateRefreshTokenCommand,
+    return this.queryBus.execute<
+      ValidateRefreshTokenQuery,
       UserTokenDto | null
-    >(new ValidateRefreshTokenCommand(refreshTokenValue));
+    >(new ValidateRefreshTokenQuery(refreshTokenValue));
   }
 
   validateAccessToken(accessTokenValue: string): Promise<UserTokenDto> {
-    return this.commandBus.execute<
-      ValidateAccessTokenCommand,
-      UserTokenDto | null
-    >(new ValidateAccessTokenCommand(accessTokenValue));
+    return this.queryBus.execute<ValidateAccessTokenQuery, UserTokenDto | null>(
+      new ValidateAccessTokenQuery(accessTokenValue),
+    );
   }
 }
