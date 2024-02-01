@@ -12,6 +12,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const rabbitMQService = app.get(RabbitMQService);
 
+  await app.init();
+
   app.connectMicroservice(rabbitMQService.getOptions('CHAT'));
 
   await app.startAllMicroservices();

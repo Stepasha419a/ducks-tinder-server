@@ -18,6 +18,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  await app.init();
+
   const configService = app.get(ConfigService);
   const rabbitMQService = app.get(RabbitMQService);
 
