@@ -18,7 +18,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OptionalValidationPipe } from '@app/common/pipes';
 import { ONE_MB_SIZE } from '@app/common/constants';
-import { User } from '@app/common/decorators';
+import { User } from '@app/common/decorator';
 import { UserFacade } from '../application';
 import {
   CreateUserDto,

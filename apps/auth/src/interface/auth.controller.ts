@@ -10,7 +10,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Public } from '@app/common/decorators';
+import { Public } from '@app/common/decorator';
 import { AuthFacade } from 'apps/auth/src/application';
 import {
   LoginUserDto,

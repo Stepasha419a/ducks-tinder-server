@@ -16,11 +16,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { DatabaseModule } from '@app/common/database';
 import { AuthMapper } from './infrastructure/mapper';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@app/common/guards';
+import { AccessTokenGuard } from '@app/common/auth/guard';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
 import { SERVICES } from '@app/common/constants';
+import { AuthModule as AuthServiceModule } from '@app/common/auth/auth.module';
 
 @Module({
   providers: [
@@ -66,7 +67,7 @@ import { SERVICES } from '@app/common/constants';
     JwtModule,
     DatabaseModule,
     RabbitMQModule.register(SERVICES.USER),
-    RabbitMQModule.register(SERVICES.AUTH),
+    AuthServiceModule,
   ],
 })
 export class AuthModule {}

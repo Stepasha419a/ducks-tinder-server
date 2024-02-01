@@ -24,7 +24,8 @@ import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
 import { SERVICES } from '@app/common/constants';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@app/common/guards';
+import { AccessTokenGuard } from '@app/common/auth/guard';
+import { AuthModule } from '@app/common/auth';
 
 @Module({
   providers: [
@@ -77,8 +78,8 @@ import { AccessTokenGuard } from '@app/common/guards';
     HttpModule,
     JwtModule,
     CqrsModule,
-    RabbitMQModule.register(SERVICES.AUTH),
     RabbitMQModule.register(SERVICES.CHAT),
+    AuthModule,
   ],
 })
 export class UserModule implements OnModuleInit {

@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { UsersController } from 'apps/user/src/interface/user.controller';
 import { CommandBusMock, QueryBusMock } from 'apps/user/src/test/mocks';
-import { AccessTokenGuard } from '@app/common/guards';
+import { AccessTokenGuard } from '@app/common/auth/guard';
 import {
   requestUserStub,
   shortUserStub,

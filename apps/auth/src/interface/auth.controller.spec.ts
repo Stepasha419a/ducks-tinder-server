@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { AuthController } from 'apps/auth/src/interface/auth.controller';
-import { AccessTokenGuard } from '@app/common/guards';
+import { AccessTokenGuard } from '@app/common/auth/guard';
 import { UserData } from '../auth.interface';
 import {
   CREATE_USER_DTO,
