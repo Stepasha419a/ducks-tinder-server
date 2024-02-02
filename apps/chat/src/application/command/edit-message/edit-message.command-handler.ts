@@ -3,7 +3,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { EditMessageCommand } from './edit-message.command';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { MessageAggregate } from 'apps/chat/src/domain';
-import { DateUtil } from 'apps/chat/src/infrastructure/common/util/date.util';
+import { DateUtil } from '@app/common/shared/util';
 
 @CommandHandler(EditMessageCommand)
 export class EditMessageCommandHandler

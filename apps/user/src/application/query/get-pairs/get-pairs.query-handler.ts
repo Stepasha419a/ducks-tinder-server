@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPairsQuery } from './get-pairs.query';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserAggregate } from 'apps/user/src/domain';
-import { MapUtil } from 'apps/user/src/infrastructure/common/util';
+import { MapUtil } from '@app/common/shared/util';
 
 @QueryHandler(GetPairsQuery)
 export class GetPairsQueryHandler implements IQueryHandler<GetPairsQuery> {

@@ -3,7 +3,7 @@ import { GetSortedQuery } from './get-sorted.query';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserAggregate } from 'apps/user/src/domain';
-import { MapUtil } from 'apps/user/src/infrastructure/common/util';
+import { MapUtil } from '@app/common/shared/util';
 
 @QueryHandler(GetSortedQuery)
 export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
