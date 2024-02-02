@@ -1,11 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DislikeUserCommand } from './dislike-user.command';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-  CAN_NOT_DISLIKE_YOURSELF,
-  USER_ALREADY_CHECKED,
-} from '@app/common/constants/error';
 import { UserRepository } from 'apps/user/src/domain/repository';
+import { ERROR } from 'apps/user/src/infrastructure/common/constant';
 
 @CommandHandler(DislikeUserCommand)
 export class DislikeUserCommandHandler
@@ -17,7 +14,7 @@ export class DislikeUserCommandHandler
     const { userId, pairId } = command;
 
     if (userId === pairId) {
-      throw new BadRequestException(CAN_NOT_DISLIKE_YOURSELF);
+      throw new BadRequestException(ERROR.CAN_NOT_DISLIKE_YOURSELF);
     }
 
     const userPair = await this.repository.findOne(pairId);
@@ -34,7 +31,7 @@ export class DislikeUserCommandHandler
     );
 
     if (isSomeonePairForAnotherOne) {
-      throw new BadRequestException(USER_ALREADY_CHECKED);
+      throw new BadRequestException(ERROR.USER_ALREADY_CHECKED);
     }
 
     await this.repository.makeChecked(pairId, userId);

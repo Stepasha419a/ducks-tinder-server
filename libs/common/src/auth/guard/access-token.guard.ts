@@ -6,10 +6,11 @@ import {
   UnauthorizedException,
   Inject,
 } from '@nestjs/common';
-import { IS_PUBLIC_KEY, SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { IS_PUBLIC_KEY } from '../constant';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

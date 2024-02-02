@@ -1,11 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LikeUserCommand } from './like-user.command';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-  CAN_NOT_LIKE_YOURSELF,
-  USER_ALREADY_CHECKED,
-} from '@app/common/constants/error';
 import { UserRepository } from 'apps/user/src/domain/repository';
+import { ERROR } from 'apps/user/src/infrastructure/common/constant';
 
 @CommandHandler(LikeUserCommand)
 export class LikeUserCommandHandler
@@ -17,7 +14,7 @@ export class LikeUserCommandHandler
     const { userId, pairId } = command;
 
     if (userId === pairId) {
-      throw new BadRequestException(CAN_NOT_LIKE_YOURSELF);
+      throw new BadRequestException(ERROR.CAN_NOT_LIKE_YOURSELF);
     }
 
     const userPair = await this.repository.findOne(pairId);
@@ -35,7 +32,7 @@ export class LikeUserCommandHandler
     );
 
     if (isSomeonePairForAnotherOne) {
-      throw new BadRequestException(USER_ALREADY_CHECKED);
+      throw new BadRequestException(ERROR.USER_ALREADY_CHECKED);
     }
 
     await this.repository.createPair(userId, pairId);

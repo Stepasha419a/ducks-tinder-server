@@ -13,10 +13,10 @@ import { ChatMapper } from './infrastructure/mapper/chat.mapper';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/constants';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/auth/guard';
 import { AuthModule } from '@app/common/auth';
+import { SERVICES } from '@app/common/shared/constant';
 
 @Module({
   controllers: [ChatController],

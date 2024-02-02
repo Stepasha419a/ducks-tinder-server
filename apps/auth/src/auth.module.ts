@@ -20,7 +20,7 @@ import { AccessTokenGuard } from '@app/common/auth/guard';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 import { AuthModule as AuthServiceModule } from '@app/common/auth/auth.module';
 
 @Module({

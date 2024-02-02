@@ -1,12 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetSortedQuery } from './get-sorted.query';
 import { NotFoundException } from '@nestjs/common';
-import {
-  getDistanceFromLatLonInKm,
-  getSearchingCoords,
-} from '@app/common/helpers';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserAggregate } from 'apps/user/src/domain';
+import { MapUtil } from 'apps/user/src/infrastructure/common/util';
 
 @QueryHandler(GetSortedQuery)
 export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
@@ -23,7 +20,7 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
     const { maxLatitude, minLatitude, maxLongitude, minLongitude } =
-      getSearchingCoords(
+      MapUtil.getSearchingCoords(
         user.place?.latitude,
         user.place?.longitude,
         userDistance,
@@ -46,7 +43,7 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
       throw new NotFoundException();
     }
 
-    const distance = getDistanceFromLatLonInKm(
+    const distance = MapUtil.getDistanceFromLatLonInKm(
       user.place.latitude,
       user.place.longitude,
       sortedUser.place.latitude,
@@ -68,7 +65,7 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
     }
 
     const place = await this.repository.findPlace(userId);
-    const distance = getDistanceFromLatLonInKm(
+    const distance = MapUtil.getDistanceFromLatLonInKm(
       place.latitude,
       place.longitude,
       sortedUser.place.latitude,

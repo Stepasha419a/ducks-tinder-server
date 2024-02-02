@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { EditMessageCommand } from './edit-message.command';
-import { getDatesHourDiff } from '@app/common/helpers';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { MessageAggregate } from 'apps/chat/src/domain';
+import { DateUtil } from 'apps/chat/src/infrastructure/common/util/date.util';
 
 @CommandHandler(EditMessageCommand)
 export class EditMessageCommandHandler
@@ -28,7 +28,7 @@ export class EditMessageCommandHandler
     }
 
     const isMessageEditable =
-      getDatesHourDiff(new Date(), new Date(message.createdAt)) < 6;
+      DateUtil.getDatesHourDiff(new Date(), new Date(message.createdAt)) < 6;
     if (!isMessageEditable) {
       throw new ForbiddenException();
     }

@@ -1,5 +1,5 @@
 import { IsBoolean, IsOptional, IsUUID, validateSync } from 'class-validator';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 import { Chat } from './chat.interface';
 import { ChatServices } from './services';
 import { randomUUID } from 'crypto';

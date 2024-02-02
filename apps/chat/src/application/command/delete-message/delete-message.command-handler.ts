@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { DeleteMessageCommand } from './delete-message.command';
-import { getDatesHourDiff } from '@app/common/helpers';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { MessageAggregate } from 'apps/chat/src/domain';
+import { DateUtil } from 'apps/chat/src/infrastructure/common/util/date.util';
 
 @CommandHandler(DeleteMessageCommand)
 export class DeleteMessageCommandHandler
@@ -28,7 +28,7 @@ export class DeleteMessageCommandHandler
     }
 
     const isMessageDeletable =
-      getDatesHourDiff(new Date(), new Date(message.createdAt)) < 12;
+      DateUtil.getDatesHourDiff(new Date(), new Date(message.createdAt)) < 12;
     if (!isMessageDeletable) {
       throw new ForbiddenException();
     }

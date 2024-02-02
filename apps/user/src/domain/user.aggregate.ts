@@ -18,7 +18,7 @@ import {
   Min,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { PictureValueObject, PlaceValueObject } from './value-object';
 import { randomUUID } from 'crypto';

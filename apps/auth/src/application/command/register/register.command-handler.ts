@@ -2,11 +2,11 @@ import * as bcrypt from 'bcryptjs';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
-import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
+import { COMMON_ERROR } from '@app/common/shared/constant';
 import { AuthUserAggregate } from 'apps/auth/src/domain/auth-user.aggregate';
 import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
 import { randomUUID } from 'crypto';
-import { SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { UserAggregate } from 'apps/user/src/domain';
@@ -28,7 +28,7 @@ export class RegisterCommandHandler
     );
 
     if (candidate) {
-      throw new BadRequestException(USER_ALREADY_EXISTS);
+      throw new BadRequestException(COMMON_ERROR.USER_ALREADY_EXISTS);
     }
 
     const hashPassword = await bcrypt.hash(dto.password, 7);

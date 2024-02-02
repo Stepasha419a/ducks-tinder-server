@@ -14,9 +14,9 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { WsHttpExceptionFilter } from '@app/common/filters';
+import { WsHttpExceptionFilter } from '@app/common/shared/filter';
 import { AccessTokenGuard, RefreshTokenGuard } from '@app/common/auth/guard';
-import { User } from '@app/common/decorator';
+import { User } from '@app/common/shared/decorator';
 import { ChatFacade } from 'apps/chat/src/application';
 import {
   EditMessageDto,

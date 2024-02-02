@@ -1,0 +1,1 @@
+export { CONSTANT } from './constant';

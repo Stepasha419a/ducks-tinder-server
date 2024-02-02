@@ -1,8 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPairsQuery } from './get-pairs.query';
-import { getDistanceFromLatLonInKm } from '@app/common/helpers';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserAggregate } from 'apps/user/src/domain';
+import { MapUtil } from 'apps/user/src/infrastructure/common/util';
 
 @QueryHandler(GetPairsQuery)
 export class GetPairsQueryHandler implements IQueryHandler<GetPairsQuery> {
@@ -16,7 +16,7 @@ export class GetPairsQueryHandler implements IQueryHandler<GetPairsQuery> {
     const pairs = await this.repository.findPairs(userId);
 
     const pairsWithDistance = pairs.map((pair) => {
-      const distance = getDistanceFromLatLonInKm(
+      const distance = MapUtil.getDistanceFromLatLonInKm(
         user.place.latitude,
         user.place.longitude,
         pair.place?.latitude,

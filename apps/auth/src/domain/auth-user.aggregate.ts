@@ -22,7 +22,7 @@ import {
   AccessTokenValueObject,
   RefreshTokenValueObject,
 } from './value-object';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 import { Sex } from 'apps/user/src/domain/user.interface';
 import {
   PictureValueObject,

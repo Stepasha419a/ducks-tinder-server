@@ -7,7 +7,7 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { Message, MessageAggregate } from '../message';
 import { ChatVisitValueObject } from './chat-visit.value-object';

@@ -16,9 +16,8 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { OptionalValidationPipe } from '@app/common/pipes';
-import { ONE_MB_SIZE } from '@app/common/constants';
-import { User } from '@app/common/decorator';
+import { OptionalValidationPipe } from '@app/common/shared/pipe';
+import { User } from '@app/common/shared/decorator';
 import { UserFacade } from '../application';
 import {
   CreateUserDto,
@@ -33,6 +32,7 @@ import {
 import { ShortUserWithDistance } from 'apps/user/src/infrastructure/mapper/interface/short-user-with-distance';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserAggregate } from '../domain';
+import { CONSTANT } from '../infrastructure/common/constant';
 
 @Controller('user')
 export class UserController {
@@ -81,7 +81,7 @@ export class UserController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: ONE_MB_SIZE }),
+          new MaxFileSizeValidator({ maxSize: CONSTANT.ONE_MB_SIZE }),
           new FileTypeValidator({ fileType: 'image/*' }),
         ],
       }),

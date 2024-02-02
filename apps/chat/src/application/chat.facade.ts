@@ -11,7 +11,7 @@ import {
   SendMessageDto,
   UnblockChatCommand,
 } from './command';
-import { PaginationDto } from '@app/common/dto';
+import { PaginationDto } from '@app/common/shared/dto';
 import {
   GetChatMemberIdsQuery,
   GetChatsQuery,

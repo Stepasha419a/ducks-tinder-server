@@ -7,7 +7,7 @@ import {
   Min,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 import { randomUUID } from 'crypto';
 
 export class PictureValueObject {

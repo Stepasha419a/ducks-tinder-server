@@ -22,7 +22,7 @@ import { UserMapper } from './infrastructure/mapper';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/auth/guard';
 import { AuthModule } from '@app/common/auth';

@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler

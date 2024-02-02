@@ -3,7 +3,7 @@ import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
 import { AuthUserAggregate } from 'apps/auth/src/domain';
 import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
-import { SERVICES } from '@app/common/constants';
+import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { UserAggregate } from 'apps/user/src/domain';
 import { firstValueFrom } from 'rxjs';

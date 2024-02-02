@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
-import { DomainError } from '@app/common/errors';
+import { DomainError } from '@app/common/shared/error';
 
 export class UserCheckValueObject {
   @IsUUID()
