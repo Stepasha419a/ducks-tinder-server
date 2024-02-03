@@ -1,22 +1,22 @@
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ValidateAccessTokenCommand } from './validate-access-token.query';
-import { ValidateAccessTokenCommandHandler } from './validate-access-token.query-handler';
 import { ConfigServiceMock, JwtServiceMock } from 'apps/auth/src/test/mock';
 import { AccessTokenValueObjectStub, UserStub } from 'apps/auth/src/test/stub';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { ValidateAccessTokenQueryHandler } from './validate-access-token.query-handler';
+import { ValidateAccessTokenQuery } from './validate-access-token.query';
 
 describe('when validateAccessToken is called', () => {
   let jwtService: JwtService;
   let configService: ConfigService;
 
-  let validateAccessTokenCommandHandler: ValidateAccessTokenCommandHandler;
+  let validateAccessTokenQueryHandler: ValidateAccessTokenQueryHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        ValidateAccessTokenCommandHandler,
+        ValidateAccessTokenQueryHandler,
         { provide: JwtService, useValue: JwtServiceMock() },
         { provide: ConfigService, useValue: ConfigServiceMock() },
       ],
@@ -24,9 +24,9 @@ describe('when validateAccessToken is called', () => {
 
     jwtService = moduleRef.get<JwtService>(JwtService);
     configService = moduleRef.get<ConfigService>(ConfigService);
-    validateAccessTokenCommandHandler =
-      moduleRef.get<ValidateAccessTokenCommandHandler>(
-        ValidateAccessTokenCommandHandler,
+    validateAccessTokenQueryHandler =
+      moduleRef.get<ValidateAccessTokenQueryHandler>(
+        ValidateAccessTokenQueryHandler,
       );
   });
 
@@ -42,14 +42,14 @@ describe('when validateAccessToken is called', () => {
         userId: UserStub().id,
       } as UserTokenDto);
 
-      response = await validateAccessTokenCommandHandler.execute(
-        new ValidateAccessTokenCommand(AccessTokenValueObjectStub().value),
+      response = await validateAccessTokenQueryHandler.execute(
+        new ValidateAccessTokenQuery(AccessTokenValueObjectStub().value),
       );
     });
 
     it('should call jwtService verify', () => {
-      expect(jwtService.verify).toBeCalledTimes(1);
-      expect(jwtService.verify).toBeCalledWith(
+      expect(jwtService.verify).toHaveBeenCalledTimes(1);
+      expect(jwtService.verify).toHaveBeenCalledWith(
         AccessTokenValueObjectStub().value,
         {
           secret: 'TOKENS_SECRET',
@@ -58,8 +58,8 @@ describe('when validateAccessToken is called', () => {
     });
 
     it('should call configService get', () => {
-      expect(configService.get).toBeCalledTimes(1);
-      expect(configService.get).toBeCalledWith('JWT_ACCESS_SECRET');
+      expect(configService.get).toHaveBeenCalledTimes(1);
+      expect(configService.get).toHaveBeenCalledWith('JWT_ACCESS_SECRET');
     });
 
     it('should return tokenData', () => {
@@ -81,14 +81,14 @@ describe('when validateAccessToken is called', () => {
         throw new Error('Token is not valid');
       });
 
-      response = await validateAccessTokenCommandHandler.execute(
-        new ValidateAccessTokenCommand(AccessTokenValueObjectStub().value),
+      response = await validateAccessTokenQueryHandler.execute(
+        new ValidateAccessTokenQuery(AccessTokenValueObjectStub().value),
       );
     });
 
     it('should call jwtService verify', () => {
-      expect(jwtService.verify).toBeCalledTimes(1);
-      expect(jwtService.verify).toBeCalledWith(
+      expect(jwtService.verify).toHaveBeenCalledTimes(1);
+      expect(jwtService.verify).toHaveBeenCalledWith(
         AccessTokenValueObjectStub().value,
         {
           secret: 'TOKENS_SECRET',
@@ -97,8 +97,8 @@ describe('when validateAccessToken is called', () => {
     });
 
     it('should call configService get', () => {
-      expect(configService.get).toBeCalledTimes(1);
-      expect(configService.get).toBeCalledWith('JWT_ACCESS_SECRET');
+      expect(configService.get).toHaveBeenCalledTimes(1);
+      expect(configService.get).toHaveBeenCalledWith('JWT_ACCESS_SECRET');
     });
 
     it('should return null', () => {

@@ -1,6 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { ValidateRefreshTokenCommand } from './validate-refresh-token.command';
-import { ValidateRefreshTokenCommandHandler } from './validate-refresh-token.command-handler';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { HttpStatus } from '@nestjs/common';
@@ -12,18 +10,20 @@ import {
 } from 'apps/auth/src/test/mock';
 import { RefreshTokenValueObjectStub, UserStub } from 'apps/auth/src/test/stub';
 import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { ValidateRefreshTokenQueryHandler } from './validate-refresh-token.query-handler';
+import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
 
 describe('when validateRefreshToken is called', () => {
   let repository: RefreshTokenRepository;
   let jwtService: JwtService;
   let configService: ConfigService;
 
-  let validateRefreshTokenCommandHandler: ValidateRefreshTokenCommandHandler;
+  let validateRefreshTokenQueryHandler: ValidateRefreshTokenQueryHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        ValidateRefreshTokenCommandHandler,
+        ValidateRefreshTokenQueryHandler,
         {
           provide: RefreshTokenRepository,
           useValue: RefreshTokenRepositoryMock(),
@@ -36,9 +36,9 @@ describe('when validateRefreshToken is called', () => {
     repository = moduleRef.get<RefreshTokenRepository>(RefreshTokenRepository);
     jwtService = moduleRef.get<JwtService>(JwtService);
     configService = moduleRef.get<ConfigService>(ConfigService);
-    validateRefreshTokenCommandHandler =
-      moduleRef.get<ValidateRefreshTokenCommandHandler>(
-        ValidateRefreshTokenCommandHandler,
+    validateRefreshTokenQueryHandler =
+      moduleRef.get<ValidateRefreshTokenQueryHandler>(
+        ValidateRefreshTokenQueryHandler,
       );
   });
 
@@ -57,21 +57,21 @@ describe('when validateRefreshToken is called', () => {
         userId: UserStub().id,
       } as UserTokenDto);
 
-      response = await validateRefreshTokenCommandHandler.execute(
-        new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+      response = await validateRefreshTokenQueryHandler.execute(
+        new ValidateRefreshTokenQuery(RefreshTokenValueObjectStub().value),
       );
     });
 
     it('should call repository findOneByValue', () => {
-      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledTimes(1);
       expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
 
     it('should call jwtService verify', () => {
-      expect(jwtService.verify).toBeCalledTimes(1);
-      expect(jwtService.verify).toBeCalledWith(
+      expect(jwtService.verify).toHaveBeenCalledTimes(1);
+      expect(jwtService.verify).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
         {
           secret: 'TOKENS_SECRET',
@@ -80,8 +80,8 @@ describe('when validateRefreshToken is called', () => {
     });
 
     it('should call configService get', () => {
-      expect(configService.get).toBeCalledTimes(1);
-      expect(configService.get).toBeCalledWith('JWT_REFRESH_SECRET');
+      expect(configService.get).toHaveBeenCalledTimes(1);
+      expect(configService.get).toHaveBeenCalledWith('JWT_REFRESH_SECRET');
     });
 
     it('should return tokens', () => {
@@ -107,8 +107,8 @@ describe('when validateRefreshToken is called', () => {
       } as UserTokenDto);
 
       try {
-        response = await validateRefreshTokenCommandHandler.execute(
-          new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+        response = await validateRefreshTokenQueryHandler.execute(
+          new ValidateRefreshTokenQuery(RefreshTokenValueObjectStub().value),
         );
       } catch (responseError) {
         error = responseError;
@@ -116,18 +116,18 @@ describe('when validateRefreshToken is called', () => {
     });
 
     it('should call repository findOneByValue', () => {
-      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledTimes(1);
       expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
 
     it('should not call jwtService verify', () => {
-      expect(jwtService.verify).not.toBeCalled();
+      expect(jwtService.verify).not.toHaveBeenCalled();
     });
 
     it('should not call configService get', () => {
-      expect(configService.get).not.toBeCalled();
+      expect(configService.get).not.toHaveBeenCalled();
     });
 
     it('should return undefined', () => {
@@ -154,21 +154,21 @@ describe('when validateRefreshToken is called', () => {
         throw new Error('Token is not valid');
       });
 
-      response = await validateRefreshTokenCommandHandler.execute(
-        new ValidateRefreshTokenCommand(RefreshTokenValueObjectStub().value),
+      response = await validateRefreshTokenQueryHandler.execute(
+        new ValidateRefreshTokenQuery(RefreshTokenValueObjectStub().value),
       );
     });
 
     it('should call repository findOneByValue', () => {
-      expect(repository.findOneByValue).toBeCalledTimes(1);
+      expect(repository.findOneByValue).toHaveBeenCalledTimes(1);
       expect(repository.findOneByValue).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
       );
     });
 
     it('should call jwtService verify', () => {
-      expect(jwtService.verify).toBeCalledTimes(1);
-      expect(jwtService.verify).toBeCalledWith(
+      expect(jwtService.verify).toHaveBeenCalledTimes(1);
+      expect(jwtService.verify).toHaveBeenCalledWith(
         RefreshTokenValueObjectStub().value,
         {
           secret: 'TOKENS_SECRET',
@@ -177,8 +177,8 @@ describe('when validateRefreshToken is called', () => {
     });
 
     it('should call configService get', () => {
-      expect(configService.get).toBeCalledTimes(1);
-      expect(configService.get).toBeCalledWith('JWT_REFRESH_SECRET');
+      expect(configService.get).toHaveBeenCalledTimes(1);
+      expect(configService.get).toHaveBeenCalledWith('JWT_REFRESH_SECRET');
     });
 
     it('should return null', () => {
