@@ -1,4 +1,4 @@
-export { UserServiceMock } from './user-service.mock';
+export { ClientProxyMock } from './client-proxy.mock';
 export { TokenAdapterMock } from './token-adapter.mock';
 export { JwtServiceMock } from './jwt-service.mock';
 export { ConfigServiceMock } from './config-service.mock';

@@ -4,18 +4,20 @@ import { RefreshCommandHandler } from './refresh.command-handler';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 import { HttpStatus } from '@nestjs/common';
 import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
-import { TokenAdapterMock, UserServiceMock } from 'apps/auth/src/test/mock';
+import { ClientProxyMock, TokenAdapterMock } from 'apps/auth/src/test/mock';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
 } from 'apps/auth/src/test/stub';
 import { AuthUserAggregate } from 'apps/auth/src/domain';
-import { UserService } from 'apps/user/src/interface';
+import { ClientProxy } from '@nestjs/microservices';
+import { SERVICES } from '@app/common/shared/constant';
+import { of } from 'rxjs';
 
 describe('when refresh is called', () => {
   let tokenAdapter: TokenAdapter;
-  let userService: UserService;
+  let userClient: ClientProxy;
   let refreshCommandHandler: RefreshCommandHandler;
   const userStub = UserStub();
 
@@ -24,14 +26,14 @@ describe('when refresh is called', () => {
       providers: [
         RefreshCommandHandler,
         {
-          provide: UserService,
-          useValue: UserServiceMock(),
+          provide: SERVICES.USER,
+          useValue: ClientProxyMock(),
         },
         { provide: TokenAdapter, useValue: TokenAdapterMock() },
       ],
     }).compile();
 
-    userService = moduleRef.get<UserService>(UserService);
+    userClient = moduleRef.get<ClientProxy>(SERVICES.USER);
     tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     refreshCommandHandler = moduleRef.get<RefreshCommandHandler>(
       RefreshCommandHandler,
@@ -43,7 +45,7 @@ describe('when refresh is called', () => {
       tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
         userId: UserStub().id,
       });
-      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
@@ -60,17 +62,20 @@ describe('when refresh is called', () => {
     });
 
     it('should call tokenAdapter validateRefreshToken', () => {
-      expect(tokenAdapter.validateRefreshToken).toBeCalledWith(
+      expect(tokenAdapter.validateRefreshToken).toHaveBeenCalledTimes(1);
+      expect(tokenAdapter.validateRefreshToken).toHaveBeenCalledWith(
         'refresh-token-value',
       );
     });
 
-    it('should call userService getUser', () => {
-      expect(userService.getUser).toBeCalledWith(userStub.id);
+    it('should call userClient send', () => {
+      expect(userClient.send).toHaveBeenCalledTimes(1);
+      expect(userClient.send).toHaveBeenCalledWith('get_user', userStub.id);
     });
 
     it('should call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).toBeCalledWith({
+      expect(tokenAdapter.generateTokens).toHaveBeenCalledTimes(1);
+      expect(tokenAdapter.generateTokens).toHaveBeenCalledWith({
         userId: userStub.id,
         email: userStub.email,
       });
@@ -86,7 +91,7 @@ describe('when refresh is called', () => {
       tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
         userId: UserStub().id,
       });
-      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
@@ -111,8 +116,8 @@ describe('when refresh is called', () => {
       expect(tokenAdapter.validateRefreshToken).not.toBeCalled();
     });
 
-    it('should not call userService getUser', () => {
-      expect(userService.getUser).not.toBeCalled();
+    it('should not call userClient send', () => {
+      expect(userClient.send).not.toHaveBeenCalled();
     });
 
     it('should not call tokenAdapter generateTokens', () => {
@@ -132,7 +137,7 @@ describe('when refresh is called', () => {
   describe('when there is no userData', () => {
     beforeAll(async () => {
       tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue(null);
-      userService.getUser = jest.fn().mockResolvedValue(UserAggregateStub());
+      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
@@ -159,8 +164,8 @@ describe('when refresh is called', () => {
       );
     });
 
-    it('should not call userService getUser', () => {
-      expect(userService.getUser).not.toBeCalled();
+    it('should not call userClient send', () => {
+      expect(userClient.send).not.toHaveBeenCalled();
     });
 
     it('should not call tokenAdapter generateTokens', () => {

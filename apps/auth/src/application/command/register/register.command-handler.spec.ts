@@ -2,20 +2,21 @@ import { Test } from '@nestjs/testing';
 import { RegisterCommand } from './register.command';
 import { RegisterCommandHandler } from './register.command-handler';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
-import { USER_ALREADY_EXISTS } from '@app/common/constants/error';
 import { HttpStatus } from '@nestjs/common';
-import { UserService } from 'apps/user/src/interface';
 import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
-import { TokenAdapterMock, UserServiceMock } from 'apps/auth/src/test/mock';
+import { ClientProxyMock, TokenAdapterMock } from 'apps/auth/src/test/mock';
 import { AuthUserAggregate } from 'apps/auth/src/domain';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
 } from 'apps/auth/src/test/stub';
+import { ClientProxy } from '@nestjs/microservices';
+import { COMMON_ERROR, SERVICES } from '@app/common/shared/constant';
+import { of } from 'rxjs';
 
 describe('when registration is called', () => {
-  let userService: UserService;
+  let userClient: ClientProxy;
   let tokenAdapter: TokenAdapter;
   let registerCommandHandler: RegisterCommandHandler;
   const userStub = UserStub();
@@ -24,12 +25,12 @@ describe('when registration is called', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         RegisterCommandHandler,
-        { provide: UserService, useValue: UserServiceMock() },
+        { provide: SERVICES.USER, useValue: ClientProxyMock() },
         { provide: TokenAdapter, useValue: TokenAdapterMock() },
       ],
     }).compile();
 
-    userService = moduleRef.get<UserService>(UserService);
+    userClient = moduleRef.get<ClientProxy>(SERVICES.USER);
     tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
     registerCommandHandler = moduleRef.get<RegisterCommandHandler>(
       RegisterCommandHandler,
@@ -38,8 +39,6 @@ describe('when registration is called', () => {
 
   describe('when it is called correctly', () => {
     beforeAll(() => {
-      userService.getUserByEmail = jest.fn().mockResolvedValue(undefined);
-      userService.createUser = jest.fn().mockResolvedValue(UserAggregateStub());
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
@@ -50,25 +49,37 @@ describe('when registration is called', () => {
 
     beforeEach(async () => {
       jest.clearAllMocks();
+
+      userClient.send = jest
+        .fn()
+        .mockReturnValueOnce(of(undefined))
+        .mockReturnValueOnce(of(UserAggregateStub()));
+
       const dto = {
         email: userStub.email,
         name: userStub.name,
         password: userStub.password,
       };
+
       data = await registerCommandHandler.execute(new RegisterCommand(dto));
     });
 
-    it('should call userService getUserByEmail', () => {
-      expect(userService.getUserByEmail).toBeCalledWith(userStub.email);
-    });
-
-    it('should call userService createUser', () => {
-      // password is custom with bcrypt
-      expect(userService.createUser).toBeCalledTimes(1);
+    it('should call userClient send', () => {
+      expect(userClient.send).toHaveBeenCalledTimes(2);
+      expect(userClient.send).toHaveBeenNthCalledWith(
+        1,
+        'get_user_by_email',
+        userStub.email,
+      );
+      expect(userClient.send).toHaveBeenNthCalledWith(
+        2,
+        'create_user',
+        expect.anything(),
+      );
     });
 
     it('should call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).toBeCalledWith({
+      expect(tokenAdapter.generateTokens).toHaveBeenCalledWith({
         userId: userStub.id,
         email: userStub.email,
       });
@@ -83,10 +94,6 @@ describe('when registration is called', () => {
 
   describe('when there is already using email', () => {
     beforeAll(() => {
-      userService.getUserByEmail = jest
-        .fn()
-        .mockResolvedValue(UserAggregateStub());
-      userService.createUser = jest.fn().mockResolvedValue(UserAggregateStub());
       tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
@@ -98,6 +105,12 @@ describe('when registration is called', () => {
 
     beforeEach(async () => {
       jest.clearAllMocks();
+
+      userClient.send = jest
+        .fn()
+        .mockReturnValueOnce(of(UserAggregateStub()))
+        .mockReturnValueOnce(of(UserAggregateStub()));
+
       const dto = {
         email: userStub.email,
         name: userStub.name,
@@ -110,12 +123,12 @@ describe('when registration is called', () => {
       }
     });
 
-    it('should call userService getUserByEmail', () => {
-      expect(userService.getUserByEmail).toBeCalledWith(userStub.email);
-    });
-
-    it('should not call userService createUser', () => {
-      expect(userService.createUser).not.toBeCalled();
+    it('should call userClient send', () => {
+      expect(userClient.send).toHaveBeenCalledTimes(1);
+      expect(userClient.send).toHaveBeenCalledWith(
+        'get_user_by_email',
+        userStub.email,
+      );
     });
 
     it('should not call tokenAdapter generateTokens', () => {
@@ -127,7 +140,7 @@ describe('when registration is called', () => {
     });
 
     it('should throw an error', () => {
-      expect(error?.message).toEqual(USER_ALREADY_EXISTS);
+      expect(error?.message).toEqual(COMMON_ERROR.USER_ALREADY_EXISTS);
       expect(error?.status).toEqual(HttpStatus.BAD_REQUEST);
     });
   });

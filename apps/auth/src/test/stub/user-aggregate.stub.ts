@@ -4,7 +4,6 @@ export const UserAggregateStub = () => ({
   ...UserStub(),
 
   setDescription: jest.fn(),
-  comparePasswords: jest.fn(),
   setPlace: jest.fn(),
   setDistance: jest.fn(),
   getPrimitiveFields: jest.fn(),
