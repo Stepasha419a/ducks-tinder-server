@@ -1,124 +1,92 @@
 import { Test } from '@nestjs/testing';
-import { FilesModule } from 'files/files.module';
-import { ShortUser } from 'apps/user/src/users.interface';
-import { FilesService } from 'files/files.service';
-import { PrismaModule } from '@app/common/database/database.module';
-import { PrismaService } from '@app/common/database/database.service';
-import { FilesServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
-import { DELETE_PICTURE_DTO } from 'apps/user/src/test/values/users.const.dto';
 import { DeletePictureCommandHandler } from './delete-picture.command-handler';
 import { DeletePictureCommand } from './delete-picture.command';
-import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
-import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
+import { FileAdapterMock, UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { FileAdapter } from '../../adapter';
+import { UserAggregate } from 'apps/user/src/domain';
+import { UserAggregateStub } from 'apps/auth/src/test/stub';
+import { UserStub } from 'apps/user/src/test/stub';
 
 describe('when delete picture is called', () => {
-  let prismaService: PrismaService;
-  let filesService: FilesService;
+  let repository: UserRepository;
+  let fileAdapter: FileAdapter;
   let deletePictureCommandHandler: DeletePictureCommandHandler;
-
-  let user: ShortUser;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [DeletePictureCommandHandler],
-      imports: [FilesModule, PrismaModule],
-    })
-      .overrideProvider(FilesService)
-      .useValue(FilesServiceMock())
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        DeletePictureCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+        { provide: FileAdapter, useValue: FileAdapterMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
-    filesService = moduleRef.get<FilesService>(FilesService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
+    fileAdapter = moduleRef.get<FileAdapter>(FileAdapter);
     deletePictureCommandHandler = moduleRef.get<DeletePictureCommandHandler>(
       DeletePictureCommandHandler,
     );
   });
 
   describe('when it is called correctly', () => {
+    const userAggregate = UserAggregateStub();
+
     beforeAll(() => {
-      prismaService.user.findUnique = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-      prismaService.picture.findFirst = jest.fn().mockResolvedValue({
-        id: '123123',
-        name: '123.jpg',
-        userId: userDtoStub().id,
-        order: 0,
-      });
-      prismaService.picture.findMany = jest.fn().mockResolvedValue([
-        {
-          id: '123123',
-          name: '123.jpg',
-          userId: userDtoStub().id,
-          order: 0,
-        },
-        {
-          id: '456456',
-          name: '456.jpg',
-          userId: userDtoStub().id,
-          order: 1,
-        },
-      ]);
+      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
     });
+
+    let user: UserAggregate;
+    const pictureToDelete = UserStub().pictures[0];
 
     beforeEach(async () => {
       jest.clearAllMocks();
       user = await deletePictureCommandHandler.execute(
-        new DeletePictureCommand(requestUserStub(), DELETE_PICTURE_DTO),
+        new DeletePictureCommand(UserStub().id, pictureToDelete.id),
       );
     });
 
-    it('should call picture find first', () => {
-      expect(prismaService.picture.findFirst).toBeCalledTimes(1);
-      expect(prismaService.picture.findFirst).toBeCalledWith({
-        where: DELETE_PICTURE_DTO,
-      });
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
     });
 
-    it('should call files-service delete picture', () => {
-      expect(filesService.deletePicture).toBeCalledTimes(1);
-      expect(filesService.deletePicture).toBeCalledWith(
-        '123.jpg',
-        userDtoStub().id,
+    it('should call fileAdapter deletePicture', () => {
+      expect(fileAdapter.deletePicture).toHaveBeenCalledTimes(1);
+      expect(fileAdapter.deletePicture).toHaveBeenCalledWith(
+        pictureToDelete.name,
+        UserStub().id,
       );
     });
 
-    it('should call picture delete', () => {
-      expect(prismaService.picture.delete).toBeCalledTimes(1);
-      expect(prismaService.picture.delete).toBeCalledWith({
-        where: { id: userDtoStub().pictures[0].id },
-      });
+    it('should call userAggregate deletePicture', () => {
+      expect(userAggregate.deletePicture).toHaveBeenCalledTimes(1);
+      expect(userAggregate.deletePicture).toHaveBeenCalledWith(
+        pictureToDelete.id,
+      );
     });
 
-    it('should call picture update', () => {
-      expect(prismaService.picture.update).toBeCalledTimes(1);
-      expect(prismaService.picture.update).toBeCalledWith({
-        where: { id: userDtoStub().pictures[1].id },
-        data: { order: 0 },
-      });
+    it('should call userAggregate sortPictureOrders', () => {
+      expect(userAggregate.sortPictureOrders).toHaveBeenCalledTimes(1);
+      expect(userAggregate.sortPictureOrders).toHaveBeenCalledWith(
+        pictureToDelete.order,
+      );
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: userDtoStub().id },
-        include: UsersSelector.selectUser(),
-      });
-    });
-
-    it('should call user count', () => {
-      expect(prismaService.user.count).toBeCalledTimes(1);
-      expect(prismaService.user.count).toBeCalledWith({
-        where: { pairFor: { some: { id: user.id } } },
-      });
+    it('should call repository save', () => {
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(repository.save).toHaveBeenCalledWith(
+        expect.objectContaining(
+          JSON.parse(JSON.stringify(UserAggregateStub())),
+        ),
+      );
     });
 
     it('should return a user', () => {
-      expect(user).toEqual(userDtoStub());
+      expect(JSON.parse(JSON.stringify(user))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
     });
   });
 });

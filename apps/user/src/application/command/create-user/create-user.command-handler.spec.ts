@@ -3,13 +3,18 @@ import { CreateUserCommandHandler } from './create-user.command-handler';
 import { CreateUserCommand } from './create-user.command';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserRepositoryMock } from 'apps/user/src/test/mock';
-import { UserAggregateStub } from 'apps/user/src/test/stub';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
+
+jest.mock('apps/user/src/domain', () => ({
+  UserAggregate: jest.fn(),
+}));
+
 import { UserAggregate } from 'apps/user/src/domain';
 
 describe('when delete pair is called', () => {
   let repository: UserRepository;
   let createUserCommandHandler: CreateUserCommandHandler;
-  const userAggregate = UserAggregateStub();
+  const userStub = UserStub();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -31,22 +36,26 @@ describe('when delete pair is called', () => {
     beforeEach(async () => {
       jest.clearAllMocks();
 
+      UserAggregate.create = jest.fn().mockReturnValue(UserAggregateStub());
       repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
 
       response = await createUserCommandHandler.execute(
         new CreateUserCommand({
-          activationLink: userAggregate.activationLink,
-          email: userAggregate.email,
-          name: userAggregate.name,
-          password: userAggregate.password,
+          activationLink: userStub.activationLink,
+          email: userStub.email,
+          name: userStub.name,
+          password: userStub.password,
         }),
       );
     });
 
     it('should call repository save', () => {
-      // TODO: implement stub to have methods otherwise implement user aggregate nullable fields
-      expect(repository.save).toBeCalledTimes(1);
-      //expect(repository.save).toBeCalledWith(UserAggregateStub());
+      expect(repository.save).toHaveBeenCalledTimes(1);
+
+      const calledWithArg = (repository.save as jest.Mock).mock.calls[0][0];
+      expect(JSON.parse(JSON.stringify(calledWithArg))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
     });
 
     it('should return userAggregate', () => {
@@ -70,22 +79,24 @@ describe('when delete pair is called', () => {
       try {
         response = await createUserCommandHandler.execute(
           new CreateUserCommand({
-            activationLink: userAggregate.activationLink,
-            email: userAggregate.email,
-            name: userAggregate.name,
-            password: userAggregate.password,
+            activationLink: userStub.activationLink,
+            email: userStub.email,
+            name: userStub.name,
+            password: userStub.password,
           }),
         );
       } catch (responseError) {
-        console.log(responseError);
         error = responseError;
       }
     });
 
     it('should call repository save', () => {
-      // TODO: implement stub to have methods otherwise implement user aggregate nullable fields
-      expect(repository.save).toBeCalledTimes(1);
-      //expect(repository.save).toBeCalledWith(UserAggregateStub());
+      expect(repository.save).toHaveBeenCalledTimes(1);
+
+      const calledWithArg = (repository.save as jest.Mock).mock.calls[0][0];
+      expect(JSON.parse(JSON.stringify(calledWithArg))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
     });
 
     it('should return undefined', () => {

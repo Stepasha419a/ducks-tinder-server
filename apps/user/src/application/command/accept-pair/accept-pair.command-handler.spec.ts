@@ -1,162 +1,123 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/database/database.module';
-import { PrismaService } from '@app/common/database/database.service';
-import { ChatsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
-import {
-  requestUserStub,
-  shortUserStub,
-  userDtoStub,
-} from 'apps/user/src/test/stubs';
-import { ShortUserWithoutDistance } from 'apps/user/src/users.interface';
-import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
-import { ChatsModule } from 'apps/chat/src/chat.module';
-import { ChatsService } from 'apps/chat/src/interface/chat.service';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { ClientProxyMock, UserRepositoryMock } from 'apps/user/src/test/mock';
+import { SERVICES } from '@app/common/shared/constant';
+import { ClientProxy } from '@nestjs/microservices';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 
 describe('when accept pair is called', () => {
-  let prismaService: PrismaService;
-  let chatsService: ChatsService;
+  let repository: UserRepository;
+  let chatClient: ClientProxy;
   let acceptPairCommandHandler: AcceptPairCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [AcceptPairCommandHandler],
+      providers: [
+        AcceptPairCommandHandler,
+        { provide: SERVICES.CHAT, useValue: ClientProxyMock() },
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
           envFilePath: `.env.${process.env.NODE_ENV}`,
         }),
-        PrismaModule,
-        ChatsModule,
       ],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .overrideProvider(ChatsService)
-      .useValue(ChatsServiceMock())
-      .compile();
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
-    chatsService = moduleRef.get<ChatsService>(ChatsService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
+    chatClient = moduleRef.get<ClientProxy>(SERVICES.CHAT);
     acceptPairCommandHandler = moduleRef.get<AcceptPairCommandHandler>(
       AcceptPairCommandHandler,
     );
   });
 
   describe('when it is called correctly', () => {
+    const pairId = '34545656';
+
     beforeAll(() => {
-      prismaService.user.findFirst = jest.fn().mockResolvedValue({
-        id: '34545656',
-      });
-      prismaService.user.findUnique = jest
+      repository.findPair = jest
         .fn()
-        .mockResolvedValue({ ...shortUserStub(), distance: undefined });
+        .mockResolvedValue({ ...UserAggregateStub(), id: pairId });
     });
 
-    let pair: ShortUserWithoutDistance;
-    const userPairId = '34545656';
+    let response: string;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       try {
-        pair = await acceptPairCommandHandler.execute(
-          new AcceptPairCommand(requestUserStub(), userPairId),
+        response = await acceptPairCommandHandler.execute(
+          new AcceptPairCommand(UserStub().id, pairId),
         );
       } catch {}
     });
 
-    it('should call user find first', () => {
-      expect(prismaService.user.findFirst).toBeCalledTimes(1);
-      expect(prismaService.user.findFirst).toBeCalledWith({
-        where: {
-          id: userPairId,
-          pairFor: { some: { id: requestUserStub().id } },
-        },
-        select: { id: true },
-      });
+    it('should call repository findPair', () => {
+      expect(repository.findPair).toHaveBeenCalledTimes(1);
+      expect(repository.findPair).toHaveBeenCalledWith(pairId, UserStub().id);
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: userPairId },
-        select: UsersSelector.selectShortUser(),
-      });
-    });
-
-    it('should call user update', () => {
-      expect(prismaService.user.update).toBeCalledTimes(1);
-      expect(prismaService.user.update).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        data: { pairs: { disconnect: { id: userPairId } } },
-      });
-    });
-
-    it('should call chatService create', () => {
-      expect(chatsService.create).toBeCalledTimes(1);
-      expect(chatsService.create).toBeCalledWith([
-        userDtoStub().id,
-        userPairId,
+    it('should call chatClient emit', () => {
+      expect(chatClient.emit).toHaveBeenCalledTimes(1);
+      expect(chatClient.emit).toHaveBeenCalledWith('create_chat', [
+        UserStub().id,
+        pairId,
       ]);
     });
 
-    it('should return accepted pair', () => {
-      expect(pair).toEqual({ ...shortUserStub(), distance: undefined });
+    it('should call repository deletePair', () => {
+      expect(repository.deletePair).toHaveBeenCalledTimes(1);
+      expect(repository.deletePair).toHaveBeenCalledWith(pairId, UserStub().id);
+    });
+
+    it('should return accepted pairId', () => {
+      expect(response).toEqual(pairId);
     });
   });
 
   describe('when such user pair does not exist', () => {
     beforeAll(() => {
-      prismaService.user.findFirst = jest.fn().mockResolvedValue(undefined);
+      repository.findPair = jest.fn().mockResolvedValue(undefined);
     });
 
-    let pair: ShortUserWithoutDistance;
+    let response: string;
     let error;
-    const userPairId = '34545656';
+    const pairId = '34545656';
 
     beforeEach(async () => {
       jest.clearAllMocks();
       try {
-        pair = await acceptPairCommandHandler.execute(
-          new AcceptPairCommand(requestUserStub(), userPairId),
+        response = await acceptPairCommandHandler.execute(
+          new AcceptPairCommand(UserStub().id, pairId),
         );
       } catch (responseError) {
         error = responseError;
       }
     });
 
-    it('should call user find first', () => {
-      expect(prismaService.user.findFirst).toBeCalledTimes(1);
-      expect(prismaService.user.findFirst).toBeCalledWith({
-        where: {
-          id: userPairId,
-          pairFor: { some: { id: requestUserStub().id } },
-        },
-        select: { id: true },
-      });
+    it('should call repository findPair', () => {
+      expect(repository.findPair).toHaveBeenCalledTimes(1);
+      expect(repository.findPair).toHaveBeenCalledWith(pairId, UserStub().id);
     });
 
-    it('should not call user find unique', () => {
-      expect(prismaService.user.findUnique).not.toBeCalled();
+    it('should not call chatClient emit', () => {
+      expect(chatClient.emit).not.toHaveBeenCalled();
     });
 
-    it('should not call user update', () => {
-      expect(chatsService.create).not.toBeCalled();
+    it('should not call repository deletePair', () => {
+      expect(repository.deletePair).not.toHaveBeenCalled();
     });
 
-    it('should not call chatService create', () => {
-      expect(chatsService.create).not.toBeCalled();
+    it('should return undefined', () => {
+      expect(response).toEqual(undefined);
     });
 
     it('should throw an error', () => {
       expect(error.status).toEqual(404);
       expect(error.message).toEqual('Not Found');
-    });
-
-    it('should return undefined', () => {
-      expect(pair).toEqual(undefined);
     });
   });
 });
