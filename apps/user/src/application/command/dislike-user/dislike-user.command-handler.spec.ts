@@ -5,7 +5,7 @@ import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserRepositoryMock } from 'apps/user/src/test/mock';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 import { HttpStatus } from '@nestjs/common';
-import { USER_ALREADY_CHECKED } from '@app/common/constants/error';
+import { ERROR } from 'apps/user/src/infrastructure/common/constant';
 
 describe('when dislike user is called', () => {
   let repository: UserRepository;
@@ -42,21 +42,24 @@ describe('when dislike user is called', () => {
     });
 
     it('should call repository findOne', () => {
-      expect(repository.findOne).toBeCalledTimes(1);
-      expect(repository.findOne).toBeCalledWith(pairId);
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(pairId);
     });
 
     it('should call repository findCheckedUserIds', () => {
-      expect(repository.findCheckedUserIds).toBeCalledTimes(1);
-      expect(repository.findCheckedUserIds).toBeCalledWith(
+      expect(repository.findCheckedUserIds).toHaveBeenCalledTimes(1);
+      expect(repository.findCheckedUserIds).toHaveBeenCalledWith(
         UserStub().id,
         pairId,
       );
     });
 
     it('should call repository makeChecked', () => {
-      expect(repository.makeChecked).toBeCalledTimes(1);
-      expect(repository.makeChecked).toBeCalledWith(pairId, UserStub().id);
+      expect(repository.makeChecked).toHaveBeenCalledTimes(1);
+      expect(repository.makeChecked).toHaveBeenCalledWith(
+        pairId,
+        UserStub().id,
+      );
     });
 
     it('should return undefined', () => {
@@ -85,16 +88,16 @@ describe('when dislike user is called', () => {
     });
 
     it('should call repository findOne', () => {
-      expect(repository.findOne).toBeCalledTimes(1);
-      expect(repository.findOne).toBeCalledWith(pairId);
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(pairId);
     });
 
     it('should not call repository findCheckedUserIds', () => {
-      expect(repository.findCheckedUserIds).not.toBeCalled();
+      expect(repository.findCheckedUserIds).not.toHaveBeenCalled();
     });
 
     it('should call repository makeChecked', () => {
-      expect(repository.makeChecked).not.toBeCalled();
+      expect(repository.makeChecked).not.toHaveBeenCalled();
     });
 
     it('should return undefined', () => {
@@ -128,20 +131,20 @@ describe('when dislike user is called', () => {
     });
 
     it('should call repository findOne', () => {
-      expect(repository.findOne).toBeCalledTimes(1);
-      expect(repository.findOne).toBeCalledWith(pairId);
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(pairId);
     });
 
     it('should call repository findCheckedUserIds', () => {
-      expect(repository.findCheckedUserIds).toBeCalledTimes(1);
-      expect(repository.findCheckedUserIds).toBeCalledWith(
+      expect(repository.findCheckedUserIds).toHaveBeenCalledTimes(1);
+      expect(repository.findCheckedUserIds).toHaveBeenCalledWith(
         UserStub().id,
         pairId,
       );
     });
 
     it('should not call repository makeChecked', () => {
-      expect(repository.makeChecked).not.toBeCalled();
+      expect(repository.makeChecked).not.toHaveBeenCalled();
     });
 
     it('should return undefined', () => {
@@ -149,7 +152,7 @@ describe('when dislike user is called', () => {
     });
 
     it('should throw an error', () => {
-      expect(error?.message).toEqual(USER_ALREADY_CHECKED);
+      expect(error?.message).toEqual(ERROR.USER_ALREADY_CHECKED);
       expect(error?.status).toEqual(HttpStatus.BAD_REQUEST);
     });
   });
