@@ -1,243 +1,116 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/database/database.module';
-import { PrismaService } from '@app/common/database/database.service';
-import { UsersPrismaMock } from 'apps/user/src/test/mocks';
-import { UserDto } from 'apps/user/src/legacy/dto';
-import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
-import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
 import { MixPicturesCommandHandler } from './mix-pictures.command-handler';
 import { MixPicturesCommand } from './mix-pictures.command';
-import { MIX_PICTURES_DTO } from 'apps/user/src/test/values/users.const.dto';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
+import { HttpStatus } from '@nestjs/common';
 
 describe('when mix pictures is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let mixPicturesCommandHandler: MixPicturesCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [MixPicturesCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        MixPicturesCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     mixPicturesCommandHandler = moduleRef.get<MixPicturesCommandHandler>(
       MixPicturesCommandHandler,
     );
   });
 
   describe('when it is called correctly', () => {
+    const userAggregate = UserAggregateStub();
+
     beforeAll(() => {
-      prismaService.user.findUnique = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-      prismaService.picture.findMany = jest.fn().mockResolvedValue([
-        {
-          id: '123123',
-          name: 'picture-1.jpg',
-          userId: userDtoStub().id,
-          order: 0,
-        },
-        {
-          id: '456456',
-          name: 'picture-2.jpg',
-          userId: userDtoStub().id,
-          order: 1,
-        },
-        {
-          id: '789789',
-          name: 'picture-3.jpg',
-          userId: userDtoStub().id,
-          order: 2,
-        },
-      ]);
+      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
     });
 
-    let user: UserDto;
+    const dto = { pictureOrders: [0, 1] };
+
+    let response;
 
     beforeEach(async () => {
       jest.clearAllMocks();
-      user = await mixPicturesCommandHandler.execute(
-        new MixPicturesCommand(requestUserStub(), MIX_PICTURES_DTO),
+      response = await mixPicturesCommandHandler.execute(
+        new MixPicturesCommand(UserStub().id, dto),
       );
     });
 
-    it('should call picture findMany', () => {
-      expect(prismaService.picture.findMany).toBeCalledTimes(1);
-      expect(prismaService.picture.findMany).toBeCalledWith({
-        where: { userId: userDtoStub().id },
-      });
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: userDtoStub().id },
-        include: UsersSelector.selectUser(),
-      });
+    it('should call userAggregate mixPictureOrders', () => {
+      expect(userAggregate.mixPictureOrders).toHaveBeenCalledTimes(1);
+      expect(userAggregate.mixPictureOrders).toHaveBeenCalledWith(
+        dto.pictureOrders,
+      );
     });
 
-    it('should call picture update', () => {
-      expect(prismaService.picture.update).toBeCalledTimes(3);
-      expect(prismaService.picture.update).toHaveBeenNthCalledWith(1, {
-        where: { id: '789789' },
-        data: { order: 0 },
-      });
-      expect(prismaService.picture.update).toHaveBeenNthCalledWith(2, {
-        where: { id: '123123' },
-        data: { order: 1 },
-      });
-      expect(prismaService.picture.update).toHaveBeenNthCalledWith(3, {
-        where: { id: '456456' },
-        data: { order: 2 },
-      });
+    it('should call repository save', () => {
+      expect(repository.save).toHaveBeenCalledTimes(1);
+      expect(repository.save).toHaveBeenCalledWith(userAggregate);
     });
 
-    it('should call user count', () => {
-      expect(prismaService.user.count).toBeCalledTimes(1);
-      expect(prismaService.user.count).toBeCalledWith({
-        where: { pairFor: { some: { id: user.id } } },
-      });
-    });
-
-    it('should return a user', () => {
-      expect(user).toEqual(userDtoStub());
+    it('should return a user aggregate', () => {
+      expect(JSON.parse(JSON.stringify(response))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
     });
   });
 
-  describe('when user pictures do not equal dto pictures', () => {
+  describe('when there is no such pictures length', () => {
+    const userAggregate = UserAggregateStub();
+
     beforeAll(() => {
-      prismaService.user.findUnique = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-      prismaService.picture.findMany = jest.fn().mockResolvedValue([
-        {
-          id: '123123',
-          name: 'picture-1.jpg',
-          userId: userDtoStub().id,
-          order: 0,
-        },
-      ]);
+      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
     });
 
-    let response;
+    const dto = { pictureOrders: [0, 1, 2] };
+
     let error;
+    let response;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       try {
         response = await mixPicturesCommandHandler.execute(
-          new MixPicturesCommand(requestUserStub(), MIX_PICTURES_DTO),
+          new MixPicturesCommand(UserStub().id, dto),
         );
       } catch (responseError) {
         error = responseError;
       }
     });
 
-    it('should call picture findMany', () => {
-      expect(prismaService.picture.findMany).toBeCalledTimes(1);
-      expect(prismaService.picture.findMany).toBeCalledWith({
-        where: { userId: userDtoStub().id },
-      });
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
     });
 
-    it('should not call user find unique', () => {
-      expect(prismaService.user.findUnique).not.toBeCalled();
+    it('should not call userAggregate mixPictureOrders', () => {
+      expect(userAggregate.mixPictureOrders).not.toHaveBeenCalled();
     });
 
-    it('should not call picture update', () => {
-      expect(prismaService.picture.update).not.toBeCalled();
+    it('should not call repository save', () => {
+      expect(repository.save).not.toHaveBeenCalled();
     });
 
-    it('should not call user count', () => {
-      expect(prismaService.user.count).not.toBeCalled();
+    it('should throw an error', () => {
+      expect(error?.message).toEqual('Not Found');
+      expect(error?.status).toEqual(HttpStatus.NOT_FOUND);
     });
 
     it('should return undefined', () => {
       expect(response).toEqual(undefined);
-    });
-
-    it('should throw an error', () => {
-      expect(error.status).toEqual(404);
-      expect(error.message).toEqual('Not Found');
-    });
-  });
-
-  describe('when there is no such picture (name does not equal)', () => {
-    beforeAll(() => {
-      prismaService.user.findUnique = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-      prismaService.picture.findMany = jest.fn().mockResolvedValue([
-        {
-          id: '123123',
-          name: 'picture-1.jpg',
-          userId: userDtoStub().id,
-          order: 0,
-        },
-        {
-          id: '456456',
-          name: 'picture-2.jpg',
-          userId: userDtoStub().id,
-          order: 1,
-        },
-        {
-          id: '789789',
-          name: 'wrong-picture-name.jpg',
-          userId: userDtoStub().id,
-          order: 2,
-        },
-      ]);
-    });
-
-    let response;
-    let error;
-
-    beforeEach(async () => {
-      jest.clearAllMocks();
-      try {
-        response = await mixPicturesCommandHandler.execute(
-          new MixPicturesCommand(requestUserStub(), MIX_PICTURES_DTO),
-        );
-      } catch (responseError) {
-        error = responseError;
-      }
-    });
-
-    it('should call picture findMany', () => {
-      expect(prismaService.picture.findMany).toBeCalledTimes(1);
-      expect(prismaService.picture.findMany).toBeCalledWith({
-        where: { userId: userDtoStub().id },
-      });
-    });
-
-    it('should not call user find unique', () => {
-      expect(prismaService.user.findUnique).not.toBeCalled();
-    });
-
-    it('should not call picture update', () => {
-      expect(prismaService.picture.update).not.toBeCalled();
-    });
-
-    it('should not call user count', () => {
-      expect(prismaService.user.count).not.toBeCalled();
-    });
-
-    it('should return undefined', () => {
-      expect(response).toEqual(undefined);
-    });
-
-    it('should throw an error', () => {
-      expect(error.status).toEqual(404);
-      expect(error.message).toEqual('Not Found');
     });
   });
 });
