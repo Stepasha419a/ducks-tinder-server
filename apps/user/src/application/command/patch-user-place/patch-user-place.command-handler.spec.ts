@@ -1,43 +1,41 @@
-import { PrismaService } from '@app/common/database/database.service';
 import { PatchUserPlaceCommandHandler } from './patch-user-place.command-handler';
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/database/database.module';
-import { MapsModule } from 'maps/maps.module';
-import { MapsServiceMock, UsersPrismaMock } from 'apps/user/src/test/mocks';
-import { MapsService } from 'maps/maps.service';
-import { PatchUserPlaceDto, UserDto } from 'apps/user/src/legacy/dto';
+import { MapApi } from '../../adapter';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { MapApiMock, UserRepositoryMock } from 'apps/user/src/test/mock';
+import {
+  PlaceValueObjectStub,
+  UserAggregateStub,
+  UserStub,
+} from 'apps/user/src/test/stub';
+import { UserAggregate } from 'apps/user/src/domain';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
-import { requestUserStub, userDtoStub } from 'apps/user/src/test/stubs';
-import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
-import { ConfigModule } from '@nestjs/config';
+
+jest.mock('apps/user/src/domain/value-object', () => ({
+  PlaceValueObject: jest.fn(),
+}));
+
+import { PlaceValueObject } from 'apps/user/src/domain/value-object';
+
 describe('when patch user place is called', () => {
   let patchUserPlaceCommandHandler: PatchUserPlaceCommandHandler;
-  let prismaService: PrismaService;
-  let mapsService: MapsService;
+  let repository: UserRepository;
+  let mapApi: MapApi;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [PatchUserPlaceCommandHandler],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: `.env.${process.env.NODE_ENV}`,
-        }),
-        PrismaModule,
-        MapsModule,
+      providers: [
+        PatchUserPlaceCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+        { provide: MapApi, useValue: MapApiMock() },
       ],
-    })
-      .overrideProvider(PrismaModule)
-      .useValue(UsersPrismaMock())
-      .overrideProvider(MapsService)
-      .useValue(MapsServiceMock())
-      .compile();
+    }).compile();
 
     patchUserPlaceCommandHandler = moduleRef.get<PatchUserPlaceCommandHandler>(
       PatchUserPlaceCommandHandler,
     );
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
-    mapsService = moduleRef.get<MapsService>(MapsService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
+    mapApi = moduleRef.get<MapApi>(MapApi);
   });
 
   beforeEach(() => {
@@ -45,76 +43,64 @@ describe('when patch user place is called', () => {
   });
 
   describe('when it is called correctly', () => {
+    const userAggregate = UserAggregateStub();
+
     beforeAll(() => {
-      mapsService.getCoordsGeocode = jest.fn().mockResolvedValue({
-        address: 'address-geocode',
-        name: 'name-geocode',
-      });
-      prismaService.place.upsert = jest.fn().mockResolvedValue(undefined);
-      prismaService.user.count = jest.fn().mockResolvedValue(5);
-      prismaService.user.findUnique = jest.fn().mockResolvedValue({
-        ...userDtoStub(),
-        pairs: [userDtoStub().firstPair],
-      });
+      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
+      mapApi.getGeocode = jest
+        .fn()
+        .mockResolvedValue({ address: 'place-address', name: 'place-name' });
+      repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
+      PlaceValueObject.create = jest
+        .fn()
+        .mockReturnValue(PlaceValueObjectStub());
     });
 
-    let response: UserDto;
-    const dto: PatchUserPlaceDto = {
+    let response: UserAggregate;
+    const dto = {
       latitude: 12.3456789,
       longitude: 12.3456789,
     };
 
     beforeEach(async () => {
       response = await patchUserPlaceCommandHandler.execute(
-        new PatchUserPlaceCommand(requestUserStub(), dto),
+        new PatchUserPlaceCommand(UserStub().id, dto),
       );
     });
 
-    it('should call mapsService get coords geocode', () => {
-      expect(mapsService.getCoordsGeocode).toBeCalledTimes(1);
-      expect(mapsService.getCoordsGeocode).toBeCalledWith(
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
+    });
+
+    it('should call mapApi getGeocode', () => {
+      expect(mapApi.getGeocode).toHaveBeenCalledTimes(1);
+      expect(mapApi.getGeocode).toHaveBeenCalledWith(
         dto.latitude,
         dto.longitude,
       );
     });
 
-    it('should call place upsert', () => {
-      expect(prismaService.place.upsert).toBeCalledTimes(1);
-      expect(prismaService.place.upsert).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        create: {
-          latitude: dto.longitude,
-          longitude: dto.latitude,
-          address: 'address-geocode',
-          name: 'name-geocode',
-          user: { connect: { id: requestUserStub().id } },
-        },
-        update: {
-          latitude: dto.longitude,
-          longitude: dto.latitude,
-          address: 'address-geocode',
-          name: 'name-geocode',
-        },
-      });
+    it('should call userAggregate setPlace', () => {
+      expect(userAggregate.setPlace).toHaveBeenCalledTimes(1);
+      expect(userAggregate.setPlace).toHaveBeenCalledWith(
+        PlaceValueObjectStub(),
+      );
     });
 
-    it('should call user count', () => {
-      expect(prismaService.user.count).toBeCalledTimes(1);
-      expect(prismaService.user.count).toBeCalledWith({
-        where: { pairFor: { some: { id: requestUserStub().id } } },
-      });
+    it('should call repository save', () => {
+      expect(repository.save).toHaveBeenCalledTimes(1);
+
+      const calledWithArg = (repository.save as jest.Mock).mock.calls[0][0];
+      expect(JSON.parse(JSON.stringify(calledWithArg))).toEqual(
+        JSON.parse(JSON.stringify({ ...UserAggregateStub() })),
+      );
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        include: UsersSelector.selectUser(),
-      });
-    });
-
-    it('should return user', () => {
-      expect(response).toEqual(userDtoStub());
+    it('should return a user aggregate', () => {
+      expect(JSON.parse(JSON.stringify(response))).toEqual(
+        JSON.parse(JSON.stringify(UserAggregateStub())),
+      );
     });
   });
 });
