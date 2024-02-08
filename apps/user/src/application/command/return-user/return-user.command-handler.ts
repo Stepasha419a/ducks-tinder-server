@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ReturnUserCommand } from './return-user.command';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'apps/user/src/domain/repository';
 import { UserCheckValueObject } from 'apps/user/src/domain/value-object';
 
@@ -16,10 +16,6 @@ export class ReturnUserCommandHandler
     const userCheck = await this.repository.findUserNotPairCheck(userId);
     if (!userCheck) {
       throw new NotFoundException();
-    }
-    const place = await this.repository.findPlace(userId);
-    if (!place) {
-      throw new ForbiddenException();
     }
 
     await this.repository.deleteUserCheck(

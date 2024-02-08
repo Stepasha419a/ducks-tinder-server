@@ -1,145 +1,88 @@
 import { Test } from '@nestjs/testing';
-import { PrismaModule } from '@app/common/database/database.module';
-import { PrismaService } from '@app/common/database/database.service';
-import { UsersPrismaMock } from 'apps/user/src/test/mocks';
-import {
-  requestUserStub,
-  shortUserStub,
-  shortUserWithLocationStub,
-  userDtoStub,
-} from 'apps/user/src/test/stubs';
 import { ReturnUserCommandHandler } from './return-user.command-handler';
 import { ReturnUserCommand } from './return-user.command';
-import { UsersSelector } from 'apps/user/src/infrastructure/repository/user.selector';
+import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserCheckValueObjectStub, UserStub } from 'apps/user/src/test/stub';
 
 describe('when return user is called', () => {
-  let prismaService: PrismaService;
+  let repository: UserRepository;
   let returnUserCommandHandler: ReturnUserCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [ReturnUserCommandHandler],
-      imports: [PrismaModule],
-    })
-      .overrideProvider(PrismaService)
-      .useValue(UsersPrismaMock())
-      .compile();
+      providers: [
+        ReturnUserCommandHandler,
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+      ],
+    }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
+    repository = moduleRef.get<UserRepository>(UserRepository);
     returnUserCommandHandler = moduleRef.get<ReturnUserCommandHandler>(
       ReturnUserCommandHandler,
     );
   });
 
   describe('when it is called correctly', () => {
-    beforeAll(() => {
-      prismaService.checkedUsers.findFirst = jest.fn().mockResolvedValue({
-        checkedId: userDtoStub().id,
-        wasCheckedId: requestUserStub().id,
-      });
-    });
-
     let response;
 
     beforeEach(async () => {
       jest.clearAllMocks();
-      prismaService.user.findUnique = jest
+      repository.findUserNotPairCheck = jest
         .fn()
-        .mockResolvedValueOnce({ pairFor: [{ id: userDtoStub().id }] })
-        .mockResolvedValue(shortUserWithLocationStub());
+        .mockResolvedValue(UserCheckValueObjectStub());
 
       response = await returnUserCommandHandler.execute(
-        new ReturnUserCommand(requestUserStub()),
+        new ReturnUserCommand(UserStub().id),
       );
     });
 
-    it('should call user find unique', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(2);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        select: { pairFor: { select: { id: true } } },
-      });
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: shortUserStub().id },
-        select: UsersSelector.selectShortUser(),
-      });
+    it('should call repository findUserNotPairCheck', () => {
+      expect(repository.findUserNotPairCheck).toHaveBeenCalledTimes(1);
+      expect(repository.findUserNotPairCheck).toHaveBeenCalledWith(
+        UserStub().id,
+      );
     });
 
-    it('should call checkedUsers find first', () => {
-      expect(prismaService.checkedUsers.findFirst).toBeCalledTimes(1);
-      expect(prismaService.checkedUsers.findFirst).toBeCalledWith({
-        where: {
-          wasCheckedId: requestUserStub().id,
-          checked: { id: { notIn: [userDtoStub().id] } },
-        },
-        orderBy: { createdAt: 'desc' },
-      });
+    it('should call repository deleteUserCheck', () => {
+      expect(repository.deleteUserCheck).toHaveBeenCalledTimes(1);
+      expect(repository.deleteUserCheck).toHaveBeenCalledWith(
+        UserCheckValueObjectStub().checkedId,
+        UserCheckValueObjectStub().wasCheckedId,
+      );
     });
 
-    it('should call checkedUsers delete', () => {
-      expect(prismaService.checkedUsers.delete).toBeCalledTimes(1);
-      expect(prismaService.checkedUsers.delete).toBeCalledWith({
-        where: {
-          checkedId_wasCheckedId: {
-            checkedId: userDtoStub().id,
-            wasCheckedId: requestUserStub().id,
-          },
-        },
-      });
-    });
-
-    it('should return short user', () => {
-      expect(response).toEqual(shortUserStub());
+    it('should return short user check', () => {
+      expect(response).toEqual(UserCheckValueObjectStub());
     });
   });
 
   describe('when there is no checked user', () => {
-    beforeAll(() => {
-      prismaService.checkedUsers.findFirst = jest
-        .fn()
-        .mockResolvedValue(undefined);
-    });
-
     let response;
     let error;
 
     beforeEach(async () => {
       jest.clearAllMocks();
-      prismaService.user.findUnique = jest
-        .fn()
-        .mockResolvedValueOnce({ pairFor: [{ id: userDtoStub().id }] })
-        .mockResolvedValue(shortUserWithLocationStub());
+      repository.findUserNotPairCheck = jest.fn().mockResolvedValue(undefined);
 
       try {
         response = await returnUserCommandHandler.execute(
-          new ReturnUserCommand(requestUserStub()),
+          new ReturnUserCommand(UserStub().id),
         );
       } catch (responseError) {
         error = responseError;
       }
     });
 
-    it('should call user find unique only once', () => {
-      expect(prismaService.user.findUnique).toBeCalledTimes(1);
-      expect(prismaService.user.findUnique).toBeCalledWith({
-        where: { id: requestUserStub().id },
-        select: { pairFor: { select: { id: true } } },
-      });
+    it('should call repository findUserNotPairCheck', () => {
+      expect(repository.findUserNotPairCheck).toHaveBeenCalledTimes(1);
+      expect(repository.findUserNotPairCheck).toHaveBeenCalledWith(
+        UserStub().id,
+      );
     });
 
-    it('should call checkedUsers find first', () => {
-      expect(prismaService.checkedUsers.findFirst).toBeCalledTimes(1);
-      expect(prismaService.checkedUsers.findFirst).toBeCalledWith({
-        where: {
-          wasCheckedId: requestUserStub().id,
-          checked: { id: { notIn: [userDtoStub().id] } },
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-    });
-
-    it('should not call checkedUsers delete', () => {
-      expect(prismaService.checkedUsers.delete).not.toBeCalled();
+    it('should not call repository deleteUserCheck.', () => {
+      expect(repository.deleteUserCheck).not.toHaveBeenCalled();
     });
 
     it('should throw an error', () => {
