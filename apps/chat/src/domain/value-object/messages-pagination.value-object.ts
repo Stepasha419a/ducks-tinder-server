@@ -1,5 +1,5 @@
 import { IsArray, IsUUID, validateSync } from 'class-validator';
-import { User, UserAggregate } from 'apps/user/src/domain';
+import { User, UserAggregate } from 'apps/user/src/domain/user';
 import { Type } from 'class-transformer';
 import { DomainError } from '@app/common/shared/error';
 import { MessageAggregate } from '../message/message.aggregate';

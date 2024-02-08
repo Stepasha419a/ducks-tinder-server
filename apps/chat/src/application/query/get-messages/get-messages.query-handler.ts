@@ -6,7 +6,7 @@ import { Message } from 'apps/chat/src/domain';
 import { MessagesPaginationValueObject } from 'apps/chat/src/domain/value-object';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { UserAggregate } from 'apps/user/src/domain';
+import { UserAggregate } from 'apps/user/src/domain/user';
 import { SERVICES } from '@app/common/shared/constant';
 
 @QueryHandler(GetMessagesQuery)

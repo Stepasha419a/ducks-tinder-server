@@ -1,11 +1,11 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { UserController } from './interface';
+import { UserController } from './interface/user';
 import { DatabaseModule } from '@app/common/database';
 import { USER_QUERY_HANDLERS } from './application/query';
 import { USER_COMMAND_HANDLERS } from './application/command';
-import { UserFacade } from './application';
-import { UserRepository } from 'apps/user/src/domain/repository';
+import { UserFacade } from './application/user';
+import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAdapter } from 'apps/user/src/infrastructure/repository';
 import { userFacadeFactory } from 'apps/user/src/infrastructure/facade';
 import { MAP_API_QUERY_HANDLERS } from './infrastructure/adapter/map-api';
