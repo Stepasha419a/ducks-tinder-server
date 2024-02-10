@@ -1,4 +1,4 @@
-import { authUserStub } from 'apps/auth/src/legacy/test/stubs';
+import { authUserStub } from 'apps/user/src/legacy/auth/test/stubs';
 import prismaClient from '@app/common/database/test/database-client/database-client';
 
 export async function prepareAfter() {

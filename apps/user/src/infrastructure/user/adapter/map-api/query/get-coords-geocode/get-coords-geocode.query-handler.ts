@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom, map } from 'rxjs';
 import { NotFoundException } from '@nestjs/common';
-import { Geocode } from 'apps/user/src/application/adapter';
+import { Geocode } from 'apps/user/src/application/user/adapter';
 
 @QueryHandler(GetCoordsGeocodeQuery)
 export class GetCoordsGeocodeQueryHandler

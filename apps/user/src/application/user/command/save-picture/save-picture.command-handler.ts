@@ -3,9 +3,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAggregate } from 'apps/user/src/domain/user';
-import { FileAdapter } from 'apps/user/src/application/adapter';
+import { FileAdapter } from 'apps/user/src/application/user/adapter';
 import { PictureValueObject } from 'apps/user/src/domain/user/value-object';
-import { ERROR } from 'apps/user/src/infrastructure/common/constant';
+import { ERROR } from 'apps/user/src/infrastructure/user/common/constant';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler

@@ -1,4 +1,4 @@
-import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { UserTokenDto } from 'apps/user/src/application/auth/adapter/token';
 
 export class GenerateTokensCommand {
   constructor(public readonly dto: UserTokenDto) {}

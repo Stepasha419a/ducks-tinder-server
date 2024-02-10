@@ -12,7 +12,7 @@ import {
   RefreshTokenValueObjectStub,
   UserStub,
 } from 'apps/user/src/test/auth/stub';
-import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { UserTokenDto } from 'apps/user/src/application/auth/adapter/token';
 import { ValidateRefreshTokenQueryHandler } from './validate-refresh-token.query-handler';
 import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
 

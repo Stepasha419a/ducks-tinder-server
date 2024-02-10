@@ -19,20 +19,18 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { OptionalValidationPipe } from '@app/common/shared/pipe';
 import { User } from '@app/common/shared/decorator';
 import { UserFacade } from '../../application/user';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { UserAggregate } from '../../domain/user';
+import { UserMapper } from '../../infrastructure/user/mapper';
 import {
   CreateUserDto,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
-} from '../application/command';
-import {
-  UserMapper,
-  WithoutPrivateFields,
-} from 'apps/user/src/infrastructure/mapper';
-import { ShortUserWithDistance } from 'apps/user/src/infrastructure/mapper/interface/short-user-with-distance';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { UserAggregate } from '../../domain/user';
-import { CONSTANT } from '../infrastructure/common/constant';
+} from '../../application/user/command';
+import { WithoutPrivateFields } from '../../infrastructure/user/mapper';
+import { ShortUserWithDistance } from '../../infrastructure/user/mapper/interface/short-user-with-distance';
+import { CONSTANT } from '../../infrastructure/user/common/constant';
 
 @Controller('user')
 export class UserController {

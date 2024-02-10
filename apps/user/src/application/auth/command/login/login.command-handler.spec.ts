@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
 import {
   ClientProxyMock,
   TokenAdapterMock,

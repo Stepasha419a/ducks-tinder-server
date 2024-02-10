@@ -2,13 +2,13 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
 import { ForbiddenException, Inject } from '@nestjs/common';
 import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
 import { ClientProxy } from '@nestjs/microservices';
 import { SERVICES } from '@app/common/shared/constant';
 import { firstValueFrom } from 'rxjs';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { compare } from 'bcryptjs';
-import { ERROR } from 'apps/auth/src/infrastructure/common/constant';
+import { ERROR } from 'apps/user/src/infrastructure/auth/common/constant';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {

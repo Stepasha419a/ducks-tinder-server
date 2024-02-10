@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { FileAdapter } from 'apps/user/src/application/adapter';
 import { DeletePictureCommand, SavePictureCommand } from './command';
+import { FileAdapter } from 'apps/user/src/application/user/adapter';
 
 @Injectable()
 export class FileAdapterImplementation implements FileAdapter {

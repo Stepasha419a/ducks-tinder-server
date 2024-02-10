@@ -9,7 +9,7 @@ import {
   AccessTokenValueObjectStub,
   UserStub,
 } from 'apps/user/src/test/auth/stub';
-import { UserTokenDto } from 'apps/auth/src/application/adapter/token';
+import { UserTokenDto } from 'apps/user/src/application/auth/adapter/token';
 import { ValidateAccessTokenQueryHandler } from './validate-access-token.query-handler';
 import { ValidateAccessTokenQuery } from './validate-access-token.query';
 

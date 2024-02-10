@@ -5,7 +5,7 @@ import {
   GenerateTokensView,
   TokenAdapter,
   UserTokenDto,
-} from 'apps/auth/src/application/adapter/token';
+} from 'apps/user/src/application/auth/adapter/token';
 import { ValidateAccessTokenQuery, ValidateRefreshTokenQuery } from './query';
 
 @Injectable()

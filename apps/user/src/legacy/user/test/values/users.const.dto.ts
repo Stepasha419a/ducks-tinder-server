@@ -1,5 +1,5 @@
 import { userDtoStub } from '../stubs';
-import { MixPicturesDto } from 'apps/user/src/application/command';
+import { MixPicturesDto } from 'apps/user/src/application/user/command';
 
 export const USER_SORTS_DATA = {
   ...userDtoStub(),

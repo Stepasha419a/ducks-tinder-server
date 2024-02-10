@@ -3,7 +3,7 @@ import { DeletePictureCommand } from './delete-picture.command';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAggregate } from 'apps/user/src/domain/user';
-import { FileAdapter } from 'apps/user/src/application/adapter';
+import { FileAdapter } from 'apps/user/src/application/user/adapter';
 
 @CommandHandler(DeletePictureCommand)
 export class DeletePictureCommandHandler

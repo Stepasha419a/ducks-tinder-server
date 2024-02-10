@@ -15,12 +15,12 @@ import { AuthFacade } from 'apps/user/src/application/auth';
 import {
   LoginUserDto,
   RegisterUserDto,
-} from 'apps/auth/src/application/command';
+} from 'apps/user/src/application/auth/command';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   AuthMapper,
   WithoutPrivateFields,
-} from 'apps/auth/src/infrastructure/mapper';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+} from '../../infrastructure/auth/mapper';
 
 @Controller('auth')
 export class AuthController {

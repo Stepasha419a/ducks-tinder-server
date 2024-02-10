@@ -2,7 +2,7 @@ import { Inject, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
 import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
 import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { UserAggregate } from 'apps/user/src/domain/user';

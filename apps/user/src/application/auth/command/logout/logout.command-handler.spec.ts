@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { LogoutCommandHandler } from './logout.command-handler';
 import { LogoutCommand } from './logout.command';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
 import { TokenAdapterMock } from 'apps/user/src/test/auth/mock';
 
 describe('when logout is called', () => {

@@ -4,7 +4,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { COMMON_ERROR } from '@app/common/shared/constant';
 import { AuthUserAggregate } from 'apps/user/src/domain/auth/auth-user.aggregate';
-import { TokenAdapter } from 'apps/auth/src/application/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
 import { randomUUID } from 'crypto';
 import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
