@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:microservices": "concurrently \"npm:start:dev user\" \"npm:start:dev chat\" \"npm:start:dev auth\"",
+    "start:microservices": "concurrently \"npm:start:dev user\" \"npm:start:dev chat\"",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

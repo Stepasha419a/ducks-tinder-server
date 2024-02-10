@@ -3,10 +3,10 @@ import {
   ChatPaginationValueObject,
   MessagesPaginationValueObject,
 } from 'apps/chat/src/domain/value-object';
-import { ShortUser } from 'apps/user/src/infrastructure/mapper/interface/short-user';
+import { ShortUser } from 'apps/user/src/infrastructure/user/mapper/interface/short-user';
 import { User } from 'apps/user/src/domain/user';
 import { PictureValueObject } from 'apps/user/src/domain/user/value-object';
-import { UserPictureInfo } from 'apps/user/src/infrastructure/mapper';
+import { UserPictureInfo } from 'apps/user/src/infrastructure/user/mapper';
 import {
   ChatMessage,
   ShortChatPagination,

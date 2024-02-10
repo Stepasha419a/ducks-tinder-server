@@ -3,9 +3,18 @@ import { UserModule } from './user.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQService } from '@app/common/rabbitmq';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(UserModule);
+
+  app.use(cookieParser());
+
+  app.enableCors({
+    origin: true,
+    methods: 'GET,PUT,POST,DELETE,PATCH',
+    credentials: true,
+  });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
@@ -14,7 +23,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const rabbitMQService = app.get(RabbitMQService);
 
-  app.connectMicroservice(rabbitMQService.getOptions('USER'));
+  app.connectMicroservice(rabbitMQService.getOptions('USER', true));
 
   await app.startAllMicroservices();
 

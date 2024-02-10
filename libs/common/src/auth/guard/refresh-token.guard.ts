@@ -16,7 +16,7 @@ import { UserTokenDto } from 'apps/user/src/application/auth/adapter/token';
 export class RefreshTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy,
+    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -35,7 +35,7 @@ export class RefreshTokenGuard implements CanActivate {
     }
 
     const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.authClient.send('validate_refresh_token', refreshTokenValue),
+      this.userClient.send('validate_refresh_token', refreshTokenValue),
     );
 
     if (!userTokenDto) {

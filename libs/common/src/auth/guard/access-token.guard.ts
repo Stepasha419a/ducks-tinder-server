@@ -16,7 +16,7 @@ import { IS_PUBLIC_KEY } from '../constant';
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(SERVICES.AUTH) private readonly authClient: ClientProxy,
+    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -35,7 +35,7 @@ export class AccessTokenGuard implements CanActivate {
     }
 
     const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.authClient.send('validate_access_token', accessTokenValue),
+      this.userClient.send('validate_access_token', accessTokenValue),
     );
 
     if (!userTokenDto) {

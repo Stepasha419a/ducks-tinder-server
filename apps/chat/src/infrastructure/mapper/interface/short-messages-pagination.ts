@@ -1,4 +1,4 @@
-import { ShortUser } from 'apps/user/src/infrastructure/mapper/interface/short-user';
+import { ShortUser } from 'apps/user/src/infrastructure/user/mapper/interface/short-user';
 import { ChatMessage } from './chat-message';
 
 export interface ShortMessagesPagination {
