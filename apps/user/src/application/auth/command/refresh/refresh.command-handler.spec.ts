@@ -3,7 +3,7 @@ import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/token';
 import {
   ClientProxyMock,
   TokenAdapterMock,

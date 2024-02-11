@@ -23,7 +23,6 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserAggregate } from '../../domain/user';
 import { UserMapper } from '../../infrastructure/user/mapper';
 import {
-  CreateUserDto,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
@@ -182,24 +181,9 @@ export class UserController {
     return this.facade.commands.deletePair(userId, pairId);
   }
 
-  @MessagePattern('get_user')
-  getUser(@Payload(ParseUUIDPipe) id: string): Promise<UserAggregate> {
-    return this.facade.queries.getUser(id);
-  }
-
   @MessagePattern('get_many_users')
   getManyUsers(@Payload() ids: string[]): Promise<UserAggregate[]> {
     return this.facade.queries.getManyUsers(ids);
-  }
-
-  @MessagePattern('get_user_by_email')
-  getUserByEmail(@Payload() email: string): Promise<UserAggregate> {
-    return this.facade.queries.getUserByEmail(email);
-  }
-
-  @MessagePattern('create_user')
-  createUser(@Payload() dto: CreateUserDto): Promise<UserAggregate> {
-    return this.facade.commands.createUser(dto);
   }
 
   // for dev

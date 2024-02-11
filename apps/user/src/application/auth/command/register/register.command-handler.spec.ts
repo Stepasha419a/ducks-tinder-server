@@ -3,7 +3,7 @@ import { RegisterCommand } from './register.command';
 import { RegisterCommandHandler } from './register.command-handler';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/token';
 import {
   ClientProxyMock,
   TokenAdapterMock,

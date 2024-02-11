@@ -8,15 +8,11 @@ import {
   RegisterCommand,
   RegisterUserDto,
 } from './command';
-import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { TokenAdapter } from './adapter/token';
+import { AuthUserView } from './view';
 
 @Injectable()
 export class AuthFacade {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly tokenAdapter: TokenAdapter,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   commands = {
     register: (dto: RegisterUserDto) => this.register(dto),
@@ -24,21 +20,15 @@ export class AuthFacade {
     logout: (refreshTokenValue: string) => this.logout(refreshTokenValue),
     refresh: (refreshTokenValue: string) => this.refresh(refreshTokenValue),
   };
-  queries = {
-    validateAccessToken: (accessTokenValue: string) =>
-      this.validateAccessToken(accessTokenValue),
-    validateRefreshToken: (refreshTokenValue: string) =>
-      this.validateRefreshToken(refreshTokenValue),
-  };
 
   private register(dto: RegisterUserDto) {
-    return this.commandBus.execute<RegisterCommand, AuthUserAggregate>(
+    return this.commandBus.execute<RegisterCommand, AuthUserView>(
       new RegisterCommand(dto),
     );
   }
 
   private login(dto: LoginUserDto) {
-    return this.commandBus.execute<LoginCommand, AuthUserAggregate>(
+    return this.commandBus.execute<LoginCommand, AuthUserView>(
       new LoginCommand(dto),
     );
   }
@@ -50,16 +40,8 @@ export class AuthFacade {
   }
 
   private refresh(refreshTokenValue: string) {
-    return this.commandBus.execute<RefreshCommand, AuthUserAggregate>(
+    return this.commandBus.execute<RefreshCommand, AuthUserView>(
       new RefreshCommand(refreshTokenValue),
     );
-  }
-
-  private validateAccessToken(accessTokenValue: string) {
-    return this.tokenAdapter.validateAccessToken(accessTokenValue);
-  }
-
-  private validateRefreshToken(refreshTokenValue: string) {
-    return this.tokenAdapter.validateRefreshToken(refreshTokenValue);
   }
 }

@@ -29,18 +29,15 @@ import { UserAdapter } from './infrastructure/user/repository';
 import { FileAdapter, MapApi } from './application/user/adapter';
 import { HttpModule } from '@nestjs/axios';
 import { AuthFacade } from './application/auth';
-import { TokenAdapter } from './application/auth/adapter/token';
 import { authFacadeFactory } from './infrastructure/auth/facade';
-import { TokenAdapterImplementation } from './infrastructure/auth/adapter';
-import { RefreshTokenRepository } from './domain/auth/repository';
-import { RefreshTokenAdapter } from './infrastructure/auth/repository';
 import { AUTH_COMMAND_HANDLERS } from './application/auth/command';
-import {
-  TOKEN_COMMAND_HANDLERS,
-  TOKEN_QUERY_HANDLERS,
-} from './infrastructure/auth/adapter/token';
 import { AuthMapper } from './infrastructure/auth/mapper';
 import { AuthController } from './interface/auth';
+import { TokenRepository } from './domain/token/repository';
+import { TokenAdapter } from './infrastructure/token/repository';
+import { TokenFacade } from './application/token';
+import { tokenFacadeFactory } from './infrastructure/token/facade';
+import { TokenController } from './interface/token';
 
 @Module({
   providers: [
@@ -50,8 +47,6 @@ import { AuthController } from './interface/auth';
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
     ...AUTH_COMMAND_HANDLERS,
-    ...TOKEN_COMMAND_HANDLERS,
-    ...TOKEN_QUERY_HANDLERS,
     UserMapper,
     AuthMapper,
     {
@@ -77,19 +72,20 @@ import { AuthController } from './interface/auth';
     },
     {
       provide: AuthFacade,
-      inject: [CommandBus, TokenAdapter],
+      inject: [CommandBus],
       useFactory: authFacadeFactory,
     },
     {
-      provide: TokenAdapter,
-      useClass: TokenAdapterImplementation,
+      provide: TokenRepository,
+      useClass: TokenAdapter,
     },
     {
-      provide: RefreshTokenRepository,
-      useClass: RefreshTokenAdapter,
+      provide: TokenFacade,
+      inject: [CommandBus, QueryBus],
+      useFactory: tokenFacadeFactory,
     },
   ],
-  controllers: [UserController, AuthController],
+  controllers: [UserController, AuthController, TokenController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -113,7 +109,6 @@ import { AuthController } from './interface/auth';
     JwtModule,
     CqrsModule,
     RabbitMQModule.register(SERVICES.CHAT),
-    RabbitMQModule.register(SERVICES.USER),
     AuthModule,
   ],
 })

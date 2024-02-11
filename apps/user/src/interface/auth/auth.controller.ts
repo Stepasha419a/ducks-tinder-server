@@ -16,7 +16,6 @@ import {
   LoginUserDto,
   RegisterUserDto,
 } from 'apps/user/src/application/auth/command';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   AuthMapper,
   WithoutPrivateFields,
@@ -88,16 +87,6 @@ export class AuthController {
     const withoutPrivateFields =
       this.mapper.getWithoutPrivateFields(authUserAggregate);
     return res.json(withoutPrivateFields);
-  }
-
-  @MessagePattern('validate_access_token')
-  async validateAccessToken(@Payload() accessTokenValue: string) {
-    return this.facade.queries.validateAccessToken(accessTokenValue);
-  }
-
-  @MessagePattern('validate_refresh_token')
-  async validateRefreshToken(@Payload() refreshTokenValue: string) {
-    return this.facade.queries.validateRefreshToken(refreshTokenValue);
   }
 
   private REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000;

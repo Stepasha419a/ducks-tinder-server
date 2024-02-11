@@ -1,21 +1,18 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
-import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
-import { SERVICES } from '@app/common/shared/constant';
-import { ClientProxy } from '@nestjs/microservices';
-import { UserAggregate } from 'apps/user/src/domain/user';
-import { firstValueFrom } from 'rxjs';
+import { TokenAdapter } from 'apps/user/src/application/token';
+import { UserRepository } from 'apps/user/src/domain/user/repository';
+import { AuthUserView } from '../../view';
 
 @CommandHandler(RefreshCommand)
 export class RefreshCommandHandler {
   constructor(
-    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
+    private readonly userRepository: UserRepository,
     private readonly tokenAdapter: TokenAdapter,
   ) {}
 
-  async execute(command: RefreshCommand): Promise<AuthUserAggregate> {
+  async execute(command: RefreshCommand): Promise<AuthUserView> {
     const { refreshTokenValue } = command;
 
     if (!refreshTokenValue) {
@@ -28,19 +25,17 @@ export class RefreshCommandHandler {
       throw new UnauthorizedException();
     }
 
-    const user = await firstValueFrom<UserAggregate>(
-      this.userClient.send('get_user', userData.userId),
-    );
+    const user = await this.userRepository.findOne(userData.userId);
     const { accessTokenValueObject, refreshTokenValueObject } =
       await this.tokenAdapter.generateTokens({
         userId: user.id,
         email: user.email,
       });
 
-    return AuthUserAggregate.create({
+    return {
       ...user,
       accessToken: accessTokenValueObject,
       refreshToken: refreshTokenValueObject,
-    });
+    };
   }
 }

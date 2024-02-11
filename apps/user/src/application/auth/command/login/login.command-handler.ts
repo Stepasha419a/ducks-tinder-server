@@ -1,28 +1,23 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
-import { ForbiddenException, Inject } from '@nestjs/common';
-import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/shared/constant';
-import { firstValueFrom } from 'rxjs';
-import { UserAggregate } from 'apps/user/src/domain/user';
+import { ForbiddenException } from '@nestjs/common';
+import { TokenAdapter } from 'apps/user/src/application/token';
 import { compare } from 'bcryptjs';
 import { ERROR } from 'apps/user/src/infrastructure/auth/common/constant';
+import { UserRepository } from 'apps/user/src/domain/user/repository';
+import { AuthUserView } from '../../view';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
-    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
+    private readonly userRepository: UserRepository,
     private readonly tokenAdapter: TokenAdapter,
   ) {}
 
-  async execute(command: LoginCommand): Promise<AuthUserAggregate> {
+  async execute(command: LoginCommand): Promise<AuthUserView> {
     const { dto } = command;
 
-    const user = await firstValueFrom<UserAggregate | null>(
-      this.userClient.send('get_user_by_email', dto.email),
-    );
+    const user = await this.userRepository.findOneByEmail(dto.email);
 
     if (!user) {
       throw new ForbiddenException(ERROR.INCORRECT_EMAIL_OR_PASSWORD);
@@ -39,10 +34,10 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
         email: user.email,
       });
 
-    return AuthUserAggregate.create({
+    return {
       ...user,
       accessToken: accessTokenValueObject,
       refreshToken: refreshTokenValueObject,
-    });
+    };
   }
 }

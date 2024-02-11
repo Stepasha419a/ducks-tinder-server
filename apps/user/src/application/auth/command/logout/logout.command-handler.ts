@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogoutCommand } from './logout.command';
 import { UnauthorizedException } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/auth/adapter/token';
+import { TokenAdapter } from 'apps/user/src/application/token';
 
 @CommandHandler(LogoutCommand)
 export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {

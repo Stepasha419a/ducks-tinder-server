@@ -1,8 +1,8 @@
-import { AuthUser } from 'apps/user/src/domain/auth';
+import { AuthUserView } from 'apps/user/src/application/auth/view';
 import { UserPictureInfo } from 'apps/user/src/infrastructure/user/mapper';
 
 export class AuthMapper {
-  getWithoutPrivateFields(authUser: AuthUser) {
+  getWithoutPrivateFields(authUser: AuthUserView) {
     const pictures = authUser.pictures.map(
       (picture) =>
         ({
