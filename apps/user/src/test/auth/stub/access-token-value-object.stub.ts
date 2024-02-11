@@ -1,4 +1,4 @@
-import { AccessTokenValueObject } from 'apps/user/src/domain/auth';
+import { AccessTokenValueObject } from 'apps/user/src/domain/token';
 
 export const AccessTokenValueObjectStub = (): AccessTokenValueObject => ({
   value:

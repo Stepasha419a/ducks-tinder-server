@@ -1,15 +1,15 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
-import { TokenAdapter } from 'apps/user/src/application/token';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { AuthUserView } from '../../view';
+import { TokenFacade } from '../../../token';
 
 @CommandHandler(RefreshCommand)
 export class RefreshCommandHandler {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenAdapter: TokenAdapter,
+    private readonly tokenFacade: TokenFacade,
   ) {}
 
   async execute(command: RefreshCommand): Promise<AuthUserView> {
@@ -20,14 +20,14 @@ export class RefreshCommandHandler {
     }
 
     const userData =
-      await this.tokenAdapter.validateRefreshToken(refreshTokenValue);
+      await this.tokenFacade.queries.validateRefreshToken(refreshTokenValue);
     if (!userData) {
       throw new UnauthorizedException();
     }
 
     const user = await this.userRepository.findOne(userData.userId);
     const { accessTokenValueObject, refreshTokenValueObject } =
-      await this.tokenAdapter.generateTokens({
+      await this.tokenFacade.commands.generateTokens({
         userId: user.id,
         email: user.email,
       });

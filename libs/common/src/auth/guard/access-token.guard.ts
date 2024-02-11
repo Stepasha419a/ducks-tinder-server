@@ -7,10 +7,10 @@ import {
   Inject,
 } from '@nestjs/common';
 import { SERVICES } from '@app/common/shared/constant';
-import { UserTokenDto } from 'apps/user/src/application/token';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../constant';
+import { UserTokenDto } from 'apps/user/src/application/token/command';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

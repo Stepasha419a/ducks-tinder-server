@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogoutCommand } from './logout.command';
 import { UnauthorizedException } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/token';
+import { TokenFacade } from '../../../token';
 
 @CommandHandler(LogoutCommand)
 export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
-  constructor(private readonly tokenAdapter: TokenAdapter) {}
+  constructor(private readonly tokenFacade: TokenFacade) {}
 
   async execute(command: LogoutCommand): Promise<void> {
     const { refreshTokenValue } = command;
@@ -14,6 +14,6 @@ export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
       throw new UnauthorizedException();
     }
 
-    await this.tokenAdapter.removeToken(refreshTokenValue);
+    await this.tokenFacade.commands.removeToken(refreshTokenValue);
   }
 }

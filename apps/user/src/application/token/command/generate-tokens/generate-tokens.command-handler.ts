@@ -2,18 +2,18 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GenerateTokensCommand } from './generate-tokens.command';
-import { RefreshTokenRepository } from 'apps/user/src/domain/auth/repository/refresh-token.repository';
+import { TokenRepository } from 'apps/user/src/domain/token/repository';
 import {
   AccessTokenValueObject,
   RefreshTokenValueObject,
-} from 'apps/user/src/domain/auth';
+} from 'apps/user/src/domain/token';
 
 @CommandHandler(GenerateTokensCommand)
 export class GenerateTokensCommandHandler
   implements ICommandHandler<GenerateTokensCommand>
 {
   constructor(
-    private readonly repository: RefreshTokenRepository,
+    private readonly repository: TokenRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -38,7 +38,7 @@ export class GenerateTokensCommandHandler
       value: refreshTokenValue,
     });
 
-    await this.repository.save(refreshTokenValueObject);
+    await this.repository.saveRefreshToken(refreshTokenValueObject);
 
     return {
       accessTokenValueObject,

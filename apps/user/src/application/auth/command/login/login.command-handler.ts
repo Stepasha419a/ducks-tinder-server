@@ -1,17 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
 import { ForbiddenException } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/token';
 import { compare } from 'bcryptjs';
 import { ERROR } from 'apps/user/src/infrastructure/auth/common/constant';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { AuthUserView } from '../../view';
+import { TokenFacade } from '../../../token';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenAdapter: TokenAdapter,
+    private readonly tokenFacade: TokenFacade,
   ) {}
 
   async execute(command: LoginCommand): Promise<AuthUserView> {
@@ -29,7 +29,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     }
 
     const { accessTokenValueObject, refreshTokenValueObject } =
-      await this.tokenAdapter.generateTokens({
+      await this.tokenFacade.commands.generateTokens({
         userId: user.id,
         email: user.email,
       });

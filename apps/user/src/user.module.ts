@@ -38,6 +38,8 @@ import { TokenAdapter } from './infrastructure/token/repository';
 import { TokenFacade } from './application/token';
 import { tokenFacadeFactory } from './infrastructure/token/facade';
 import { TokenController } from './interface/token';
+import { TOKEN_COMMAND_HANDLERS } from './application/token/command';
+import { TOKEN_QUERY_HANDLERS } from './application/token/query';
 
 @Module({
   providers: [
@@ -46,6 +48,8 @@ import { TokenController } from './interface/token';
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
+    ...TOKEN_COMMAND_HANDLERS,
+    ...TOKEN_QUERY_HANDLERS,
     ...AUTH_COMMAND_HANDLERS,
     UserMapper,
     AuthMapper,

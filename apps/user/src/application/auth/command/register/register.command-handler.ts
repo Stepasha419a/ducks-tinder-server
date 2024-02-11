@@ -3,11 +3,11 @@ import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { COMMON_ERROR } from '@app/common/shared/constant';
-import { TokenAdapter } from 'apps/user/src/application/token';
 import { randomUUID } from 'crypto';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { AuthUserView } from '../../view';
+import { TokenFacade } from '../../../token';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
@@ -15,7 +15,7 @@ export class RegisterCommandHandler
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenAdapter: TokenAdapter,
+    private readonly tokenFacade: TokenFacade,
   ) {}
 
   async execute(command: RegisterCommand): Promise<AuthUserView> {
@@ -42,7 +42,7 @@ export class RegisterCommandHandler
     });
 
     const { accessTokenValueObject, refreshTokenValueObject } =
-      await this.tokenAdapter.generateTokens({
+      await this.tokenFacade.commands.generateTokens({
         userId: user.id,
         email: user.email,
       });
