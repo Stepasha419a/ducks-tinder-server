@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { UserModule } from './user.module';
+import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQService } from '@app/common/rabbitmq';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UserModule);
+  const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
 

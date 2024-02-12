@@ -1,15 +1,11 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserController } from './interface/user';
-import { DatabaseModule } from '@app/common/database';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/shared/constant';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/auth/guard';
-import { AuthModule } from '@app/common/auth';
+import { AuthModule as AuthCommonModule } from '@app/common/auth';
 import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
@@ -27,7 +23,6 @@ import { userFacadeFactory } from './infrastructure/user/facade';
 import { UserRepository } from './domain/user/repository';
 import { UserAdapter } from './infrastructure/user/repository';
 import { FileAdapter, MapApi } from './application/user/adapter';
-import { HttpModule } from '@nestjs/axios';
 import { AuthFacade } from './application/auth';
 import { authFacadeFactory } from './infrastructure/auth/facade';
 import { AUTH_COMMAND_HANDLERS } from './application/auth/command';
@@ -40,6 +35,14 @@ import { tokenFacadeFactory } from './infrastructure/token/facade';
 import { TokenController } from './interface/token';
 import { TOKEN_COMMAND_HANDLERS } from './application/token/command';
 import { TOKEN_QUERY_HANDLERS } from './application/token/query';
+import { UserModule } from './infrastructure/user/user.module';
+import { AuthModule } from './infrastructure/auth/auth.module';
+import { TokenModule } from './infrastructure/token/token.module';
+import { HttpModule } from '@nestjs/axios';
+import { RabbitMQModule } from '@app/common/rabbitmq';
+import { SERVICES } from '@app/common/shared/constant';
+import { DatabaseModule } from '@app/common/database';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   providers: [
@@ -109,21 +112,14 @@ import { TOKEN_QUERY_HANDLERS } from './application/token/query';
       }),
     }),
     DatabaseModule,
-    HttpModule,
     JwtModule,
     CqrsModule,
-    RabbitMQModule.register(SERVICES.CHAT),
+    HttpModule,
+    UserModule,
+    TokenModule,
     AuthModule,
+    AuthCommonModule,
+    RabbitMQModule.register(SERVICES.CHAT),
   ],
 })
-export class UserModule implements OnModuleInit {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
-
-  onModuleInit() {
-    this.commandBus.register(USER_COMMAND_HANDLERS);
-    this.queryBus.register(USER_QUERY_HANDLERS);
-  }
-}
+export class AppModule {}
