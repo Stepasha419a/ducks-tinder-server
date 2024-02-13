@@ -2,13 +2,14 @@ import { Test } from '@nestjs/testing';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
 import { HttpStatus } from '@nestjs/common';
-import { TokenFacadeMock } from 'apps/user/src/test/auth/mock';
+import { TokenFacadeMock, UserRepositoryMock } from 'apps/user/src/test/mock';
 import {
   AccessTokenValueObjectStub,
-  AuthUserAggregateStub,
+  AuthUserViewStub,
   RefreshTokenValueObjectStub,
   UserAggregateStub,
-} from 'apps/user/src/test/auth/stub';
+  UserStub,
+} from 'apps/user/src/test/stub';
 
 jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
@@ -19,8 +20,6 @@ import { TokenFacade } from '../../../token';
 import { AuthUserView } from '../../view';
 import { ERROR } from 'apps/user/src/infrastructure/auth/common/constant';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import { UserStub } from 'apps/user/src/test/user/stub';
 
 describe('when login is called', () => {
   let userRepository: UserRepository;
@@ -83,7 +82,7 @@ describe('when login is called', () => {
 
     it('should return authUserAggregate', () => {
       expect(JSON.parse(JSON.stringify(data))).toStrictEqual(
-        AuthUserAggregateStub(),
+        AuthUserViewStub(),
       );
     });
   });

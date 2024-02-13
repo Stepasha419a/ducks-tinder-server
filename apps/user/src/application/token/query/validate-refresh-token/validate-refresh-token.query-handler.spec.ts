@@ -7,11 +7,8 @@ import {
   ConfigServiceMock,
   JwtServiceMock,
   RefreshTokenRepositoryMock,
-} from 'apps/user/src/test/auth/mock';
-import {
-  RefreshTokenValueObjectStub,
-  UserStub,
-} from 'apps/user/src/test/auth/stub';
+} from 'apps/user/src/test/mock';
+import { RefreshTokenValueObjectStub, UserStub } from 'apps/user/src/test/stub';
 import { UserTokenDto } from 'apps/user/src/application/token';
 import { ValidateRefreshTokenQueryHandler } from './validate-refresh-token.query-handler';
 import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';

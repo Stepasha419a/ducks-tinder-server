@@ -3,3 +3,6 @@ export { TokenFacadeMock } from './token-facade.mock';
 export { JwtServiceMock } from './jwt-service.mock';
 export { ConfigServiceMock } from './config-service.mock';
 export { RefreshTokenRepositoryMock } from './refresh-token-repository.mock';
+export { UserRepositoryMock } from './user-repository.mock';
+export { FileAdapterMock } from './file-adapter.mock';
+export { MapApiMock } from './map-api.mock';

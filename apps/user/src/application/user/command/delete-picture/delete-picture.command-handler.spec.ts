@@ -8,7 +8,7 @@ import {
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { FileAdapter } from '../../adapter';
 import { UserAggregate } from 'apps/user/src/domain/user';
-import { UserAggregateStub } from 'apps/user/src/test/auth/stub';
+import { UserAggregateStub } from 'apps/user/src/test/stub';
 import { UserStub } from 'apps/user/src/test/user/stub';
 
 describe('when delete picture is called', () => {

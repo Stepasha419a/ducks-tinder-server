@@ -1,5 +1,5 @@
-import { PlaceValueObject } from '../../../domain/user/value-object';
-import { UserStub } from './user-stub';
+import { PlaceValueObject } from '../../domain/user/value-object';
+import { UserStub } from '../stub/user-stub';
 
 export const PlaceValueObjectStub = (): PlaceValueObject => ({
   id: UserStub().id,

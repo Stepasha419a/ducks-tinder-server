@@ -4,16 +4,13 @@ import { RegisterCommandHandler } from './register.command-handler';
 import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
 import { TokenAdapter } from 'apps/user/src/application/token';
-import {
-  ClientProxyMock,
-  TokenAdapterMock,
-} from 'apps/user/src/test/auth/mock';
+import { ClientProxyMock, TokenAdapterMock } from 'apps/user/src/test/mock';
 import { AuthUserAggregate } from 'apps/user/src/domain/auth';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
-} from 'apps/user/src/test/auth/stub';
+} from 'apps/user/src/test/stub';
 import { ClientProxy } from '@nestjs/microservices';
 import { COMMON_ERROR, SERVICES } from '@app/common/shared/constant';
 import { of } from 'rxjs';

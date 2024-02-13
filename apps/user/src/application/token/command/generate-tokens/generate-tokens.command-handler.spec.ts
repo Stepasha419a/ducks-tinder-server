@@ -9,12 +9,12 @@ import {
   ConfigServiceMock,
   JwtServiceMock,
   RefreshTokenRepositoryMock,
-} from 'apps/user/src/test/auth/mock';
+} from 'apps/user/src/test/mock';
 import {
   AccessTokenValueObjectStub,
   RefreshTokenValueObjectStub,
   UserStub,
-} from 'apps/user/src/test/auth/stub';
+} from 'apps/user/src/test/stub';
 
 describe('when generateTokens is called', () => {
   let repository: RefreshTokenRepository;
