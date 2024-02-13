@@ -1,23 +1,22 @@
 import { Test } from '@nestjs/testing';
 import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
-import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/token';
-import { ClientProxyMock, TokenAdapterMock } from 'apps/user/src/test/mock';
+import { TokenFacadeMock, UserRepositoryMock } from 'apps/user/src/test/mock';
 import {
   AccessTokenValueObjectStub,
-  AuthUserAggregateStub,
+  AuthUserViewStub,
   RefreshTokenValueObjectStub,
+  UserAggregateStub,
+  UserStub,
 } from 'apps/user/src/test/stub';
-import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/shared/constant';
-import { of } from 'rxjs';
+import { TokenFacade } from '../../../token';
+import { UserRepository } from 'apps/user/src/domain/user/repository';
+import { AuthUserView } from '../../view';
 
 describe('when refresh is called', () => {
-  let tokenAdapter: TokenAdapter;
-  let userClient: ClientProxy;
+  let tokenFacade: TokenFacade;
+  let userRepository: UserRepository;
   let refreshCommandHandler: RefreshCommandHandler;
   const userStub = UserStub();
 
@@ -26,15 +25,15 @@ describe('when refresh is called', () => {
       providers: [
         RefreshCommandHandler,
         {
-          provide: SERVICES.USER,
-          useValue: ClientProxyMock(),
+          provide: UserRepository,
+          useValue: UserRepositoryMock(),
         },
-        { provide: TokenAdapter, useValue: TokenAdapterMock() },
+        { provide: TokenFacade, useValue: TokenFacadeMock() },
       ],
     }).compile();
 
-    userClient = moduleRef.get<ClientProxy>(SERVICES.USER);
-    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
+    userRepository = moduleRef.get<UserRepository>(UserRepository);
+    tokenFacade = moduleRef.get<TokenFacade>(TokenFacade);
     refreshCommandHandler = moduleRef.get<RefreshCommandHandler>(
       RefreshCommandHandler,
     );
@@ -42,17 +41,17 @@ describe('when refresh is called', () => {
 
   describe('when it is called correctly', () => {
     beforeAll(async () => {
-      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
+      tokenFacade.queries.validateRefreshToken = jest.fn().mockResolvedValue({
         userId: UserStub().id,
       });
-      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      userRepository.findOne = jest.fn().mockReturnValue(UserAggregateStub());
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
 
     beforeEach(async () => {
       jest.clearAllMocks();
@@ -61,44 +60,44 @@ describe('when refresh is called', () => {
       );
     });
 
-    it('should call tokenAdapter validateRefreshToken', () => {
-      expect(tokenAdapter.validateRefreshToken).toHaveBeenCalledTimes(1);
-      expect(tokenAdapter.validateRefreshToken).toHaveBeenCalledWith(
+    it('should call tokenFacade validateRefreshToken', () => {
+      expect(tokenFacade.queries.validateRefreshToken).toHaveBeenCalledTimes(1);
+      expect(tokenFacade.queries.validateRefreshToken).toHaveBeenCalledWith(
         'refresh-token-value',
       );
     });
 
-    it('should call userClient send', () => {
-      expect(userClient.send).toHaveBeenCalledTimes(1);
-      expect(userClient.send).toHaveBeenCalledWith('get_user', userStub.id);
+    it('should call userRepository findOne', () => {
+      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOne).toHaveBeenCalledWith(userStub.id);
     });
 
-    it('should call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).toHaveBeenCalledTimes(1);
-      expect(tokenAdapter.generateTokens).toHaveBeenCalledWith({
+    it('should call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).toHaveBeenCalledTimes(1);
+      expect(tokenFacade.commands.generateTokens).toHaveBeenCalledWith({
         userId: userStub.id,
         email: userStub.email,
       });
     });
 
-    it('should return AuthUserAggregate', () => {
-      expect(JSON.parse(JSON.stringify(data))).toEqual(AuthUserAggregateStub());
+    it('should return AuthUserView', () => {
+      expect(JSON.parse(JSON.stringify(data))).toEqual(AuthUserViewStub());
     });
   });
 
   describe('when there is no refreshTokenValue', () => {
     beforeAll(async () => {
-      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue({
+      tokenFacade.queries.validateRefreshToken = jest.fn().mockResolvedValue({
         userId: UserStub().id,
       });
-      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      userRepository.findOne = jest.fn().mockReturnValue(UserAggregateStub());
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
     let error;
 
     beforeEach(async () => {
@@ -112,19 +111,19 @@ describe('when refresh is called', () => {
       }
     });
 
-    it('should not call tokenAdapter validateRefreshToken', () => {
-      expect(tokenAdapter.validateRefreshToken).not.toBeCalled();
+    it('should not call tokenFacade validateRefreshToken', () => {
+      expect(tokenFacade.queries.validateRefreshToken).not.toHaveBeenCalled();
     });
 
-    it('should not call userClient send', () => {
-      expect(userClient.send).not.toHaveBeenCalled();
+    it('should not call userRepository findOne', () => {
+      expect(userRepository.findOne).not.toHaveBeenCalled();
     });
 
-    it('should not call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    it('should not call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).not.toHaveBeenCalled();
     });
 
-    it('should not return AuthUserAggregate', () => {
+    it('should not return AuthUserView', () => {
       expect(data).toEqual(undefined);
     });
 
@@ -136,15 +135,17 @@ describe('when refresh is called', () => {
 
   describe('when there is no userData', () => {
     beforeAll(async () => {
-      tokenAdapter.validateRefreshToken = jest.fn().mockResolvedValue(null);
-      userClient.send = jest.fn().mockReturnValue(of(UserAggregateStub()));
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      tokenFacade.queries.validateRefreshToken = jest
+        .fn()
+        .mockResolvedValue(null);
+      userRepository.findOne = jest.fn().mockReturnValue(UserAggregateStub());
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
     let error;
 
     beforeEach(async () => {
@@ -158,21 +159,22 @@ describe('when refresh is called', () => {
       }
     });
 
-    it('should call tokenAdapter validateRefreshToken', () => {
-      expect(tokenAdapter.validateRefreshToken).toBeCalledWith(
+    it('should call tokenFacade validateRefreshToken', () => {
+      expect(tokenFacade.queries.validateRefreshToken).toHaveBeenCalledTimes(1);
+      expect(tokenFacade.queries.validateRefreshToken).toHaveBeenCalledWith(
         'refresh-token-value',
       );
     });
 
-    it('should not call userClient send', () => {
-      expect(userClient.send).not.toHaveBeenCalled();
+    it('should not call userRepository findOne', () => {
+      expect(userRepository.findOne).not.toHaveBeenCalled();
     });
 
-    it('should not call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).not.toBeCalled();
+    it('should not call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).not.toHaveBeenCalled();
     });
 
-    it('should not return AuthUserAggregate', () => {
+    it('should not return AuthUserView', () => {
       expect(data).toEqual(undefined);
     });
 

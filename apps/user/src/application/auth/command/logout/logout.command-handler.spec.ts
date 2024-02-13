@@ -2,22 +2,22 @@ import { Test } from '@nestjs/testing';
 import { LogoutCommandHandler } from './logout.command-handler';
 import { LogoutCommand } from './logout.command';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/token';
-import { TokenAdapterMock } from 'apps/user/src/test/mock';
+import { TokenFacade } from '../../../token';
+import { TokenFacadeMock } from 'apps/user/src/test/mock';
 
 describe('when logout is called', () => {
-  let tokenAdapter: TokenAdapter;
+  let tokenFacade: TokenFacade;
   let logoutCommandHandler: LogoutCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         LogoutCommandHandler,
-        { provide: TokenAdapter, useValue: TokenAdapterMock() },
+        { provide: TokenFacade, useValue: TokenFacadeMock() },
       ],
     }).compile();
 
-    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
+    tokenFacade = moduleRef.get<TokenFacade>(TokenFacade);
     logoutCommandHandler =
       moduleRef.get<LogoutCommandHandler>(LogoutCommandHandler);
   });
@@ -32,8 +32,10 @@ describe('when logout is called', () => {
       );
     });
 
-    it('should call tokenAdapter removeToken', () => {
-      expect(tokenAdapter.removeToken).toBeCalledWith('refresh-token-value');
+    it('should call tokenFacade removeToken', () => {
+      expect(tokenFacade.commands.removeToken).toHaveBeenCalledWith(
+        'refresh-token-value',
+      );
     });
 
     it('should return undefined', () => {
@@ -56,8 +58,8 @@ describe('when logout is called', () => {
       }
     });
 
-    it('should not call tokenAdapter removeToken', () => {
-      expect(tokenAdapter.removeToken).not.toBeCalled();
+    it('should not call tokenFacade removeToken', () => {
+      expect(tokenFacade.commands.removeToken).not.toHaveBeenCalled();
     });
 
     it('should return undefined', () => {
