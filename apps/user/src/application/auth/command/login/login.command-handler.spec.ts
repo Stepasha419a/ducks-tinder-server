@@ -2,86 +2,82 @@ import { Test } from '@nestjs/testing';
 import { LoginCommandHandler } from './login.command-handler';
 import { LoginCommand } from './login.command';
 import { HttpStatus } from '@nestjs/common';
-import { TokenAdapter } from 'apps/user/src/application/token';
-import {
-  ClientProxyMock,
-  TokenAdapterMock,
-} from 'apps/user/src/test/auth/mock';
+import { TokenFacadeMock } from 'apps/user/src/test/auth/mock';
 import {
   AccessTokenValueObjectStub,
   AuthUserAggregateStub,
   RefreshTokenValueObjectStub,
   UserAggregateStub,
 } from 'apps/user/src/test/auth/stub';
-import { AuthUserAggregate } from 'apps/user/src/domain/auth';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/shared/constant';
-import { of } from 'rxjs';
-import { ERROR } from 'apps/auth/src/infrastructure/common/constant';
 
 jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
 }));
 
 import * as bcryptjs from 'bcryptjs';
+import { TokenFacade } from '../../../token';
+import { AuthUserView } from '../../view';
+import { ERROR } from 'apps/user/src/infrastructure/auth/common/constant';
+import { UserRepository } from 'apps/user/src/domain/user/repository';
+import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
+import { UserStub } from 'apps/user/src/test/user/stub';
 
 describe('when login is called', () => {
-  let userClient: ClientProxy;
-  let tokenAdapter: TokenAdapter;
+  let userRepository: UserRepository;
+  let tokenFacade: TokenFacade;
   let loginCommandHandler: LoginCommandHandler;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         LoginCommandHandler,
-        { provide: SERVICES.USER, useValue: ClientProxyMock() },
-        { provide: TokenAdapter, useValue: TokenAdapterMock() },
+        { provide: UserRepository, useValue: UserRepositoryMock() },
+        { provide: TokenFacade, useValue: TokenFacadeMock() },
       ],
     }).compile();
 
-    userClient = moduleRef.get<ClientProxy>(SERVICES.USER);
-    tokenAdapter = moduleRef.get<TokenAdapter>(TokenAdapter);
+    userRepository = moduleRef.get<UserRepository>(UserRepository);
+    tokenFacade = moduleRef.get<TokenFacade>(TokenFacade);
     loginCommandHandler =
       moduleRef.get<LoginCommandHandler>(LoginCommandHandler);
   });
 
   describe('when it is called correctly', () => {
-    const userAggregate = UserAggregateStub();
-
     beforeAll(() => {
-      userClient.send = jest.fn().mockReturnValue(of(userAggregate));
+      userRepository.findOneByEmail = jest
+        .fn()
+        .mockReturnValue(UserAggregateStub());
       bcryptjs.compare = jest.fn().mockResolvedValue(true);
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
 
     beforeEach(async () => {
       jest.clearAllMocks();
       data = await loginCommandHandler.execute(
         new LoginCommand({
-          email: userAggregate.email,
-          password: userAggregate.password,
+          email: UserStub().email,
+          password: UserStub().password,
         }),
       );
     });
 
-    it('should call userClient send', () => {
-      expect(userClient.send).toHaveBeenCalledTimes(1);
-      expect(userClient.send).toHaveBeenCalledWith(
-        'get_user_by_email',
-        userAggregate.email,
+    it('should call userRepository findOneByEmail', () => {
+      expect(userRepository.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOneByEmail).toHaveBeenCalledWith(
+        UserStub().email,
       );
     });
 
-    it('should call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).toHaveBeenCalledTimes(1);
-      expect(tokenAdapter.generateTokens).toHaveBeenCalledWith({
-        userId: userAggregate.id,
-        email: userAggregate.email,
+    it('should call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).toHaveBeenCalledTimes(1);
+      expect(tokenFacade.commands.generateTokens).toHaveBeenCalledWith({
+        userId: UserStub().id,
+        email: UserStub().email,
       });
     });
 
@@ -96,15 +92,15 @@ describe('when login is called', () => {
     const userAggregate = UserAggregateStub();
 
     beforeAll(() => {
-      userClient.send = jest.fn().mockReturnValue(of(undefined));
+      userRepository.findOneByEmail = jest.fn().mockReturnValue(null);
       bcryptjs.compare = jest.fn().mockResolvedValue(true);
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
     let error;
 
     beforeEach(async () => {
@@ -121,16 +117,15 @@ describe('when login is called', () => {
       }
     });
 
-    it('should call userClient send', () => {
-      expect(userClient.send).toHaveBeenCalledTimes(1);
-      expect(userClient.send).toHaveBeenCalledWith(
-        'get_user_by_email',
-        userAggregate.email,
+    it('should call userRepository findOneByEmail', () => {
+      expect(userRepository.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOneByEmail).toHaveBeenCalledWith(
+        UserStub().email,
       );
     });
 
-    it('should not call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).not.toHaveBeenCalled();
+    it('should not call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).not.toHaveBeenCalled();
     });
 
     it('should not return authUserAggregate', () => {
@@ -147,15 +142,17 @@ describe('when login is called', () => {
     const userAggregate = UserAggregateStub();
 
     beforeAll(() => {
-      userClient.send = jest.fn().mockReturnValue(of(userAggregate));
+      userRepository.findOneByEmail = jest
+        .fn()
+        .mockReturnValue(UserAggregateStub());
       bcryptjs.compare = jest.fn().mockResolvedValue(false);
-      tokenAdapter.generateTokens = jest.fn().mockResolvedValue({
+      tokenFacade.commands.generateTokens = jest.fn().mockResolvedValue({
         refreshTokenValueObject: RefreshTokenValueObjectStub(),
         accessTokenValueObject: AccessTokenValueObjectStub(),
       });
     });
 
-    let data: AuthUserAggregate;
+    let data: AuthUserView;
     let error;
 
     beforeEach(async () => {
@@ -172,16 +169,15 @@ describe('when login is called', () => {
       }
     });
 
-    it('should call userClient send', () => {
-      expect(userClient.send).toHaveBeenCalledTimes(1);
-      expect(userClient.send).toHaveBeenCalledWith(
-        'get_user_by_email',
-        userAggregate.email,
+    it('should call userRepository findOneByEmail', () => {
+      expect(userRepository.findOneByEmail).toHaveBeenCalledTimes(1);
+      expect(userRepository.findOneByEmail).toHaveBeenCalledWith(
+        UserStub().email,
       );
     });
 
-    it('should not call tokenAdapter generateTokens', () => {
-      expect(tokenAdapter.generateTokens).not.toHaveBeenCalled();
+    it('should not call tokenFacade generateTokens', () => {
+      expect(tokenFacade.commands.generateTokens).not.toHaveBeenCalled();
     });
 
     it('should not return authUserAggregate', () => {
