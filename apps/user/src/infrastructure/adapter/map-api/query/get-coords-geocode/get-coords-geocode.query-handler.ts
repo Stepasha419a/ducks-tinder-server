@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom, map } from 'rxjs';
 import { NotFoundException } from '@nestjs/common';
-import { Geocode } from 'apps/user/src/application/user/adapter';
+import { GeocodeView } from 'apps/user/src/application/user/adapter';
 
 @QueryHandler(GetCoordsGeocodeQuery)
 export class GetCoordsGeocodeQueryHandler
@@ -15,7 +15,7 @@ export class GetCoordsGeocodeQueryHandler
     private readonly configService: ConfigService,
   ) {}
 
-  async execute(query: GetCoordsGeocodeQuery): Promise<Geocode> {
+  async execute(query: GetCoordsGeocodeQuery): Promise<GeocodeView> {
     const { dto } = query;
 
     const response = await lastValueFrom(

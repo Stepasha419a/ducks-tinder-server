@@ -6,14 +6,6 @@ import * as Joi from 'joi';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/auth/guard';
 import { AuthModule as AuthCommonModule } from '@app/common/auth';
-import {
-  MAP_API_QUERY_HANDLERS,
-  MapApiImplementation,
-} from './infrastructure/user/adapter/map-api';
-import {
-  FILE_COMMAND_HANDLERS,
-  FileAdapterImplementation,
-} from './infrastructure/user/adapter/file';
 import { USER_QUERY_HANDLERS } from './application/user/query';
 import { USER_COMMAND_HANDLERS } from './application/user/command';
 import { USER_DEV_HANDLERS } from './application/user/command/dev';
@@ -43,6 +35,14 @@ import { RabbitMQModule } from '@app/common/rabbitmq';
 import { SERVICES } from '@app/common/shared/constant';
 import { DatabaseModule } from '@app/common/database';
 import { JwtModule } from '@nestjs/jwt';
+import {
+  MAP_API_QUERY_HANDLERS,
+  MapApiImplementation,
+} from './infrastructure/adapter/map-api';
+import {
+  FILE_COMMAND_HANDLERS,
+  FileAdapterImplementation,
+} from './infrastructure/adapter/file';
 
 @Module({
   providers: [

@@ -1,4 +1,4 @@
-export interface Geocode {
+export interface GeocodeView {
   address: string;
   name: string;
 }

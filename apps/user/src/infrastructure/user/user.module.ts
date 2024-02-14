@@ -1,12 +1,4 @@
 import { Module } from '@nestjs/common';
-import {
-  MAP_API_QUERY_HANDLERS,
-  MapApiImplementation,
-} from './adapter/map-api';
-import {
-  FILE_COMMAND_HANDLERS,
-  FileAdapterImplementation,
-} from './adapter/file';
 import { USER_QUERY_HANDLERS } from '../../application/user/query';
 import { USER_COMMAND_HANDLERS } from '../../application/user/command';
 import { USER_DEV_HANDLERS } from '../../application/user/command/dev';
@@ -22,6 +14,14 @@ import { DatabaseModule } from '@app/common/database';
 import { RabbitMQModule } from '@app/common/rabbitmq';
 import { SERVICES } from '@app/common/shared/constant';
 import { HttpModule } from '@nestjs/axios';
+import {
+  MAP_API_QUERY_HANDLERS,
+  MapApiImplementation,
+} from '../adapter/map-api';
+import {
+  FILE_COMMAND_HANDLERS,
+  FileAdapterImplementation,
+} from '../adapter/file';
 
 @Module({
   providers: [
