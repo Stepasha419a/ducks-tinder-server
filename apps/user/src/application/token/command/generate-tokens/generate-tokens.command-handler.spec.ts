@@ -3,21 +3,21 @@ import { GenerateTokensCommandHandler } from './generate-tokens.command-handler'
 import { JwtService } from '@nestjs/jwt';
 import { GenerateTokensCommand } from './generate-tokens.command';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenValueObject } from 'apps/user/src/domain/auth';
-import { RefreshTokenRepository } from 'apps/user/src/domain/auth/repository';
 import {
   ConfigServiceMock,
   JwtServiceMock,
-  RefreshTokenRepositoryMock,
+  TokenRepositoryMock,
 } from 'apps/user/src/test/mock';
 import {
   AccessTokenValueObjectStub,
   RefreshTokenValueObjectStub,
   UserStub,
 } from 'apps/user/src/test/stub';
+import { TokenRepository } from 'apps/user/src/domain/token/repository';
+import { RefreshTokenValueObject } from 'apps/user/src/domain/token';
 
 describe('when generateTokens is called', () => {
-  let repository: RefreshTokenRepository;
+  let repository: TokenRepository;
   let jwtService: JwtService;
   let configService: ConfigService;
 
@@ -30,15 +30,15 @@ describe('when generateTokens is called', () => {
       providers: [
         GenerateTokensCommandHandler,
         {
-          provide: RefreshTokenRepository,
-          useValue: RefreshTokenRepositoryMock(),
+          provide: TokenRepository,
+          useValue: TokenRepositoryMock(),
         },
         { provide: JwtService, useValue: JwtServiceMock() },
         { provide: ConfigService, useValue: ConfigServiceMock() },
       ],
     }).compile();
 
-    repository = moduleRef.get<RefreshTokenRepository>(RefreshTokenRepository);
+    repository = moduleRef.get<TokenRepository>(TokenRepository);
     jwtService = moduleRef.get<JwtService>(JwtService);
     configService = moduleRef.get<ConfigService>(ConfigService);
     generateTokensCommandHandler = moduleRef.get<GenerateTokensCommandHandler>(
@@ -70,7 +70,7 @@ describe('when generateTokens is called', () => {
   });
 
   it('should call jwtService sign', () => {
-    expect(jwtService.sign).toBeCalledTimes(2);
+    expect(jwtService.sign).toHaveBeenCalledTimes(2);
     expect(jwtService.sign).toHaveBeenNthCalledWith(1, dto, {
       expiresIn: '60m',
       secret: 'TOKENS_SECRET',
@@ -81,9 +81,9 @@ describe('when generateTokens is called', () => {
     });
   });
 
-  it('should call repository save', () => {
-    expect(repository.save).toBeCalledTimes(1);
-    expect(repository.save).toHaveBeenCalledWith(
+  it('should call repository saveRefreshToken', () => {
+    expect(repository.saveRefreshToken).toHaveBeenCalledTimes(1);
+    expect(repository.saveRefreshToken).toHaveBeenCalledWith(
       RefreshTokenValueObject.create({
         id: dto.userId,
         value: AccessTokenValueObjectStub().value,
