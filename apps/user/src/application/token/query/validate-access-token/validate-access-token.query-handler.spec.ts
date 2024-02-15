@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConfigServiceMock, JwtServiceMock } from 'apps/user/src/test/mock';
 import { AccessTokenValueObjectStub, UserStub } from 'apps/user/src/test/stub';
-import { UserTokenDto } from 'apps/user/src/application/token';
 import { ValidateAccessTokenQueryHandler } from './validate-access-token.query-handler';
 import { ValidateAccessTokenQuery } from './validate-access-token.query';
+import { UserTokenDto } from '../../command';
 
 describe('when validateAccessToken is called', () => {
   let jwtService: JwtService;
