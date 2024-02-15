@@ -2,14 +2,14 @@ import { Test } from '@nestjs/testing';
 import { CreateUserCommandHandler } from './create-user.command-handler';
 import { CreateUserCommand } from './create-user.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 
-jest.mock('apps/user/src/domain', () => ({
+jest.mock('apps/user/src/domain/user', () => ({
   UserAggregate: jest.fn(),
 }));
 
 import { UserAggregate } from 'apps/user/src/domain/user';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
 
 describe('when delete pair is called', () => {
   let repository: UserRepository;

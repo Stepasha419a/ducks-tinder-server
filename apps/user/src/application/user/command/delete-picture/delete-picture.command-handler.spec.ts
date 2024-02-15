@@ -1,15 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { DeletePictureCommandHandler } from './delete-picture.command-handler';
 import { DeletePictureCommand } from './delete-picture.command';
-import {
-  FileAdapterMock,
-  UserRepositoryMock,
-} from 'apps/user/src/test/user/mock';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { FileAdapter } from '../../adapter';
 import { UserAggregate } from 'apps/user/src/domain/user';
-import { UserAggregateStub } from 'apps/user/src/test/stub';
-import { UserStub } from 'apps/user/src/test/user/stub';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
+import { FileAdapterMock, UserRepositoryMock } from 'apps/user/src/test/mock';
 
 describe('when delete picture is called', () => {
   let repository: UserRepository;

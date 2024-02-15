@@ -2,9 +2,9 @@ import { Test } from '@nestjs/testing';
 import { DeletePairCommandHandler } from './delete-pair.command-handler';
 import { DeletePairCommand } from './delete-pair.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 
 describe('when delete pair is called', () => {
   let repository: UserRepository;
@@ -42,13 +42,19 @@ describe('when delete pair is called', () => {
     });
 
     it('should call repository findPair', () => {
-      expect(repository.findPair).toBeCalledTimes(1);
-      expect(repository.findPair).toBeCalledWith(userPairId, UserStub().id);
+      expect(repository.findPair).toHaveBeenCalledTimes(1);
+      expect(repository.findPair).toHaveBeenCalledWith(
+        userPairId,
+        UserStub().id,
+      );
     });
 
     it('should call repository deletePair', () => {
-      expect(repository.deletePair).toBeCalledTimes(1);
-      expect(repository.deletePair).toBeCalledWith(userPairId, UserStub().id);
+      expect(repository.deletePair).toHaveBeenCalledTimes(1);
+      expect(repository.deletePair).toHaveBeenCalledWith(
+        userPairId,
+        UserStub().id,
+      );
     });
 
     it('should return deleted pair id', () => {
@@ -76,12 +82,15 @@ describe('when delete pair is called', () => {
     });
 
     it('should call repository findPair', () => {
-      expect(repository.findPair).toBeCalledTimes(1);
-      expect(repository.findPair).toBeCalledWith(userPairId, UserStub().id);
+      expect(repository.findPair).toHaveBeenCalledTimes(1);
+      expect(repository.findPair).toHaveBeenCalledWith(
+        userPairId,
+        UserStub().id,
+      );
     });
 
     it('should not call repository deletePair', () => {
-      expect(repository.deletePair).not.toBeCalled();
+      expect(repository.deletePair).not.toHaveBeenCalled();
     });
 
     it('should return undefined', () => {
