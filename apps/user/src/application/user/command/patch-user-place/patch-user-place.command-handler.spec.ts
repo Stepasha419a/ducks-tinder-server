@@ -2,20 +2,20 @@ import { PatchUserPlaceCommandHandler } from './patch-user-place.command-handler
 import { Test } from '@nestjs/testing';
 import { MapApi } from '../../adapter';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { MapApiMock, UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import {
-  PlaceValueObjectStub,
-  UserAggregateStub,
-  UserStub,
-} from 'apps/user/src/test/user/stub';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
 
-jest.mock('apps/user/src/domain/value-object', () => ({
+jest.mock('apps/user/src/domain/user/value-object', () => ({
   PlaceValueObject: jest.fn(),
 }));
 
 import { PlaceValueObject } from 'apps/user/src/domain/user/value-object';
+import { MapApiMock, UserRepositoryMock } from 'apps/user/src/test/mock';
+import {
+  PlaceValueObjectStub,
+  UserAggregateStub,
+  UserStub,
+} from 'apps/user/src/test/stub';
 
 describe('when patch user place is called', () => {
   let patchUserPlaceCommandHandler: PatchUserPlaceCommandHandler;

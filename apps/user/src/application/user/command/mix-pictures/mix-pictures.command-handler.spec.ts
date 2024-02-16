@@ -2,9 +2,9 @@ import { Test } from '@nestjs/testing';
 import { MixPicturesCommandHandler } from './mix-pictures.command-handler';
 import { MixPicturesCommand } from './mix-pictures.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import { UserAggregateStub, UserStub } from 'apps/user/src/test/user/stub';
 import { HttpStatus } from '@nestjs/common';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserAggregateStub, UserStub } from 'apps/user/src/test/stub';
 
 describe('when mix pictures is called', () => {
   let repository: UserRepository;

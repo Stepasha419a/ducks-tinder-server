@@ -2,11 +2,8 @@ import { Test } from '@nestjs/testing';
 import { ReturnUserCommandHandler } from './return-user.command-handler';
 import { ReturnUserCommand } from './return-user.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { UserRepositoryMock } from 'apps/user/src/test/user/mock';
-import {
-  UserCheckValueObjectStub,
-  UserStub,
-} from 'apps/user/src/test/user/stub';
+import { UserRepositoryMock } from 'apps/user/src/test/mock';
+import { UserCheckValueObjectStub, UserStub } from 'apps/user/src/test/stub';
 
 describe('when return user is called', () => {
   let repository: UserRepository;
