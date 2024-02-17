@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   AcceptPairCommand,
-  CreateUserDto,
   DeletePairCommand,
   DeletePictureCommand,
   DislikeUserCommand,
@@ -14,15 +13,9 @@ import {
   PatchUserPlaceDto,
   ReturnUserCommand,
   SavePictureCommand,
+  PatchUserCommand,
 } from './command';
-import { CreateUserCommand, PatchUserCommand } from './command';
-import {
-  GetManyUsersQuery,
-  GetPairsQuery,
-  GetSortedQuery,
-  GetUserByEmailQuery,
-  GetUserQuery,
-} from './query';
+import { GetManyUsersQuery, GetPairsQuery, GetSortedQuery } from './query';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { UserCheckValueObject } from 'apps/user/src/domain/user/value-object';
@@ -35,7 +28,6 @@ export class UserFacade {
   ) {}
 
   commands = {
-    createUser: (dto: CreateUserDto) => this.createUser(dto),
     patchUser: (userId: string, dto: PatchUserDto) =>
       this.patchUser(userId, dto),
     patchUserPlace: (userId: string, dto: PatchUserPlaceDto) =>
@@ -56,8 +48,6 @@ export class UserFacade {
       this.deletePair(userId, pairId),
   };
   queries = {
-    getUser: (id: string) => this.getUser(id),
-    getUserByEmail: (email: string) => this.getUserByEmail(email),
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
@@ -68,12 +58,6 @@ export class UserFacade {
     createPairsDEV: (id: string) => this.createPairsDEV(id),
     removeAllPairsDEV: (id: string) => this.removeAllPairsDEV(id),
   };
-
-  private createUser(dto: CreateUserDto) {
-    return this.commandBus.execute<CreateUserCommand, UserAggregate>(
-      new CreateUserCommand(dto),
-    );
-  }
 
   private patchUser(userId: string, dto: PatchUserDto) {
     return this.commandBus.execute<PatchUserCommand, UserAggregate>(
@@ -132,18 +116,6 @@ export class UserFacade {
   private returnUser(userId: string) {
     return this.commandBus.execute<ReturnUserCommand, UserCheckValueObject>(
       new ReturnUserCommand(userId),
-    );
-  }
-
-  private getUser(id: string) {
-    return this.queryBus.execute<GetUserQuery, UserAggregate | null>(
-      new GetUserQuery(id),
-    );
-  }
-
-  private getUserByEmail(email: string) {
-    return this.queryBus.execute<GetUserByEmailQuery, UserAggregate | null>(
-      new GetUserByEmailQuery(email),
     );
   }
 

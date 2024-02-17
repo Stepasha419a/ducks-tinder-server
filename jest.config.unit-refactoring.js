@@ -5,6 +5,7 @@ module.exports = {
     '**/auth/src/application/command/**/*.spec.ts',
     '**/token/command/**/*.spec.ts',
     '**/token/query/**/*.spec.ts',
+    '**/user/command/**/*.spec.ts',
   ],
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
