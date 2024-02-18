@@ -372,14 +372,6 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findManyPictures(userId: string): Promise<PictureValueObject[]> {
-    const pictures = await this.databaseService.picture.findMany({
-      where: { userId },
-    });
-
-    return pictures.map((picture) => this.getPictureValueObject(picture));
-  }
-
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
     // TODO: optimize by not getting an array with many checks (too big arrays)
     const checkedUsers = await this.databaseService.checkedUsers.findMany({
