@@ -43,12 +43,11 @@ describe('when save picture is called', () => {
   describe('when it is called correctly', () => {
     const userAggregate = UserAggregateStub();
     beforeAll(() => {
-      repository.findManyPictures = jest.fn().mockResolvedValue([]);
+      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
       fileAdapter.savePicture = jest.fn().mockResolvedValue('picture-name');
       PictureValueObject.create = jest
         .fn()
         .mockReturnValue(PictureValueObjectStub());
-      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
       repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
     });
 
@@ -63,9 +62,9 @@ describe('when save picture is called', () => {
       );
     });
 
-    it('should call repository findManyPictures', () => {
-      expect(repository.findManyPictures).toHaveBeenCalledTimes(1);
-      expect(repository.findManyPictures).toHaveBeenCalledWith(UserStub().id);
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
     });
 
     it('should call fileAdapter savePicture', () => {
@@ -78,17 +77,12 @@ describe('when save picture is called', () => {
       );
     });
 
-    it('should call repository findOne', () => {
-      expect(repository.findOne).toHaveBeenCalledTimes(1);
-      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
-    });
-
     it('should call PictureValueObject create', () => {
       expect(PictureValueObject.create).toHaveBeenCalledTimes(1);
       expect(PictureValueObject.create).toHaveBeenCalledWith({
         name: 'picture-name',
         userId: UserStub().id,
-        order: 0,
+        order: UserStub().pictures.length,
       });
     });
 
@@ -118,12 +112,13 @@ describe('when save picture is called', () => {
   describe('when there is max pictures count', () => {
     const userAggregate = UserAggregateStub();
     beforeAll(() => {
-      repository.findManyPictures = jest.fn().mockResolvedValue(new Array(9));
+      repository.findOne = jest
+        .fn()
+        .mockResolvedValue({ ...userAggregate, pictures: new Array(9) });
       fileAdapter.savePicture = jest.fn().mockResolvedValue('picture-name');
       PictureValueObject.create = jest
         .fn()
         .mockReturnValue(PictureValueObjectStub());
-      repository.findOne = jest.fn().mockResolvedValue(userAggregate);
       repository.save = jest.fn().mockResolvedValue(UserAggregateStub());
     });
 
@@ -143,17 +138,13 @@ describe('when save picture is called', () => {
       }
     });
 
-    it('should call repository findManyPictures', () => {
-      expect(repository.findManyPictures).toHaveBeenCalledTimes(1);
-      expect(repository.findManyPictures).toHaveBeenCalledWith(UserStub().id);
+    it('should call repository findOne', () => {
+      expect(repository.findOne).toHaveBeenCalledTimes(1);
+      expect(repository.findOne).toHaveBeenCalledWith(UserStub().id);
     });
 
     it('should not call fileAdapter savePicture', () => {
       expect(fileAdapter.savePicture).not.toHaveBeenCalled();
-    });
-
-    it('should not call repository findOne', () => {
-      expect(repository.findOne).not.toHaveBeenCalled();
     });
 
     it('should not call PictureValueObject create', () => {
