@@ -106,7 +106,6 @@ import {
         JWT_ACCESS_SECRET: Joi.string().required(),
         JWT_REFRESH_SECRET: Joi.string().required(),
         RABBIT_MQ_USER_QUEUE: Joi.string().required(),
-        RABBIT_MQ_AUTH_QUEUE: Joi.string().required(),
         RABBIT_MQ_CHAT_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
       }),
