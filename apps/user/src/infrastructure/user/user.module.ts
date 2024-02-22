@@ -8,7 +8,7 @@ import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { userFacadeFactory } from './facade';
 import { UserRepository } from '../../domain/user/repository';
 import { UserAdapter } from './repository';
-import { FileAdapter, MapApi } from '../../application/user/adapter';
+import { MapApi } from '../../application/user/adapter';
 import { UserController } from '../../interface/user';
 import { DatabaseModule } from '@app/common/database';
 import { RabbitMQModule } from '@app/common/rabbitmq';
@@ -18,15 +18,11 @@ import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from '../adapter/map-api';
-import {
-  FILE_COMMAND_HANDLERS,
-  FileAdapterImplementation,
-} from '../adapter/file';
+import { FileModule } from '@app/common/file';
 
 @Module({
   providers: [
     ...MAP_API_QUERY_HANDLERS,
-    ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
@@ -44,10 +40,6 @@ import {
       provide: MapApi,
       useClass: MapApiImplementation,
     },
-    {
-      provide: FileAdapter,
-      useClass: FileAdapterImplementation,
-    },
   ],
   controllers: [UserController],
   imports: [
@@ -55,6 +47,7 @@ import {
     CqrsModule,
     HttpModule,
     RabbitMQModule.register(SERVICES.CHAT),
+    FileModule,
   ],
   exports: [UserRepository],
 })

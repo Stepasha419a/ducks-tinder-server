@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { DeletePictureCommand, SavePictureCommand } from './command';
-import { FileAdapter } from 'apps/user/src/application/user/adapter';
 
 @Injectable()
-export class FileAdapterImplementation implements FileAdapter {
+export class FileAdapter {
   constructor(private readonly commandBus: CommandBus) {}
 
   savePicture(file: Express.Multer.File, userId: string): Promise<string> {

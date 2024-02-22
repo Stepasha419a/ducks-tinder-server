@@ -14,7 +14,7 @@ import { UserFacade } from './application/user';
 import { userFacadeFactory } from './infrastructure/user/facade';
 import { UserRepository } from './domain/user/repository';
 import { UserAdapter } from './infrastructure/user/repository';
-import { FileAdapter, MapApi } from './application/user/adapter';
+import { MapApi } from './application/user/adapter';
 import { AuthFacade } from './application/auth';
 import { authFacadeFactory } from './infrastructure/auth/facade';
 import { AUTH_COMMAND_HANDLERS } from './application/auth/command';
@@ -39,15 +39,11 @@ import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from './infrastructure/adapter/map-api';
-import {
-  FILE_COMMAND_HANDLERS,
-  FileAdapterImplementation,
-} from './infrastructure/adapter/file';
+import { FileModule } from '@app/common/file';
 
 @Module({
   providers: [
     ...MAP_API_QUERY_HANDLERS,
-    ...FILE_COMMAND_HANDLERS,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
@@ -68,10 +64,6 @@ import {
     {
       provide: MapApi,
       useClass: MapApiImplementation,
-    },
-    {
-      provide: FileAdapter,
-      useClass: FileAdapterImplementation,
     },
     {
       provide: APP_GUARD,
@@ -119,6 +111,7 @@ import {
     AuthModule,
     AuthCommonModule,
     RabbitMQModule.register(SERVICES.CHAT),
+    FileModule,
   ],
 })
 export class AppModule {}
