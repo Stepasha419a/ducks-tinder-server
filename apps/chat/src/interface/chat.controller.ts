@@ -7,11 +7,11 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { User } from '@app/common/shared/decorator';
 import { ChatFacade } from 'apps/chat/src/application';
 import { PaginationDto } from '@app/common/shared/dto';
-import { GetMessagesDto } from 'apps/chat/src/application/query';
 import {
   EditMessageDto,
   SendMessageDto,
@@ -38,14 +38,16 @@ export class ChatController {
     );
   }
 
-  @Get('messages')
+  @Get(':id/messages')
   async getMessages(
     @User(ParseUUIDPipe) userId: string,
-    @Body() dto: GetMessagesDto,
+    @Query()
+    query: PaginationDto,
+    @Param('id', ParseUUIDPipe) chatId: string,
   ) {
     const messagesPaginationValueObject = await this.facade.queries.getMessages(
       userId,
-      dto,
+      { ...query, chatId },
     );
 
     return this.mapper.getShortMessagesPagination(
