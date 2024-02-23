@@ -153,10 +153,38 @@ export class ChatAdapter implements ChatRepository {
     userId: string,
     dto: PaginationDto,
   ): Promise<ChatPaginationValueObject[]> {
-    const chats = await this.databaseService.chat.findMany({
-      where: { users: { some: { id: userId } } },
+    // prisma doesn't support ordering many relations => i find messages by distinct chatId and ordering them
+    // then find chats by this messages chatId and add empty chats if it's not enough for dto.take
+
+    const messagesChatId = await this.databaseService.message.findMany({
+      where: {
+        chat: {
+          users: {
+            some: {
+              id: {
+                equals: userId,
+              },
+            },
+          },
+        },
+      },
+      distinct: 'chatId',
+      select: {
+        chatId: true,
+      },
       take: dto.take,
       skip: dto.skip,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const chatIds = messagesChatId.map((obj) => obj.chatId);
+
+    let chats = await this.databaseService.chat.findMany({
+      where: {
+        id: {
+          in: chatIds,
+        },
+      },
       select: {
         id: true,
         messages: {
@@ -165,8 +193,12 @@ export class ChatAdapter implements ChatRepository {
           select: ChatSelector.selectMessage(),
         },
         users: {
+          take: 1,
           where: { id: { not: userId } },
-          select: { name: true, pictures: { take: 1 } },
+          select: {
+            name: true,
+            pictures: { take: 1, orderBy: { order: 'asc' } },
+          },
           orderBy: { pictures: { _count: 'desc' } },
         },
         chatVisits: { where: { userId } },
@@ -175,30 +207,64 @@ export class ChatAdapter implements ChatRepository {
       },
     });
 
-    const paginationChatAggregates = await Promise.all(
-      chats.map(async (chat) => {
-        const lastMessage = chat.messages[0]
-          ? this.getMessageAggregate(chat.messages[0])
-          : null;
-
-        const chatVisit = chat.chatVisits[0]
-          ? this.getChatVisitValueObject(chat.chatVisits[0])
-          : null;
-
-        const avatar: string | null =
-          chat.users[0]?.pictures?.[0]?.name || null;
-
-        return ChatPaginationValueObject.create({
-          id: chat.id,
-          avatar,
-          name: chat.users[0].name,
-          blocked: chat.blocked,
-          blockedById: chat.blockedById,
-          chatVisit,
-          lastMessage,
-        });
-      }),
+    chats.sort(
+      (a, b) =>
+        +new Date(b.messages[0].createdAt) - +new Date(a.messages[0].createdAt),
     );
+
+    if (chats.length < dto.take) {
+      const emptyChats = await this.databaseService.chat.findMany({
+        where: {
+          users: { some: { id: { equals: userId } } },
+          messages: { none: {} },
+        },
+        take: dto.take - chats.length,
+        select: {
+          id: true,
+          messages: {
+            take: 1,
+            orderBy: { createdAt: 'desc' },
+            select: ChatSelector.selectMessage(),
+          },
+          users: {
+            take: 1,
+            where: { id: { not: userId } },
+            select: {
+              name: true,
+              pictures: { take: 1, orderBy: { order: 'asc' } },
+            },
+            orderBy: { pictures: { _count: 'desc' } },
+          },
+          chatVisits: { where: { userId } },
+          blocked: true,
+          blockedById: true,
+        },
+      });
+
+      chats = chats.concat(emptyChats);
+    }
+
+    const paginationChatAggregates = chats.map((chat) => {
+      const lastMessage = chat.messages[0]
+        ? this.getMessageAggregate(chat.messages[0])
+        : null;
+
+      const chatVisit = chat.chatVisits[0]
+        ? this.getChatVisitValueObject(chat.chatVisits[0])
+        : null;
+
+      const avatar = chat.users[0]?.pictures?.[0]?.name || null;
+
+      return ChatPaginationValueObject.create({
+        id: chat.id,
+        avatar,
+        name: chat.users[0].name,
+        blocked: chat.blocked,
+        blockedById: chat.blockedById,
+        chatVisit,
+        lastMessage,
+      });
+    });
 
     return paginationChatAggregates;
   }

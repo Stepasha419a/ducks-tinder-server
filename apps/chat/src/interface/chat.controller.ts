@@ -29,9 +29,10 @@ export class ChatController {
   @Get()
   async getChats(
     @User(ParseUUIDPipe) userId: string,
-    @Body() dto: PaginationDto,
+    @Query()
+    query: PaginationDto,
   ) {
-    const chatPagination = await this.facade.queries.getChats(userId, dto);
+    const chatPagination = await this.facade.queries.getChats(userId, query);
 
     return chatPagination.map((chat) =>
       this.mapper.getShortChatPagination(chat),
