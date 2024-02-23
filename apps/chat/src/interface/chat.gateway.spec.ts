@@ -5,7 +5,7 @@ import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatsGateway } from './chat.gateway';
 import { TokensModule } from 'tokens/tokens.module';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from 'apps/user/src/app.module';
+import { UsersModule } from 'apps/user/src/infrastructure/app.module';
 import { fullChatStub, messageStub, requestUserStub } from './test/stubs';
 import { CommandBusMock, UserSocketMock } from './test/mocks';
 import { GetMessagesQuery, ValidateChatMemberQuery } from './queries';

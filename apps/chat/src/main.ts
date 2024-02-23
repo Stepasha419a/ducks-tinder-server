@@ -1,11 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { ChatModule } from './chat.module';
+import { ChatModule } from './infrastructure/chat.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RabbitMQService } from '@app/common/rabbitmq';
 
 async function bootstrap() {
   const app = await NestFactory.create(ChatModule);
+
+  app.enableCors({
+    origin: true,
+    methods: 'GET,PUT,POST,DELETE,PATCH',
+    credentials: true,
+  });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
