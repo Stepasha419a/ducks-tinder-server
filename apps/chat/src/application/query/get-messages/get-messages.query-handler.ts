@@ -3,11 +3,11 @@ import { GetMessagesQuery } from './get-messages.query';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { Message } from 'apps/chat/src/domain';
-import { MessagesPaginationValueObject } from 'apps/chat/src/domain/value-object';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { SERVICES } from '@app/common/shared/constant';
+import { DataMessageView, MessagesPaginationView } from '../../views';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler
@@ -18,9 +18,7 @@ export class GetMessagesQueryHandler
     @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
   ) {}
 
-  async execute(
-    query: GetMessagesQuery,
-  ): Promise<MessagesPaginationValueObject> {
+  async execute(query: GetMessagesQuery): Promise<MessagesPaginationView> {
     const { userId, dto } = query;
 
     const chat = await this.repository.findOneHavingMember(dto.chatId, userId);
@@ -36,28 +34,34 @@ export class GetMessagesQueryHandler
 
     const messages = await this.repository.findMessages(chat.id, dto);
 
-    const userIds = this.getUniqueUserIds(messages, userId);
+    const userIds = this.getUniqueUserIds(messages);
     const users = await firstValueFrom<UserAggregate[]>(
       this.userClient.send('get_many_users', userIds),
     );
 
-    const messagesPaginationAggregate = MessagesPaginationValueObject.create({
-      chatId: chat.id,
-      messages,
-      users,
+    const dataMessages: DataMessageView[] = messages.map((message) => {
+      const user = users.find((user) => user.id === message.userId);
+      const avatar = user.pictures[0]?.name || null;
+      return {
+        ...message,
+        avatar,
+        name: user.name,
+      };
     });
 
-    return messagesPaginationAggregate;
+    const messagesPagination: MessagesPaginationView = {
+      chatId: chat.id,
+      messages: dataMessages,
+    };
+
+    return messagesPagination;
   }
 
-  private getUniqueUserIds(messages: Message[], currentUserId: string) {
+  private getUniqueUserIds(messages: Message[]) {
     const userIds = [];
 
     messages.forEach((message) => {
-      if (
-        !userIds.includes(message.userId) &&
-        message.userId !== currentUserId
-      ) {
+      if (!userIds.includes(message.userId)) {
         userIds.push(message.userId);
       }
     });

@@ -21,10 +21,8 @@ import {
 } from './query';
 import { ChatAggregate, MessageAggregate } from 'apps/chat/src/domain';
 import { DeleteMessageCommand } from './command/delete-message';
-import {
-  MessagesPaginationValueObject,
-  ChatPaginationValueObject,
-} from 'apps/chat/src/domain/value-object';
+import { ChatPaginationValueObject } from 'apps/chat/src/domain/value-object';
+import { MessagesPaginationView } from './views';
 
 @Injectable()
 export class ChatFacade {
@@ -117,10 +115,9 @@ export class ChatFacade {
   }
 
   private getMessages(userId: string, dto: GetMessagesDto) {
-    return this.queryBus.execute<
-      GetMessagesQuery,
-      MessagesPaginationValueObject
-    >(new GetMessagesQuery(userId, dto));
+    return this.queryBus.execute<GetMessagesQuery, MessagesPaginationView>(
+      new GetMessagesQuery(userId, dto),
+    );
   }
 
   private getChatMemberIds(userId: string, chatId: string) {

@@ -1,32 +1,25 @@
 import { Message } from 'apps/chat/src/domain';
+import { ChatPaginationValueObject } from 'apps/chat/src/domain/value-object';
 import {
-  ChatPaginationValueObject,
-  MessagesPaginationValueObject,
-} from 'apps/chat/src/domain/value-object';
-import { ShortUser } from 'apps/user/src/infrastructure/user/mapper/interface/short-user';
-import { User } from 'apps/user/src/domain/user';
-import { PictureValueObject } from 'apps/user/src/domain/user/value-object';
-import { UserPictureInfo } from 'apps/user/src/infrastructure/user/mapper';
-import {
-  ChatMessage,
   ShortChatPagination,
+  ShortDataMessage,
   ShortMessage,
   ShortMessagesPagination,
 } from './interface';
+import {
+  DataMessageView,
+  MessagesPaginationView,
+} from '../../application/views';
 
 export class ChatMapper {
   getShortMessagesPagination(
-    messagesPagination: MessagesPaginationValueObject,
+    messagesPagination: MessagesPaginationView,
   ): ShortMessagesPagination {
     const messages = messagesPagination.messages.map((message) =>
-      this.getChatMessage(message),
+      this.getShortDataMessage(message),
     );
 
-    const users = messagesPagination.users.map((user) =>
-      this.getShortUser(user),
-    );
-
-    return { ...messagesPagination, messages, users };
+    return { ...messagesPagination, messages };
   }
 
   getShortChatPagination(
@@ -49,55 +42,16 @@ export class ChatMapper {
     };
   }
 
-  private getChatMessage(message: Message): ChatMessage {
+  private getShortDataMessage(message: DataMessageView): ShortDataMessage {
     return {
       id: message.id,
       text: message.text,
       userId: message.userId,
       replied: message.replied,
+      avatar: message.avatar,
+      name: message.name,
       updatedAt: message.updatedAt,
       createdAt: message.createdAt,
-    };
-  }
-
-  private getShortUser(user: User): ShortUser {
-    const pictures = user.pictures.map((picture) =>
-      this.getUserPictureInfo(picture),
-    );
-
-    return {
-      id: user.id,
-      name: user.name,
-      age: user.age,
-      description: user.description,
-      isActivated: user.isActivated,
-
-      interests: user.interests,
-      zodiacSign: user.zodiacSign,
-      education: user.education,
-      alcoholAttitude: user.alcoholAttitude,
-      chronotype: user.chronotype,
-      foodPreference: user.foodPreference,
-      pet: user.pet,
-      smokingAttitude: user.smokingAttitude,
-      socialNetworksActivity: user.socialNetworksActivity,
-      trainingAttitude: user.trainingAttitude,
-      childrenAttitude: user.childrenAttitude,
-      personalityType: user.personalityType,
-      communicationStyle: user.communicationStyle,
-      attentionSign: user.attentionSign,
-
-      place: user.place,
-
-      pictures,
-    };
-  }
-
-  private getUserPictureInfo(picture: PictureValueObject): UserPictureInfo {
-    return {
-      id: picture.id,
-      name: picture.name,
-      order: picture.order,
     };
   }
 }

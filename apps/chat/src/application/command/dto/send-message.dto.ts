@@ -1,10 +1,4 @@
-import {
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-  ValidateIf,
-} from 'class-validator';
+import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class SendMessageDto {
   @IsUUID()
