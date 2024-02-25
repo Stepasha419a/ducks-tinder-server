@@ -51,8 +51,9 @@ export class ChatGateway {
   @SubscribeMessage('connect-chat')
   async handleConnectChat(
     @ConnectedSocket() client: UserSocket,
-    @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+    @User({ isSocket: true }, new ParseUUIDPipe({ version: '4' }))
+    userId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
     await this.facade.queries.validateChatMember(userId, chatId);
     await this.facade.commands.saveLastSeen(userId, chatId);
@@ -64,7 +65,7 @@ export class ChatGateway {
   @SubscribeMessage('disconnect-chat')
   async handleDisconnectChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
     await this.facade.commands.saveLastSeen(userId, chatId);
   }
@@ -88,7 +89,7 @@ export class ChatGateway {
   @SubscribeMessage('delete-message')
   async deleteMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) messageId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) messageId: string,
   ) {
     const message = await this.facade.commands.deleteMessage(userId, messageId);
     const userIds = await this.facade.queries.getChatMemberIds(
@@ -118,7 +119,7 @@ export class ChatGateway {
   @SubscribeMessage('block-chat')
   async blockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
     const chat = await this.facade.commands.blockChat(userId, chatId);
     const userIds = await this.facade.queries.getChatMemberIds(userId, chat.id);
@@ -130,7 +131,7 @@ export class ChatGateway {
   @SubscribeMessage('unblock-chat')
   async unblockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
     const chat = await this.facade.commands.unblockChat(userId, chatId);
     const userIds = await this.facade.queries.getChatMemberIds(userId, chat.id);
@@ -142,7 +143,7 @@ export class ChatGateway {
   @SubscribeMessage('delete-chat')
   async deleteChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
-    @MessageBody('id', new ParseUUIDPipe({ version: '4' })) chatId: string,
+    @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
     const userIds = await this.facade.queries.getChatMemberIds(userId, chatId);
     const chat = await this.facade.commands.deleteChat(userId, chatId);
