@@ -196,6 +196,7 @@ export class ChatAdapter implements ChatRepository {
           take: 1,
           where: { id: { not: userId } },
           select: {
+            id: true,
             name: true,
             pictures: { take: 1, orderBy: { order: 'asc' } },
           },
@@ -230,6 +231,7 @@ export class ChatAdapter implements ChatRepository {
             take: 1,
             where: { id: { not: userId } },
             select: {
+              id: true,
               name: true,
               pictures: { take: 1, orderBy: { order: 'asc' } },
             },
@@ -253,7 +255,9 @@ export class ChatAdapter implements ChatRepository {
         ? this.getChatVisitValueObject(chat.chatVisits[0])
         : null;
 
-      const avatar = chat.users[0]?.pictures?.[0]?.name || null;
+      const pictureName = chat.users[0]?.pictures?.[0]?.name;
+
+      const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
 
       return ChatPaginationValueObject.create({
         id: chat.id,

@@ -41,7 +41,10 @@ export class GetMessagesQueryHandler
 
     const dataMessages: DataMessageView[] = messages.map((message) => {
       const user = users.find((user) => user.id === message.userId);
-      const avatar = user.pictures[0]?.name || null;
+      const avatar = user.pictures[0]?.name
+        ? `${user.id}/${user.pictures[0].name}`
+        : null;
+
       return {
         ...message,
         avatar,
