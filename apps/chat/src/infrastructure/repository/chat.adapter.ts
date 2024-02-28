@@ -9,6 +9,7 @@ import { ChatSelector } from './chat.selector';
 import {
   ChatVisitValueObject,
   ChatPaginationValueObject,
+  UserMessageValueObject,
 } from 'apps/chat/src/domain/value-object';
 
 @Injectable()
@@ -190,7 +191,7 @@ export class ChatAdapter implements ChatRepository {
         messages: {
           take: 1,
           orderBy: { createdAt: 'desc' },
-          select: ChatSelector.selectMessage(),
+          select: ChatSelector.selectUserMessage(),
         },
         users: {
           take: 1,
@@ -225,7 +226,7 @@ export class ChatAdapter implements ChatRepository {
           messages: {
             take: 1,
             orderBy: { createdAt: 'desc' },
-            select: ChatSelector.selectMessage(),
+            select: ChatSelector.selectUserMessage(),
           },
           users: {
             take: 1,
@@ -248,7 +249,7 @@ export class ChatAdapter implements ChatRepository {
 
     const paginationChatAggregates = chats.map((chat) => {
       const lastMessage = chat.messages[0]
-        ? this.getMessageAggregate(chat.messages[0])
+        ? this.toUserMessage(chat.messages[0])
         : null;
 
       const chatVisit = chat.chatVisits[0]
@@ -377,6 +378,16 @@ export class ChatAdapter implements ChatRepository {
     });
 
     return Boolean(deletedMessage);
+  }
+
+  private toUserMessage(message): UserMessageValueObject {
+    console.log(message);
+    return UserMessageValueObject.create({
+      ...message,
+      name: message.user.name,
+      createdAt: message.createdAt.toISOString(),
+      updatedAt: message.updatedAt.toISOString(),
+    });
   }
 
   private getMessageAggregate(message): MessageAggregate {

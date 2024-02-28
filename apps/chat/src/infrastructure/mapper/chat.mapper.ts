@@ -1,9 +1,11 @@
-import { Message } from 'apps/chat/src/domain';
-import { ChatPaginationValueObject } from 'apps/chat/src/domain/value-object';
+import {
+  ChatPaginationValueObject,
+  UserMessageValueObject,
+} from 'apps/chat/src/domain/value-object';
 import {
   ShortChatPagination,
   ShortDataMessage,
-  ShortMessage,
+  ShortUserMessage,
   ShortMessagesPagination,
 } from './interface';
 import {
@@ -26,17 +28,20 @@ export class ChatMapper {
     chatPagination: ChatPaginationValueObject,
   ): ShortChatPagination {
     const lastMessage = chatPagination.lastMessage
-      ? this.getShortMessage(chatPagination.lastMessage)
+      ? this.getShortUserMessage(chatPagination.lastMessage)
       : null;
 
     return { ...chatPagination, lastMessage };
   }
 
-  private getShortMessage(message: Message): ShortMessage {
+  private getShortUserMessage(
+    message: UserMessageValueObject,
+  ): ShortUserMessage {
     return {
       id: message.id,
       text: message.text,
       userId: message.userId,
+      name: message.name,
       updatedAt: message.updatedAt,
       createdAt: message.createdAt,
     };

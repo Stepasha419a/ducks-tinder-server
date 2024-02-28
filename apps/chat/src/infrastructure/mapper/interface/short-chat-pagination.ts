@@ -1,5 +1,5 @@
 import { ChatVisitValueObject } from 'apps/chat/src/domain/value-object';
-import { ShortMessage } from './short-message';
+import { ShortMessage } from './short-user-message';
 
 export interface ShortChatPagination {
   id: string;
