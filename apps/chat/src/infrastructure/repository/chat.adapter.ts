@@ -381,7 +381,6 @@ export class ChatAdapter implements ChatRepository {
   }
 
   private toUserMessage(message): UserMessageValueObject {
-    console.log(message);
     return UserMessageValueObject.create({
       ...message,
       name: message.user.name,
