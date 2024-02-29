@@ -1,6 +1,6 @@
-import { DataMessageView } from './data-message.view';
+import { Message } from '../../domain';
 
 export class MessagesPaginationView {
   chatId: string;
-  messages: DataMessageView[];
+  messages: Message[];
 }

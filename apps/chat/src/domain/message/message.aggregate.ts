@@ -9,9 +9,9 @@ import {
 import { DomainError } from '@app/common/shared/error';
 import { Message } from './message.interface';
 import { Type } from 'class-transformer';
-import { RepliedMessage, RepliedMessageDto } from './replied-message';
 import { MessageServices } from './services';
 import { randomUUID } from 'crypto';
+import { RepliedMessageValueObject } from '../value-object';
 
 export class MessageAggregate extends MessageServices implements Message {
   @IsUUID()
@@ -21,6 +21,14 @@ export class MessageAggregate extends MessageServices implements Message {
   @IsNotEmpty()
   text: string;
 
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  avatar: string | null;
+
   @IsUUID()
   userId: string;
 
@@ -29,8 +37,8 @@ export class MessageAggregate extends MessageServices implements Message {
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => RepliedMessageDto)
-  replied?: RepliedMessage;
+  @Type(() => RepliedMessageValueObject)
+  replied?: RepliedMessageValueObject;
 
   @IsString()
   @IsNotEmpty()

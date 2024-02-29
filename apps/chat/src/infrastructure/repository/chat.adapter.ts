@@ -9,7 +9,6 @@ import { ChatSelector } from './chat.selector';
 import {
   ChatVisitValueObject,
   ChatPaginationValueObject,
-  UserMessageValueObject,
 } from 'apps/chat/src/domain/value-object';
 
 @Injectable()
@@ -191,7 +190,7 @@ export class ChatAdapter implements ChatRepository {
         messages: {
           take: 1,
           orderBy: { createdAt: 'desc' },
-          select: ChatSelector.selectUserMessage(),
+          select: ChatSelector.selectMessage(),
         },
         users: {
           take: 1,
@@ -226,7 +225,7 @@ export class ChatAdapter implements ChatRepository {
           messages: {
             take: 1,
             orderBy: { createdAt: 'desc' },
-            select: ChatSelector.selectUserMessage(),
+            select: ChatSelector.selectMessage(),
           },
           users: {
             take: 1,
@@ -249,7 +248,7 @@ export class ChatAdapter implements ChatRepository {
 
     const paginationChatAggregates = chats.map((chat) => {
       const lastMessage = chat.messages[0]
-        ? this.toUserMessage(chat.messages[0])
+        ? this.getMessageAggregate(chat.messages[0])
         : null;
 
       const chatVisit = chat.chatVisits[0]
@@ -257,17 +256,18 @@ export class ChatAdapter implements ChatRepository {
         : null;
 
       const pictureName = chat.users[0]?.pictures?.[0]?.name;
-
       const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
+
+      const name = chat.users[0].name;
 
       return ChatPaginationValueObject.create({
         id: chat.id,
         avatar,
-        name: chat.users[0].name,
-        blocked: chat.blocked,
-        blockedById: chat.blockedById,
+        name,
         chatVisit,
         lastMessage,
+        blocked: chat.blocked,
+        blockedById: chat.blockedById,
       });
     });
 
@@ -380,18 +380,14 @@ export class ChatAdapter implements ChatRepository {
     return Boolean(deletedMessage);
   }
 
-  private toUserMessage(message): UserMessageValueObject {
-    return UserMessageValueObject.create({
-      ...message,
-      name: message.user.name,
-      createdAt: message.createdAt.toISOString(),
-      updatedAt: message.updatedAt.toISOString(),
-    });
-  }
-
   private getMessageAggregate(message): MessageAggregate {
+    const pictureName = message.user.pictures[0]?.name;
+    const avatar = pictureName ? `${message.userId}/${pictureName}` : null;
+
     return MessageAggregate.create({
       ...message,
+      name: message.user.name,
+      avatar,
       createdAt: message.createdAt.toISOString(),
       updatedAt: message.updatedAt.toISOString(),
     });

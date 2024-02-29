@@ -9,7 +9,6 @@ import { chatFacadeFactory } from './facade';
 import { CHAT_COMMAND_HANDLERS } from 'apps/chat/src/application/command';
 import { CHAT_QUERY_HANDLERS } from 'apps/chat/src/application/query';
 import { ChatFacade } from '../application';
-import { ChatMapper } from './mapper/chat.mapper';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RabbitMQModule } from '@app/common/rabbitmq';
@@ -24,7 +23,6 @@ import { SERVICES } from '@app/common/shared/constant';
     ChatGateway,
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,
-    ChatMapper,
     { provide: ChatRepository, useClass: ChatAdapter },
     {
       provide: ChatFacade,

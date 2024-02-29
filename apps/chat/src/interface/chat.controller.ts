@@ -16,15 +16,11 @@ import {
   EditMessageDto,
   SendMessageDto,
 } from 'apps/chat/src/application/command';
-import { ChatMapper } from 'apps/chat/src/infrastructure/mapper';
 import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('chat')
 export class ChatController {
-  constructor(
-    private readonly facade: ChatFacade,
-    private readonly mapper: ChatMapper,
-  ) {}
+  constructor(private readonly facade: ChatFacade) {}
 
   @Get()
   async getChats(
@@ -32,11 +28,7 @@ export class ChatController {
     @Query()
     query: PaginationDto,
   ) {
-    const chatPagination = await this.facade.queries.getChats(userId, query);
-
-    return chatPagination.map((chat) =>
-      this.mapper.getShortChatPagination(chat),
-    );
+    return this.facade.queries.getChats(userId, query);
   }
 
   @Get(':id/messages')
@@ -46,14 +38,7 @@ export class ChatController {
     query: PaginationDto,
     @Param('id', ParseUUIDPipe) chatId: string,
   ) {
-    const messagesPaginationValueObject = await this.facade.queries.getMessages(
-      userId,
-      { ...query, chatId },
-    );
-
-    return this.mapper.getShortMessagesPagination(
-      messagesPaginationValueObject,
-    );
+    return this.facade.queries.getMessages(userId, { ...query, chatId });
   }
 
   @Post('TEST/message')

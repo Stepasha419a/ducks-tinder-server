@@ -10,7 +10,7 @@ import {
 import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { ChatVisitValueObject } from './chat-visit.value-object';
-import { UserMessageValueObject } from './user-message.value-object';
+import { Message, MessageAggregate } from '../message';
 
 export class ChatPaginationValueObject {
   @IsUUID()
@@ -27,8 +27,8 @@ export class ChatPaginationValueObject {
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => UserMessageValueObject)
-  lastMessage?: UserMessageValueObject;
+  @Type(() => MessageAggregate)
+  lastMessage?: Message;
 
   @IsOptional()
   @IsNotEmptyObject()
