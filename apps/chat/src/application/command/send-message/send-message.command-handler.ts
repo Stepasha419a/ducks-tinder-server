@@ -38,8 +38,9 @@ export class SendMessageCommandHandler
       text: dto.text,
       userId,
     });
-    await this.repository.saveMessage(message);
 
-    return message;
+    const savedMessage = await this.repository.saveMessage(message);
+
+    return savedMessage;
   }
 }
