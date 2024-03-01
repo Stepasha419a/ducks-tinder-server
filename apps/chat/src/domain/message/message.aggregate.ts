@@ -21,12 +21,14 @@ export class MessageAggregate extends MessageServices implements Message {
   @IsNotEmpty()
   text: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @IsOptional()
   @IsString()
+  @IsNotEmpty()
   avatar: string | null;
 
   @IsUUID()

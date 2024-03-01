@@ -51,6 +51,7 @@ export class ChatAdapter implements ChatRepository {
         data: {
           text: message.text,
         },
+        select: ChatSelector.selectMessage(),
       });
 
       return this.getMessageAggregate(updatedMessage);
@@ -66,6 +67,7 @@ export class ChatAdapter implements ChatRepository {
         createdAt: message.createdAt,
         updatedAt: message.updatedAt,
       },
+      select: ChatSelector.selectMessage(),
     });
 
     return this.getMessageAggregate(saved);
@@ -292,6 +294,7 @@ export class ChatAdapter implements ChatRepository {
       where: {
         id: messageId,
       },
+      select: ChatSelector.selectMessage(),
     });
 
     if (!message) {
