@@ -331,7 +331,7 @@ export class ChatAdapter implements ChatRepository {
         chatId,
       },
       select: ChatSelector.selectMessage(),
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       skip: dto.skip,
       take: dto.take,
     });
