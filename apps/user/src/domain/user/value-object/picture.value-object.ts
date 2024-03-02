@@ -39,9 +39,6 @@ export class PictureValueObject {
 
     Object.assign(_picture, picture);
 
-    _picture.updatedAt = _picture?.id
-      ? new Date().toISOString()
-      : _picture.updatedAt;
     const errors = validateSync(_picture, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'Picture is invalid');

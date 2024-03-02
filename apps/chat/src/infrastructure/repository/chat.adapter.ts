@@ -50,6 +50,7 @@ export class ChatAdapter implements ChatRepository {
         where: { id: existingMessage.id },
         data: {
           text: message.text,
+          updatedAt: new Date().toISOString(),
         },
         select: ChatSelector.selectMessage(),
       });

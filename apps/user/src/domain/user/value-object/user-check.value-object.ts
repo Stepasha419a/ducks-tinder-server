@@ -12,16 +12,11 @@ export class UserCheckValueObject {
   @IsNotEmpty()
   createdAt = new Date().toISOString();
 
-  @IsString()
-  @IsNotEmpty()
-  updatedAt = new Date().toISOString();
-
   static create(userCheck: Partial<UserCheckValueObject>) {
     const _userCheck = new UserCheckValueObject();
 
     Object.assign(_userCheck, userCheck);
 
-    _userCheck.updatedAt = new Date().toISOString();
     const errors = validateSync(_userCheck, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'User check is invalid');

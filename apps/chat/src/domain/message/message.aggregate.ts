@@ -59,9 +59,6 @@ export class MessageAggregate extends MessageServices implements Message {
 
     Object.assign(_message, message);
 
-    _message.updatedAt = _message?.id
-      ? new Date().toISOString()
-      : _message.updatedAt;
     const errors = validateSync(_message, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'Message is invalid');

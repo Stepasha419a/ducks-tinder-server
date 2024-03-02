@@ -21,8 +21,7 @@ export class TokenAdapter implements TokenRepository {
         where: { id },
         data: {
           refreshToken: toUpdate.value,
-          createdAt: toUpdate.createdAt,
-          updatedAt: toUpdate.updatedAt,
+          updatedAt: new Date().toISOString(),
         },
       });
 

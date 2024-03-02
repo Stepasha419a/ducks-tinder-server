@@ -196,8 +196,6 @@ export class UserAggregate extends UserServices implements User {
 
     Object.assign(_user, user);
 
-    _user.updatedAt = _user?.id ? new Date().toISOString() : _user.updatedAt;
-
     const errors = validateSync(_user, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'User is invalid');

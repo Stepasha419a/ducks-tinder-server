@@ -27,9 +27,6 @@ export class RefreshTokenValueObject {
 
     Object.assign(_refreshToken, refreshToken);
 
-    _refreshToken.updatedAt = _refreshToken?.id
-      ? new Date().toISOString()
-      : _refreshToken.updatedAt;
     const errors = validateSync(_refreshToken, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'Refresh token is invalid');

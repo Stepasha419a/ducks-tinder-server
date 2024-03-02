@@ -39,7 +39,6 @@ export class PlaceValueObject {
 
     Object.assign(_place, place);
 
-    _place.updatedAt = _place?.id ? new Date().toISOString() : _place.updatedAt;
     const errors = validateSync(_place, { whitelist: true });
     if (errors.length) {
       throw new DomainError(errors, 'Place is invalid');

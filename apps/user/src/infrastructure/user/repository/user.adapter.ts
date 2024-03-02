@@ -52,7 +52,7 @@ export class UserAdapter implements UserRepository {
 
       const updatedUser = await this.databaseService.user.update({
         where: { id: user.id },
-        data: dataToUpdate,
+        data: { ...dataToUpdate, updatedAt: new Date().toISOString() },
         include: UserSelector.selectUser(),
       });
 
@@ -121,7 +121,10 @@ export class UserAdapter implements UserRepository {
         if (newPicture.order !== picture.order) {
           return this.databaseService.picture.update({
             where: { id: picture.id },
-            data: { order: newPicture.order },
+            data: {
+              order: newPicture.order,
+              updatedAt: new Date().toISOString(),
+            },
           });
         }
       }),
@@ -141,7 +144,13 @@ export class UserAdapter implements UserRepository {
         updatedAt: place.updatedAt,
         user: { connect: { id: user.id } },
       },
-      update: place,
+      update: {
+        name: place.name,
+        address: place.address,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        updatedAt: new Date().toISOString(),
+      },
     });
   }
 
@@ -563,7 +572,6 @@ export class UserAdapter implements UserRepository {
     return UserCheckValueObject.create({
       ...userCheck,
       createdAt: userCheck.createdAt.toISOString(),
-      updatedAt: userCheck.updatedAt.toISOString(),
     });
   }
 

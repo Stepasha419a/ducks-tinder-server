@@ -34,8 +34,8 @@ export class EditMessageCommandHandler
     }
 
     await message.setText(dto.text);
-    await this.repository.saveMessage(message);
+    const savedMessage = await this.repository.saveMessage(message);
 
-    return message;
+    return savedMessage;
   }
 }
