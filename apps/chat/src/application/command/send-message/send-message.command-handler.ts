@@ -32,6 +32,7 @@ export class SendMessageCommandHandler
       chatId: chat.id,
       replied: replied && {
         id: replied.id,
+        name: replied.name,
         text: replied.text,
         userId: replied.userId,
       },

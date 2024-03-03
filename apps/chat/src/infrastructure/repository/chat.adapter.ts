@@ -9,6 +9,7 @@ import { ChatSelector } from './chat.selector';
 import {
   ChatVisitValueObject,
   ChatPaginationValueObject,
+  RepliedMessageValueObject,
 } from 'apps/chat/src/domain/value-object';
 
 @Injectable()
@@ -390,6 +391,7 @@ export class ChatAdapter implements ChatRepository {
 
     return MessageAggregate.create({
       ...message,
+      replied: this.getRepliedMessageValueObject(message.replied),
       name: message.user.name,
       avatar,
       createdAt: message.createdAt.toISOString(),
@@ -401,6 +403,21 @@ export class ChatAdapter implements ChatRepository {
     return ChatVisitValueObject.create({
       ...chatVisit,
       lastSeen: chatVisit.lastSeen.toISOString(),
+    });
+  }
+
+  private getRepliedMessageValueObject(
+    repliedMessage,
+  ): RepliedMessageValueObject {
+    if (!repliedMessage) {
+      return null;
+    }
+
+    const name = repliedMessage?.user.name;
+
+    return RepliedMessageValueObject.create({
+      ...repliedMessage,
+      name,
     });
   }
 }

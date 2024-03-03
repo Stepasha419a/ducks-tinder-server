@@ -14,6 +14,11 @@ export class ChatSelector {
           id: true,
           text: true,
           userId: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
       user: {

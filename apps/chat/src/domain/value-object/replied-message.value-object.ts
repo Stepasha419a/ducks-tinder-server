@@ -8,6 +8,10 @@ export class RepliedMessageValueObject {
 
   @IsString()
   @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
   text: string;
 
   @IsUUID()
