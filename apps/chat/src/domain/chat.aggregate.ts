@@ -1,4 +1,11 @@
-import { IsBoolean, IsOptional, IsUUID, validateSync } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  validateSync,
+} from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 import { Chat } from './chat.interface';
 import { ChatServices } from './services';
@@ -14,6 +21,10 @@ export class ChatAggregate extends ChatServices implements Chat {
   @IsOptional()
   @IsUUID()
   blockedById?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  createdAt = new Date().toISOString();
 
   private constructor() {
     super();

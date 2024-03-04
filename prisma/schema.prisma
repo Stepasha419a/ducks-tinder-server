@@ -275,6 +275,8 @@ model Chat {
   blockedById String?
   chatVisits  ChatVisit[]
 
+  createdAt DateTime @default(now())
+
   @@map("chats")
 }
 

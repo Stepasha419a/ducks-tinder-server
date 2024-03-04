@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ChatRepository } from '../../domain/repository/chat.repository';
 import { DatabaseService } from '@app/common/database';
-import { ChatAggregate } from 'apps/chat/src/domain/chat.aggregate';
+import { ChatAggregate } from 'apps/chat/src/domain';
 import { PaginationDto } from '@app/common/shared/dto';
 import { MessageAggregate } from 'apps/chat/src/domain';
 import { ChatSelector } from './chat.selector';
@@ -30,7 +30,7 @@ export class ChatAdapter implements ChatRepository {
         data: dataToUpdate,
       });
 
-      return ChatAggregate.create(updatedChat);
+      return this.getChatAggregate(updatedChat);
     }
 
     const saved = await this.databaseService.chat.create({
@@ -38,10 +38,11 @@ export class ChatAdapter implements ChatRepository {
         id: chat.id,
         blocked: chat.blocked,
         blockedById: chat.blockedById,
+        createdAt: chat.createdAt,
       },
     });
 
-    return ChatAggregate.create(saved);
+    return this.getChatAggregate(saved);
   }
 
   async saveMessage(message: MessageAggregate): Promise<MessageAggregate> {
@@ -115,7 +116,7 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    return ChatAggregate.create(existingChat);
+    return this.getChatAggregate(existingChat);
   }
 
   async findOneByUserIds(userIds: string[]): Promise<ChatAggregate | null> {
@@ -131,7 +132,7 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    return ChatAggregate.create(existingChat);
+    return this.getChatAggregate(existingChat);
   }
 
   async findOneHavingMember(
@@ -150,7 +151,7 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    return ChatAggregate.create(existingChat);
+    return this.getChatAggregate(existingChat);
   }
 
   async findMany(
@@ -209,6 +210,7 @@ export class ChatAdapter implements ChatRepository {
         chatVisits: { where: { userId } },
         blocked: true,
         blockedById: true,
+        createdAt: true,
       },
     });
 
@@ -244,6 +246,7 @@ export class ChatAdapter implements ChatRepository {
           chatVisits: { where: { userId } },
           blocked: true,
           blockedById: true,
+          createdAt: true,
         },
       });
 
@@ -272,6 +275,7 @@ export class ChatAdapter implements ChatRepository {
         lastMessage,
         blocked: chat.blocked,
         blockedById: chat.blockedById,
+        createdAt: chat.createdAt.toISOString(),
       });
     });
 
@@ -363,7 +367,7 @@ export class ChatAdapter implements ChatRepository {
       data: { users: { connect: { id: userId } } },
     });
 
-    return ChatAggregate.create(existingChat);
+    return this.getChatAggregate(existingChat);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -418,6 +422,13 @@ export class ChatAdapter implements ChatRepository {
     return RepliedMessageValueObject.create({
       ...repliedMessage,
       name,
+    });
+  }
+
+  private getChatAggregate(chat): ChatAggregate {
+    return ChatAggregate.create({
+      ...chat,
+      createdAt: chat.createdAt.toISOString(),
     });
   }
 }

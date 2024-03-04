@@ -42,6 +42,10 @@ export class ChatPaginationValueObject {
   @IsUUID()
   blockedById?: string;
 
+  @IsString()
+  @IsNotEmpty()
+  createdAt = new Date().toISOString();
+
   static create(chat: Partial<ChatPaginationValueObject>) {
     const _chat = new ChatPaginationValueObject();
 
