@@ -21,14 +21,16 @@ import { User } from '@app/common/shared/decorator';
 import { UserFacade } from '../../application/user';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserAggregate } from '../../domain/user';
-import { UserMapper } from '../../infrastructure/user/mapper';
+import {
+  ShortUserWithDistance,
+  UserMapper,
+  WithoutPrivateFields,
+} from '../../infrastructure/user/mapper';
 import {
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
 } from '../../application/user/command';
-import { WithoutPrivateFields } from '../../infrastructure/user/mapper';
-import { ShortUserWithDistance } from '../../infrastructure/user/mapper/interface/short-user-with-distance';
 import { CONSTANT } from '../../infrastructure/user/common/constant';
 
 @Controller('user')

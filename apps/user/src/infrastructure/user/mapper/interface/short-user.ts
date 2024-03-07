@@ -1,5 +1,5 @@
-import { PlaceValueObject } from 'apps/user/src/domain/user/value-object';
 import { UserPictureInfo } from './user-picture-info';
+import { ShortUserPlaceInfo } from './short-user-place-info';
 
 export interface ShortUser {
   id: string;
@@ -25,5 +25,5 @@ export interface ShortUser {
 
   pictures: UserPictureInfo[];
 
-  place: PlaceValueObject;
+  place: ShortUserPlaceInfo;
 }

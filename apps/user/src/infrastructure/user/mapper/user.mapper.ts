@@ -1,7 +1,14 @@
 import { User } from 'apps/user/src/domain/user';
-import { UserPictureInfo, WithoutPrivateFields } from './interface';
+import {
+  ShortUserPlaceInfo,
+  UserPictureInfo,
+  WithoutPrivateFields,
+} from './interface';
 import { ShortUserWithDistance } from './interface/short-user-with-distance';
-import { PictureValueObject } from 'apps/user/src/domain/user/value-object';
+import {
+  PictureValueObject,
+  PlaceValueObject,
+} from 'apps/user/src/domain/user/value-object';
 
 export class UserMapper {
   getWithoutPrivateFields(user: User): WithoutPrivateFields {
@@ -48,6 +55,8 @@ export class UserMapper {
       this.getUserPictureInfo(picture),
     );
 
+    const place = this.getShortUserPictureInfo(user.place);
+
     return {
       id: user.id,
       name: user.name,
@@ -71,7 +80,7 @@ export class UserMapper {
       communicationStyle: user.communicationStyle,
       attentionSign: user.attentionSign,
 
-      place: user.place,
+      place,
 
       pictures,
     };
@@ -82,6 +91,14 @@ export class UserMapper {
       id: picture.id,
       name: picture.name,
       order: picture.order,
+    };
+  }
+
+  private getShortUserPictureInfo(
+    picture: PlaceValueObject,
+  ): ShortUserPlaceInfo {
+    return {
+      name: picture.name,
     };
   }
 }
