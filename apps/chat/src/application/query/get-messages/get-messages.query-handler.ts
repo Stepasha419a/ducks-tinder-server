@@ -4,7 +4,7 @@ import { Inject, NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { ClientProxy } from '@nestjs/microservices';
 import { SERVICES } from '@app/common/shared/constant';
-import { MessagesPaginationView } from '../../views';
+import { MessagesPaginationView } from '../../view';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler

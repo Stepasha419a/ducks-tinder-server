@@ -22,7 +22,7 @@ import {
 import { ChatAggregate, MessageAggregate } from 'apps/chat/src/domain';
 import { DeleteMessageCommand } from './command/delete-message';
 import { ChatPaginationValueObject } from 'apps/chat/src/domain/value-object';
-import { MessagesPaginationView } from './views';
+import { MessagesPaginationView } from './view';
 
 @Injectable()
 export class ChatFacade {
