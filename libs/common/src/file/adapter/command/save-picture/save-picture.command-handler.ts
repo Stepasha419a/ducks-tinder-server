@@ -20,7 +20,8 @@ export class SavePictureCommandHandler
         '..',
         '..',
         '..',
-        `static\\${userId}`,
+        'static',
+        userId,
       );
       await ensureDir(folderPath);
 
