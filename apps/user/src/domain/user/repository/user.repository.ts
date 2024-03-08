@@ -1,5 +1,9 @@
 import { UserAggregate } from 'apps/user/src/domain/user';
-import { PlaceValueObject, UserCheckValueObject } from '../value-object';
+import {
+  PictureValueObject,
+  PlaceValueObject,
+  UserCheckValueObject,
+} from '../value-object';
 
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
@@ -8,6 +12,8 @@ export abstract class UserRepository {
   abstract findMany(ids: string[]): Promise<UserAggregate[]>;
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract findPairs(id: string): Promise<UserAggregate[]>;
+  abstract findPairsCount(id: string): Promise<number>;
+  abstract findFirstPairsPicture(id: string): Promise<PictureValueObject>;
   abstract findCheckedUserIds(id: string, checkId: string): Promise<string[]>;
   abstract findUserNotPairCheck(
     checkedByUserId: string,

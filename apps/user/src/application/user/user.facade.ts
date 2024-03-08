@@ -15,10 +15,16 @@ import {
   SavePictureCommand,
   PatchUserCommand,
 } from './command';
-import { GetManyUsersQuery, GetPairsQuery, GetSortedQuery } from './query';
+import {
+  GetManyUsersQuery,
+  GetPairsInfoQuery,
+  GetPairsQuery,
+  GetSortedQuery,
+} from './query';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { UserCheckValueObject } from 'apps/user/src/domain/user/value-object';
+import { PairsInfoView } from './view';
 
 @Injectable()
 export class UserFacade {
@@ -52,6 +58,7 @@ export class UserFacade {
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
     getPairs: (id: string) => this.getPairs(id),
+    getPairsInfo: (id: string) => this.getPairsInfo(id),
   };
 
   dev = {
@@ -134,6 +141,12 @@ export class UserFacade {
   private getPairs(id: string) {
     return this.queryBus.execute<GetPairsQuery, UserAggregate[]>(
       new GetPairsQuery(id),
+    );
+  }
+
+  private getPairsInfo(id: string) {
+    return this.queryBus.execute<GetPairsInfoQuery, PairsInfoView>(
+      new GetPairsInfoQuery(id),
     );
   }
 

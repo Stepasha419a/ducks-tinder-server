@@ -32,6 +32,7 @@ import {
   PatchUserPlaceDto,
 } from '../../application/user/command';
 import { CONSTANT } from '../../infrastructure/user/common/constant';
+import { PairsInfoView } from '../../application/user/view';
 
 @Controller('user')
 export class UserController {
@@ -163,6 +164,12 @@ export class UserController {
     );
 
     return pairs;
+  }
+
+  @Get('pairs/info')
+  @HttpCode(HttpStatus.OK)
+  getPairsInfo(@User(ParseUUIDPipe) userId: string): Promise<PairsInfoView> {
+    return this.facade.queries.getPairsInfo(userId);
   }
 
   @Post('pairs/:id')

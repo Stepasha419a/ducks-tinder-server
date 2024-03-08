@@ -381,6 +381,20 @@ export class UserAdapter implements UserRepository {
     });
   }
 
+  findPairsCount(id: string): Promise<number> {
+    return this.databaseService.user.count({
+      where: { pairFor: { some: { id } } },
+    });
+  }
+
+  async findFirstPairsPicture(id: string): Promise<PictureValueObject> {
+    const picture = await this.databaseService.picture.findFirst({
+      where: { order: 0, user: { pairFor: { some: { id } } } },
+    });
+
+    return this.getPictureValueObject(picture);
+  }
+
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
     // TODO: optimize by not getting an array with many checks (too big arrays)
     const checkedUsers = await this.databaseService.checkedUsers.findMany({
