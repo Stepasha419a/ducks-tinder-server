@@ -9,11 +9,11 @@ export class GetPairsQueryHandler implements IQueryHandler<GetPairsQuery> {
   constructor(private readonly repository: UserRepository) {}
 
   async execute(query: GetPairsQuery): Promise<UserAggregate[]> {
-    const { userId } = query;
+    const { userId, dto } = query;
 
     const user = await this.repository.findOne(userId);
 
-    const pairs = await this.repository.findPairs(userId);
+    const pairs = await this.repository.findPairs(userId, dto);
 
     const pairsWithDistance = pairs.map((pair) => {
       const distance = MapUtil.getDistanceFromLatLonInKm(

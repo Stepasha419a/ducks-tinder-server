@@ -14,6 +14,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OptionalValidationPipe } from '@app/common/shared/pipe';
@@ -33,6 +34,7 @@ import {
 } from '../../application/user/command';
 import { CONSTANT } from '../../infrastructure/user/common/constant';
 import { PairsInfoView } from '../../application/user/view';
+import { PaginationDto } from '@app/common/shared/dto';
 
 @Controller('user')
 export class UserController {
@@ -154,8 +156,10 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async getPairs(
     @User(ParseUUIDPipe) userId: string,
+    @Query()
+    query: PaginationDto,
   ): Promise<ShortUserWithDistance[]> {
-    const pairsWithDistance = await this.facade.queries.getPairs(userId);
+    const pairsWithDistance = await this.facade.queries.getPairs(userId, query);
 
     const pairs = await Promise.all(
       pairsWithDistance.map((pair) => {

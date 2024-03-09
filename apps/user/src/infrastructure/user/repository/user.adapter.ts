@@ -15,6 +15,7 @@ import {
   PlaceValueObject,
   UserCheckValueObject,
 } from 'apps/user/src/domain/user/value-object';
+import { PaginationDto } from '@app/common/shared/dto';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -369,9 +370,11 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(pair);
   }
 
-  async findPairs(id: string): Promise<UserAggregate[]> {
+  async findPairs(id: string, dto: PaginationDto): Promise<UserAggregate[]> {
     const pairs = await this.databaseService.user.findMany({
       where: { pairFor: { some: { id } } },
+      skip: dto.skip,
+      take: dto.take,
       include: UserSelector.selectUser(),
     });
 
