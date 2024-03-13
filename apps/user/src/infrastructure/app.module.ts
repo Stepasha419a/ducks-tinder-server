@@ -1,90 +1,18 @@
 import { Module } from '@nestjs/common';
-import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { UserController } from '../interface/user';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@app/common/auth/guard';
 import { AuthModule as AuthCommonModule } from '@app/common/auth';
-import { USER_QUERY_HANDLERS } from '../application/user/query';
-import { USER_COMMAND_HANDLERS } from '../application/user/command';
-import { USER_DEV_HANDLERS } from '../application/user/command/dev';
-import { UserMapper } from './user/mapper';
-import { UserFacade } from '../application/user';
-import { userFacadeFactory } from './user/facade';
-import { UserRepository } from '../domain/user/repository';
-import { UserAdapter } from './user/repository';
-import { MapApi } from '../application/user/adapter';
-import { AuthFacade } from '../application/auth';
-import { authFacadeFactory } from './auth/facade';
-import { AUTH_COMMAND_HANDLERS } from '../application/auth/command';
-import { AuthMapper } from './auth/mapper';
-import { AuthController } from '../interface/auth';
-import { TokenRepository } from '../domain/token/repository';
-import { TokenAdapter } from './token/repository';
-import { TokenFacade } from '../application/token';
-import { tokenFacadeFactory } from './token/facade';
-import { TokenController } from '../interface/token';
-import { TOKEN_COMMAND_HANDLERS } from '../application/token/command';
-import { TOKEN_QUERY_HANDLERS } from '../application/token/query';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
-import { HttpModule } from '@nestjs/axios';
 import { RabbitMQModule } from '@app/common/rabbitmq';
 import { SERVICES } from '@app/common/shared/constant';
-import { DatabaseModule } from '@app/common/database';
-import { JwtModule } from '@nestjs/jwt';
-import {
-  MAP_API_QUERY_HANDLERS,
-  MapApiImplementation,
-} from './adapter/map-api';
 import { FileModule } from '@app/common/file';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from '@app/common/auth/guard';
 
 @Module({
-  providers: [
-    ...MAP_API_QUERY_HANDLERS,
-    ...USER_QUERY_HANDLERS,
-    ...USER_COMMAND_HANDLERS,
-    ...USER_DEV_HANDLERS,
-    ...TOKEN_COMMAND_HANDLERS,
-    ...TOKEN_QUERY_HANDLERS,
-    ...AUTH_COMMAND_HANDLERS,
-    UserMapper,
-    AuthMapper,
-    {
-      provide: UserFacade,
-      inject: [CommandBus, QueryBus],
-      useFactory: userFacadeFactory,
-    },
-    {
-      provide: UserRepository,
-      useClass: UserAdapter,
-    },
-    {
-      provide: MapApi,
-      useClass: MapApiImplementation,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AccessTokenGuard,
-    },
-    {
-      provide: AuthFacade,
-      inject: [CommandBus],
-      useFactory: authFacadeFactory,
-    },
-    {
-      provide: TokenRepository,
-      useClass: TokenAdapter,
-    },
-    {
-      provide: TokenFacade,
-      inject: [CommandBus, QueryBus],
-      useFactory: tokenFacadeFactory,
-    },
-  ],
-  controllers: [UserController, AuthController, TokenController],
+  providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -102,10 +30,6 @@ import { FileModule } from '@app/common/file';
         RABBIT_MQ_URI: Joi.string().required(),
       }),
     }),
-    DatabaseModule,
-    JwtModule,
-    CqrsModule,
-    HttpModule,
     UserModule,
     TokenModule,
     AuthModule,
