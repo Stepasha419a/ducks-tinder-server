@@ -395,6 +395,10 @@ export class UserAdapter implements UserRepository {
       where: { order: 0, user: { pairFor: { some: { id } } } },
     });
 
+    if (!picture) {
+      return null;
+    }
+
     return this.getPictureValueObject(picture);
   }
 
