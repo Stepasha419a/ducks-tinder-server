@@ -367,7 +367,7 @@ export class ChatAdapter implements ChatRepository {
       data: { users: { connect: { id: userId } } },
     });
 
-    return this.getChatAggregate(existingChat);
+    return existingChat;
   }
 
   async delete(id: string): Promise<boolean> {
