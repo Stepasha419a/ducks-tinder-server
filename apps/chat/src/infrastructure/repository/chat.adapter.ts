@@ -374,6 +374,9 @@ export class ChatAdapter implements ChatRepository {
     await this.databaseService.chatVisit.deleteMany({
       where: { chatId: id },
     });
+
+    await this.databaseService.message.deleteMany({ where: { chatId: id } });
+
     const deletedChat = await this.databaseService.chat.delete({
       where: { id },
     });
