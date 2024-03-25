@@ -20,6 +20,7 @@ import {
   GetPairsInfoQuery,
   GetPairsQuery,
   GetSortedQuery,
+  GetUserQuery,
 } from './query';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
@@ -55,6 +56,7 @@ export class UserFacade {
       this.deletePair(userId, pairId),
   };
   queries = {
+    getUser: (id: string) => this.getUser(id),
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
@@ -124,6 +126,12 @@ export class UserFacade {
   private returnUser(userId: string) {
     return this.commandBus.execute<ReturnUserCommand, UserCheckValueObject>(
       new ReturnUserCommand(userId),
+    );
+  }
+
+  private getUser(id: string) {
+    return this.queryBus.execute<GetUserQuery, UserAggregate>(
+      new GetUserQuery(id),
     );
   }
 

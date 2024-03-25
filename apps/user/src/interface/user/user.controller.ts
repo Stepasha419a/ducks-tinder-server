@@ -199,6 +199,11 @@ export class UserController {
     return this.facade.queries.getManyUsers(ids);
   }
 
+  @MessagePattern('get_user')
+  getUser(@Payload() id: string): Promise<UserAggregate> {
+    return this.facade.queries.getUser(id);
+  }
+
   // for dev
   @Patch('removeAllPairs')
   @HttpCode(HttpStatus.OK)

@@ -20,11 +20,11 @@ async function bootstrap() {
 
   await app.init();
 
-  app.connectMicroservice(rabbitMQService.getOptions('CHAT'));
+  app.connectMicroservice(rabbitMQService.getOptions('CHAT', true));
 
   await app.startAllMicroservices();
 
-  const port = configService.get('CHAT_SERVICE_PORT');
+  const port = configService.get('PORT');
 
   await app.listen(port);
 }
