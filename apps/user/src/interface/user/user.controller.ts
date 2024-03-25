@@ -23,6 +23,7 @@ import { UserFacade } from '../../application/user';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserAggregate } from '../../domain/user';
 import {
+  ShortUser,
   ShortUserWithDistance,
   UserMapper,
   WithoutPrivateFields,
@@ -199,9 +200,14 @@ export class UserController {
     return this.facade.queries.getManyUsers(ids);
   }
 
-  @MessagePattern('get_user')
-  getUser(@Payload() id: string): Promise<UserAggregate> {
-    return this.facade.queries.getUser(id);
+  @MessagePattern('get_short_user')
+  async getUser(@Payload() id: string): Promise<ShortUser> {
+    const user = await this.facade.queries.getUser(id);
+    if (!user) {
+      return null;
+    }
+
+    return this.mapper.getShortUserWithDistance(user);
   }
 
   // for dev
