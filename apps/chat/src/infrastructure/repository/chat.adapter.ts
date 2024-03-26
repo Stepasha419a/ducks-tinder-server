@@ -263,12 +263,14 @@ export class ChatAdapter implements ChatRepository {
         : null;
 
       const pictureName = chat.users[0]?.pictures?.[0]?.name;
+      const memberId = chat.users[0].id;
       const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
 
       const name = chat.users[0].name;
 
       return ChatPaginationValueObject.create({
         id: chat.id,
+        memberId,
         avatar,
         name,
         chatVisit,

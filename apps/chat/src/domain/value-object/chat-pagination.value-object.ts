@@ -26,6 +26,10 @@ export class ChatPaginationValueObject {
   avatar: string;
 
   @IsOptional()
+  @IsUUID()
+  memberId: string;
+
+  @IsOptional()
   @IsNotEmptyObject()
   @Type(() => MessageAggregate)
   lastMessage?: Message;
