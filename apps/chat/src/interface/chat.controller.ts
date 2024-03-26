@@ -41,6 +41,14 @@ export class ChatController {
     return this.facade.queries.getMessages(userId, { ...query, chatId });
   }
 
+  @Get('member/:id')
+  async getMember(
+    @User(ParseUUIDPipe) userId: string,
+    @Param('id', ParseUUIDPipe) memberId: string,
+  ) {
+    return this.facade.queries.getChatMember(userId, memberId);
+  }
+
   @Post('TEST/message')
   async sendMessage(
     @User(ParseUUIDPipe) userId: string,

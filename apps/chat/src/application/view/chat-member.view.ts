@@ -1,0 +1,1 @@
+export type ChatMemberView = unknown;
