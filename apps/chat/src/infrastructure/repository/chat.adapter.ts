@@ -214,11 +214,6 @@ export class ChatAdapter implements ChatRepository {
       },
     });
 
-    chats.sort(
-      (a, b) =>
-        +new Date(b.messages[0].createdAt) - +new Date(a.messages[0].createdAt),
-    );
-
     if (chats.length < dto.take) {
       const emptyChats = await this.databaseService.chat.findMany({
         where: {
@@ -253,33 +248,42 @@ export class ChatAdapter implements ChatRepository {
       chats = chats.concat(emptyChats);
     }
 
-    const paginationChatAggregates = chats.map((chat) => {
-      const lastMessage = chat.messages[0]
-        ? this.getMessageAggregate(chat.messages[0])
-        : null;
+    const paginationChatAggregates = chats
+      .map((chat) => {
+        const lastMessage = chat.messages[0]
+          ? this.getMessageAggregate(chat.messages[0])
+          : null;
 
-      const chatVisit = chat.chatVisits[0]
-        ? this.getChatVisitValueObject(chat.chatVisits[0])
-        : null;
+        const chatVisit = chat.chatVisits[0]
+          ? this.getChatVisitValueObject(chat.chatVisits[0])
+          : null;
 
-      const pictureName = chat.users[0]?.pictures?.[0]?.name;
-      const memberId = chat.users[0].id;
-      const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
+        const pictureName = chat.users[0]?.pictures?.[0]?.name;
+        const memberId = chat.users[0].id;
+        const avatar = pictureName
+          ? `${chat.users[0].id}/${pictureName}`
+          : null;
 
-      const name = chat.users[0].name;
+        const name = chat.users[0].name;
 
-      return ChatPaginationValueObject.create({
-        id: chat.id,
-        memberId,
-        avatar,
-        name,
-        chatVisit,
-        lastMessage,
-        blocked: chat.blocked,
-        blockedById: chat.blockedById,
-        createdAt: chat.createdAt.toISOString(),
+        return ChatPaginationValueObject.create({
+          id: chat.id,
+          memberId,
+          avatar,
+          name,
+          chatVisit,
+          lastMessage,
+          blocked: chat.blocked,
+          blockedById: chat.blockedById,
+          createdAt: chat.createdAt.toISOString(),
+        });
+      })
+      .sort((chat1, chat2) => {
+        return (
+          +new Date(chat2.lastMessage?.createdAt || chat2.createdAt) -
+          +new Date(chat1.lastMessage?.createdAt || chat1.createdAt)
+        );
       });
-    });
 
     return paginationChatAggregates;
   }
