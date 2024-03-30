@@ -26,6 +26,10 @@ export class ChatAggregate extends ChatServices implements Chat {
   @IsNotEmpty()
   createdAt = new Date().toISOString();
 
+  @IsString()
+  @IsNotEmpty()
+  updatedAt = new Date().toISOString();
+
   private constructor() {
     super();
   }

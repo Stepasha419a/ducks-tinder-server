@@ -50,6 +50,10 @@ export class ChatPaginationValueObject {
   @IsNotEmpty()
   createdAt = new Date().toISOString();
 
+  @IsString()
+  @IsNotEmpty()
+  updatedAt = new Date().toISOString();
+
   static create(chat: Partial<ChatPaginationValueObject>) {
     const _chat = new ChatPaginationValueObject();
 

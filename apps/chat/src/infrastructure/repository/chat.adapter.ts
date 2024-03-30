@@ -73,6 +73,11 @@ export class ChatAdapter implements ChatRepository {
       select: ChatSelector.selectMessage(),
     });
 
+    await this.databaseService.chat.update({
+      where: { id: message.chatId },
+      data: { updatedAt: new Date().toISOString() },
+    });
+
     return this.getMessageAggregate(saved);
   }
 
@@ -158,38 +163,14 @@ export class ChatAdapter implements ChatRepository {
     userId: string,
     dto: PaginationDto,
   ): Promise<ChatPaginationValueObject[]> {
-    // prisma doesn't support ordering many relations => i find messages by distinct chatId and ordering them
-    // then find chats by this messages chatId and add empty chats if it's not enough for dto.take
-
-    const messagesChatId = await this.databaseService.message.findMany({
+    const chats = await this.databaseService.chat.findMany({
       where: {
-        chat: {
-          users: {
-            some: {
-              id: {
-                equals: userId,
-              },
-            },
-          },
+        users: {
+          some: { id: userId },
         },
-      },
-      distinct: 'chatId',
-      select: {
-        chatId: true,
       },
       take: dto.take,
       skip: dto.skip,
-      orderBy: { createdAt: 'desc' },
-    });
-
-    const chatIds = messagesChatId.map((obj) => obj.chatId);
-
-    let chats = await this.databaseService.chat.findMany({
-      where: {
-        id: {
-          in: chatIds,
-        },
-      },
       select: {
         id: true,
         messages: {
@@ -211,79 +192,39 @@ export class ChatAdapter implements ChatRepository {
         blocked: true,
         blockedById: true,
         createdAt: true,
+        updatedAt: true,
       },
+      orderBy: { updatedAt: 'desc' },
     });
 
-    if (chats.length < dto.take) {
-      const emptyChats = await this.databaseService.chat.findMany({
-        where: {
-          users: { some: { id: { equals: userId } } },
-          messages: { none: {} },
-        },
-        take: dto.take - chats.length,
-        select: {
-          id: true,
-          messages: {
-            take: 1,
-            orderBy: { createdAt: 'desc' },
-            select: ChatSelector.selectMessage(),
-          },
-          users: {
-            take: 1,
-            where: { id: { not: userId } },
-            select: {
-              id: true,
-              name: true,
-              pictures: { take: 1, orderBy: { order: 'asc' } },
-            },
-            orderBy: { pictures: { _count: 'desc' } },
-          },
-          chatVisits: { where: { userId } },
-          blocked: true,
-          blockedById: true,
-          createdAt: true,
-        },
+    const paginationChatAggregates = chats.map((chat) => {
+      const lastMessage = chat.messages[0]
+        ? this.getMessageAggregate(chat.messages[0])
+        : null;
+
+      const chatVisit = chat.chatVisits[0]
+        ? this.getChatVisitValueObject(chat.chatVisits[0])
+        : null;
+
+      const pictureName = chat.users[0]?.pictures?.[0]?.name;
+      const memberId = chat.users[0].id;
+      const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
+
+      const name = chat.users[0].name;
+
+      return ChatPaginationValueObject.create({
+        id: chat.id,
+        memberId,
+        avatar,
+        name,
+        chatVisit,
+        lastMessage,
+        blocked: chat.blocked,
+        blockedById: chat.blockedById,
+        createdAt: chat.createdAt.toISOString(),
+        updatedAt: chat.updatedAt.toISOString(),
       });
-
-      chats = chats.concat(emptyChats);
-    }
-
-    const paginationChatAggregates = chats
-      .map((chat) => {
-        const lastMessage = chat.messages[0]
-          ? this.getMessageAggregate(chat.messages[0])
-          : null;
-
-        const chatVisit = chat.chatVisits[0]
-          ? this.getChatVisitValueObject(chat.chatVisits[0])
-          : null;
-
-        const pictureName = chat.users[0]?.pictures?.[0]?.name;
-        const memberId = chat.users[0].id;
-        const avatar = pictureName
-          ? `${chat.users[0].id}/${pictureName}`
-          : null;
-
-        const name = chat.users[0].name;
-
-        return ChatPaginationValueObject.create({
-          id: chat.id,
-          memberId,
-          avatar,
-          name,
-          chatVisit,
-          lastMessage,
-          blocked: chat.blocked,
-          blockedById: chat.blockedById,
-          createdAt: chat.createdAt.toISOString(),
-        });
-      })
-      .sort((chat1, chat2) => {
-        return (
-          +new Date(chat2.lastMessage?.createdAt || chat2.createdAt) -
-          +new Date(chat1.lastMessage?.createdAt || chat1.createdAt)
-        );
-      });
+    });
 
     return paginationChatAggregates;
   }
@@ -438,6 +379,7 @@ export class ChatAdapter implements ChatRepository {
     return ChatAggregate.create({
       ...chat,
       createdAt: chat.createdAt.toISOString(),
+      updatedAt: chat.updatedAt.toISOString(),
     });
   }
 }

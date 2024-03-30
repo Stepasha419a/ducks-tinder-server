@@ -4,4 +4,5 @@ export interface Chat {
   blockedById?: string;
 
   createdAt: string;
+  updatedAt: string;
 }
