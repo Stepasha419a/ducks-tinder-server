@@ -38,6 +38,7 @@ export class ChatController {
     query: PaginationDto,
     @Param('id', ParseUUIDPipe) chatId: string,
   ) {
+    await this.facade.commands.saveLastSeen(userId, chatId);
     return this.facade.queries.getMessages(userId, { ...query, chatId });
   }
 

@@ -5,4 +5,5 @@ export interface Chat {
 
   createdAt: string;
   updatedAt: string;
+  lastSeenAt: string;
 }

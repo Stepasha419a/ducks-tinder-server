@@ -81,7 +81,7 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(saved);
   }
 
-  async saveChatVisit(
+  /*   async saveChatVisit(
     chatVisit: ChatVisitValueObject,
   ): Promise<ChatVisitValueObject> {
     const existingChatVisit = await this.findChatVisit(
@@ -106,7 +106,7 @@ export class ChatAdapter implements ChatRepository {
     });
 
     return this.getChatVisitValueObject(saved);
-  }
+  } */
 
   async findOne(id: string): Promise<ChatAggregate | null> {
     const existingChat = await this.databaseService.chat
@@ -120,6 +120,8 @@ export class ChatAdapter implements ChatRepository {
     if (!existingChat) {
       return null;
     }
+
+    console.log(existingChat);
 
     return this.getChatAggregate(existingChat);
   }
@@ -147,6 +149,14 @@ export class ChatAdapter implements ChatRepository {
     const existingChat = await this.databaseService.chat
       .findFirst({
         where: { id, users: { some: { id: userId } } },
+        include: {
+          usersOnChats: {
+            where: { userId },
+            select: {
+              lastSeenAt: true,
+            },
+          },
+        },
       })
       .catch(() => {
         return null;
@@ -155,6 +165,8 @@ export class ChatAdapter implements ChatRepository {
     if (!existingChat) {
       return null;
     }
+
+    console.log(existingChat);
 
     return this.getChatAggregate(existingChat);
   }
@@ -188,7 +200,7 @@ export class ChatAdapter implements ChatRepository {
           },
           orderBy: { pictures: { _count: 'desc' } },
         },
-        chatVisits: { where: { userId } },
+        //chatVisits: { where: { userId } },
         blocked: true,
         blockedById: true,
         createdAt: true,
@@ -202,9 +214,9 @@ export class ChatAdapter implements ChatRepository {
         ? this.getMessageAggregate(chat.messages[0])
         : null;
 
-      const chatVisit = chat.chatVisits[0]
+      /*       const chatVisit = chat.chatVisits[0]
         ? this.getChatVisitValueObject(chat.chatVisits[0])
-        : null;
+        : null; */
 
       const pictureName = chat.users[0]?.pictures?.[0]?.name;
       const memberId = chat.users[0].id;
@@ -217,7 +229,7 @@ export class ChatAdapter implements ChatRepository {
         memberId,
         avatar,
         name,
-        chatVisit,
+        //chatVisit,
         lastMessage,
         blocked: chat.blocked,
         blockedById: chat.blockedById,
@@ -257,7 +269,7 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(message);
   }
 
-  async findChatVisit(
+  /*   async findChatVisit(
     userId: string,
     chatId: string,
   ): Promise<ChatVisitValueObject | null> {
@@ -272,7 +284,7 @@ export class ChatAdapter implements ChatRepository {
     }
 
     return this.getChatVisitValueObject(chatVisit);
-  }
+  } */
 
   async findMessages(
     chatId: string,
@@ -318,10 +330,6 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    await this.databaseService.chatVisit.deleteMany({
-      where: { chatId: id },
-    });
-
     await this.databaseService.message.deleteMany({ where: { chatId: id } });
 
     const deletedChat = await this.databaseService.chat.delete({

@@ -34,9 +34,8 @@ model User {
   pictures  Picture[]
   interests Interest[]
 
-  messages   Message[]
-  chats      Chat[]
-  chatsVisit ChatVisit[]
+  messages Message[]
+  chats    Chat[]
 
   pairFor User[] @relation(name: "Pairs")
   pairs   User[] @relation(name: "Pairs")
@@ -84,6 +83,8 @@ model User {
 
   chronotype   Chronotype? @relation(fields: [chronotypeId], references: [id])
   chronotypeId String?
+
+  usersOnChats UsersOnChats[]
 
   @@map("users")
 }
@@ -268,12 +269,13 @@ model Message {
 }
 
 model Chat {
-  id          String      @id @default(uuid())
+  id          String    @id @default(uuid())
   messages    Message[]
   users       User[]
-  blocked     Boolean     @default(false)
+  blocked     Boolean   @default(false)
   blockedById String?
-  chatVisits  ChatVisit[]
+
+  usersOnChats UsersOnChats[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -281,13 +283,15 @@ model Chat {
   @@map("chats")
 }
 
-model ChatVisit {
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String
-  chat     Chat     @relation(fields: [chatId], references: [id])
-  chatId   String
-  lastSeen DateTime
+model UsersOnChats {
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
 
   @@id([userId, chatId])
-  @@map("chat-visit")
+  @@map("users-on-chats")
 }
