@@ -184,8 +184,8 @@ export class ChatAdapter implements ChatRepository {
           select: ChatSelector.selectMessage(),
         },
         users: {
-          take: 1,
-          where: { userId: { not: userId } },
+          take: 2,
+          where: { OR: [{ userId }, { NOT: { userId } }] },
           select: {
             user: {
               select: {
@@ -211,13 +211,13 @@ export class ChatAdapter implements ChatRepository {
         ? this.getMessageAggregate(chat.messages[0])
         : null;
 
-      const user = chat.users[0]?.user;
+      const member = chat.users[1]?.user;
 
-      const pictureName = user?.pictures?.[0]?.name;
-      const memberId = user.id;
-      const avatar = pictureName ? `${user.id}/${pictureName}` : null;
+      const pictureName = member?.pictures?.[0]?.name;
+      const memberId = member.id;
+      const avatar = pictureName ? `${member.id}/${pictureName}` : null;
 
-      const name = user.name;
+      const name = member.name;
 
       const lastSeenAt = chat.users[0]?.lastSeenAt?.toISOString();
 
