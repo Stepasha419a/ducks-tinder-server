@@ -12,8 +12,11 @@ export class SaveLastSeenCommandHandler
   async execute(command: SaveLastSeenCommand): Promise<void> {
     const { userId, chatId } = command;
 
-    const chatVisit = ChatVisitValueObject.create({ userId, chatId });
+    const chatVisit = ChatVisitValueObject.create({
+      userId,
+      chatId,
+    });
 
-    //await this.repository.saveChatVisit(chatVisit);
+    await this.repository.saveChatVisit(chatVisit);
   }
 }

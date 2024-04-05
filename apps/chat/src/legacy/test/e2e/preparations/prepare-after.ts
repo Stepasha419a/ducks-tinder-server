@@ -7,7 +7,7 @@ export async function prepareAfter(currentUserId, secondUserId) {
     }),
     prismaClient.chat.deleteMany({
       where: {
-        users: { some: { id: { in: [currentUserId, secondUserId] } } },
+        users: { some: { userId: { in: [currentUserId, secondUserId] } } },
       },
     }),
     prismaClient.place.deleteMany({

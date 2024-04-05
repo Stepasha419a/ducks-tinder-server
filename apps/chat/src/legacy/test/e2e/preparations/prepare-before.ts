@@ -55,7 +55,12 @@ export async function prepareBefore(currentUserId, secondUserId, chatId) {
     prismaClient.chat.create({
       data: {
         id: chatId,
-        users: { connect: [{ id: currentUserId }, { id: secondUserId }] },
+        users: {
+          connect: [
+            { userId_chatId: { chatId, userId: currentUserId } },
+            { userId_chatId: { chatId, userId: secondUserId } },
+          ],
+        },
       },
     }),
   ]);

@@ -9,7 +9,6 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
-import { ChatVisitValueObject } from './chat-visit.value-object';
 import { Message, MessageAggregate } from '../message';
 
 export class ChatPaginationValueObject {
@@ -34,11 +33,6 @@ export class ChatPaginationValueObject {
   @Type(() => MessageAggregate)
   lastMessage?: Message;
 
-  @IsOptional()
-  @IsNotEmptyObject()
-  @Type(() => ChatVisitValueObject)
-  chatVisit?: ChatVisitValueObject;
-
   @IsBoolean()
   blocked: boolean;
 
@@ -48,11 +42,15 @@ export class ChatPaginationValueObject {
 
   @IsString()
   @IsNotEmpty()
-  createdAt = new Date().toISOString();
+  createdAt;
 
   @IsString()
   @IsNotEmpty()
-  updatedAt = new Date().toISOString();
+  updatedAt;
+
+  @IsString()
+  @IsNotEmpty()
+  lastSeenAt;
 
   static create(chat: Partial<ChatPaginationValueObject>) {
     const _chat = new ChatPaginationValueObject();

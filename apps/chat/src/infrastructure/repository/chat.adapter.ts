@@ -81,32 +81,37 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(saved);
   }
 
-  /*   async saveChatVisit(
+  async saveChatVisit(
     chatVisit: ChatVisitValueObject,
-  ): Promise<ChatVisitValueObject> {
+  ): Promise<ChatVisitValueObject | null> {
     const existingChatVisit = await this.findChatVisit(
       chatVisit.userId,
       chatVisit.chatId,
     );
+
     if (existingChatVisit) {
-      const updatedChatVisit = await this.databaseService.chatVisit.update({
+      const savedChatVisit = await this.databaseService.usersOnChats.update({
         where: {
           userId_chatId: { chatId: chatVisit.chatId, userId: chatVisit.userId },
         },
         data: {
-          lastSeen: chatVisit.lastSeen,
+          lastSeenAt: chatVisit.lastSeenAt,
         },
       });
 
-      return this.getChatVisitValueObject(updatedChatVisit);
+      return this.getChatVisitValueObject(savedChatVisit);
     }
 
-    const saved = await this.databaseService.chatVisit.create({
-      data: chatVisit,
+    const savedChatVisit = await this.databaseService.usersOnChats.create({
+      data: {
+        chatId: chatVisit.chatId,
+        userId: chatVisit.userId,
+        lastSeenAt: chatVisit.lastSeenAt,
+      },
     });
 
-    return this.getChatVisitValueObject(saved);
-  } */
+    return this.getChatVisitValueObject(savedChatVisit);
+  }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
     const existingChat = await this.databaseService.chat
@@ -121,15 +126,13 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    console.log(existingChat);
-
     return this.getChatAggregate(existingChat);
   }
 
   async findOneByUserIds(userIds: string[]): Promise<ChatAggregate | null> {
     const existingChat = await this.databaseService.chat
       .findFirst({
-        where: { users: { every: { id: { in: userIds } } } },
+        where: { users: { every: { userId: { in: userIds } } } },
       })
       .catch(() => {
         return null;
@@ -148,15 +151,7 @@ export class ChatAdapter implements ChatRepository {
   ): Promise<ChatAggregate | null> {
     const existingChat = await this.databaseService.chat
       .findFirst({
-        where: { id, users: { some: { id: userId } } },
-        include: {
-          usersOnChats: {
-            where: { userId },
-            select: {
-              lastSeenAt: true,
-            },
-          },
-        },
+        where: { id, users: { some: { userId } } },
       })
       .catch(() => {
         return null;
@@ -165,8 +160,6 @@ export class ChatAdapter implements ChatRepository {
     if (!existingChat) {
       return null;
     }
-
-    console.log(existingChat);
 
     return this.getChatAggregate(existingChat);
   }
@@ -178,7 +171,7 @@ export class ChatAdapter implements ChatRepository {
     const chats = await this.databaseService.chat.findMany({
       where: {
         users: {
-          some: { id: userId },
+          some: { userId },
         },
       },
       take: dto.take,
@@ -192,15 +185,19 @@ export class ChatAdapter implements ChatRepository {
         },
         users: {
           take: 1,
-          where: { id: { not: userId } },
+          where: { userId: { not: userId } },
           select: {
-            id: true,
-            name: true,
-            pictures: { take: 1, orderBy: { order: 'asc' } },
+            user: {
+              select: {
+                id: true,
+                name: true,
+                pictures: { take: 1, orderBy: { order: 'asc' } },
+              },
+            },
+            lastSeenAt: true,
           },
-          orderBy: { pictures: { _count: 'desc' } },
+          orderBy: { user: { pictures: { _count: 'desc' } } },
         },
-        //chatVisits: { where: { userId } },
         blocked: true,
         blockedById: true,
         createdAt: true,
@@ -214,22 +211,22 @@ export class ChatAdapter implements ChatRepository {
         ? this.getMessageAggregate(chat.messages[0])
         : null;
 
-      /*       const chatVisit = chat.chatVisits[0]
-        ? this.getChatVisitValueObject(chat.chatVisits[0])
-        : null; */
+      const user = chat.users[0]?.user;
 
-      const pictureName = chat.users[0]?.pictures?.[0]?.name;
-      const memberId = chat.users[0].id;
-      const avatar = pictureName ? `${chat.users[0].id}/${pictureName}` : null;
+      const pictureName = user?.pictures?.[0]?.name;
+      const memberId = user.id;
+      const avatar = pictureName ? `${user.id}/${pictureName}` : null;
 
-      const name = chat.users[0].name;
+      const name = user.name;
+
+      const lastSeenAt = chat.users[0]?.lastSeenAt?.toISOString();
 
       return ChatPaginationValueObject.create({
         id: chat.id,
         memberId,
         avatar,
         name,
-        //chatVisit,
+        lastSeenAt,
         lastMessage,
         blocked: chat.blocked,
         blockedById: chat.blockedById,
@@ -245,7 +242,7 @@ export class ChatAdapter implements ChatRepository {
     const users = await this.databaseService.user.findMany({
       where: {
         chats: {
-          some: { id: chatId },
+          some: { chatId },
         },
       },
       select: { id: true },
@@ -269,11 +266,11 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(message);
   }
 
-  /*   async findChatVisit(
+  async findChatVisit(
     userId: string,
     chatId: string,
   ): Promise<ChatVisitValueObject | null> {
-    const chatVisit = await this.databaseService.chatVisit.findUnique({
+    const chatVisit = await this.databaseService.usersOnChats.findUnique({
       where: {
         userId_chatId: { chatId, userId },
       },
@@ -284,7 +281,7 @@ export class ChatAdapter implements ChatRepository {
     }
 
     return this.getChatVisitValueObject(chatVisit);
-  } */
+  }
 
   async findMessages(
     chatId: string,
@@ -315,7 +312,7 @@ export class ChatAdapter implements ChatRepository {
     chatId: string,
     userId: string,
   ): Promise<ChatAggregate | null> {
-    const existingChat = await this.findOne(chatId);
+    const existingChat = await this.findOneHavingMember(chatId, userId);
 
     if (!existingChat) {
       return null;
@@ -323,7 +320,7 @@ export class ChatAdapter implements ChatRepository {
 
     await this.databaseService.chat.update({
       where: { id: chatId },
-      data: { users: { connect: { id: userId } } },
+      data: { users: { connect: { userId_chatId: { chatId, userId } } } },
     });
 
     return existingChat;
@@ -364,7 +361,8 @@ export class ChatAdapter implements ChatRepository {
   private getChatVisitValueObject(chatVisit): ChatVisitValueObject {
     return ChatVisitValueObject.create({
       ...chatVisit,
-      lastSeen: chatVisit.lastSeen.toISOString(),
+      createdAt: chatVisit.createdAt.toISOString(),
+      lastSeenAt: chatVisit.lastSeenAt.toISOString(),
     });
   }
 

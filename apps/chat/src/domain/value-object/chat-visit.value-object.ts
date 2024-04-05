@@ -10,7 +10,11 @@ export class ChatVisitValueObject {
 
   @IsString()
   @IsNotEmpty()
-  lastSeen: string = new Date().toISOString();
+  createdAt: string = new Date().toISOString();
+
+  @IsString()
+  @IsNotEmpty()
+  lastSeenAt: string = new Date().toISOString();
 
   static create(chatVisit: Partial<ChatVisitValueObject>) {
     const _chatVisit = new ChatVisitValueObject();
