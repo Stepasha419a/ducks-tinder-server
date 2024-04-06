@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  Min,
+  validateSync,
+} from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 
 export class ChatVisitValueObject {
@@ -7,6 +14,10 @@ export class ChatVisitValueObject {
 
   @IsUUID()
   chatId: string;
+
+  @IsInt()
+  @Min(0)
+  newMessagesCount: number = 0;
 
   @IsString()
   @IsNotEmpty()

@@ -281,10 +281,11 @@ model Chat {
 }
 
 model UsersOnChats {
-  chat   Chat   @relation(fields: [chatId], references: [id])
-  chatId String
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  chat             Chat   @relation(fields: [chatId], references: [id])
+  chatId           String
+  user             User   @relation(fields: [userId], references: [id])
+  userId           String
+  newMessagesCount Int    @default(0)
 
   createdAt  DateTime @default(now())
   lastSeenAt DateTime @default(now())

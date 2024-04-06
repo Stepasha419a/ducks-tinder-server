@@ -1,10 +1,12 @@
 import {
   IsBoolean,
+  IsInt,
   IsNotEmpty,
   IsNotEmptyObject,
   IsOptional,
   IsString,
   IsUUID,
+  Min,
   validateSync,
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
@@ -40,17 +42,21 @@ export class ChatPaginationValueObject {
   @IsUUID()
   blockedById?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  createdAt;
+  @IsInt()
+  @Min(0)
+  newMessagesCount: number = 0;
 
   @IsString()
   @IsNotEmpty()
-  updatedAt;
+  createdAt: string;
 
   @IsString()
   @IsNotEmpty()
-  lastSeenAt;
+  updatedAt: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastSeenAt: string;
 
   static create(chat: Partial<ChatPaginationValueObject>) {
     const _chat = new ChatPaginationValueObject();

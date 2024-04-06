@@ -1,5 +1,5 @@
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { SendMessageCommand } from './send-message.command';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { MessageAggregate } from 'apps/chat/src/domain';
@@ -8,7 +8,10 @@ import { MessageAggregate } from 'apps/chat/src/domain';
 export class SendMessageCommandHandler
   implements ICommandHandler<SendMessageCommand>
 {
-  constructor(private readonly repository: ChatRepository) {}
+  constructor(
+    private readonly repository: ChatRepository,
+    private readonly publisher: EventPublisher,
+  ) {}
 
   async execute(command: SendMessageCommand): Promise<MessageAggregate> {
     const { userId, dto } = command;
@@ -39,6 +42,8 @@ export class SendMessageCommandHandler
       text: dto.text,
       userId,
     });
+
+    await this.repository.increaseChatVisits(userId, chat.id, 1);
 
     const savedMessage = await this.repository.saveMessage(message);
 

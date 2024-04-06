@@ -96,6 +96,7 @@ export class ChatAdapter implements ChatRepository {
         },
         data: {
           lastSeenAt: chatVisit.lastSeenAt,
+          newMessagesCount: chatVisit.newMessagesCount,
         },
       });
 
@@ -107,6 +108,7 @@ export class ChatAdapter implements ChatRepository {
         chatId: chatVisit.chatId,
         userId: chatVisit.userId,
         lastSeenAt: chatVisit.lastSeenAt,
+        newMessagesCount: chatVisit.newMessagesCount,
       },
     });
 
@@ -325,6 +327,17 @@ export class ChatAdapter implements ChatRepository {
     });
 
     return existingChat;
+  }
+
+  async increaseChatVisits(
+    chatId: string,
+    exceptUserId: string,
+    increaseValue: number,
+  ) {
+    await this.databaseService.usersOnChats.updateMany({
+      where: { userId: { not: exceptUserId }, chatId },
+      data: { newMessagesCount: { increment: increaseValue } },
+    });
   }
 
   async delete(id: string): Promise<boolean> {

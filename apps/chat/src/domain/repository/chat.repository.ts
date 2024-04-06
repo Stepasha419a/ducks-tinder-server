@@ -26,10 +26,19 @@ export abstract class ChatRepository {
   abstract findMessages(chatId: string, dto: PaginationDto): Promise<Message[]>;
   abstract findMessagesCount(chatId: string): Promise<number>;
   abstract findChatUserIds(chatId: string): Promise<string[]>;
+  abstract findChatVisit(
+    userId: string,
+    chatId: string,
+  ): Promise<ChatVisitValueObject | null>;
   abstract connectUserToChat(
     chatId: string,
     userId: string,
   ): Promise<ChatAggregate | null>;
+  abstract increaseChatVisits(
+    chatId: string,
+    exceptUserId: string,
+    increaseValue: number,
+  ): Promise<void>;
   abstract delete(id: string): Promise<boolean>;
   abstract deleteMessage(messageId: string): Promise<boolean>;
 }
