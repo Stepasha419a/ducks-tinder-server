@@ -211,7 +211,8 @@ export class ChatAdapter implements ChatRepository {
         ? this.getMessageAggregate(chat.messages[0])
         : null;
 
-      const member = chat.users[1]?.user;
+      const member = chat.users.find((item) => item.user.id !== userId)?.user;
+      const user = chat.users.find((item) => item.user.id === userId);
 
       const pictureName = member?.pictures?.[0]?.name;
       const memberId = member.id;
@@ -219,7 +220,7 @@ export class ChatAdapter implements ChatRepository {
 
       const name = member.name;
 
-      const lastSeenAt = chat.users[0]?.lastSeenAt?.toISOString();
+      const lastSeenAt = user?.lastSeenAt?.toISOString();
 
       return ChatPaginationValueObject.create({
         id: chat.id,
