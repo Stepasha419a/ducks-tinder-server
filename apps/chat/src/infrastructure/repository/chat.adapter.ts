@@ -197,6 +197,7 @@ export class ChatAdapter implements ChatRepository {
               },
             },
             lastSeenAt: true,
+            newMessagesCount: true,
           },
           orderBy: { user: { pictures: { _count: 'desc' } } },
         },
@@ -222,6 +223,8 @@ export class ChatAdapter implements ChatRepository {
 
       const name = member.name;
 
+      const newMessagesCount = user.newMessagesCount;
+
       const lastSeenAt = user?.lastSeenAt?.toISOString();
 
       return ChatPaginationValueObject.create({
@@ -229,10 +232,11 @@ export class ChatAdapter implements ChatRepository {
         memberId,
         avatar,
         name,
-        lastSeenAt,
         lastMessage,
         blocked: chat.blocked,
         blockedById: chat.blockedById,
+        newMessagesCount,
+        lastSeenAt,
         createdAt: chat.createdAt.toISOString(),
         updatedAt: chat.updatedAt.toISOString(),
       });

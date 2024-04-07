@@ -43,7 +43,7 @@ export class SendMessageCommandHandler
       userId,
     });
 
-    await this.repository.increaseChatVisits(userId, chat.id, 1);
+    await this.repository.increaseChatVisits(chat.id, userId, 1);
 
     const savedMessage = await this.repository.saveMessage(message);
 
