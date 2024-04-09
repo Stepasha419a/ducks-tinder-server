@@ -25,6 +25,7 @@ export abstract class ChatRepository {
   abstract findMessage(messageId: string): Promise<MessageAggregate | null>;
   abstract findMessages(chatId: string, dto: PaginationDto): Promise<Message[]>;
   abstract findMessagesCount(chatId: string): Promise<number>;
+  abstract findNewMessagesCount(userId: string): Promise<number>;
   abstract findChatUserIds(chatId: string): Promise<string[]>;
   abstract findChatVisit(
     userId: string,

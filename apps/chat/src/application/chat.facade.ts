@@ -18,6 +18,7 @@ import {
   GetChatsQuery,
   GetMessagesDto,
   GetMessagesQuery,
+  GetNewMessagesCountQuery,
   ValidateChatMemberQuery,
 } from './query';
 import { ChatAggregate, MessageAggregate } from 'apps/chat/src/domain';
@@ -56,6 +57,7 @@ export class ChatFacade {
       this.getChats(userId, dto),
     getMessages: (userId: string, dto: GetMessagesDto) =>
       this.getMessages(userId, dto),
+    getNewMessagesCount: (userId: string) => this.getNewMessagesCount(userId),
     getChatMemberIds: (userId: string, chatId: string) =>
       this.getChatMemberIds(userId, chatId),
     getChatMember: (userId: string, memberId: string) =>
@@ -121,6 +123,12 @@ export class ChatFacade {
   private getMessages(userId: string, dto: GetMessagesDto) {
     return this.queryBus.execute<GetMessagesQuery, MessagesPaginationView>(
       new GetMessagesQuery(userId, dto),
+    );
+  }
+
+  private getNewMessagesCount(userId: string) {
+    return this.queryBus.execute<GetNewMessagesCountQuery, number>(
+      new GetNewMessagesCountQuery(userId),
     );
   }
 

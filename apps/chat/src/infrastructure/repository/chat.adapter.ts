@@ -315,6 +315,12 @@ export class ChatAdapter implements ChatRepository {
     return messagesCount;
   }
 
+  findNewMessagesCount(userId: string): Promise<number> {
+    return this.databaseService.chat.count({
+      where: { users: { some: { userId, newMessagesCount: { gt: 0 } } } },
+    });
+  }
+
   async connectUserToChat(
     chatId: string,
     userId: string,

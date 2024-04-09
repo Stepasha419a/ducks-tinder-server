@@ -31,6 +31,11 @@ export class ChatController {
     return this.facade.queries.getChats(userId, query);
   }
 
+  @Get('new')
+  async getNewMessagesCount(@User(ParseUUIDPipe) userId: string) {
+    return this.facade.queries.getNewMessagesCount(userId);
+  }
+
   @Get(':id/messages')
   async getMessages(
     @User(ParseUUIDPipe) userId: string,
