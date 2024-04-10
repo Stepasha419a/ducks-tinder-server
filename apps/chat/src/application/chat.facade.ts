@@ -15,6 +15,7 @@ import { PaginationDto } from '@app/common/shared/dto';
 import {
   GetChatMemberIdsQuery,
   GetChatMemberQuery,
+  GetChatQuery,
   GetChatsQuery,
   GetMessagesDto,
   GetMessagesQuery,
@@ -53,6 +54,7 @@ export class ChatFacade {
   };
 
   queries = {
+    getChat: (userId: string, chatId: string) => this.getChat(userId, chatId),
     getChats: (userId: string, dto: PaginationDto) =>
       this.getChats(userId, dto),
     getMessages: (userId: string, dto: GetMessagesDto) =>
@@ -111,6 +113,12 @@ export class ChatFacade {
   private deleteChat(userId: string, chatId: string) {
     return this.commandBus.execute<DeleteChatCommand, ChatAggregate>(
       new DeleteChatCommand(userId, chatId),
+    );
+  }
+
+  private getChat(userId: string, chatId: string) {
+    return this.queryBus.execute<GetChatQuery, ChatPaginationValueObject>(
+      new GetChatQuery(userId, chatId),
     );
   }
 

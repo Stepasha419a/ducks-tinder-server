@@ -17,6 +17,10 @@ export abstract class ChatRepository {
     id: string,
     userId: string,
   ): Promise<ChatAggregate | null>;
+  abstract findOnePaginationHavingMember(
+    id: string,
+    userId: string,
+  ): Promise<ChatPaginationValueObject | null>;
   abstract findOneByUserIds(userIds: string[]): Promise<ChatAggregate | null>;
   abstract findMany(
     userId: string,

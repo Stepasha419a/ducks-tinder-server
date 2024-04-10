@@ -166,6 +166,82 @@ export class ChatAdapter implements ChatRepository {
     return this.getChatAggregate(existingChat);
   }
 
+  async findOnePaginationHavingMember(
+    id: string,
+    userId: string,
+  ): Promise<ChatPaginationValueObject | null> {
+    const chat = await this.databaseService.chat
+      .findFirst({
+        where: { id, users: { some: { userId } } },
+        select: {
+          id: true,
+          messages: {
+            take: 1,
+            orderBy: { createdAt: 'desc' },
+            select: ChatSelector.selectMessage(),
+          },
+          users: {
+            take: 2,
+            where: { OR: [{ userId }, { NOT: { userId } }] },
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  pictures: { take: 1, orderBy: { order: 'asc' } },
+                },
+              },
+              lastSeenAt: true,
+              newMessagesCount: true,
+            },
+            orderBy: { user: { pictures: { _count: 'desc' } } },
+          },
+          blocked: true,
+          blockedById: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      })
+      .catch(() => {
+        return null;
+      });
+
+    if (!chat) {
+      return null;
+    }
+
+    const lastMessage = chat.messages[0]
+      ? this.getMessageAggregate(chat.messages[0])
+      : null;
+
+    const member = chat.users.find((item) => item.user.id !== userId)?.user;
+    const user = chat.users.find((item) => item.user.id === userId);
+
+    const pictureName = member?.pictures?.[0]?.name;
+    const memberId = member.id;
+    const avatar = pictureName ? `${member.id}/${pictureName}` : null;
+
+    const name = member.name;
+
+    const newMessagesCount = user.newMessagesCount;
+
+    const lastSeenAt = user?.lastSeenAt?.toISOString();
+
+    return ChatPaginationValueObject.create({
+      id: chat.id,
+      memberId,
+      avatar,
+      name,
+      lastMessage,
+      blocked: chat.blocked,
+      blockedById: chat.blockedById,
+      newMessagesCount,
+      lastSeenAt,
+      createdAt: chat.createdAt.toISOString(),
+      updatedAt: chat.updatedAt.toISOString(),
+    });
+  }
+
   async findMany(
     userId: string,
     dto: PaginationDto,
