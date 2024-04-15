@@ -1,8 +1,8 @@
-import { PaginationDto } from '@app/common/shared/dto';
+import { PairsSortDto } from 'apps/user/src/domain/user/repository';
 
 export class GetPairsQuery {
   constructor(
     public readonly userId: string,
-    public readonly dto: PaginationDto,
+    public readonly dto: PairsSortDto,
   ) {}
 }

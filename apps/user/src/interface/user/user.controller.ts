@@ -35,7 +35,7 @@ import {
 } from '../../application/user/command';
 import { CONSTANT } from '../../infrastructure/user/common/constant';
 import { PairsInfoView } from '../../application/user/view';
-import { PaginationDto } from '@app/common/shared/dto';
+import { PairsSortDto } from '../../domain/user/repository/dto';
 
 @Controller('user')
 export class UserController {
@@ -158,7 +158,7 @@ export class UserController {
   async getPairs(
     @User(ParseUUIDPipe) userId: string,
     @Query()
-    query: PaginationDto,
+    query: PairsSortDto,
   ): Promise<ShortUserWithDistance[]> {
     const pairsWithDistance = await this.facade.queries.getPairs(userId, query);
 

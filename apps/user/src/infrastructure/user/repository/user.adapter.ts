@@ -15,7 +15,8 @@ import {
   PlaceValueObject,
   UserCheckValueObject,
 } from 'apps/user/src/domain/user/value-object';
-import { PaginationDto } from '@app/common/shared/dto';
+import { PairsSortDto } from 'apps/user/src/domain/user/repository/dto';
+import { MapUtil } from '@app/common/shared/util';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -370,9 +371,49 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(pair);
   }
 
-  async findPairs(id: string, dto: PaginationDto): Promise<UserAggregate[]> {
+  async findPairs(id: string, dto: PairsSortDto): Promise<UserAggregate[]> {
+    const whereQuery = {
+      pairFor: { some: { id } },
+      age: { gte: dto.ageFrom, lte: dto.ageTo },
+    };
+
+    if (dto.distance !== 100) {
+      const place = await this.databaseService.place.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      const { maxLatitude, minLatitude, maxLongitude, minLongitude } =
+        MapUtil.getSearchingCoords(
+          place?.latitude,
+          place?.longitude,
+          dto.distance,
+        );
+
+      Object.assign(whereQuery, {
+        place: {
+          latitude: { gte: minLatitude, lte: maxLatitude },
+          longitude: { gte: minLongitude, lte: maxLongitude },
+        },
+      });
+    }
+
+    if (dto.interests?.length) {
+      console.log(dto.interests);
+      Object.assign(whereQuery, {
+        interests: { some: { name: { in: dto.interests } } },
+      });
+    }
+
+    if (dto.identifyConfirmed) {
+      Object.assign(whereQuery, {
+        isActivated: dto.identifyConfirmed,
+      });
+    }
+
     const pairs = await this.databaseService.user.findMany({
-      where: { pairFor: { some: { id } } },
+      where: whereQuery,
       skip: dto.skip,
       take: dto.take,
       include: UserSelector.selectUser(),
