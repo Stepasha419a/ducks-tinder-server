@@ -9,7 +9,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class PairsSortDto extends PaginationDto {
+export class PairsFilterDto extends PaginationDto {
   @IsOptional()
   @Min(2)
   @Max(100)
@@ -40,16 +40,13 @@ export class PairsSortDto extends PaginationDto {
   @Transform(({ value }) => {
     return Number(value);
   })
-  photos: number = 9;
+  photos: number = 1;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @Type(() => String)
-  @Transform(({ value }) => {
-    console.log(value);
-    return Array.isArray(value) ? value : value.split(',');
-  })
+  @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   interests: string[] = [];
 
   @IsOptional()

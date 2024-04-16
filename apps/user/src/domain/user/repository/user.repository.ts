@@ -4,7 +4,7 @@ import {
   PlaceValueObject,
   UserCheckValueObject,
 } from '../value-object';
-import { PairsSortDto } from './dto';
+import { PairsFilterDto } from './dto';
 
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
@@ -12,7 +12,7 @@ export abstract class UserRepository {
   abstract findOneByEmail(email: string): Promise<UserAggregate | null>;
   abstract findMany(ids: string[]): Promise<UserAggregate[]>;
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
-  abstract findPairs(id: string, dto: PairsSortDto): Promise<UserAggregate[]>;
+  abstract findPairs(id: string, dto: PairsFilterDto): Promise<UserAggregate[]>;
   abstract findPairsCount(id: string): Promise<number>;
   abstract findFirstPairsPicture(id: string): Promise<PictureValueObject>;
   abstract findCheckedUserIds(id: string, checkId: string): Promise<string[]>;

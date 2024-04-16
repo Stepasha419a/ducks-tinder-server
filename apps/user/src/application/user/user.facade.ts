@@ -26,7 +26,7 @@ import { UserAggregate } from 'apps/user/src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { UserCheckValueObject } from 'apps/user/src/domain/user/value-object';
 import { PairsInfoView } from './view';
-import { PairsSortDto } from '../../domain/user/repository/dto';
+import { PairsFilterDto } from '../../domain/user/repository/dto';
 
 @Injectable()
 export class UserFacade {
@@ -60,7 +60,7 @@ export class UserFacade {
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
     getSorted: (id: string, sortedUserId?: string) =>
       this.getSorted(id, sortedUserId),
-    getPairs: (id: string, dto: PairsSortDto) => this.getPairs(id, dto),
+    getPairs: (id: string, dto: PairsFilterDto) => this.getPairs(id, dto),
     getPairsInfo: (id: string) => this.getPairsInfo(id),
   };
 
@@ -147,7 +147,7 @@ export class UserFacade {
     );
   }
 
-  private getPairs(id: string, dto: PairsSortDto) {
+  private getPairs(id: string, dto: PairsFilterDto) {
     return this.queryBus.execute<GetPairsQuery, UserAggregate[]>(
       new GetPairsQuery(id, dto),
     );

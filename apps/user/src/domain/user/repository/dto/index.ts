@@ -1,1 +1,1 @@
-export { PairsSortDto } from './pairs-sort.dto';
+export { PairsFilterDto } from './pairs-filter.dto';

@@ -15,7 +15,7 @@ import {
   PlaceValueObject,
   UserCheckValueObject,
 } from 'apps/user/src/domain/user/value-object';
-import { PairsSortDto } from 'apps/user/src/domain/user/repository/dto';
+import { PairsFilterDto } from 'apps/user/src/domain/user/repository/dto';
 import { MapUtil } from '@app/common/shared/util';
 
 @Injectable()
@@ -211,7 +211,7 @@ export class UserAdapter implements UserRepository {
         })
       ).map((interest) => ({ interestId: interest.id, userId: user.id }));
 
-          this.databaseService.usersOnInterests.createMany({
+      this.databaseService.usersOnInterests.createMany({
         data: interestConnect,
       });
     }
@@ -222,9 +222,9 @@ export class UserAdapter implements UserRepository {
         })
       ).map((interest) => interest.id);
 
-          this.databaseService.usersOnInterests.deleteMany({
-            where: { userId: user.id, interestId: { in: interestIds } },
-          });
+      this.databaseService.usersOnInterests.deleteMany({
+        where: { userId: user.id, interestId: { in: interestIds } },
+      });
     }
   }
 
@@ -373,11 +373,9 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(pair);
   }
 
-  async findPairs(id: string, dto: PairsSortDto): Promise<UserAggregate[]> {
-    const whereQuery = {
-      pairFor: { some: { id } },
-      age: { gte: dto.ageFrom, lte: dto.ageTo },
-    };
+  async findPairs(id: string, dto: PairsFilterDto): Promise<UserAggregate[]> {
+    let joinQuery = '';
+    let whereQuery = '';
 
     if (dto.distance !== 100) {
       const place = await this.databaseService.place.findUnique({
@@ -393,31 +391,53 @@ export class UserAdapter implements UserRepository {
           dto.distance,
         );
 
-      Object.assign(whereQuery, {
-        place: {
-          latitude: { gte: minLatitude, lte: maxLatitude },
-          longitude: { gte: minLongitude, lte: maxLongitude },
-        },
-      });
+      joinQuery += 'inner join places on places.id = users.id ';
+      whereQuery += ` and places.latitude between ${minLatitude} and ${maxLatitude} and places.longitude between ${minLongitude} and ${maxLongitude}`;
     }
 
     if (dto.interests?.length) {
-      console.log(dto.interests);
-      Object.assign(whereQuery, {
-        interests: { some: { name: { in: dto.interests } } },
-      });
+      const interests = `'${dto.interests.join("', '")}'`;
+
+      joinQuery +=
+        'inner join "users-on-interests" on "users-on-interests"."userId" = users.id inner join interests on interests.id = "users-on-interests"."interestId"';
+      whereQuery += ` and interests.name in (${interests})`;
     }
 
     if (dto.identifyConfirmed) {
-      Object.assign(whereQuery, {
-        isActivated: dto.identifyConfirmed,
-      });
+      whereQuery += ` and users."isActivated" = true`;
     }
 
+    if (dto.hasInterests) {
+      whereQuery += ` and (
+        select count(*) from "users-on-interests" where "users-on-interests"."userId" = users.id
+      ) > 0`;
+    }
+
+    if (dto.photos) {
+      whereQuery += ` and (
+        select count(*) from pictures where pictures."userId" = users.id
+      ) >= ${dto.photos}`;
+    }
+
+    const query = `
+    select users.id 
+    from users
+    ${joinQuery} 
+    inner join "_Pairs" on "_Pairs"."A" = users.id 
+    where "_Pairs"."B" = \'${id}\' 
+    and users.age between ${dto.ageFrom} and ${dto.ageTo} 
+    ${whereQuery}
+    offset ${dto.skip}
+    fetch next ${dto.take} rows only`;
+
+    const ids = (
+      (await this.databaseService.$queryRaw`${Prisma.raw(query)}`) as Array<{
+        id: string;
+      }>
+    ).map((user) => user.id);
+
     const pairs = await this.databaseService.user.findMany({
-      where: whereQuery,
-      skip: dto.skip,
-      take: dto.take,
+      where: { id: { in: ids } },
       include: UserSelector.selectUser(),
     });
 

@@ -1,8 +1,8 @@
-import { PairsSortDto } from 'apps/user/src/domain/user/repository';
+import { PairsFilterDto } from 'apps/user/src/domain/user/repository';
 
 export class GetPairsQuery {
   constructor(
     public readonly userId: string,
-    public readonly dto: PairsSortDto,
+    public readonly dto: PairsFilterDto,
   ) {}
 }
