@@ -32,7 +32,7 @@ model User {
 
   token     Token?
   pictures  Picture[]
-  interests Interest[]
+  interests UsersOnInterests[]
 
   messages Message[]
   chats    UsersOnChats[]
@@ -137,11 +137,22 @@ model Picture {
 }
 
 model Interest {
-  id    String @id @default(uuid())
-  name  String @unique
-  users User[]
+  id   String @id @default(uuid())
+  name String @unique
+
+  users UsersOnInterests[]
 
   @@map("interests")
+}
+
+model UsersOnInterests {
+  interest   Interest @relation(fields: [interestId], references: [id])
+  interestId String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+
+  @@id([userId, interestId])
+  @@map("users-on-interests")
 }
 
 model ZodiacSign {

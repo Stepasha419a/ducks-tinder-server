@@ -205,24 +205,26 @@ export class UserAdapter implements UserRepository {
     );
 
     if (toConnect.length) {
-      await this.databaseService.$transaction(
-        toConnect.map((interest) =>
-          this.databaseService.user.update({
-            where: { id: user.id },
-            data: { interests: { connect: { name: interest } } },
-          }),
-        ),
-      );
+      const interestConnect = (
+        await this.databaseService.interest.findMany({
+          where: { name: { in: toConnect } },
+        })
+      ).map((interest) => ({ interestId: interest.id, userId: user.id }));
+
+          this.databaseService.usersOnInterests.createMany({
+        data: interestConnect,
+      });
     }
     if (toDisconnect.length) {
-      await this.databaseService.$transaction(
-        toDisconnect.map((interest) =>
-          this.databaseService.user.update({
-            where: { id: user.id },
-            data: { interests: { disconnect: { name: interest } } },
-          }),
-        ),
-      );
+      const interestIds = (
+        await this.databaseService.interest.findMany({
+          where: { name: { in: toConnect } },
+        })
+      ).map((interest) => interest.id);
+
+          this.databaseService.usersOnInterests.deleteMany({
+            where: { userId: user.id, interestId: { in: interestIds } },
+          });
     }
   }
 
@@ -663,7 +665,7 @@ export class UserAdapter implements UserRepository {
 
   private standardUserInterests(user) {
     user.interests = user.interests.map(
-      (interestObject) => interestObject.name,
+      (interestObject) => interestObject.interest.name,
     );
   }
 }
