@@ -377,6 +377,10 @@ export class UserAdapter implements UserRepository {
     let joinQuery = '';
     let whereQuery = '';
 
+    if (dto.ageFrom !== 18 || dto.ageTo !== 100) {
+      whereQuery += ` and users.age between ${dto.ageFrom} and ${dto.ageTo} `;
+    }
+
     if (dto.distance !== 100) {
       const place = await this.databaseService.place.findUnique({
         where: {
@@ -413,10 +417,10 @@ export class UserAdapter implements UserRepository {
       ) > 0`;
     }
 
-    if (dto.photos) {
+    if (dto.pictures) {
       whereQuery += ` and (
         select count(*) from pictures where pictures."userId" = users.id
-      ) >= ${dto.photos}`;
+      ) >= ${dto.pictures}`;
     }
 
     const query = `
@@ -425,7 +429,6 @@ export class UserAdapter implements UserRepository {
     ${joinQuery} 
     inner join "_Pairs" on "_Pairs"."A" = users.id 
     where "_Pairs"."B" = \'${id}\' 
-    and users.age between ${dto.ageFrom} and ${dto.ageTo} 
     ${whereQuery}
     offset ${dto.skip}
     fetch next ${dto.take} rows only`;

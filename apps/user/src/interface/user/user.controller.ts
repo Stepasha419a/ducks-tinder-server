@@ -162,11 +162,9 @@ export class UserController {
   ): Promise<ShortUserWithDistance[]> {
     const pairsWithDistance = await this.facade.queries.getPairs(userId, query);
 
-    const pairs = await Promise.all(
-      pairsWithDistance.map((pair) => {
-        return this.mapper.getShortUserWithDistance(pair);
-      }),
-    );
+    const pairs = pairsWithDistance.map((pair) => {
+      return this.mapper.getShortUserWithDistance(pair);
+    });
 
     return pairs;
   }

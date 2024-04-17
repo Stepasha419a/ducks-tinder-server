@@ -35,12 +35,12 @@ export class PairsFilterDto extends PaginationDto {
   ageTo: number = 100;
 
   @IsOptional()
-  @Min(1)
+  @Min(0)
   @Max(9)
   @Transform(({ value }) => {
     return Number(value);
   })
-  photos: number = 1;
+  pictures: number = 0;
 
   @IsOptional()
   @IsArray()
