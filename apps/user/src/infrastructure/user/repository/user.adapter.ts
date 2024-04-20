@@ -376,6 +376,7 @@ export class UserAdapter implements UserRepository {
   async findPairs(id: string, dto: PairsFilterDto): Promise<UserAggregate[]> {
     let joinQuery = '';
     let whereQuery = '';
+    let groupByQuery = '';
 
     if (dto.ageFrom !== 18 || dto.ageTo !== 100) {
       whereQuery += ` and users.age between ${dto.ageFrom} and ${dto.ageTo} `;
@@ -405,6 +406,7 @@ export class UserAdapter implements UserRepository {
       joinQuery +=
         'inner join "users-on-interests" on "users-on-interests"."userId" = users.id inner join interests on interests.id = "users-on-interests"."interestId"';
       whereQuery += ` and interests.name in (${interests})`;
+      groupByQuery += `group by users.id having count(*) = ${dto.interests.length}`;
     }
 
     if (dto.identifyConfirmed) {
@@ -430,6 +432,7 @@ export class UserAdapter implements UserRepository {
     inner join "_Pairs" on "_Pairs"."A" = users.id 
     where "_Pairs"."B" = \'${id}\' 
     ${whereQuery}
+    ${groupByQuery}
     offset ${dto.skip}
     fetch next ${dto.take} rows only`;
 
