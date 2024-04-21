@@ -416,7 +416,7 @@ export class ChatAdapter implements ChatRepository {
 
     const usersNewMessagesCount: Record<string, number> = queryResult.reduce(
       (obj, pair) => {
-        return Object.assign(obj, { [pair.id]: pair.count });
+        return Object.assign(obj, { [pair.id]: Number(pair.count) });
       },
       {},
     );
