@@ -397,6 +397,33 @@ export class ChatAdapter implements ChatRepository {
     });
   }
 
+  async findUsersNewMessagesCount(
+    chatId: string,
+    userIds: string[],
+  ): Promise<Record<string, number>> {
+    const query = `select users.id, count(*) from messages 
+    inner join chats on chats.id = messages."chatId"  
+    inner join "users-on-chats" on "users-on-chats"."chatId" = chats.id
+    inner join users on users.id = "users-on-chats"."userId"
+    where messages."chatId" = '${chatId}'
+    and messages."createdAt" > "users-on-chats"."lastSeenAt"
+    and messages."userId" != users.id
+    and users.id in ('${userIds.join("', '")}')
+    group by users.id`;
+
+    const queryResult = (await this.databaseService
+      .$queryRaw`${Prisma.raw(query)}`) as Array<{ id: string; count: number }>;
+
+    const usersNewMessagesCount: Record<string, number> = queryResult.reduce(
+      (obj, pair) => {
+        return Object.assign(obj, { [pair.id]: pair.count });
+      },
+      {},
+    );
+
+    return usersNewMessagesCount;
+  }
+
   async connectUserToChat(
     chatId: string,
     userId: string,

@@ -76,13 +76,19 @@ export class ChatGateway {
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
     @MessageBody() dto: SendMessageDto,
   ) {
-    const message = await this.facade.commands.sendMessage(userId, dto);
     const userIds = await this.facade.queries.getChatMemberIds(
       userId,
       dto.chatId,
     );
+    const { message, userNewMessagesCount } =
+      await this.facade.commands.sendMessage(userId, dto, userIds);
 
-    this.wss.to(userIds).emit('send-message', message);
+    for (const userId in userNewMessagesCount) {
+      this.wss.to(userId).emit('send-message', {
+        newMessagesCount: userNewMessagesCount[userId],
+        message,
+      });
+    }
   }
 
   @UseGuards(RefreshTokenGuard)

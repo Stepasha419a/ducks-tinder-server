@@ -25,7 +25,7 @@ import {
 import { ChatAggregate, MessageAggregate } from 'apps/chat/src/domain';
 import { DeleteMessageCommand } from './command/delete-message';
 import { ChatPaginationValueObject } from 'apps/chat/src/domain/value-object';
-import { MessagesPaginationView } from './view';
+import { MessagesPaginationView, NewMessageView } from './view';
 import { ChatMemberView } from './view/chat-member.view';
 
 @Injectable()
@@ -36,8 +36,11 @@ export class ChatFacade {
   ) {}
 
   commands = {
-    sendMessage: (userId: string, dto: SendMessageDto) =>
-      this.sendMessage(userId, dto),
+    sendMessage: (
+      userId: string,
+      dto: SendMessageDto,
+      notifyUserIds: string[],
+    ) => this.sendMessage(userId, dto, notifyUserIds),
     editMessage: (userId: string, dto: EditMessageDto) =>
       this.editMessage(userId, dto),
     deleteMessage: (userId: string, messageId: string) =>
@@ -68,9 +71,13 @@ export class ChatFacade {
       this.validateChatMember(userId, chatId),
   };
 
-  private sendMessage(userId: string, dto: SendMessageDto) {
-    return this.commandBus.execute<SendMessageCommand, MessageAggregate>(
-      new SendMessageCommand(userId, dto),
+  private sendMessage(
+    userId: string,
+    dto: SendMessageDto,
+    notifyUserIds: string[],
+  ) {
+    return this.commandBus.execute<SendMessageCommand, NewMessageView>(
+      new SendMessageCommand(userId, dto, notifyUserIds),
     );
   }
 

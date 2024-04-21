@@ -68,10 +68,14 @@ export class ChatController {
     @User(ParseUUIDPipe) userId: string,
     @Body() dto: SendMessageDto,
   ) {
-    const message = await this.facade.commands.sendMessage(userId, dto);
     const userIds = await this.facade.queries.getChatMemberIds(
       userId,
       dto.chatId,
+    );
+    const message = await this.facade.commands.sendMessage(
+      userId,
+      dto,
+      userIds,
     );
 
     return { message, userIds };

@@ -1,20 +1,18 @@
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SendMessageCommand } from './send-message.command';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { MessageAggregate } from 'apps/chat/src/domain';
+import { NewMessageView } from '../../view';
 
 @CommandHandler(SendMessageCommand)
 export class SendMessageCommandHandler
   implements ICommandHandler<SendMessageCommand>
 {
-  constructor(
-    private readonly repository: ChatRepository,
-    private readonly publisher: EventPublisher,
-  ) {}
+  constructor(private readonly repository: ChatRepository) {}
 
-  async execute(command: SendMessageCommand): Promise<MessageAggregate> {
-    const { userId, dto } = command;
+  async execute(command: SendMessageCommand): Promise<NewMessageView> {
+    const { userId, dto, notifyUserIds } = command;
 
     const chat = await this.repository.findOneHavingMember(dto.chatId, userId);
     if (!chat) {
@@ -47,6 +45,9 @@ export class SendMessageCommandHandler
 
     const savedMessage = await this.repository.saveMessage(message);
 
-    return savedMessage;
+    const userNewMessagesCount =
+      await this.repository.findUsersNewMessagesCount(chat.id, notifyUserIds);
+
+    return { message: savedMessage, userNewMessagesCount };
   }
 }

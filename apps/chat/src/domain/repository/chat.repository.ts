@@ -30,6 +30,10 @@ export abstract class ChatRepository {
   abstract findMessages(chatId: string, dto: PaginationDto): Promise<Message[]>;
   abstract findMessagesCount(chatId: string): Promise<number>;
   abstract findNewMessagesCount(userId: string): Promise<number>;
+  abstract findUsersNewMessagesCount(
+    chatId: string,
+    userIds: string[],
+  ): Promise<Record<string, number>>;
   abstract findChatUserIds(chatId: string): Promise<string[]>;
   abstract findChatVisit(
     userId: string,
