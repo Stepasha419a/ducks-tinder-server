@@ -83,12 +83,12 @@ export class ChatGateway {
     const { message, userNewMessagesCount } =
       await this.facade.commands.sendMessage(userId, dto, userIds);
 
-    for (const userId in userNewMessagesCount) {
+    userIds.forEach((userId) => {
       this.wss.to(userId).emit('send-message', {
-        newMessagesCount: userNewMessagesCount[userId],
+        newMessagesCount: userNewMessagesCount[userId] ?? 0,
         message,
       });
-    }
+    });
   }
 
   @UseGuards(RefreshTokenGuard)
