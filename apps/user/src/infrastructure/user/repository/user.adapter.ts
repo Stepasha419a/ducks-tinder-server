@@ -16,7 +16,6 @@ import {
   UserCheckValueObject,
 } from 'apps/user/src/domain/user/value-object';
 import { PairsFilterDto } from 'apps/user/src/domain/user/repository/dto';
-import { MapUtil } from '@app/common/shared/util';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -389,15 +388,13 @@ export class UserAdapter implements UserRepository {
         },
       });
 
-      const { maxLatitude, minLatitude, maxLongitude, minLongitude } =
-        MapUtil.getSearchingCoords(
-          place?.latitude,
-          place?.longitude,
-          dto.distance,
-        );
-
       joinQuery += 'inner join places on places.id = users.id ';
-      whereQuery += ` and places.latitude between ${minLatitude} and ${maxLatitude} and places.longitude between ${minLongitude} and ${maxLongitude}`;
+      whereQuery += ` and 6371 * 2 * asin(
+        sqrt(
+          power(sin(radians((places.latitude - ${place.latitude}) / 2)), 2) +
+          cos(radians(${place.latitude})) * cos(radians(places.latitude)) * power(sin(radians((longitude - ${place.longitude}) / 2)), 2)
+        )
+      ) <= ${dto.distance}`;
     }
 
     if (dto.interests?.length) {
