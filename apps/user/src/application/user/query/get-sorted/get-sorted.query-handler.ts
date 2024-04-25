@@ -19,19 +19,12 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
     const user = await this.repository.findOne(userId);
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
-    const { maxLatitude, minLatitude, maxLongitude, minLongitude } =
-      MapUtil.getSearchingCoords(
-        user.place?.latitude,
-        user.place?.longitude,
-        userDistance,
-      );
 
     const sortedUser = await this.repository.findSorted(
       userId,
-      minLatitude,
-      maxLatitude,
-      minLongitude,
-      maxLongitude,
+      user.place.latitude,
+      user.place.longitude,
+      userDistance,
       user.preferAgeFrom,
       user.preferAgeTo,
       user.age,

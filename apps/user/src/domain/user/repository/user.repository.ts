@@ -21,10 +21,9 @@ export abstract class UserRepository {
   ): Promise<UserCheckValueObject>;
   abstract findSorted(
     id: string,
-    minLatitude: number,
-    maxLatitude: number,
-    minLongitude: number,
-    maxLongitude: number,
+    latitude: number,
+    longitude: number,
+    distance: number,
     preferAgeFrom: number,
     preferAgeTo: number,
     age: number,

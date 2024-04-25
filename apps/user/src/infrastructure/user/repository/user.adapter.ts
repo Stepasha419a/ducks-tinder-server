@@ -533,10 +533,9 @@ export class UserAdapter implements UserRepository {
 
   async findSorted(
     id: string,
-    minLatitude: number,
-    maxLatitude: number,
-    minLongitude: number,
-    maxLongitude: number,
+    latitude: number,
+    longitude: number,
+    distance: number,
     preferAgeFrom: number,
     preferAgeTo: number,
     age: number,
@@ -553,32 +552,34 @@ export class UserAdapter implements UserRepository {
     const checkedIds = checkedUsers.map((user) => user.checked.id);
     const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
 
-    const sortedUser = await this.databaseService.user.findFirst({
-      where: {
-        id: { notIn: [...checkedIds, ...wasCheckedIds, id] },
-        place: {
-          latitude: { gte: minLatitude, lte: maxLatitude },
-          longitude: { gte: minLongitude, lte: maxLongitude },
-        },
-        age: {
-          gte: preferAgeFrom,
-          lte: preferAgeTo,
-        },
-        preferAgeFrom: {
-          lte: age,
-        },
-        preferAgeTo: {
-          gte: age,
-        },
-        sex: preferSex,
-        preferSex: sex,
-      },
-      include: UserSelector.selectUser(),
-    });
+    const query = `select users.id from users
+    inner join places on users.id = places.id
+    where users.id not in ('${[...checkedIds, ...wasCheckedIds, id].join("', ")}')
+    and 6371 * 2 * asin(
+      sqrt(
+        power(sin(radians((places.latitude - ${latitude}) / 2)), 2) +
+        cos(radians(${latitude})) * cos(radians(places.latitude)) * power(sin(radians((longitude - ${longitude}) / 2)), 2)
+      )
+    ) <= ${distance}
+    and users.age between ${preferAgeFrom} and ${preferAgeTo} 
+    and users."preferAgeFrom" < ${age} 
+    and users."preferAgeTo" > ${age}
+    and users.sex = '${preferSex}'
+    and users."preferSex" = '${sex}'
+    `;
 
-    if (!sortedUser) {
+    const sortedId = (
+      await this.databaseService.$queryRaw`${Prisma.raw(query)}`
+    )?.[0]?.id as string | undefined;
+
+    if (!sortedId) {
       return null;
     }
+
+    const sortedUser = await this.databaseService.user.findUnique({
+      where: { id: sortedId },
+      include: UserSelector.selectUser(),
+    });
 
     this.standardUser(sortedUser);
 
