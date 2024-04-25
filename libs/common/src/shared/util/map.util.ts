@@ -1,10 +1,3 @@
-interface SearchingCoords {
-  maxLatitude: number;
-  minLatitude: number;
-  maxLongitude: number;
-  minLongitude: number;
-}
-
 export class MapUtil {
   public static getDistanceFromLatLonInKm(
     lat1: number,
@@ -26,24 +19,8 @@ export class MapUtil {
     return Math.round(d);
   }
 
-  public static getSearchingCoords(
-    latitude: number,
-    longitude: number,
-    distance: number,
-  ): SearchingCoords {
-    const maxLatitude = latitude + this.km * distance * 0.7;
-    const minLatitude = latitude - this.km * distance * 0.7;
-    const maxLongitude = longitude + this.km * distance * 0.7;
-    const minLongitude = longitude - this.km * distance * 0.7;
-
-    return { maxLatitude, minLatitude, maxLongitude, minLongitude };
-  }
-
   private static degreesToRadians(degrees: number): number {
     const pi = Math.PI;
     return degrees * (pi / 180);
   }
-
-  // 1 lat deg = km
-  private static readonly km = 0.009009;
 }

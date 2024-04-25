@@ -16,6 +16,7 @@ import {
   UserCheckValueObject,
 } from 'apps/user/src/domain/user/value-object';
 import { PairsFilterDto } from 'apps/user/src/domain/user/repository/dto';
+import { MapUtil } from '@app/common/shared/util';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -444,9 +445,23 @@ export class UserAdapter implements UserRepository {
       include: UserSelector.selectUser(),
     });
 
+    const userPlace = await this.databaseService.place.findUnique({
+      where: { id },
+    });
+
     return pairs.map((pair) => {
       this.standardUser(pair);
-      return this.getUserAggregate(pair);
+      const aggregate = this.getUserAggregate(pair);
+
+      const distance = MapUtil.getDistanceFromLatLonInKm(
+        userPlace.latitude,
+        userPlace.longitude,
+        pair.place?.latitude,
+        pair.place?.longitude,
+      );
+      aggregate.setDistance(distance);
+
+      return aggregate;
     });
   }
 
