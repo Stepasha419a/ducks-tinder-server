@@ -24,7 +24,7 @@ export class SavePictureCommandHandler
       throw new BadRequestException(ERROR.MAX_PICTURES_COUNT);
     }
 
-    const fileName = await this.fileAdapter.savePicture(picture, userId);
+    const fileName = await this.fileAdapter.savePicture(picture);
 
     const pictureValueObject = PictureValueObject.create({
       name: fileName,

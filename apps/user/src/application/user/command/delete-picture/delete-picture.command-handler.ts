@@ -27,7 +27,7 @@ export class DeletePictureCommandHandler
       throw new NotFoundException();
     }
 
-    await this.fileAdapter.deletePicture(existingPicture.name, userId);
+    await this.fileAdapter.deletePicture(existingPicture.name);
     await userAggregate.deletePicture(pictureId);
 
     await userAggregate.sortPictureOrders(existingPicture.order);

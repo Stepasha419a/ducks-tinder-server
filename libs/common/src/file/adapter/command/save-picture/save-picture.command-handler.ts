@@ -1,10 +1,10 @@
-import * as uuid from 'uuid';
 import * as path from 'path';
 import { writeFile } from 'fs';
 import { ensureDir } from 'fs-extra';
 import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
+import { randomUUID } from 'crypto';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler
@@ -12,20 +12,13 @@ export class SavePictureCommandHandler
 {
   async execute(command: SavePictureCommand): Promise<string> {
     try {
-      const { file, userId } = command;
+      const { file } = command;
 
-      const fileName = uuid.v4() + '.jpg';
-      const folderPath = path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'static',
-        userId,
-      );
+      const fileName = randomUUID() + '.jpg';
+      const folderPath = path.resolve(__dirname, '..', '..', '..', 'static');
       await ensureDir(folderPath);
 
-      writeFile(`${folderPath}/${fileName}`, file.buffer, () => null);
+      writeFile(path.join(folderPath, fileName), file.buffer, () => null);
 
       return fileName;
     } catch (error) {

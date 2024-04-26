@@ -10,14 +10,13 @@ export class DeletePictureCommandHandler
 {
   async execute(command: DeletePictureCommand): Promise<string> {
     try {
-      const { fileName, userId } = command;
+      const { fileName } = command;
       const filePath = path.resolve(
         __dirname,
         '..',
         '..',
         '..',
         'static',
-        userId,
         fileName,
       );
 

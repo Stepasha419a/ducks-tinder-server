@@ -6,15 +6,15 @@ import { DeletePictureCommand, SavePictureCommand } from './command';
 export class FileAdapter {
   constructor(private readonly commandBus: CommandBus) {}
 
-  savePicture(file: Express.Multer.File, userId: string): Promise<string> {
+  savePicture(file: Express.Multer.File): Promise<string> {
     return this.commandBus.execute<SavePictureCommand, string>(
-      new SavePictureCommand(file, userId),
+      new SavePictureCommand(file),
     );
   }
 
-  deletePicture(fileName: string, userId: string): Promise<string> {
+  deletePicture(fileName: string): Promise<string> {
     return this.commandBus.execute<DeletePictureCommand, string>(
-      new DeletePictureCommand(fileName, userId),
+      new DeletePictureCommand(fileName),
     );
   }
 }
