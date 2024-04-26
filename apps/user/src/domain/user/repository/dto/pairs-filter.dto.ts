@@ -1,3 +1,4 @@
+import { IsGreaterThan } from '@app/common/shared/decorator';
 import { PaginationDto } from '@app/common/shared/dto';
 import { Transform, Type } from 'class-transformer';
 import {
@@ -29,6 +30,7 @@ export class PairsFilterDto extends PaginationDto {
   @IsOptional()
   @Min(21)
   @Max(100)
+  @IsGreaterThan('ageFrom')
   @Transform(({ value }) => {
     return Number(value);
   })
