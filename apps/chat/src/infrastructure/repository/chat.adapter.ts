@@ -219,15 +219,13 @@ export class ChatAdapter implements ChatRepository {
 
     const pictureName = member?.pictures?.[0]?.name;
     const memberId = member.id;
-    const avatar = pictureName ? `${member.id}/${pictureName}` : null;
+    const avatar = pictureName ?? null;
 
     const name = member.name;
 
     const newMessagesCount = user.newMessagesCount;
 
-    const lastSeenAt = user?.lastSeenAt?.toISOString();
-
-    return ChatPaginationValueObject.create({
+    return this.getChatPaginationValueObject({
       id: chat.id,
       memberId,
       avatar,
@@ -236,9 +234,9 @@ export class ChatAdapter implements ChatRepository {
       blocked: chat.blocked,
       blockedById: chat.blockedById,
       newMessagesCount,
-      lastSeenAt,
-      createdAt: chat.createdAt.toISOString(),
-      updatedAt: chat.updatedAt.toISOString(),
+      lastSeenAt: user.lastSeenAt,
+      createdAt: chat.createdAt,
+      updatedAt: chat.updatedAt,
     });
   }
 
@@ -295,15 +293,13 @@ export class ChatAdapter implements ChatRepository {
 
       const pictureName = member?.pictures?.[0]?.name;
       const memberId = member.id;
-      const avatar = pictureName ? `${member.id}/${pictureName}` : null;
+      const avatar = pictureName ?? null;
 
       const name = member.name;
 
       const newMessagesCount = user.newMessagesCount;
 
-      const lastSeenAt = user?.lastSeenAt?.toISOString();
-
-      return ChatPaginationValueObject.create({
+      return this.getChatPaginationValueObject({
         id: chat.id,
         memberId,
         avatar,
@@ -312,9 +308,9 @@ export class ChatAdapter implements ChatRepository {
         blocked: chat.blocked,
         blockedById: chat.blockedById,
         newMessagesCount,
-        lastSeenAt,
-        createdAt: chat.createdAt.toISOString(),
-        updatedAt: chat.updatedAt.toISOString(),
+        lastSeenAt: user.lastSeenAt,
+        createdAt: chat.createdAt,
+        updatedAt: chat.updatedAt,
       });
     });
 
@@ -473,7 +469,7 @@ export class ChatAdapter implements ChatRepository {
 
   private getMessageAggregate(message): MessageAggregate {
     const pictureName = message.user.pictures[0]?.name;
-    const avatar = pictureName ? `${message.userId}/${pictureName}` : null;
+    const avatar = pictureName ?? null;
 
     return MessageAggregate.create({
       ...message,
@@ -505,6 +501,15 @@ export class ChatAdapter implements ChatRepository {
     return RepliedMessageValueObject.create({
       ...repliedMessage,
       name,
+    });
+  }
+
+  private getChatPaginationValueObject(chat): ChatPaginationValueObject {
+    return ChatPaginationValueObject.create({
+      ...chat,
+      lastSeenAt: chat.lastSeenAt.toISOString(),
+      createdAt: chat.createdAt.toISOString(),
+      updatedAt: chat.updatedAt.toISOString(),
     });
   }
 
