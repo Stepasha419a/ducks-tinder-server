@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsString, IsUUID, validateSync } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
+import { AggregateRoot } from '@nestjs/cqrs';
 
-export class UserCheckValueObject {
+export class UserCheckAggregate extends AggregateRoot {
   @IsUUID()
   checkedId: string;
 
@@ -12,8 +13,8 @@ export class UserCheckValueObject {
   @IsNotEmpty()
   createdAt = new Date().toISOString();
 
-  static create(userCheck: Partial<UserCheckValueObject>) {
-    const _userCheck = new UserCheckValueObject();
+  static create(userCheck: Partial<UserCheckAggregate>) {
+    const _userCheck = new UserCheckAggregate();
 
     Object.assign(_userCheck, userCheck);
 

@@ -10,13 +10,13 @@ import {
   Place as PrismaPlace,
   Prisma,
 } from '@prisma/client';
-import {
-  PictureValueObject,
-  PlaceValueObject,
-  UserCheckValueObject,
-} from 'apps/user/src/domain/user/value-object';
 import { PairsFilterDto } from 'apps/user/src/domain/user/repository/dto';
 import { MapUtil } from '@app/common/shared/util';
+import {
+  PictureAggregate,
+  PlaceAggregate,
+  UserCheckAggregate,
+} from 'apps/user/src/domain/user/aggregate';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -83,7 +83,7 @@ export class UserAdapter implements UserRepository {
     existingUser: UserAggregate,
   ) {
     const toDeleteIds: string[] = [];
-    const toCreatePictures: PictureValueObject[] = [];
+    const toCreatePictures: PictureAggregate[] = [];
 
     user.pictures.forEach((picture) => {
       if (
@@ -91,7 +91,7 @@ export class UserAdapter implements UserRepository {
           (existingPicture) => existingPicture.id === picture.id,
         )
       ) {
-        const createdPicture = PictureValueObject.create(picture);
+        const createdPicture = PictureAggregate.create(picture);
         toCreatePictures.push(createdPicture);
       }
     });
@@ -115,7 +115,7 @@ export class UserAdapter implements UserRepository {
     });
 
     await Promise.all(
-      user.pictures.map((newPicture: PictureValueObject) => {
+      user.pictures.map((newPicture: PictureAggregate) => {
         const picture = updatedPictures.find(
           (item) => item.id === newPicture.id,
         );
@@ -471,7 +471,7 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findFirstPairsPicture(id: string): Promise<PictureValueObject> {
+  async findFirstPairsPicture(id: string): Promise<PictureAggregate> {
     const picture = await this.databaseService.picture.findFirst({
       where: { order: 0, user: { pairFor: { some: { id } } } },
     });
@@ -480,7 +480,7 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getPictureValueObject(picture);
+    return this.getPictureAggregate(picture);
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
@@ -501,7 +501,7 @@ export class UserAdapter implements UserRepository {
 
   async findUserNotPairCheck(
     checkedByUserId: string,
-  ): Promise<UserCheckValueObject> {
+  ): Promise<UserCheckAggregate> {
     const pairIds = (
       await this.databaseService.user.findUnique({
         where: { id: checkedByUserId },
@@ -521,7 +521,7 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getUserCheckValueObject(userCheck);
+    return this.getUserCheckAggregate(userCheck);
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
@@ -601,12 +601,12 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(sortedUser);
   }
 
-  async findPlace(userId: string): Promise<PlaceValueObject | null> {
+  async findPlace(userId: string): Promise<PlaceAggregate | null> {
     const place = await this.databaseService.place.findUnique({
       where: { id: userId },
     });
 
-    return this.getPlaceValueObject(place);
+    return this.getPlaceAggregate(place);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -645,8 +645,8 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedUserCheck);
   }
 
-  private getPictureValueObject(picture: PrismaPicture): PictureValueObject {
-    return PictureValueObject.create({
+  private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
+    return PictureAggregate.create({
       ...picture,
       updatedAt: picture.updatedAt.toISOString(),
       createdAt: picture.createdAt.toISOString(),
@@ -661,18 +661,18 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private getPlaceValueObject(place: PrismaPlace): PlaceValueObject {
-    return PlaceValueObject.create({
+  private getPlaceAggregate(place: PrismaPlace): PlaceAggregate {
+    return PlaceAggregate.create({
       ...place,
       updatedAt: place.updatedAt.toISOString(),
       createdAt: place.createdAt.toISOString(),
     });
   }
 
-  private getUserCheckValueObject(
+  private getUserCheckAggregate(
     userCheck: PrismaUserCheck,
-  ): UserCheckValueObject {
-    return UserCheckValueObject.create({
+  ): UserCheckAggregate {
+    return UserCheckAggregate.create({
       ...userCheck,
       createdAt: userCheck.createdAt.toISOString(),
     });

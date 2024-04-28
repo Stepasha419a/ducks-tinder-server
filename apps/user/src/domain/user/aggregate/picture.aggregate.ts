@@ -9,8 +9,9 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 import { randomUUID } from 'crypto';
+import { AggregateRoot } from '@nestjs/cqrs';
 
-export class PictureValueObject {
+export class PictureAggregate extends AggregateRoot {
   @IsUUID()
   id: string = randomUUID();
 
@@ -34,8 +35,8 @@ export class PictureValueObject {
   @IsNotEmpty()
   updatedAt = new Date().toISOString();
 
-  static create(picture: Partial<PictureValueObject>) {
-    const _picture = new PictureValueObject();
+  static create(picture: Partial<PictureAggregate>) {
+    const _picture = new PictureAggregate();
 
     Object.assign(_picture, picture);
 

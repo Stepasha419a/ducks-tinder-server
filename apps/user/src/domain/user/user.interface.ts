@@ -1,4 +1,4 @@
-import { PictureValueObject, PlaceValueObject } from './value-object';
+import { PictureAggregate, PlaceAggregate } from './aggregate';
 
 export type Sex = 'male' | 'female';
 
@@ -34,9 +34,9 @@ export interface User {
   communicationStyle?: string;
   attentionSign?: string;
 
-  place: PlaceValueObject;
+  place: PlaceAggregate;
 
-  pictures: PictureValueObject[];
+  pictures: PictureAggregate[];
 
   createdAt: string;
   updatedAt: string;

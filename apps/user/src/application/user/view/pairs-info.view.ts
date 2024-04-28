@@ -1,6 +1,6 @@
-import { PictureValueObject } from 'apps/user/src/domain/user/value-object';
+import { PictureAggregate } from 'apps/user/src/domain/user/aggregate';
 
 export interface PairsInfoView {
   count: number;
-  picture: PictureValueObject | null;
+  picture: PictureAggregate | null;
 }

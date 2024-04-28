@@ -6,9 +6,9 @@ import {
 } from './interface';
 import { ShortUserWithDistance } from './interface/short-user-with-distance';
 import {
-  PictureValueObject,
-  PlaceValueObject,
-} from 'apps/user/src/domain/user/value-object';
+  PictureAggregate,
+  PlaceAggregate,
+} from 'apps/user/src/domain/user/aggregate';
 
 export class UserMapper {
   getWithoutPrivateFields(user: User): WithoutPrivateFields {
@@ -86,7 +86,7 @@ export class UserMapper {
     };
   }
 
-  private getUserPictureInfo(picture: PictureValueObject): UserPictureInfo {
+  private getUserPictureInfo(picture: PictureAggregate): UserPictureInfo {
     return {
       id: picture.id,
       name: picture.name,
@@ -94,11 +94,9 @@ export class UserMapper {
     };
   }
 
-  private getShortUserPictureInfo(
-    picture: PlaceValueObject,
-  ): ShortUserPlaceInfo {
+  private getShortUserPictureInfo(place: PlaceAggregate): ShortUserPlaceInfo {
     return {
-      name: picture.name,
+      name: place.name,
     };
   }
 }

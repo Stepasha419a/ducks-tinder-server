@@ -3,7 +3,7 @@ import { PatchUserPlaceCommand } from './patch-user-place.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { MapApi } from 'apps/user/src/application/user/adapter';
-import { PlaceValueObject } from 'apps/user/src/domain/user/value-object';
+import { PlaceAggregate } from 'apps/user/src/domain/user/aggregate';
 
 @CommandHandler(PatchUserPlaceCommand)
 export class PatchUserPlaceCommandHandler
@@ -25,7 +25,7 @@ export class PatchUserPlaceCommandHandler
     const geocode = await this.mapApi.getGeocode(dto.latitude, dto.longitude);
 
     existingUser.setPlace(
-      PlaceValueObject.create({
+      PlaceAggregate.create({
         id: userId,
         address: geocode.address,
         name: geocode.name,

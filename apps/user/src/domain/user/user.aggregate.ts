@@ -20,8 +20,8 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
-import { PictureValueObject, PlaceValueObject } from './value-object';
 import { randomUUID } from 'crypto';
+import { PictureAggregate, PlaceAggregate } from './aggregate';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -101,8 +101,8 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsObject()
   @IsNotEmptyObject()
-  @Type(() => PlaceValueObject)
-  place: PlaceValueObject;
+  @Type(() => PlaceAggregate)
+  place: PlaceAggregate;
 
   @IsOptional()
   @IsString()
@@ -176,8 +176,8 @@ export class UserAggregate extends UserServices implements User {
 
   @IsOptional()
   @IsArray()
-  @Type(() => PictureValueObject)
-  pictures: PictureValueObject[];
+  @Type(() => PictureAggregate)
+  pictures: PictureAggregate[];
 
   @IsString()
   @IsNotEmpty()

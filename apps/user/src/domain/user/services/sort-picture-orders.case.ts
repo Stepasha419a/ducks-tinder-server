@@ -1,14 +1,14 @@
+import { PictureAggregate } from '../aggregate';
 import { User } from '../user.interface';
-import { PictureValueObject } from '../value-object';
 
 export interface SortPictureOrders {
-  sortPictureOrders(byOrder: number): Promise<PictureValueObject[]>;
+  sortPictureOrders(byOrder: number): Promise<PictureAggregate[]>;
 }
 
 export async function SORT_PICTURE_ORDERS(
   this: User,
   byOrder: number,
-): Promise<PictureValueObject[]> {
+): Promise<PictureAggregate[]> {
   this.pictures = this.pictures.map((picture) => {
     if (picture.order > byOrder) {
       --picture.order;
@@ -16,5 +16,5 @@ export async function SORT_PICTURE_ORDERS(
     return picture;
   });
 
-  return this.pictures.map((picture) => PictureValueObject.create(picture));
+  return this.pictures.map((picture) => PictureAggregate.create(picture));
 }

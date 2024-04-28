@@ -1,13 +1,10 @@
 import { User } from '../user.interface';
-import { PlaceValueObject } from '../value-object/place.value-object';
+import { PlaceAggregate } from '../aggregate/place.aggregate';
 
 export interface SetPlace {
-  setPlace(placeValueObject: PlaceValueObject): void;
+  setPlace(placeValueObject: PlaceAggregate): void;
 }
 
-export async function SET_PLACE(
-  this: User,
-  placeValueObject: PlaceValueObject,
-) {
+export async function SET_PLACE(this: User, placeValueObject: PlaceAggregate) {
   this.place = placeValueObject;
 }
