@@ -1,14 +1,14 @@
-import { PictureAggregate } from '../aggregate';
+import { PictureEntity } from '../entity';
 import { User } from '../user.interface';
 
 export interface AddPicture {
-  addPicture(picture: PictureAggregate): Promise<PictureAggregate>;
+  addPicture(picture: PictureEntity): Promise<PictureEntity>;
 }
 
 export async function ADD_PICTURE(
   this: User,
-  picture: PictureAggregate,
-): Promise<PictureAggregate> {
+  picture: PictureEntity,
+): Promise<PictureEntity> {
   this.pictures.push(picture);
 
   return picture;

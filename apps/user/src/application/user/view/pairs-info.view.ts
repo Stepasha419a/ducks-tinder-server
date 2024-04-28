@@ -1,6 +1,6 @@
-import { PictureAggregate } from 'apps/user/src/domain/user/aggregate';
+import { PictureEntity } from 'apps/user/src/domain/user/entity';
 
 export interface PairsInfoView {
   count: number;
-  picture: PictureAggregate | null;
+  picture: PictureEntity | null;
 }

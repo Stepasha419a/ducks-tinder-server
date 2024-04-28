@@ -5,7 +5,7 @@ import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { ERROR } from 'apps/user/src/infrastructure/user/common/constant';
 import { FileAdapter } from '@app/common/file/adapter';
-import { PictureAggregate } from 'apps/user/src/domain/user/aggregate';
+import { PictureEntity } from 'apps/user/src/domain/user/entity';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler
@@ -26,7 +26,7 @@ export class SavePictureCommandHandler
 
     const fileName = await this.fileAdapter.savePicture(picture);
 
-    const pictureAggregate = PictureAggregate.create({
+    const pictureAggregate = PictureEntity.create({
       name: fileName,
       userId,
       order: userAggregate.pictures.length,

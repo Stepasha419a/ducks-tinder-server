@@ -1,4 +1,4 @@
-import { PictureAggregate, PlaceAggregate } from './aggregate';
+import { PictureEntity, PlaceEntity } from './entity';
 
 export type Sex = 'male' | 'female';
 
@@ -34,9 +34,9 @@ export interface User {
   communicationStyle?: string;
   attentionSign?: string;
 
-  place: PlaceAggregate;
+  place: PlaceEntity;
 
-  pictures: PictureAggregate[];
+  pictures: PictureEntity[];
 
   createdAt: string;
   updatedAt: string;

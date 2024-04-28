@@ -21,7 +21,7 @@ import {
 import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { randomUUID } from 'crypto';
-import { PictureAggregate, PlaceAggregate } from './aggregate';
+import { PictureEntity, PlaceEntity } from './entity';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -101,8 +101,8 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsObject()
   @IsNotEmptyObject()
-  @Type(() => PlaceAggregate)
-  place: PlaceAggregate;
+  @Type(() => PlaceEntity)
+  place: PlaceEntity;
 
   @IsOptional()
   @IsString()
@@ -176,8 +176,8 @@ export class UserAggregate extends UserServices implements User {
 
   @IsOptional()
   @IsArray()
-  @Type(() => PictureAggregate)
-  pictures: PictureAggregate[];
+  @Type(() => PictureEntity)
+  pictures: PictureEntity[];
 
   @IsString()
   @IsNotEmpty()

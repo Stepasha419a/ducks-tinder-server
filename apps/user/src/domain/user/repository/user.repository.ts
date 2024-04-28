@@ -1,10 +1,6 @@
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { PairsFilterDto } from './dto';
-import {
-  PictureAggregate,
-  PlaceAggregate,
-  UserCheckAggregate,
-} from '../aggregate';
+import { PictureEntity, PlaceEntity, UserCheckEntity } from '../entity';
 
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
@@ -14,11 +10,11 @@ export abstract class UserRepository {
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract findPairs(id: string, dto: PairsFilterDto): Promise<UserAggregate[]>;
   abstract findPairsCount(id: string): Promise<number>;
-  abstract findFirstPairsPicture(id: string): Promise<PictureAggregate>;
+  abstract findFirstPairsPicture(id: string): Promise<PictureEntity>;
   abstract findCheckedUserIds(id: string, checkId: string): Promise<string[]>;
   abstract findUserNotPairCheck(
     checkedByUserId: string,
-  ): Promise<UserCheckAggregate>;
+  ): Promise<UserCheckEntity>;
   abstract findSorted(
     id: string,
     latitude: number,
@@ -30,7 +26,7 @@ export abstract class UserRepository {
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null>;
-  abstract findPlace(userId: string): Promise<PlaceAggregate | null>;
+  abstract findPlace(userId: string): Promise<PlaceEntity | null>;
   abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract makeChecked(id: string, forId: string): Promise<boolean>;
   abstract delete(id: string): Promise<boolean>;

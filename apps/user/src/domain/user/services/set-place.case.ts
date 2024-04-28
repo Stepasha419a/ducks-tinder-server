@@ -1,10 +1,10 @@
 import { User } from '../user.interface';
-import { PlaceAggregate } from '../aggregate/place.aggregate';
+import { PlaceEntity } from '../entity/place.entity';
 
 export interface SetPlace {
-  setPlace(placeValueObject: PlaceAggregate): void;
+  setPlace(placeValueObject: PlaceEntity): void;
 }
 
-export async function SET_PLACE(this: User, placeValueObject: PlaceAggregate) {
+export async function SET_PLACE(this: User, placeValueObject: PlaceEntity) {
   this.place = placeValueObject;
 }

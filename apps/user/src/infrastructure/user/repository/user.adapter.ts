@@ -13,10 +13,10 @@ import {
 import { PairsFilterDto } from 'apps/user/src/domain/user/repository/dto';
 import { MapUtil } from '@app/common/shared/util';
 import {
-  PictureAggregate,
-  PlaceAggregate,
-  UserCheckAggregate,
-} from 'apps/user/src/domain/user/aggregate';
+  PictureEntity,
+  PlaceEntity,
+  UserCheckEntity,
+} from 'apps/user/src/domain/user/entity';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -83,7 +83,7 @@ export class UserAdapter implements UserRepository {
     existingUser: UserAggregate,
   ) {
     const toDeleteIds: string[] = [];
-    const toCreatePictures: PictureAggregate[] = [];
+    const toCreatePictures: PictureEntity[] = [];
 
     user.pictures.forEach((picture) => {
       if (
@@ -91,7 +91,7 @@ export class UserAdapter implements UserRepository {
           (existingPicture) => existingPicture.id === picture.id,
         )
       ) {
-        const createdPicture = PictureAggregate.create(picture);
+        const createdPicture = PictureEntity.create(picture);
         toCreatePictures.push(createdPicture);
       }
     });
@@ -115,7 +115,7 @@ export class UserAdapter implements UserRepository {
     });
 
     await Promise.all(
-      user.pictures.map((newPicture: PictureAggregate) => {
+      user.pictures.map((newPicture: PictureEntity) => {
         const picture = updatedPictures.find(
           (item) => item.id === newPicture.id,
         );
@@ -471,7 +471,7 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  async findFirstPairsPicture(id: string): Promise<PictureAggregate> {
+  async findFirstPairsPicture(id: string): Promise<PictureEntity> {
     const picture = await this.databaseService.picture.findFirst({
       where: { order: 0, user: { pairFor: { some: { id } } } },
     });
@@ -480,7 +480,7 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getPictureAggregate(picture);
+    return this.getPictureEntity(picture);
   }
 
   async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
@@ -501,7 +501,7 @@ export class UserAdapter implements UserRepository {
 
   async findUserNotPairCheck(
     checkedByUserId: string,
-  ): Promise<UserCheckAggregate> {
+  ): Promise<UserCheckEntity> {
     const pairIds = (
       await this.databaseService.user.findUnique({
         where: { id: checkedByUserId },
@@ -521,7 +521,7 @@ export class UserAdapter implements UserRepository {
       return null;
     }
 
-    return this.getUserCheckAggregate(userCheck);
+    return this.getUserCheckEntity(userCheck);
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
@@ -569,7 +569,7 @@ export class UserAdapter implements UserRepository {
 
     const query = `select users.id from users
     inner join places on users.id = places.id
-    where users.id not in ('${[...checkedIds, ...wasCheckedIds, id].join("', ")}')
+    where users.id not in ('${[...checkedIds, ...wasCheckedIds, id].join("', '")}')
     and 6371 * 2 * asin(
       sqrt(
         power(sin(radians((places.latitude - ${latitude}) / 2)), 2) +
@@ -601,12 +601,12 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(sortedUser);
   }
 
-  async findPlace(userId: string): Promise<PlaceAggregate | null> {
+  async findPlace(userId: string): Promise<PlaceEntity | null> {
     const place = await this.databaseService.place.findUnique({
       where: { id: userId },
     });
 
-    return this.getPlaceAggregate(place);
+    return this.getPlaceEntity(place);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -645,8 +645,8 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedUserCheck);
   }
 
-  private getPictureAggregate(picture: PrismaPicture): PictureAggregate {
-    return PictureAggregate.create({
+  private getPictureEntity(picture: PrismaPicture): PictureEntity {
+    return PictureEntity.create({
       ...picture,
       updatedAt: picture.updatedAt.toISOString(),
       createdAt: picture.createdAt.toISOString(),
@@ -661,18 +661,16 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private getPlaceAggregate(place: PrismaPlace): PlaceAggregate {
-    return PlaceAggregate.create({
+  private getPlaceEntity(place: PrismaPlace): PlaceEntity {
+    return PlaceEntity.create({
       ...place,
       updatedAt: place.updatedAt.toISOString(),
       createdAt: place.createdAt.toISOString(),
     });
   }
 
-  private getUserCheckAggregate(
-    userCheck: PrismaUserCheck,
-  ): UserCheckAggregate {
-    return UserCheckAggregate.create({
+  private getUserCheckEntity(userCheck: PrismaUserCheck): UserCheckEntity {
+    return UserCheckEntity.create({
       ...userCheck,
       createdAt: userCheck.createdAt.toISOString(),
     });

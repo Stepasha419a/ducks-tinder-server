@@ -5,10 +5,7 @@ import {
   WithoutPrivateFields,
 } from './interface';
 import { ShortUserWithDistance } from './interface/short-user-with-distance';
-import {
-  PictureAggregate,
-  PlaceAggregate,
-} from 'apps/user/src/domain/user/aggregate';
+import { PictureEntity, PlaceEntity } from 'apps/user/src/domain/user/entity';
 
 export class UserMapper {
   getWithoutPrivateFields(user: User): WithoutPrivateFields {
@@ -86,7 +83,7 @@ export class UserMapper {
     };
   }
 
-  private getUserPictureInfo(picture: PictureAggregate): UserPictureInfo {
+  private getUserPictureInfo(picture: PictureEntity): UserPictureInfo {
     return {
       id: picture.id,
       name: picture.name,
@@ -94,7 +91,7 @@ export class UserMapper {
     };
   }
 
-  private getShortUserPictureInfo(place: PlaceAggregate): ShortUserPlaceInfo {
+  private getShortUserPictureInfo(place: PlaceEntity): ShortUserPlaceInfo {
     return {
       name: place.name,
     };
