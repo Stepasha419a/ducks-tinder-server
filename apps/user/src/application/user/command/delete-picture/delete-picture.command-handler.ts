@@ -30,8 +30,6 @@ export class DeletePictureCommandHandler
     await this.fileAdapter.deletePicture(existingPicture.name);
     await userAggregate.deletePicture(pictureId);
 
-    await userAggregate.sortPictureOrders(existingPicture.order);
-
     const savedUser = await this.repository.save(userAggregate);
 
     return savedUser;

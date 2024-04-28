@@ -7,7 +7,7 @@ export const UserRepositoryMock = jest.fn().mockReturnValue({
   findPairs: jest.fn(),
   findCheckedUserIds: jest.fn(),
   findUserNotPairCheck: jest.fn(),
-  findSorted: jest.fn(),
+  findMatch: jest.fn(),
   findManyPictures: jest.fn(),
   findPlace: jest.fn(),
   findRefreshTokenByValue: jest.fn(),

@@ -1,26 +1,26 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetSortedQuery } from './get-sorted.query';
+import { GetMatchQuery } from './get-match.query';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { UserAggregate } from 'apps/user/src/domain/user';
 import { MapUtil } from '@app/common/shared/util';
 
-@QueryHandler(GetSortedQuery)
-export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
+@QueryHandler(GetMatchQuery)
+export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(query: GetSortedQuery): Promise<UserAggregate> {
-    const { userId, sortedUserId } = query;
+  async execute(query: GetMatchQuery): Promise<UserAggregate> {
+    const { userId, matchUserId } = query;
 
-    if (sortedUserId) {
-      return this.getCertainSortedUser(userId, sortedUserId);
+    if (matchUserId) {
+      return this.getCertainMatchUser(userId, matchUserId);
     }
 
     const user = await this.repository.findOne(userId);
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
 
-    const sortedUser = await this.repository.findSorted(
+    const matchUser = await this.repository.findMatch(
       userId,
       user.place.latitude,
       user.place.longitude,
@@ -32,28 +32,28 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
       user.sex,
     );
 
-    if (!sortedUser) {
+    if (!matchUser) {
       throw new NotFoundException();
     }
 
     const distance = MapUtil.getDistanceFromLatLonInKm(
       user.place.latitude,
       user.place.longitude,
-      sortedUser.place.latitude,
-      sortedUser.place.longitude,
+      matchUser.place.latitude,
+      matchUser.place.longitude,
     );
 
-    sortedUser.setDistance(distance);
+    matchUser.setDistance(distance);
 
-    return sortedUser;
+    return matchUser;
   }
 
-  private async getCertainSortedUser(
+  private async getCertainMatchUser(
     userId: string,
-    sortedUserId: string,
+    matchUserId: string,
   ): Promise<UserAggregate> {
-    const sortedUser = await this.repository.findOne(sortedUserId);
-    if (!sortedUser) {
+    const matchUser = await this.repository.findOne(matchUserId);
+    if (!matchUser) {
       throw new NotFoundException();
     }
 
@@ -61,12 +61,12 @@ export class GetSortedQueryHandler implements IQueryHandler<GetSortedQuery> {
     const distance = MapUtil.getDistanceFromLatLonInKm(
       place.latitude,
       place.longitude,
-      sortedUser.place.latitude,
-      sortedUser.place.longitude,
+      matchUser.place.latitude,
+      matchUser.place.longitude,
     );
 
-    sortedUser.setDistance(distance);
+    matchUser.setDistance(distance);
 
-    return sortedUser;
+    return matchUser;
   }
 }

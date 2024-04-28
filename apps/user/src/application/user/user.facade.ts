@@ -17,9 +17,9 @@ import {
 } from './command';
 import {
   GetManyUsersQuery,
+  GetMatchQuery,
   GetPairsInfoQuery,
   GetPairsQuery,
-  GetSortedQuery,
   GetUserQuery,
 } from './query';
 import { UserAggregate } from 'apps/user/src/domain/user';
@@ -58,8 +58,8 @@ export class UserFacade {
   queries = {
     getUser: (id: string) => this.getUser(id),
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
-    getSorted: (id: string, sortedUserId?: string) =>
-      this.getSorted(id, sortedUserId),
+    getMatch: (id: string, matchUserId?: string) =>
+      this.getMatch(id, matchUserId),
     getPairs: (id: string, dto: PairsFilterDto) => this.getPairs(id, dto),
     getPairsInfo: (id: string) => this.getPairsInfo(id),
   };
@@ -141,9 +141,9 @@ export class UserFacade {
     );
   }
 
-  private getSorted(id: string, sortedUserId?: string) {
-    return this.queryBus.execute<GetSortedQuery, UserAggregate>(
-      new GetSortedQuery(id, sortedUserId),
+  private getMatch(id: string, matchUserId?: string) {
+    return this.queryBus.execute<GetMatchQuery, UserAggregate>(
+      new GetMatchQuery(id, matchUserId),
     );
   }
 

@@ -546,7 +546,7 @@ export class UserAdapter implements UserRepository {
     return Boolean(result);
   }
 
-  async findSorted(
+  async findMatch(
     id: string,
     latitude: number,
     longitude: number,
@@ -583,22 +583,22 @@ export class UserAdapter implements UserRepository {
     and users."preferSex" = '${sex}'
     `;
 
-    const sortedId = (
+    const matchId = (
       await this.databaseService.$queryRaw`${Prisma.raw(query)}`
     )?.[0]?.id as string | undefined;
 
-    if (!sortedId) {
+    if (!matchId) {
       return null;
     }
 
-    const sortedUser = await this.databaseService.user.findUnique({
-      where: { id: sortedId },
+    const matchUser = await this.databaseService.user.findUnique({
+      where: { id: matchId },
       include: UserSelector.selectUser(),
     });
 
-    this.standardUser(sortedUser);
+    this.standardUser(matchUser);
 
-    return this.getUserAggregate(sortedUser);
+    return this.getUserAggregate(matchUser);
   }
 
   async findPlace(userId: string): Promise<PlaceEntity | null> {

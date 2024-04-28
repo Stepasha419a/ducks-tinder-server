@@ -15,7 +15,7 @@ export abstract class UserRepository {
   abstract findUserNotPairCheck(
     checkedByUserId: string,
   ): Promise<UserCheckEntity>;
-  abstract findSorted(
+  abstract findMatch(
     id: string,
     latitude: number,
     longitude: number,

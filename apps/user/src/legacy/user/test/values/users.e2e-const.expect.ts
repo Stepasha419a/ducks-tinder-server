@@ -160,8 +160,8 @@ export const USERS_PICTURE_PUT_EXPECT = {
   trainingAttitude: null,
 };
 
-export const USERS_SORTED_GET_EXPECT = {
-  id: 'sorted_second_user_id',
+export const USERS_MATCH_GET_EXPECT = {
+  id: 'match_second_user_id',
   age: 20,
   distance: 30,
   description: null,

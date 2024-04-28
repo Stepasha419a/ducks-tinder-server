@@ -10,10 +10,6 @@ import {
 import { ADD_PICTURE, AddPicture } from './add-picture.case';
 import { DELETE_PICTURE, DeletePicture } from './delete-picture.case';
 import {
-  SORT_PICTURE_ORDERS,
-  SortPictureOrders,
-} from './sort-picture-orders.case';
-import {
   MIX_PICTURE_ORDERS,
   MixPictureOrders,
 } from './mix-picture-orders.case';
@@ -31,7 +27,6 @@ export class UserServices
     GetPrimitiveFields,
     AddPicture,
     DeletePicture,
-    SortPictureOrders,
     MixPictureOrders,
     DecreasePictureOrder
 {
@@ -52,9 +47,6 @@ export class UserServices
 
   @IsDefined()
   deletePicture = DELETE_PICTURE;
-
-  @IsDefined()
-  sortPictureOrders = SORT_PICTURE_ORDERS;
 
   @IsDefined()
   mixPictureOrders = MIX_PICTURE_ORDERS;

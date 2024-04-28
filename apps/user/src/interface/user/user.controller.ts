@@ -67,12 +67,12 @@ export class UserController {
     return this.mapper.getWithoutPrivateFields(userAggregate);
   }
 
-  @Get('sorted')
+  @Get('match')
   @HttpCode(HttpStatus.OK)
-  async getSortedUser(
+  async getMatchUser(
     @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance> {
-    const userAggregate = await this.facade.queries.getSorted(userId);
+    const userAggregate = await this.facade.queries.getMatch(userId);
     return this.mapper.getShortUserWithDistance(userAggregate);
   }
 
@@ -145,12 +145,12 @@ export class UserController {
     @User(ParseUUIDPipe) userId: string,
   ): Promise<ShortUserWithDistance> {
     const userCheckAggregate = await this.facade.commands.returnUser(userId);
-    const returnedSortedUser = await this.facade.queries.getSorted(
+    const returnedMatchUser = await this.facade.queries.getMatch(
       userId,
       userCheckAggregate.checkedId,
     );
 
-    return this.mapper.getShortUserWithDistance(returnedSortedUser);
+    return this.mapper.getShortUserWithDistance(returnedMatchUser);
   }
 
   @Get('pairs')

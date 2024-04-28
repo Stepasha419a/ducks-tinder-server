@@ -9,7 +9,20 @@ export async function DELETE_PICTURE(
   pictureId: string,
 ): Promise<boolean> {
   const oldLength = this.pictures.length;
-  this.pictures = this.pictures.filter((picture) => picture.id !== pictureId);
+
+  const picture = this.pictures.find((item) => item.id === pictureId);
+  if (!picture) {
+    return false;
+  }
+
+  this.pictures = this.pictures
+    .filter((item) => item.id !== pictureId)
+    .map((item) => {
+      if (item.order > picture.order) {
+        --item.order;
+      }
+      return item;
+    });
 
   return oldLength !== this.pictures.length;
 }
