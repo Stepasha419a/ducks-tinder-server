@@ -13,7 +13,7 @@ import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { Message, MessageAggregate } from '../message';
 
-export class ChatPaginationValueObject {
+export class ChatPaginationEntity {
   @IsUUID()
   id: string;
 
@@ -58,8 +58,8 @@ export class ChatPaginationValueObject {
   @IsNotEmpty()
   lastSeenAt: string;
 
-  static create(chat: Partial<ChatPaginationValueObject>) {
-    const _chat = new ChatPaginationValueObject();
+  static create(chat: Partial<ChatPaginationEntity>) {
+    const _chat = new ChatPaginationEntity();
 
     Object.assign(_chat, chat);
 

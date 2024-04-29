@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SaveLastSeenCommand } from './save-last-seen.command';
 import { ChatRepository } from 'apps/chat/src/domain/repository';
-import { ChatVisitValueObject } from 'apps/chat/src/domain/value-object';
+import { ChatVisitEntity } from 'apps/chat/src/domain/entity';
 
 @CommandHandler(SaveLastSeenCommand)
 export class SaveLastSeenCommandHandler
@@ -12,7 +12,7 @@ export class SaveLastSeenCommandHandler
   async execute(command: SaveLastSeenCommand): Promise<void> {
     const { userId, chatId } = command;
 
-    const chatVisit = ChatVisitValueObject.create({
+    const chatVisit = ChatVisitEntity.create({
       userId,
       chatId,
     });

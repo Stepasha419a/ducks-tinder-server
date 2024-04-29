@@ -7,11 +7,10 @@ import {
   validateSync,
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
-import { Message } from './message.interface';
+import { Message, RepliedMessage } from './message.interface';
 import { Type } from 'class-transformer';
 import { MessageServices } from './services';
 import { randomUUID } from 'crypto';
-import { RepliedMessageValueObject } from '../value-object';
 
 export class MessageAggregate extends MessageServices implements Message {
   @IsUUID()
@@ -39,8 +38,8 @@ export class MessageAggregate extends MessageServices implements Message {
 
   @IsOptional()
   @IsNotEmptyObject()
-  @Type(() => RepliedMessageValueObject)
-  replied?: RepliedMessageValueObject;
+  @Type(() => RepliedMessageValidation)
+  replied?: RepliedMessage;
 
   @IsString()
   @IsNotEmpty()
@@ -66,4 +65,20 @@ export class MessageAggregate extends MessageServices implements Message {
 
     return _message;
   }
+}
+
+class RepliedMessageValidation {
+  @IsUUID()
+  id: string = randomUUID();
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  text: string;
+
+  @IsUUID()
+  userId: string;
 }

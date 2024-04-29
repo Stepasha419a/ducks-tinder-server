@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 
-export class ChatVisitValueObject {
+export class ChatVisitEntity {
   @IsUUID()
   userId: string;
 
@@ -27,8 +27,8 @@ export class ChatVisitValueObject {
   @IsNotEmpty()
   lastSeenAt: string = new Date().toISOString();
 
-  static create(chatVisit: Partial<ChatVisitValueObject>) {
-    const _chatVisit = new ChatVisitValueObject();
+  static create(chatVisit: Partial<ChatVisitEntity>) {
+    const _chatVisit = new ChatVisitEntity();
 
     Object.assign(_chatVisit, chatVisit);
 

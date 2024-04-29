@@ -6,11 +6,8 @@ import { ChatAggregate } from 'apps/chat/src/domain';
 import { PaginationDto } from '@app/common/shared/dto';
 import { MessageAggregate } from 'apps/chat/src/domain';
 import { ChatSelector } from './chat.selector';
-import {
-  ChatVisitValueObject,
-  ChatPaginationValueObject,
-  RepliedMessageValueObject,
-} from 'apps/chat/src/domain/value-object';
+import { ChatPaginationEntity, ChatVisitEntity } from '../../domain/entity';
+import { RepliedMessage } from '../../domain/message/message.interface';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
@@ -82,8 +79,8 @@ export class ChatAdapter implements ChatRepository {
   }
 
   async saveChatVisit(
-    chatVisit: ChatVisitValueObject,
-  ): Promise<ChatVisitValueObject | null> {
+    chatVisit: ChatVisitEntity,
+  ): Promise<ChatVisitEntity | null> {
     const existingChatVisit = await this.findChatVisit(
       chatVisit.userId,
       chatVisit.chatId,
@@ -100,7 +97,7 @@ export class ChatAdapter implements ChatRepository {
         },
       });
 
-      return this.getChatVisitValueObject(savedChatVisit);
+      return this.getChatVisitEntity(savedChatVisit);
     }
 
     const savedChatVisit = await this.databaseService.usersOnChats.create({
@@ -112,7 +109,7 @@ export class ChatAdapter implements ChatRepository {
       },
     });
 
-    return this.getChatVisitValueObject(savedChatVisit);
+    return this.getChatVisitEntity(savedChatVisit);
   }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
@@ -169,7 +166,7 @@ export class ChatAdapter implements ChatRepository {
   async findOnePaginationHavingMember(
     id: string,
     userId: string,
-  ): Promise<ChatPaginationValueObject | null> {
+  ): Promise<ChatPaginationEntity | null> {
     const chat = await this.databaseService.chat
       .findFirst({
         where: { id, users: { some: { userId } } },
@@ -225,7 +222,7 @@ export class ChatAdapter implements ChatRepository {
 
     const newMessagesCount = user.newMessagesCount;
 
-    return this.getChatPaginationValueObject({
+    return this.getChatPaginationEntity({
       id: chat.id,
       memberId,
       avatar,
@@ -243,7 +240,7 @@ export class ChatAdapter implements ChatRepository {
   async findMany(
     userId: string,
     dto: PaginationDto,
-  ): Promise<ChatPaginationValueObject[]> {
+  ): Promise<ChatPaginationEntity[]> {
     const chats = await this.databaseService.chat.findMany({
       where: {
         users: {
@@ -299,7 +296,7 @@ export class ChatAdapter implements ChatRepository {
 
       const newMessagesCount = user.newMessagesCount;
 
-      return this.getChatPaginationValueObject({
+      return this.getChatPaginationEntity({
         id: chat.id,
         memberId,
         avatar,
@@ -348,7 +345,7 @@ export class ChatAdapter implements ChatRepository {
   async findChatVisit(
     userId: string,
     chatId: string,
-  ): Promise<ChatVisitValueObject | null> {
+  ): Promise<ChatVisitEntity | null> {
     const chatVisit = await this.databaseService.usersOnChats.findUnique({
       where: {
         userId_chatId: { chatId, userId },
@@ -359,7 +356,7 @@ export class ChatAdapter implements ChatRepository {
       return null;
     }
 
-    return this.getChatVisitValueObject(chatVisit);
+    return this.getChatVisitEntity(chatVisit);
   }
 
   async findMessages(
@@ -473,7 +470,7 @@ export class ChatAdapter implements ChatRepository {
 
     return MessageAggregate.create({
       ...message,
-      replied: this.getRepliedMessageValueObject(message.replied),
+      replied: this.getRepliedMessage(message.replied),
       name: message.user.name,
       avatar,
       createdAt: message.createdAt.toISOString(),
@@ -481,31 +478,31 @@ export class ChatAdapter implements ChatRepository {
     });
   }
 
-  private getChatVisitValueObject(chatVisit): ChatVisitValueObject {
-    return ChatVisitValueObject.create({
+  private getChatVisitEntity(chatVisit): ChatVisitEntity {
+    return ChatVisitEntity.create({
       ...chatVisit,
       createdAt: chatVisit.createdAt.toISOString(),
       lastSeenAt: chatVisit.lastSeenAt.toISOString(),
     });
   }
 
-  private getRepliedMessageValueObject(
-    repliedMessage,
-  ): RepliedMessageValueObject {
+  private getRepliedMessage(repliedMessage): RepliedMessage {
     if (!repliedMessage) {
       return null;
     }
 
     const name = repliedMessage?.user.name;
 
-    return RepliedMessageValueObject.create({
-      ...repliedMessage,
+    return {
+      id: repliedMessage.id,
+      text: repliedMessage.text,
+      userId: repliedMessage.userId,
       name,
-    });
+    };
   }
 
-  private getChatPaginationValueObject(chat): ChatPaginationValueObject {
-    return ChatPaginationValueObject.create({
+  private getChatPaginationEntity(chat): ChatPaginationEntity {
+    return ChatPaginationEntity.create({
       ...chat,
       lastSeenAt: chat.lastSeenAt.toISOString(),
       createdAt: chat.createdAt.toISOString(),
