@@ -5,7 +5,7 @@ import { GenerateTokensCommand } from './generate-tokens.command';
 import { TokenRepository } from 'apps/user/src/domain/token/repository';
 import {
   AccessTokenValueObject,
-  RefreshTokenValueObject,
+  RefreshTokenEntity,
 } from 'apps/user/src/domain/token';
 
 @CommandHandler(GenerateTokensCommand)
@@ -33,16 +33,16 @@ export class GenerateTokensCommandHandler
     const accessTokenValueObject = AccessTokenValueObject.create({
       value: accessTokenValue,
     });
-    const refreshTokenValueObject = RefreshTokenValueObject.create({
+    const refreshTokenEntity = RefreshTokenEntity.create({
       id: dto.userId,
       value: refreshTokenValue,
     });
 
-    await this.repository.saveRefreshToken(refreshTokenValueObject);
+    await this.repository.saveRefreshToken(refreshTokenEntity);
 
     return {
       accessTokenValueObject,
-      refreshTokenValueObject,
+      refreshTokenEntity,
     };
   }
 }

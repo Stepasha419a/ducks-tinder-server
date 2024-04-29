@@ -1,14 +1,12 @@
-import { RefreshTokenValueObject } from '../value-object';
+import { RefreshTokenEntity } from '../entity';
 
 export abstract class TokenRepository {
   abstract saveRefreshToken(
-    refreshToken: RefreshTokenValueObject,
-  ): Promise<RefreshTokenValueObject>;
-  abstract findOneRefreshToken(
-    id: string,
-  ): Promise<RefreshTokenValueObject | null>;
+    refreshToken: RefreshTokenEntity,
+  ): Promise<RefreshTokenEntity>;
+  abstract findOneRefreshToken(id: string): Promise<RefreshTokenEntity | null>;
   abstract findOneRefreshTokenByValue(
     value: string,
-  ): Promise<RefreshTokenValueObject | null>;
+  ): Promise<RefreshTokenEntity | null>;
   abstract deleteRefreshToken(id: string): Promise<boolean>;
 }

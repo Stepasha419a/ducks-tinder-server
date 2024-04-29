@@ -1,9 +1,9 @@
 import {
   AccessTokenValueObject,
-  RefreshTokenValueObject,
+  RefreshTokenEntity,
 } from 'apps/user/src/domain/token';
 
 export interface GenerateTokensView {
   accessTokenValueObject: AccessTokenValueObject;
-  refreshTokenValueObject: RefreshTokenValueObject;
+  refreshTokenEntity: RefreshTokenEntity;
 }

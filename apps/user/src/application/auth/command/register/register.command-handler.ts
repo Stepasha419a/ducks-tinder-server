@@ -41,7 +41,7 @@ export class RegisterCommandHandler
       throw new BadRequestException(err);
     });
 
-    const { accessTokenValueObject, refreshTokenValueObject } =
+    const { accessTokenValueObject, refreshTokenEntity } =
       await this.tokenFacade.commands.generateTokens({
         userId: user.id,
         email: user.email,
@@ -50,7 +50,7 @@ export class RegisterCommandHandler
     return {
       ...savedUser,
       accessToken: accessTokenValueObject,
-      refreshToken: refreshTokenValueObject,
+      refreshToken: refreshTokenEntity,
     };
   }
 }

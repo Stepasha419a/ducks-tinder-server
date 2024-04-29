@@ -28,7 +28,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
       throw new ForbiddenException(ERROR.INCORRECT_EMAIL_OR_PASSWORD);
     }
 
-    const { accessTokenValueObject, refreshTokenValueObject } =
+    const { accessTokenValueObject, refreshTokenEntity } =
       await this.tokenFacade.commands.generateTokens({
         userId: user.id,
         email: user.email,
@@ -37,7 +37,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     return {
       ...user,
       accessToken: accessTokenValueObject,
-      refreshToken: refreshTokenValueObject,
+      refreshToken: refreshTokenEntity,
     };
   }
 }

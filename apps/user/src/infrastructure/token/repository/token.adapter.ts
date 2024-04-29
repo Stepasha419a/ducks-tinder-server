@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@app/common/database';
 import { Token } from '@prisma/client';
 import { TokenRepository } from 'apps/user/src/domain/token/repository';
-import { RefreshTokenValueObject } from 'apps/user/src/domain/token';
+import { RefreshTokenEntity } from 'apps/user/src/domain/token';
 
 @Injectable()
 export class TokenAdapter implements TokenRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async saveRefreshToken(
-    refreshToken: RefreshTokenValueObject,
-  ): Promise<RefreshTokenValueObject> {
+    refreshToken: RefreshTokenEntity,
+  ): Promise<RefreshTokenEntity> {
     const existingRefreshToken = await this.findOneRefreshToken(
       refreshToken.id,
     );
@@ -25,7 +25,7 @@ export class TokenAdapter implements TokenRepository {
         },
       });
 
-      return this.getRefreshTokenValueObject(updatedRefreshToken);
+      return this.getRefreshTokenEntity(updatedRefreshToken);
     }
 
     const savedRefreshToken = await this.databaseService.token.create({
@@ -37,12 +37,10 @@ export class TokenAdapter implements TokenRepository {
       },
     });
 
-    return this.getRefreshTokenValueObject(savedRefreshToken);
+    return this.getRefreshTokenEntity(savedRefreshToken);
   }
 
-  async findOneRefreshToken(
-    id: string,
-  ): Promise<RefreshTokenValueObject | null> {
+  async findOneRefreshToken(id: string): Promise<RefreshTokenEntity | null> {
     const existingRefreshToken = await this.databaseService.token
       .findUnique({
         where: { id },
@@ -55,12 +53,10 @@ export class TokenAdapter implements TokenRepository {
       return null;
     }
 
-    return this.getRefreshTokenValueObject(existingRefreshToken);
+    return this.getRefreshTokenEntity(existingRefreshToken);
   }
 
-  async findOneRefreshTokenByValue(
-    value: string,
-  ): Promise<RefreshTokenValueObject> {
+  async findOneRefreshTokenByValue(value: string): Promise<RefreshTokenEntity> {
     const existingRefreshToken = await this.databaseService.token
       .findUnique({
         where: { refreshToken: value },
@@ -73,7 +69,7 @@ export class TokenAdapter implements TokenRepository {
       return null;
     }
 
-    return this.getRefreshTokenValueObject(existingRefreshToken);
+    return this.getRefreshTokenEntity(existingRefreshToken);
   }
 
   async deleteRefreshToken(id: string): Promise<boolean> {
@@ -86,10 +82,8 @@ export class TokenAdapter implements TokenRepository {
     return Boolean(deletedRefreshToken);
   }
 
-  private getRefreshTokenValueObject(
-    refreshToken: Token,
-  ): RefreshTokenValueObject {
-    return RefreshTokenValueObject.create({
+  private getRefreshTokenEntity(refreshToken: Token): RefreshTokenEntity {
+    return RefreshTokenEntity.create({
       ...refreshToken,
       value: refreshToken.refreshToken,
       updatedAt: refreshToken.updatedAt.toISOString(),

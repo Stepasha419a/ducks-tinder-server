@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 
-export class RefreshTokenValueObject {
+export class RefreshTokenEntity {
   @IsUUID()
   id: string;
 
@@ -22,8 +22,8 @@ export class RefreshTokenValueObject {
   @IsNotEmpty()
   updatedAt = new Date().toISOString();
 
-  static create(refreshToken: Partial<RefreshTokenValueObject>) {
-    const _refreshToken = new RefreshTokenValueObject();
+  static create(refreshToken: Partial<RefreshTokenEntity>) {
+    const _refreshToken = new RefreshTokenEntity();
 
     Object.assign(_refreshToken, refreshToken);
 
