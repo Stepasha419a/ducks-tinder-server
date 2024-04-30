@@ -14,9 +14,6 @@ export class PatchUserPlaceCommandHandler
     private readonly mapApi: MapApi,
   ) {}
 
-  /* idk how it works but browser maps api returns lat and long but geocode api requires
-   them on the contrary for correct geocode answer & distance formula requires them on the
-   contrary => I swap them when save in db */
   async execute(command: PatchUserPlaceCommand): Promise<UserAggregate> {
     const { userId, dto } = command;
 
@@ -29,8 +26,8 @@ export class PatchUserPlaceCommandHandler
         id: userId,
         address: geocode.address,
         name: geocode.name,
-        latitude: dto.longitude,
-        longitude: dto.latitude,
+        latitude: dto.latitude,
+        longitude: dto.longitude,
       }),
     );
 
