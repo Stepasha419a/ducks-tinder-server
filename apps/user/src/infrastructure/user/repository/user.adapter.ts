@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '@app/common/database';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { User, UserAggregate } from 'apps/user/src/domain/user';
@@ -27,12 +27,6 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.findOne(user.id);
     if (existingUser) {
       const differentKeys = this.getDifferences(user, existingUser);
-
-      if (
-        differentKeys.some((key) => this.primitiveRelationFields.includes(key))
-      ) {
-        await this.updatePrimitiveRelations(user, differentKeys);
-      }
 
       if (differentKeys.includes('interests')) {
         await this.updateInterests(existingUser, user.interests);
@@ -156,37 +150,6 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private async updatePrimitiveRelations(
-    user: UserAggregate,
-    differentKeys: Array<keyof User>,
-  ) {
-    const primitiveRelationKeysToUpdate =
-      this.getPrimitiveRelationKeysToUpdate(differentKeys);
-
-    for (const fieldToUpdate of primitiveRelationKeysToUpdate) {
-      let existingRelationId = null;
-      if (user[fieldToUpdate] !== null) {
-        existingRelationId = (
-          await this.databaseService[fieldToUpdate].findUnique({
-            where: { name: user[fieldToUpdate] },
-            select: { id: true },
-          })
-        )?.id;
-      }
-
-      if (!existingRelationId && user[fieldToUpdate] !== null) {
-        throw new NotFoundException();
-      }
-
-      await this.databaseService.user.update({
-        where: { id: user.id },
-        data: {
-          [`${fieldToUpdate}Id`]: existingRelationId,
-        },
-      });
-    }
-  }
-
   private async updateInterests(user: UserAggregate, newInterests?: string[]) {
     if (!newInterests) {
       return {};
@@ -267,34 +230,6 @@ export class UserAdapter implements UserRepository {
     }
     return keysToUpdate;
   }
-
-  private getPrimitiveRelationKeysToUpdate(keysToUpdate: Array<keyof User>) {
-    const primitiveRelationKeysToUpdate: Array<keyof User> = [];
-
-    for (const key of keysToUpdate) {
-      if (this.primitiveRelationFields.includes(key as keyof User)) {
-        primitiveRelationKeysToUpdate.push(key as keyof User);
-      }
-    }
-
-    return primitiveRelationKeysToUpdate;
-  }
-
-  private primitiveRelationFields: Array<keyof User> = [
-    'alcoholAttitude',
-    'attentionSign',
-    'childrenAttitude',
-    'chronotype',
-    'communicationStyle',
-    'education',
-    'foodPreference',
-    'personalityType',
-    'pet',
-    'smokingAttitude',
-    'socialNetworksActivity',
-    'trainingAttitude',
-    'zodiacSign',
-  ];
 
   async findOne(id: string): Promise<UserAggregate | null> {
     const existingUser = await this.databaseService.user
@@ -658,7 +593,7 @@ export class UserAdapter implements UserRepository {
       ...user,
       updatedAt: user.updatedAt.toISOString(),
       createdAt: user.createdAt.toISOString(),
-    });
+    } as unknown as User);
   }
 
   private getPlaceEntity(place: PrismaPlace): PlaceEntity {
@@ -677,7 +612,6 @@ export class UserAdapter implements UserRepository {
   }
 
   private standardUser(user) {
-    this.standardUserPrimitiveRelations(user);
     this.standardUserInterests(user);
     this.standardUserPictures(user);
   }
@@ -686,17 +620,6 @@ export class UserAdapter implements UserRepository {
     for (const picture of user.pictures) {
       picture.createdAt = picture.createdAt.toISOString();
       picture.updatedAt = picture.updatedAt.toISOString();
-    }
-  }
-
-  private standardUserPrimitiveRelations(user) {
-    for (const key in user) {
-      if (
-        this.primitiveRelationFields.includes(key as keyof User) &&
-        user[key] !== null
-      ) {
-        user[key] = user[key].name;
-      }
     }
   }
 

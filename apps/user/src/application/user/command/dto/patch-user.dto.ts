@@ -1,9 +1,24 @@
 import {
+  AlcoholAttitude,
+  AttentionSign,
+  ChildrenAttitude,
+  Chronotype,
+  CommunicationStyle,
+  Education,
+  FoodPreference,
+  PersonalityType,
+  Pet,
+  SmokingAttitude,
+  SocialNetworksActivity,
+  TrainingAttitude,
+  ZodiacSign,
+} from 'apps/user/src/domain/user';
+import {
   ArrayMaxSize,
   IsArray,
   IsBoolean,
   IsEmail,
-  IsNotEmpty,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -82,67 +97,54 @@ export class PatchUserDto {
   interests?: string[];
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  zodiacSign?: string;
+  @IsEnum(ZodiacSign)
+  zodiacSign?: ZodiacSign;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  education?: string;
+  @IsEnum(Education)
+  education?: Education;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  childrenAttitude?: string;
+  @IsEnum(ChildrenAttitude)
+  childrenAttitude?: ChildrenAttitude;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  personalityType?: string;
+  @IsEnum(PersonalityType)
+  personalityType?: PersonalityType;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  communicationStyle?: string;
+  @IsEnum(CommunicationStyle)
+  communicationStyle?: CommunicationStyle;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  attentionSign?: string;
+  @IsEnum(AttentionSign)
+  attentionSign?: AttentionSign;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  alcoholAttitude?: string;
+  @IsEnum(AlcoholAttitude)
+  alcoholAttitude?: AlcoholAttitude;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  chronotype?: string;
+  @IsEnum(Chronotype)
+  chronotype?: Chronotype;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  foodPreference?: string;
+  @IsEnum(FoodPreference)
+  foodPreference?: FoodPreference;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  pet?: string;
+  @IsEnum(Pet)
+  pet?: Pet;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  smokingAttitude?: string;
+  @IsEnum(SmokingAttitude)
+  smokingAttitude?: SmokingAttitude;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  socialNetworksActivity?: string;
+  @IsEnum(SocialNetworksActivity)
+  socialNetworksActivity?: SocialNetworksActivity;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  trainingAttitude?: string;
+  @IsEnum(TrainingAttitude)
+  trainingAttitude?: TrainingAttitude;
 }

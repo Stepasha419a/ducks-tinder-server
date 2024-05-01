@@ -20,7 +20,20 @@ export async function GET_PRIMITIVE_FIELDS(
     'preferSex',
     'sex',
     'usersOnlyInDistance',
-  ];
+    'alcoholAttitude',
+    'attentionSign',
+    'childrenAttitude',
+    'chronotype',
+    'communicationStyle',
+    'education',
+    'foodPreference',
+    'personalityType',
+    'pet',
+    'smokingAttitude',
+    'socialNetworksActivity',
+    'trainingAttitude',
+    'zodiacSign',
+  ] as const;
   const subset = Object.fromEntries(
     keys.map((key) => [key, this[key]]),
   ) as UserPrimitiveFields;

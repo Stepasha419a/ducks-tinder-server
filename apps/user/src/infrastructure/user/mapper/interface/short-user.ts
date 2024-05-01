@@ -1,5 +1,20 @@
 import { UserPictureInfo } from './user-picture-info';
 import { ShortUserPlaceInfo } from './short-user-place-info';
+import {
+  AlcoholAttitude,
+  AttentionSign,
+  ChildrenAttitude,
+  Chronotype,
+  CommunicationStyle,
+  Education,
+  FoodPreference,
+  PersonalityType,
+  Pet,
+  SmokingAttitude,
+  SocialNetworksActivity,
+  TrainingAttitude,
+  ZodiacSign,
+} from 'apps/user/src/domain/user';
 
 export interface ShortUser {
   id: string;
@@ -9,19 +24,19 @@ export interface ShortUser {
   isActivated: boolean;
 
   interests: string[];
-  zodiacSign?: string;
-  education?: string;
-  alcoholAttitude?: string;
-  chronotype?: string;
-  foodPreference?: string;
-  pet?: string;
-  smokingAttitude?: string;
-  socialNetworksActivity?: string;
-  trainingAttitude?: string;
-  childrenAttitude?: string;
-  personalityType?: string;
-  communicationStyle?: string;
-  attentionSign?: string;
+  zodiacSign?: ZodiacSign;
+  education?: Education;
+  alcoholAttitude?: AlcoholAttitude;
+  chronotype?: Chronotype;
+  foodPreference?: FoodPreference;
+  pet?: Pet;
+  smokingAttitude?: SmokingAttitude;
+  socialNetworksActivity?: SocialNetworksActivity;
+  trainingAttitude?: TrainingAttitude;
+  childrenAttitude?: ChildrenAttitude;
+  personalityType?: PersonalityType;
+  communicationStyle?: CommunicationStyle;
+  attentionSign?: AttentionSign;
 
   pictures: UserPictureInfo[];
 
