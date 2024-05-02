@@ -184,7 +184,7 @@ export class UserAdapter implements UserRepository {
     if (toDisconnect.length) {
       const interestIds = (
         await this.databaseService.interest.findMany({
-          where: { name: { in: toConnect } },
+          where: { name: { in: toDisconnect } },
         })
       ).map((interest) => interest.id);
 
