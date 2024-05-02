@@ -6,6 +6,7 @@ import {
   CommunicationStyle,
   Education,
   FoodPreference,
+  Interest,
   PersonalityType,
   Pet,
   SmokingAttitude,
@@ -92,9 +93,9 @@ export class PatchUserDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(Interest, { each: true })
   @ArrayMaxSize(16)
-  interests?: string[];
+  interests: Interest[];
 
   @IsOptional()
   @IsEnum(ZodiacSign)

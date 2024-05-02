@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '@app/common/database';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
-import { User, UserAggregate } from 'apps/user/src/domain/user';
+import { Interest, User, UserAggregate } from 'apps/user/src/domain/user';
 import { UserSelector } from './user.selector';
 import {
   User as PrismaUser,
@@ -150,7 +150,10 @@ export class UserAdapter implements UserRepository {
     });
   }
 
-  private async updateInterests(user: UserAggregate, newInterests?: string[]) {
+  private async updateInterests(
+    user: UserAggregate,
+    newInterests?: Interest[],
+  ) {
     if (!newInterests) {
       return {};
     }
@@ -159,7 +162,7 @@ export class UserAdapter implements UserRepository {
       await this.databaseService.interest.findMany({
         select: { name: true },
       })
-    ).map((interestObject) => interestObject.name);
+    ).map((interestObject) => interestObject.name) as unknown as Interest[];
 
     const { toConnect, toDisconnect } = this.compareUserRelationFieldIds(
       user.interests,
@@ -192,9 +195,9 @@ export class UserAdapter implements UserRepository {
   }
 
   private compareUserRelationFieldIds(
-    oldInterests: string[],
-    newInterests: string[],
-    allExistingInterests: string[],
+    oldInterests: Interest[],
+    newInterests: Interest[],
+    allExistingInterests: Interest[],
   ) {
     const toConnect = [];
     const toDisconnect = [];

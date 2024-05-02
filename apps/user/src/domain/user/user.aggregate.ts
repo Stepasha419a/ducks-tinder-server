@@ -6,6 +6,7 @@ import {
   CommunicationStyle,
   Education,
   FoodPreference,
+  Interest,
   PersonalityType,
   Pet,
   Sex,
@@ -175,8 +176,8 @@ export class UserAggregate extends UserServices implements User {
 
   @IsOptional()
   @IsArray()
-  @Type(() => String)
-  interests: string[];
+  @IsEnum(Interest, { each: true })
+  interests: Interest[];
 
   @IsOptional()
   @IsArray()

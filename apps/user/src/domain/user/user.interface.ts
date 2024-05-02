@@ -19,7 +19,7 @@ export interface User {
   preferAgeFrom?: number;
   preferAgeTo?: number;
 
-  interests?: string[];
+  interests?: Interest[];
   zodiacSign?: ZodiacSign;
   education?: Education;
   alcoholAttitude?: AlcoholAttitude;
@@ -40,6 +40,72 @@ export interface User {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export enum Interest {
+  'fighting',
+  'ski',
+  'football',
+  'volleyball',
+  'tennis',
+  'ping pong',
+  'swimming',
+  'karting',
+  'horse ridding',
+  'hunting',
+  'fishing',
+  'skateboarding',
+  'bicycle',
+  'running',
+  'surfing',
+  'snowboarding',
+  'shooting',
+  'parachuting',
+  'paintball',
+  'bowling',
+  'billiard',
+  'skates',
+  'dancing',
+  'cosplay',
+  'ballet',
+  'room quest',
+  'fitness',
+  'yoga',
+  'meditation',
+  'tourism',
+  'travelling',
+  'hiking',
+  'camping',
+  'cars',
+  'education',
+  'foreign languages',
+  'cards',
+  'poker',
+  'chess',
+  'checkers',
+  'nard',
+  'psychology',
+  'table games',
+  'sport',
+  'blogging',
+  'computer games',
+  'programming',
+  'drawing',
+  '3D drawing',
+  'gardener',
+  'animals',
+  'volunteering',
+  'serials',
+  'books',
+  'movies',
+  'cinema',
+  'food',
+  'cooking',
+  'photo',
+  'design',
+  'writing',
+  'music',
+  'handmade',
 }
 
 export enum AlcoholAttitude {

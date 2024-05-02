@@ -8,6 +8,7 @@ import {
   CommunicationStyle,
   Education,
   FoodPreference,
+  Interest,
   PersonalityType,
   Pet,
   SmokingAttitude,
@@ -23,7 +24,7 @@ export interface ShortUser {
   description: string;
   isActivated: boolean;
 
-  interests: string[];
+  interests: Interest[];
   zodiacSign?: ZodiacSign;
   education?: Education;
   alcoholAttitude?: AlcoholAttitude;
