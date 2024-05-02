@@ -177,7 +177,7 @@ export class UserAdapter implements UserRepository {
         })
       ).map((interest) => ({ interestId: interest.id, userId: user.id }));
 
-      this.databaseService.usersOnInterests.createMany({
+      await this.databaseService.usersOnInterests.createMany({
         data: interestConnect,
       });
     }
@@ -188,7 +188,7 @@ export class UserAdapter implements UserRepository {
         })
       ).map((interest) => interest.id);
 
-      this.databaseService.usersOnInterests.deleteMany({
+      await this.databaseService.usersOnInterests.deleteMany({
         where: { userId: user.id, interestId: { in: interestIds } },
       });
     }
