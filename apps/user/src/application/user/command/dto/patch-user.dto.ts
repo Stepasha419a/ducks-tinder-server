@@ -1,3 +1,4 @@
+import { IsDetailedEnum } from '@app/common/shared/decorator';
 import {
   AlcoholAttitude,
   AttentionSign,
@@ -19,7 +20,6 @@ import {
   IsArray,
   IsBoolean,
   IsEmail,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -93,59 +93,59 @@ export class PatchUserDto {
 
   @IsOptional()
   @IsArray()
-  @IsEnum(Interest, { each: true })
+  @IsDetailedEnum(Interest, { each: true })
   @ArrayMaxSize(16)
   interests: Interest[];
 
   @IsOptional()
-  @IsEnum(ZodiacSign)
+  @IsDetailedEnum(ZodiacSign)
   zodiacSign?: ZodiacSign;
 
   @IsOptional()
-  @IsEnum(Education)
+  @IsDetailedEnum(Education)
   education?: Education;
 
   @IsOptional()
-  @IsEnum(ChildrenAttitude)
+  @IsDetailedEnum(ChildrenAttitude)
   childrenAttitude?: ChildrenAttitude;
 
   @IsOptional()
-  @IsEnum(PersonalityType)
+  @IsDetailedEnum(PersonalityType)
   personalityType?: PersonalityType;
 
   @IsOptional()
-  @IsEnum(CommunicationStyle)
+  @IsDetailedEnum(CommunicationStyle)
   communicationStyle?: CommunicationStyle;
 
   @IsOptional()
-  @IsEnum(AttentionSign)
+  @IsDetailedEnum(AttentionSign)
   attentionSign?: AttentionSign;
 
   @IsOptional()
-  @IsEnum(AlcoholAttitude)
+  @IsDetailedEnum(AlcoholAttitude)
   alcoholAttitude?: AlcoholAttitude;
 
   @IsOptional()
-  @IsEnum(Chronotype)
+  @IsDetailedEnum(Chronotype)
   chronotype?: Chronotype;
 
   @IsOptional()
-  @IsEnum(FoodPreference)
+  @IsDetailedEnum(FoodPreference)
   foodPreference?: FoodPreference;
 
   @IsOptional()
-  @IsEnum(Pet)
+  @IsDetailedEnum(Pet)
   pet?: Pet;
 
   @IsOptional()
-  @IsEnum(SmokingAttitude)
+  @IsDetailedEnum(SmokingAttitude)
   smokingAttitude?: SmokingAttitude;
 
   @IsOptional()
-  @IsEnum(SocialNetworksActivity)
+  @IsDetailedEnum(SocialNetworksActivity)
   socialNetworksActivity?: SocialNetworksActivity;
 
   @IsOptional()
-  @IsEnum(TrainingAttitude)
+  @IsDetailedEnum(TrainingAttitude)
   trainingAttitude?: TrainingAttitude;
 }

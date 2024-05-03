@@ -21,7 +21,6 @@ import {
   IsArray,
   IsBoolean,
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsNotEmptyObject,
   IsNumber,
@@ -40,6 +39,7 @@ import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { randomUUID } from 'crypto';
 import { PictureEntity, PlaceEntity } from './entity';
+import { IsDetailedEnum } from '@app/common/shared/decorator';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
@@ -123,60 +123,60 @@ export class UserAggregate extends UserServices implements User {
   place: PlaceEntity;
 
   @IsOptional()
-  @IsEnum(ZodiacSign)
+  @IsDetailedEnum(ZodiacSign)
   zodiacSign?: ZodiacSign;
 
   @IsOptional()
-  @IsEnum(Education)
+  @IsDetailedEnum(Education)
   education?: Education;
 
   @IsOptional()
-  @IsEnum(ChildrenAttitude)
+  @IsDetailedEnum(ChildrenAttitude)
   childrenAttitude?: ChildrenAttitude;
 
   @IsOptional()
-  @IsEnum(PersonalityType)
+  @IsDetailedEnum(PersonalityType)
   personalityType?: PersonalityType;
 
   @IsOptional()
-  @IsEnum(CommunicationStyle)
+  @IsDetailedEnum(CommunicationStyle)
   communicationStyle?: CommunicationStyle;
 
   @IsOptional()
-  @IsEnum(AttentionSign)
+  @IsDetailedEnum(AttentionSign)
   attentionSign?: AttentionSign;
 
   @IsOptional()
-  @IsEnum(AlcoholAttitude)
+  @IsDetailedEnum(AlcoholAttitude)
   alcoholAttitude?: AlcoholAttitude;
 
   @IsOptional()
-  @IsEnum(Chronotype)
+  @IsDetailedEnum(Chronotype)
   chronotype?: Chronotype;
 
   @IsOptional()
-  @IsEnum(FoodPreference)
+  @IsDetailedEnum(FoodPreference)
   foodPreference?: FoodPreference;
 
   @IsOptional()
-  @IsEnum(Pet)
+  @IsDetailedEnum(Pet)
   pet?: Pet;
 
   @IsOptional()
-  @IsEnum(SmokingAttitude)
+  @IsDetailedEnum(SmokingAttitude)
   smokingAttitude?: SmokingAttitude;
 
   @IsOptional()
-  @IsEnum(SocialNetworksActivity)
+  @IsDetailedEnum(SocialNetworksActivity)
   socialNetworksActivity?: SocialNetworksActivity;
 
   @IsOptional()
-  @IsEnum(TrainingAttitude)
+  @IsDetailedEnum(TrainingAttitude)
   trainingAttitude?: TrainingAttitude;
 
   @IsOptional()
   @IsArray()
-  @IsEnum(Interest, { each: true })
+  @IsDetailedEnum(Interest, { each: true })
   interests: Interest[];
 
   @IsOptional()
