@@ -167,7 +167,7 @@ export class UserAdapter implements UserRepository {
       await this.databaseService.usersOnInterests.createMany({
         data: toConnect.map((interest) => ({
           userId: user.id,
-          interest: interest as unknown as string,
+          interest: interest,
         })),
       });
     }
@@ -175,7 +175,7 @@ export class UserAdapter implements UserRepository {
       await this.databaseService.usersOnInterests.deleteMany({
         where: {
           userId: user.id,
-          interest: { in: toDisconnect as unknown as string[] },
+          interest: { in: toDisconnect },
         },
       });
     }
@@ -191,7 +191,7 @@ export class UserAdapter implements UserRepository {
     newInterests.forEach((interest) => {
       if (
         !oldInterests.includes(interest) &&
-        Object.keys(Interest).includes(interest as unknown as string)
+        Object.values(Interest).includes(interest)
       ) {
         toConnect.push(interest);
       }
