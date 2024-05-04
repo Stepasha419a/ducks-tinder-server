@@ -158,38 +158,25 @@ export class UserAdapter implements UserRepository {
       return {};
     }
 
-    const allExistingInterests = (
-      await this.databaseService.interest.findMany({
-        select: { name: true },
-      })
-    ).map((interestObject) => interestObject.name) as unknown as Interest[];
-
     const { toConnect, toDisconnect } = this.compareUserRelationFieldIds(
       user.interests,
       newInterests,
-      allExistingInterests,
     );
 
     if (toConnect.length) {
-      const interestConnect = (
-        await this.databaseService.interest.findMany({
-          where: { name: { in: toConnect } },
-        })
-      ).map((interest) => ({ interestId: interest.id, userId: user.id }));
-
       await this.databaseService.usersOnInterests.createMany({
-        data: interestConnect,
+        data: toConnect.map((interest) => ({
+          userId: user.id,
+          interest: interest as unknown as string,
+        })),
       });
     }
     if (toDisconnect.length) {
-      const interestIds = (
-        await this.databaseService.interest.findMany({
-          where: { name: { in: toDisconnect } },
-        })
-      ).map((interest) => interest.id);
-
       await this.databaseService.usersOnInterests.deleteMany({
-        where: { userId: user.id, interestId: { in: interestIds } },
+        where: {
+          userId: user.id,
+          interest: { in: toDisconnect as unknown as string[] },
+        },
       });
     }
   }
@@ -197,15 +184,14 @@ export class UserAdapter implements UserRepository {
   private compareUserRelationFieldIds(
     oldInterests: Interest[],
     newInterests: Interest[],
-    allExistingInterests: Interest[],
   ) {
-    const toConnect = [];
-    const toDisconnect = [];
+    const toConnect: Interest[] = [];
+    const toDisconnect: Interest[] = [];
 
     newInterests.forEach((interest) => {
       if (
         !oldInterests.includes(interest) &&
-        allExistingInterests.includes(interest)
+        Object.keys(Interest).includes(interest as unknown as string)
       ) {
         toConnect.push(interest);
       }
@@ -628,7 +614,7 @@ export class UserAdapter implements UserRepository {
 
   private standardUserInterests(user) {
     user.interests = user.interests.map(
-      (interestObject) => interestObject.interest.name,
+      (interestObject) => interestObject.interest,
     );
   }
 }
