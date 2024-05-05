@@ -326,8 +326,8 @@ export class UserAdapter implements UserRepository {
       const interests = `'${dto.interests.join("', '")}'`;
 
       joinQuery +=
-        'inner join "users-on-interests" on "users-on-interests"."userId" = users.id inner join interests on interests.id = "users-on-interests"."interestId"';
-      whereQuery += ` and interests.name in (${interests})`;
+        'inner join "users-on-interests" on "users-on-interests"."userId" = users.id';
+      whereQuery += ` and "users-on-interests".interest in (${interests})`;
       groupByQuery += `group by users.id having count(*) = ${dto.interests.length}`;
     }
 
