@@ -1,14 +1,14 @@
 import { Message, MessageAggregate } from 'apps/chat/src/domain';
 import { ChatAggregate } from 'apps/chat/src/domain/chat.aggregate';
 import { PaginationDto } from '@app/common/shared/dto';
-import { ChatPaginationEntity, ChatVisitEntity } from '../entity';
+import { ChatPaginationEntity, UserChatConnectionEntity } from '../entity';
 
 export abstract class ChatRepository {
   abstract save(chat: ChatAggregate): Promise<ChatAggregate>;
   abstract saveMessage(message: MessageAggregate): Promise<MessageAggregate>;
-  abstract saveChatVisit(
-    chatVisit: ChatVisitEntity,
-  ): Promise<ChatVisitEntity | null>;
+  abstract saveUserChatConnection(
+    chatVisit: UserChatConnectionEntity,
+  ): Promise<UserChatConnectionEntity | null>;
   abstract findOne(id: string): Promise<ChatAggregate | null>;
   abstract findOneHavingMember(
     id: string,
@@ -32,10 +32,10 @@ export abstract class ChatRepository {
     userIds: string[],
   ): Promise<Record<string, number>>;
   abstract findChatUserIds(chatId: string): Promise<string[]>;
-  abstract findChatVisit(
+  abstract findUserChatConnection(
     userId: string,
     chatId: string,
-  ): Promise<ChatVisitEntity | null>;
+  ): Promise<UserChatConnectionEntity | null>;
   abstract connectUserToChat(
     chatId: string,
     userId: string,

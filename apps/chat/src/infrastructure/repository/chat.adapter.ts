@@ -6,7 +6,10 @@ import { ChatAggregate } from 'apps/chat/src/domain';
 import { PaginationDto } from '@app/common/shared/dto';
 import { MessageAggregate } from 'apps/chat/src/domain';
 import { ChatSelector } from './chat.selector';
-import { ChatPaginationEntity, ChatVisitEntity } from '../../domain/entity';
+import {
+  ChatPaginationEntity,
+  UserChatConnectionEntity,
+} from '../../domain/entity';
 import { RepliedMessage } from '../../domain/message/message.interface';
 
 @Injectable()
@@ -78,38 +81,41 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(saved);
   }
 
-  async saveChatVisit(
-    chatVisit: ChatVisitEntity,
-  ): Promise<ChatVisitEntity | null> {
-    const existingChatVisit = await this.findChatVisit(
-      chatVisit.userId,
-      chatVisit.chatId,
+  async saveUserChatConnection(
+    userChatConnection: UserChatConnectionEntity,
+  ): Promise<UserChatConnectionEntity | null> {
+    const existingUserChatConnection = await this.findUserChatConnection(
+      userChatConnection.userId,
+      userChatConnection.chatId,
     );
 
-    if (existingChatVisit) {
+    if (existingUserChatConnection) {
       const savedChatVisit = await this.databaseService.usersOnChats.update({
         where: {
-          userId_chatId: { chatId: chatVisit.chatId, userId: chatVisit.userId },
+          userId_chatId: {
+            chatId: userChatConnection.chatId,
+            userId: userChatConnection.userId,
+          },
         },
         data: {
-          lastSeenAt: chatVisit.lastSeenAt,
-          newMessagesCount: chatVisit.newMessagesCount,
+          lastSeenAt: userChatConnection.lastSeenAt,
+          newMessagesCount: userChatConnection.newMessagesCount,
         },
       });
 
-      return this.getChatVisitEntity(savedChatVisit);
+      return this.getUserChatConnectionEntity(savedChatVisit);
     }
 
     const savedChatVisit = await this.databaseService.usersOnChats.create({
       data: {
-        chatId: chatVisit.chatId,
-        userId: chatVisit.userId,
-        lastSeenAt: chatVisit.lastSeenAt,
-        newMessagesCount: chatVisit.newMessagesCount,
+        chatId: userChatConnection.chatId,
+        userId: userChatConnection.userId,
+        lastSeenAt: userChatConnection.lastSeenAt,
+        newMessagesCount: userChatConnection.newMessagesCount,
       },
     });
 
-    return this.getChatVisitEntity(savedChatVisit);
+    return this.getUserChatConnectionEntity(savedChatVisit);
   }
 
   async findOne(id: string): Promise<ChatAggregate | null> {
@@ -342,21 +348,22 @@ export class ChatAdapter implements ChatRepository {
     return this.getMessageAggregate(message);
   }
 
-  async findChatVisit(
+  async findUserChatConnection(
     userId: string,
     chatId: string,
-  ): Promise<ChatVisitEntity | null> {
-    const chatVisit = await this.databaseService.usersOnChats.findUnique({
-      where: {
-        userId_chatId: { chatId, userId },
-      },
-    });
+  ): Promise<UserChatConnectionEntity | null> {
+    const userChatConnection =
+      await this.databaseService.usersOnChats.findUnique({
+        where: {
+          userId_chatId: { chatId, userId },
+        },
+      });
 
-    if (!chatVisit) {
+    if (!userChatConnection) {
       return null;
     }
 
-    return this.getChatVisitEntity(chatVisit);
+    return this.getUserChatConnectionEntity(userChatConnection);
   }
 
   async findMessages(
@@ -488,8 +495,8 @@ export class ChatAdapter implements ChatRepository {
     });
   }
 
-  private getChatVisitEntity(chatVisit): ChatVisitEntity {
-    return ChatVisitEntity.create({
+  private getUserChatConnectionEntity(chatVisit): UserChatConnectionEntity {
+    return UserChatConnectionEntity.create({
       ...chatVisit,
       createdAt: chatVisit.createdAt.toISOString(),
       lastSeenAt: chatVisit.lastSeenAt.toISOString(),

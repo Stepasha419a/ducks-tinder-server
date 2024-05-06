@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { DomainError } from '@app/common/shared/error';
 
-export class ChatVisitEntity {
+export class UserChatConnectionEntity {
   @IsUUID()
   userId: string;
 
@@ -27,16 +27,16 @@ export class ChatVisitEntity {
   @IsNotEmpty()
   lastSeenAt: string = new Date().toISOString();
 
-  static create(chatVisit: Partial<ChatVisitEntity>) {
-    const _chatVisit = new ChatVisitEntity();
+  static create(userChatConnection: Partial<UserChatConnectionEntity>) {
+    const _userChatConnection = new UserChatConnectionEntity();
 
-    Object.assign(_chatVisit, chatVisit);
+    Object.assign(_userChatConnection, userChatConnection);
 
-    const errors = validateSync(_chatVisit, { whitelist: true });
+    const errors = validateSync(_userChatConnection, { whitelist: true });
     if (errors.length) {
-      throw new DomainError(errors, 'Chat visit is invalid');
+      throw new DomainError(errors, 'User chat connection is invalid');
     }
 
-    return _chatVisit;
+    return _userChatConnection;
   }
 }
