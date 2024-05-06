@@ -36,10 +36,6 @@ export abstract class ChatRepository {
     userId: string,
     chatId: string,
   ): Promise<UserChatConnectionEntity | null>;
-  abstract connectUserToChat(
-    chatId: string,
-    userId: string,
-  ): Promise<ChatAggregate | null>;
   abstract increaseChatVisits(
     chatId: string,
     exceptUserId: string,

@@ -3,6 +3,7 @@ import { ChatRepository } from 'apps/chat/src/domain/repository';
 import { ChatAggregate } from 'apps/chat/src/domain';
 import { CreateChatCommand } from './create-chat.command';
 import { Logger } from '@nestjs/common';
+import { UserChatConnectionEntity } from 'apps/chat/src/domain/entity';
 
 @CommandHandler(CreateChatCommand)
 export class CreateChatCommandHandler
@@ -27,7 +28,12 @@ export class CreateChatCommandHandler
 
     await Promise.all(
       memberIds.map(async (userId) => {
-        await this.repository.connectUserToChat(chat.id, userId);
+        const userChatConnection = UserChatConnectionEntity.create({
+          chatId: chat.id,
+          userId,
+        });
+
+        await this.repository.saveUserChatConnection(userChatConnection);
       }),
     );
   }
