@@ -67,6 +67,7 @@ export class ChatGateway {
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
     @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {
+    await this.facade.queries.validateChatMember(userId, chatId);
     await this.facade.commands.saveLastSeen(userId, chatId);
   }
 
