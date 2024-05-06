@@ -421,18 +421,28 @@ export class ChatAdapter implements ChatRepository {
     chatId: string,
     userId: string,
   ): Promise<ChatAggregate | null> {
-    const existingChat = await this.findOneHavingMember(chatId, userId);
+    const existingChatWithoutMember =
+      await this.databaseService.chat.findUnique({
+        where: { id: chatId, users: { none: { userId } } },
+      });
 
-    if (!existingChat) {
+    if (!existingChatWithoutMember) {
       return null;
     }
 
     await this.databaseService.chat.update({
       where: { id: chatId },
-      data: { users: { connect: { userId_chatId: { chatId, userId } } } },
+      data: {
+        users: {
+          connectOrCreate: {
+            create: { userId },
+            where: { userId_chatId: { chatId, userId } },
+          },
+        },
+      },
     });
 
-    return existingChat;
+    return this.getChatAggregate(existingChatWithoutMember);
   }
 
   async increaseChatVisits(
