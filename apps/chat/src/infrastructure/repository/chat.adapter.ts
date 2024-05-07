@@ -437,6 +437,9 @@ export class ChatAdapter implements ChatRepository {
 
   async delete(id: string): Promise<boolean> {
     await this.databaseService.message.deleteMany({ where: { chatId: id } });
+    await this.databaseService.usersOnChats.deleteMany({
+      where: { chatId: id },
+    });
 
     const deletedChat = await this.databaseService.chat.delete({
       where: { id },
