@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'apps/user/src/domain/user/repository';
 import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/shared/constant';
+import { ChatServiceEvent, SERVICES } from '@app/common/shared/constant';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler
@@ -22,7 +22,7 @@ export class AcceptPairCommandHandler
       throw new NotFoundException();
     }
 
-    this.chatClient.emit('create_chat', [userId, pairId]);
+    this.chatClient.emit(ChatServiceEvent.CreateChat, [userId, pairId]);
 
     await this.repository.deletePair(pair.id, userId);
 

@@ -17,6 +17,7 @@ import {
   SendMessageDto,
 } from 'apps/chat/src/application/command';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import { ChatControllerEvent } from './chat.controller-event';
 
 @Controller('chat')
 export class ChatController {
@@ -142,7 +143,7 @@ export class ChatController {
     return { chat, userIds };
   }
 
-  @EventPattern('create_chat')
+  @EventPattern(ChatControllerEvent.CreateChat)
   createChat(@Payload() memberIds: string[]) {
     this.facade.commands.createChat(memberIds);
   }
