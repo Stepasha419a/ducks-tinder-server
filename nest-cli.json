@@ -21,11 +21,11 @@
     },
     "chat": {
       "type": "application",
-      "root": "apps/chat",
+      "root": "chat-service",
       "entryFile": "main",
-      "sourceRoot": "apps/chat/src",
+      "sourceRoot": "chat-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/chat/tsconfig.app.json"
+        "tsConfigPath": "chat-service/tsconfig.app.json"
       }
     },
     "common": {
