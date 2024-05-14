@@ -10,7 +10,7 @@ import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../constant';
-import { UserTokenDto } from 'apps/user/src/application/token/command';
+import { UserTokenDto } from 'user-service/src/application/token/command';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {

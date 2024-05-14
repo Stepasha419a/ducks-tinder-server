@@ -3,7 +3,7 @@ import { PrismaModule } from '@app/common/database/database.module';
 import { PrismaService } from '@app/common/database/database.service';
 import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
 import { fullChatStub, messageStub } from 'chat-service/src/test/stubs';
-import { requestUserStub } from 'apps/user/src/test/stubs';
+import { requestUserStub } from 'user-service/src/test/stubs';
 import { DeleteMessageCommandHandler } from './delete-message.command-handler';
 import { DeleteMessageCommand } from './delete-message.command';
 import { ChatSocketMessageReturn } from 'chat-service/src/chats.interface';

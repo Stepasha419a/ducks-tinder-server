@@ -9,7 +9,7 @@ import {
 } from 'chat-service/src/test/stubs';
 import { SendMessageCommandHandler } from './send-message.command-handler';
 import { SendMessageCommand } from './send-message.command';
-import { requestUserStub } from 'apps/user/src/test/stubs';
+import { requestUserStub } from 'user-service/src/test/stubs';
 import { SendMessageDto } from 'chat-service/src/legacy/dto';
 import { ChatSocketMessageReturn } from 'chat-service/src/chats.interface';
 import { ChatsSelector } from 'chat-service/src/chats.selector';

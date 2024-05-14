@@ -5,7 +5,7 @@ import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
 import { fullChatStub } from 'chat-service/src/test/stubs';
 import { BlockChatSocketReturn } from 'chat-service/src/chats.interface';
 import { BlockChatCommand } from './block-chat.command';
-import { requestUserStub } from 'apps/user/src/test/stubs';
+import { requestUserStub } from 'user-service/src/test/stubs';
 import { PrismaModule } from '@app/common/database/database.module';
 import { fullChatWithoutDistanceStub } from 'chat-service/src/test/stubs/full-chat-without-distance.stub';
 import { ChatIdDto } from 'chat-service/src/legacy/dto';

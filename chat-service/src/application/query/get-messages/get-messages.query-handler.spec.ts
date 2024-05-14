@@ -10,7 +10,7 @@ import {
 } from 'chat-service/src/test/stubs';
 import { GetMessagesQueryHandler } from './get-messages.query-handler';
 import { GetMessagesQuery } from './get-messages.query';
-import { requestUserStub } from 'apps/user/src/test/stubs';
+import { requestUserStub } from 'user-service/src/test/stubs';
 import { GetMessagesDto } from 'chat-service/src/legacy/dto';
 import { GetMessagesQueryReturn } from 'chat-service/src/chats.interface';
 
