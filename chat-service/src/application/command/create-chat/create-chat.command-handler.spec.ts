@@ -4,7 +4,7 @@ import { PrismaService } from '@app/common/database/database.service';
 import { userDtoStub } from 'user-service/src/test/stubs';
 import { CreateChatCommand } from './create-chat.command';
 import { CreateChatCommandHandler } from './create-chat.command-handler';
-import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
+import { ChatsPrismaMock } from 'src/test/mocks';
 
 describe('when create chat is called', () => {
   let prismaService: PrismaService;

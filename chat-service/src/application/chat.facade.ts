@@ -22,7 +22,7 @@ import {
   GetNewMessagesCountQuery,
   ValidateChatMemberQuery,
 } from './query';
-import { ChatAggregate, MessageAggregate } from 'chat-service/src/domain';
+import { ChatAggregate, MessageAggregate } from 'src/domain';
 import { DeleteMessageCommand } from './command/delete-message';
 import { MessagesPaginationView, NewMessageView } from './view';
 import { ChatMemberView } from './view/chat-member.view';

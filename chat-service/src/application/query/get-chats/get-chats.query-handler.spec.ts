@@ -2,13 +2,13 @@ import { Test } from '@nestjs/testing';
 import { PrismaModule } from '@app/common/database/database.module';
 import { PrismaService } from '@app/common/database/database.service';
 import { requestUserStub } from 'user-service/src/test/stubs';
-import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
+import { ChatsPrismaMock } from 'src/test/mocks';
 import { GetChatsQuery } from './get-chats.query';
 import { GetChatsQueryHandler } from './get-chats.query-handler';
-import { ShortChat } from 'chat-service/src/chats.interface';
+import { ShortChat } from 'src/chats.interface';
 import { UsersSelector } from 'user-service/src/infrastructure/repository/user.selector';
-import { shortChatStub } from 'chat-service/src/test/stubs';
-import { ChatsSelector } from 'chat-service/src/chats.selector';
+import { shortChatStub } from 'src/test/stubs';
+import { ChatsSelector } from 'src/chats.selector';
 
 describe('when get chats is called', () => {
   let prismaService: PrismaService;

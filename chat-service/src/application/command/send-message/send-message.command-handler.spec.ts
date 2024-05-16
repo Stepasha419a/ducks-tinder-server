@@ -1,18 +1,14 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from '@app/common/database/database.module';
 import { PrismaService } from '@app/common/database/database.service';
-import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
-import {
-  fullChatStub,
-  messageStub,
-  shortChatStub,
-} from 'chat-service/src/test/stubs';
+import { ChatsPrismaMock } from 'src/test/mocks';
+import { fullChatStub, messageStub, shortChatStub } from 'src/test/stubs';
 import { SendMessageCommandHandler } from './send-message.command-handler';
 import { SendMessageCommand } from './send-message.command';
 import { requestUserStub } from 'user-service/src/test/stubs';
-import { SendMessageDto } from 'chat-service/src/legacy/dto';
-import { ChatSocketMessageReturn } from 'chat-service/src/chats.interface';
-import { ChatsSelector } from 'chat-service/src/chats.selector';
+import { SendMessageDto } from 'src/legacy/dto';
+import { ChatSocketMessageReturn } from 'src/chats.interface';
+import { ChatsSelector } from 'src/chats.selector';
 
 describe('when send message is called', () => {
   let prismaService: PrismaService;

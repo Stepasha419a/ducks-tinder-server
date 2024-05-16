@@ -10,7 +10,7 @@ import {
   prepareAfter,
   prepareBefore,
 } from '../preparations';
-import { GET_CHATS_EXPECTED } from 'chat-service/src/test/values/chats.const.expect';
+import { GET_CHATS_EXPECTED } from 'src/test/values/chats.const.expect';
 
 const currentUserId = 'chats_get_current_user_id';
 const secondUserId = 'chats_get_second_user_id';

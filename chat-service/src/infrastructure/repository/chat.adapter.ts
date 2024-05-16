@@ -2,9 +2,9 @@ import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ChatRepository } from '../../domain/repository/chat.repository';
 import { DatabaseService } from '@app/common/database';
-import { ChatAggregate } from 'chat-service/src/domain';
+import { ChatAggregate } from 'src/domain';
 import { PaginationDto } from '@app/common/shared/dto';
-import { MessageAggregate } from 'chat-service/src/domain';
+import { MessageAggregate } from 'src/domain';
 import { ChatSelector } from './chat.selector';
 import {
   ChatPaginationEntity,

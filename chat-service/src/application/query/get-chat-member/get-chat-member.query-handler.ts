@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetChatMemberQuery } from './get-chat-member.query';
-import { ChatRepository } from 'chat-service/src/domain/repository';
+import { ChatRepository } from 'src/domain/repository';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';

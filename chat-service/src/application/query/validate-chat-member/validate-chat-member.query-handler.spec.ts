@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from '@app/common/database/database.module';
 import { PrismaService } from '@app/common/database/database.service';
-import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
-import { shortChatStub } from 'chat-service/src/test/stubs';
+import { ChatsPrismaMock } from 'src/test/mocks';
+import { shortChatStub } from 'src/test/stubs';
 import { requestUserStub } from 'user-service/src/test/stubs';
 import { ValidateChatMemberQueryHandler } from './validate-chat-member.query-handler';
 import { ValidateChatMemberQuery } from './validate-chat-member.query';
-import { ChatIdDto } from 'chat-service/src/legacy/dto';
+import { ChatIdDto } from 'src/legacy/dto';
 
 describe('when get messages is called', () => {
   let prismaService: PrismaService;

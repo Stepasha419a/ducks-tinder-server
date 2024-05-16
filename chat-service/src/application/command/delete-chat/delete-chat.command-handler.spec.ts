@@ -2,11 +2,11 @@ import { PrismaService } from '@app/common/database/database.service';
 import { DeleteChatCommandHandler } from './delete-chat.command-handler';
 import { Test } from '@nestjs/testing';
 import { PrismaModule } from '@app/common/database/database.module';
-import { ChatsPrismaMock } from 'chat-service/src/test/mocks';
-import { ChatSocketReturn } from 'chat-service/src/chats.interface';
-import { fullChatStub, requestUserStub } from 'chat-service/src/test/stubs';
+import { ChatsPrismaMock } from 'src/test/mocks';
+import { ChatSocketReturn } from 'src/chats.interface';
+import { fullChatStub, requestUserStub } from 'src/test/stubs';
 import { DeleteChatCommand } from './delete-chat.command';
-import { ChatIdDto } from 'chat-service/src/legacy/dto';
+import { ChatIdDto } from 'src/legacy/dto';
 
 describe('when delete chat is called', () => {
   let prismaService: PrismaService;
