@@ -6,7 +6,7 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/shared/error';
+import { DomainError } from './error';
 import { Chat } from './chat.interface';
 import { ChatServices } from './services';
 import { randomUUID } from 'crypto';

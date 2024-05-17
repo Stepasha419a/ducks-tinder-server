@@ -1,5 +1,5 @@
 import { IsUUID } from 'class-validator';
-import { PaginationDto } from '@app/common/shared/dto';
+import { PaginationDto } from 'src/domain/repository/dto';
 
 export class GetMessagesDto extends PaginationDto {
   @IsUUID()

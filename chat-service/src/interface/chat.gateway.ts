@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import {
   ConnectedSocket,
   MessageBody,
@@ -6,7 +6,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { UserSocket } from '@app/common/types/user-socket';
 import {
   ParseUUIDPipe,
   UseFilters,
@@ -37,7 +36,7 @@ export class ChatGateway {
   @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.Connect)
   async handleConnectChats(
-    @ConnectedSocket() client: UserSocket,
+    @ConnectedSocket() client: Socket,
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
   ) {
     client.join(userId);
@@ -48,7 +47,7 @@ export class ChatGateway {
   @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.ConnectChat)
   async handleConnectChat(
-    @ConnectedSocket() client: UserSocket,
+    @ConnectedSocket() client: Socket,
     @User({ isSocket: true }, new ParseUUIDPipe({ version: '4' }))
     userId: string,
     @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
@@ -62,7 +61,7 @@ export class ChatGateway {
   @UseGuards(RefreshTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.DisconnectChat)
   async handleDisconnectChat(
-    @ConnectedSocket() client: UserSocket,
+    @ConnectedSocket() client: Socket,
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
     @MessageBody(new ParseUUIDPipe({ version: '4' })) chatId: string,
   ) {

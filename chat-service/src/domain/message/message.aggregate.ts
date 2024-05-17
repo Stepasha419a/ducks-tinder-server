@@ -6,7 +6,7 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/shared/error';
+import { DomainError } from '../error';
 import { Message, RepliedMessage } from './message.interface';
 import { Type } from 'class-transformer';
 import { MessageServices } from './services';

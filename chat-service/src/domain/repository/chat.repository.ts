@@ -1,7 +1,7 @@
 import { Message, MessageAggregate } from 'src/domain';
 import { ChatAggregate } from 'src/domain/chat.aggregate';
-import { PaginationDto } from '@app/common/shared/dto';
 import { ChatPaginationEntity, UserChatConnectionEntity } from '../entity';
+import { PaginationDto } from './dto';
 
 export abstract class ChatRepository {
   abstract save(chat: ChatAggregate): Promise<ChatAggregate>;

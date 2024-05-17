@@ -11,7 +11,6 @@ import {
   SendMessageDto,
   UnblockChatCommand,
 } from './command';
-import { PaginationDto } from '@app/common/shared/dto';
 import {
   GetChatMemberIdsQuery,
   GetChatMemberQuery,
@@ -27,6 +26,7 @@ import { DeleteMessageCommand } from './command/delete-message';
 import { MessagesPaginationView, NewMessageView } from './view';
 import { ChatMemberView } from './view/chat-member.view';
 import { ChatPaginationEntity } from '../domain/entity';
+import { PaginationDto } from 'src/domain/repository/dto';
 
 @Injectable()
 export class ChatFacade {

@@ -3,7 +3,7 @@
 
 generator chatService {
   provider = "prisma-client-js"
-  output   = "../chat-service/node_modules/@prisma/client"
+  output   = "../chat-service/node_modules/.prisma/client"
 }
 
 datasource db {
