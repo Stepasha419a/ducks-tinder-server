@@ -9,11 +9,11 @@ import {
 import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { IS_PUBLIC_KEY } from '../../../../../chat-service/src/application/guard/constant';
-import { UserTokenDto } from 'user-service/src/application/token/command';
+import { IS_PUBLIC_KEY } from '../constant';
+import { UserTokenDto } from './user-token.dto';
 
 @Injectable()
-export class RefreshTokenGuard implements CanActivate {
+export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
@@ -28,14 +28,14 @@ export class RefreshTokenGuard implements CanActivate {
       return true;
     }
 
-    const refreshTokenValue = this.extractTokenFromCookie(context);
+    const accessTokenValue = this.extractTokenFromHeader(context);
 
-    if (!refreshTokenValue) {
+    if (!accessTokenValue) {
       throw new UnauthorizedException();
     }
 
     const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.userClient.send('validate_refresh_token', refreshTokenValue),
+      this.userClient.send('validate_access_token', accessTokenValue),
     );
 
     if (!userTokenDto) {
@@ -47,20 +47,20 @@ export class RefreshTokenGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromCookie(
+  private extractTokenFromHeader(
     context: ExecutionContext,
   ): string | undefined {
-    let refreshToken: string;
+    let authorization: string;
     if (context.getType() === 'ws') {
-      refreshToken = context
-        .switchToWs()
-        .getClient()
-        ?.handshake?.headers?.cookie.match(this.REFRESH_TOKEN_REGEX)?.[1];
+      authorization = context.switchToWs().getClient().handshake
+        ?.auth?.authorization;
     } else if (context.getType() === 'http') {
-      refreshToken = context.switchToHttp().getRequest().cookies?.refreshToken;
+      authorization = context.switchToHttp().getRequest()
+        .headers?.authorization;
     }
 
-    return refreshToken;
+    const [type, token] = authorization.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 
   private addUserId(userId: string, context: ExecutionContext) {
@@ -70,6 +70,4 @@ export class RefreshTokenGuard implements CanActivate {
       context.switchToHttp().getRequest().userId = userId;
     }
   }
-
-  private readonly REFRESH_TOKEN_REGEX = /(?:refreshToken)=([\w\.\d-_]+)/;
 }

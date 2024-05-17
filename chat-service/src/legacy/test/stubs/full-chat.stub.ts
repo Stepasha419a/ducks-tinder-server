@@ -1,4 +1,4 @@
-import { shortUserStub } from 'user-service/src/legacy/user/test/stubs';
+import { shortUserStub } from './short-user.stub';
 
 export const fullChatStub = () => ({
   id: 'asdasd123123',

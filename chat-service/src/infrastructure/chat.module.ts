@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatController, ChatGateway } from '../interface';
-import { DatabaseModule } from '@app/common/database';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatRepository } from '../domain/repository';
 import { ChatAdapter } from './repository';
@@ -11,11 +10,12 @@ import { CHAT_QUERY_HANDLERS } from 'src/application/query';
 import { ChatFacade } from '../application';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { RabbitMQModule } from '@app/common/rabbitmq';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from '@app/common/auth/guard';
 import { AuthModule } from '@app/common/auth';
 import { SERVICES } from '@app/common/shared/constant';
+import { DatabaseModule } from './database';
+import { RabbitMQModule } from './rabbitmq';
 
 @Module({
   controllers: [ChatController],

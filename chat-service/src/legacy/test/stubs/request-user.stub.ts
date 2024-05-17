@@ -1,4 +1,4 @@
-import { userDtoStub } from 'user-service/src/legacy/user/test/stubs';
+import { userDtoStub } from './user-dto.stub';
 
 export const requestUserStub = () => {
   const userStubObj = userDtoStub();
