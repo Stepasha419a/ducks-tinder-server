@@ -17,8 +17,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { OptionalValidationPipe } from '@app/common/shared/pipe';
-import { User } from '@app/common/shared/decorator';
 import { UserFacade } from '../../application/user';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserAggregate } from '../../domain/user';
@@ -36,6 +34,8 @@ import {
 import { CONSTANT } from '../../infrastructure/user/common/constant';
 import { PairsInfoView } from '../../application/user/view';
 import { PairsFilterDto } from '../../domain/user/repository/dto';
+import { User } from '../common';
+import { OptionalValidationPipe } from '../common';
 
 @Controller('user')
 export class UserController {

@@ -4,8 +4,8 @@ import { SavePictureCommand } from './save-picture.command';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
 import { ERROR } from 'src/infrastructure/user/common/constant';
-import { FileAdapter } from '@app/common/file/adapter';
 import { PictureEntity } from 'src/domain/user/entity';
+import { FileAdapter } from 'src/infrastructure/file/adapter';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler

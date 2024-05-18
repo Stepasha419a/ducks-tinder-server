@@ -1,5 +1,5 @@
 import { IsJWT, validateSync } from 'class-validator';
-import { DomainError } from '@app/common/shared/error';
+import { DomainError } from 'src/domain/common';
 
 export class AccessTokenValueObject {
   @IsJWT()

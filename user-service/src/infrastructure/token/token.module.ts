@@ -7,8 +7,8 @@ import { TokenFacade } from '../../application/token';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { tokenFacadeFactory } from './facade';
 import { TokenController } from '../../interface/token';
-import { DatabaseModule } from '@app/common/database';
 import { JwtModule } from '@nestjs/jwt';
+import { DatabaseModule } from '../database';
 
 @Module({
   providers: [

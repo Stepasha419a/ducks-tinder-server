@@ -1,5 +1,3 @@
-import { IsGreaterThan } from '@app/common/shared/decorator';
-import { PaginationDto } from '@app/common/shared/dto';
 import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
@@ -9,6 +7,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { PaginationDto } from './pagination.dto';
+import { IsGreaterThan } from 'src/domain/common';
 
 export class PairsFilterDto extends PaginationDto {
   @IsOptional()

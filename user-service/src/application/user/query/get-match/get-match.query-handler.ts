@@ -3,7 +3,7 @@ import { GetMatchQuery } from './get-match.query';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
-import { MapUtil } from '@app/common/shared/util';
+import { MapUtil } from 'src/infrastructure/util';
 
 @QueryHandler(GetMatchQuery)
 export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {

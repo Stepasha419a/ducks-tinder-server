@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserCommand } from './patch-user.command';
 import { ForbiddenException } from '@nestjs/common';
-import { COMMON_ERROR } from '@app/common/shared/constant';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
+import { COMMON_ERROR } from 'src/application/common';
 
 @CommandHandler(PatchUserCommand)
 export class PatchUserCommandHandler

@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePairsCommand } from './create-pairs.command';
-import { DatabaseService } from '@app/common/database';
+import { DatabaseService } from 'src/infrastructure/database';
 
 @CommandHandler(CreatePairsCommand)
 export class CreatePairsCommandHandler

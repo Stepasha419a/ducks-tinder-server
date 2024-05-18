@@ -35,11 +35,10 @@ import {
   Min,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '@app/common/shared/error';
 import { Type } from 'class-transformer';
 import { randomUUID } from 'crypto';
 import { PictureEntity, PlaceEntity } from './entity';
-import { IsDetailedEnum } from '@app/common/shared/decorator';
+import { DomainError, IsDetailedEnum } from '../common';
 
 export class UserAggregate extends UserServices implements User {
   @IsUUID()

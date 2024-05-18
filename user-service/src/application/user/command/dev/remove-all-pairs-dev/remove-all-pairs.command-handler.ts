@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveAllPairsCommand } from './remove-all-pairs.command';
-import { DatabaseService } from '@app/common/database';
+import { DatabaseService } from 'src/infrastructure/database';
 
 @CommandHandler(RemoveAllPairsCommand)
 export class RemoveAllPairsCommandHandler

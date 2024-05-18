@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { AuthModule as AuthCommonModule } from '@app/common/auth';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
-import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/shared/constant';
-import { FileModule } from '@app/common/file';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@app/common/auth/guard';
+import { AccessTokenGuard } from 'src/interface/common';
+import { RabbitMQModule } from './rabbitmq';
+import { SERVICE } from './rabbitmq/service/service';
+import { FileModule } from './file';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
@@ -33,8 +32,7 @@ import { AccessTokenGuard } from '@app/common/auth/guard';
     UserModule,
     TokenModule,
     AuthModule,
-    AuthCommonModule,
-    RabbitMQModule.register(SERVICES.CHAT),
+    RabbitMQModule.register(SERVICE.CHAT),
     FileModule,
   ],
 })

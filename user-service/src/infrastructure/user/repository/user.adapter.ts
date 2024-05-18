@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DatabaseService } from '@app/common/database';
 import { UserRepository } from 'src/domain/user/repository';
 import { Interest, User, UserAggregate } from 'src/domain/user';
 import { UserSelector } from './user.selector';
@@ -11,12 +10,13 @@ import {
   Prisma,
 } from '@prisma/client';
 import { PairsFilterDto } from 'src/domain/user/repository/dto';
-import { MapUtil } from '@app/common/shared/util';
 import {
   PictureEntity,
   PlaceEntity,
   UserCheckEntity,
 } from 'src/domain/user/entity';
+import { DatabaseService } from 'src/infrastructure/database';
+import { MapUtil } from 'src/infrastructure/util';
 
 @Injectable()
 export class UserAdapter implements UserRepository {

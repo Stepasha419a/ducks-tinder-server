@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'src/domain/user/repository';
 import { ClientProxy } from '@nestjs/microservices';
-import { ChatServiceEvent, SERVICES } from '@app/common/shared/constant';
+import { SERVICE, ChatServiceEvent } from 'src/infrastructure/rabbitmq/service';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler
@@ -11,7 +11,7 @@ export class AcceptPairCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    @Inject(SERVICES.CHAT) private readonly chatClient: ClientProxy,
+    @Inject(SERVICE.CHAT) private readonly chatClient: ClientProxy,
   ) {}
 
   async execute(command: AcceptPairCommand): Promise<string> {

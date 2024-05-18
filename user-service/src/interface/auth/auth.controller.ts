@@ -10,13 +10,13 @@ import {
   Patch,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Public } from '@app/common/auth/decorator';
 import { AuthFacade } from 'src/application/auth';
 import { LoginUserDto, RegisterUserDto } from 'src/application/auth/command';
 import {
   AuthMapper,
   WithoutPrivateFields,
 } from '../../infrastructure/auth/mapper';
+import { Public } from '../common';
 
 @Controller('auth')
 export class AuthController {

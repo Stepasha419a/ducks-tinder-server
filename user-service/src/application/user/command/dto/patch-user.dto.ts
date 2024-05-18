@@ -1,4 +1,3 @@
-import { IsDetailedEnum } from '@app/common/shared/decorator';
 import {
   AlcoholAttitude,
   AttentionSign,
@@ -29,6 +28,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { IsDetailedEnum } from 'src/domain/common';
 
 export class PatchUserDto {
   @IsOptional()

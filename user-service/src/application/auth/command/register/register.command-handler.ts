@@ -2,12 +2,12 @@ import * as bcrypt from 'bcryptjs';
 import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
-import { COMMON_ERROR } from '@app/common/shared/constant';
 import { randomUUID } from 'crypto';
 import { UserAggregate } from 'src/domain/user';
 import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
 import { TokenFacade } from '../../../token';
+import { COMMON_ERROR } from 'src/application/common';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler

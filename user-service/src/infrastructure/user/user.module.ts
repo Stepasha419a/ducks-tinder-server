@@ -10,15 +10,15 @@ import { UserRepository } from '../../domain/user/repository';
 import { UserAdapter } from './repository';
 import { MapApi } from '../../application/user/adapter';
 import { UserController } from '../../interface/user';
-import { DatabaseModule } from '@app/common/database';
-import { RabbitMQModule } from '@app/common/rabbitmq';
-import { SERVICES } from '@app/common/shared/constant';
 import { HttpModule } from '@nestjs/axios';
 import {
   MAP_API_QUERY_HANDLERS,
   MapApiImplementation,
 } from '../adapter/map-api';
-import { FileModule } from '@app/common/file';
+import { DatabaseModule } from '../database';
+import { SERVICE } from '../rabbitmq/service/service';
+import { RabbitMQModule } from '../rabbitmq';
+import { FileModule } from '../file';
 
 @Module({
   providers: [
@@ -46,7 +46,7 @@ import { FileModule } from '@app/common/file';
     DatabaseModule,
     CqrsModule,
     HttpModule,
-    RabbitMQModule.register(SERVICES.CHAT),
+    RabbitMQModule.register(SERVICE.CHAT),
     FileModule,
   ],
   exports: [UserRepository],

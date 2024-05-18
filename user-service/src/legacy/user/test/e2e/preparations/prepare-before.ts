@@ -1,9 +1,9 @@
+import databaseClient from 'src/infrastructure/database/test/database-client';
 import { UserSelector } from 'src/infrastructure/user/repository/user.selector';
-import prismaClient from '@app/common/database/test/database-client';
 
 export async function prepareBefore(currentUserId, secondUserId) {
-  await prismaClient.$transaction([
-    prismaClient.user.createMany({
+  await databaseClient.$transaction([
+    databaseClient.user.createMany({
       data: [
         {
           id: currentUserId,
@@ -35,7 +35,7 @@ export async function prepareBefore(currentUserId, secondUserId) {
         },
       ],
     }),
-    prismaClient.place.createMany({
+    databaseClient.place.createMany({
       data: [
         {
           id: currentUserId,
@@ -55,11 +55,11 @@ export async function prepareBefore(currentUserId, secondUserId) {
     }),
   ]);
 
-  const currentUser = await prismaClient.user.findUnique({
+  const currentUser = await databaseClient.user.findUnique({
     where: { id: currentUserId },
     include: UserSelector.selectUser(),
   });
-  const secondUser = await prismaClient.user.findUnique({
+  const secondUser = await databaseClient.user.findUnique({
     where: { id: secondUserId },
     include: UserSelector.selectUser(),
   });
