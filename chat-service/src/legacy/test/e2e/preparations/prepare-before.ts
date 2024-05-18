@@ -1,8 +1,8 @@
-import prismaClient from '@app/common/database/test/database-client';
+import databaseClient from 'src/infrastructure/database/test/database-client';
 
 export async function prepareBefore(currentUserId, secondUserId, chatId) {
-  await prismaClient.$transaction([
-    prismaClient.user.createMany({
+  await databaseClient.$transaction([
+    databaseClient.user.createMany({
       data: [
         {
           id: currentUserId,
@@ -34,7 +34,7 @@ export async function prepareBefore(currentUserId, secondUserId, chatId) {
         },
       ],
     }),
-    prismaClient.place.createMany({
+    databaseClient.place.createMany({
       data: [
         {
           id: currentUserId,
@@ -52,7 +52,7 @@ export async function prepareBefore(currentUserId, secondUserId, chatId) {
         },
       ],
     }),
-    prismaClient.chat.create({
+    databaseClient.chat.create({
       data: {
         id: chatId,
         users: {

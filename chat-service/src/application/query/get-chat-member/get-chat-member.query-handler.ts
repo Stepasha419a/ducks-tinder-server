@@ -2,10 +2,10 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetChatMemberQuery } from './get-chat-member.query';
 import { ChatRepository } from 'src/domain/repository';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { ChatMemberView } from '../../view/chat-member.view';
 import { firstValueFrom } from 'rxjs';
+import { SERVICE } from 'src/infrastructure/rabbitmq/service/service';
 
 @QueryHandler(GetChatMemberQuery)
 export class GetChatMemberQueryHandler
@@ -13,7 +13,7 @@ export class GetChatMemberQueryHandler
 {
   constructor(
     private readonly repository: ChatRepository,
-    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
+    @Inject(SERVICE.USER) private readonly userClient: ClientProxy,
   ) {}
 
   async execute(query: GetChatMemberQuery): Promise<ChatMemberView> {

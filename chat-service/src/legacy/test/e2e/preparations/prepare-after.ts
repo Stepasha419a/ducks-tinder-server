@@ -1,19 +1,19 @@
-import prismaClient from '@app/common/database/test/database-client';
+import databaseClient from 'src/infrastructure/database/test/database-client';
 
 export async function prepareAfter(currentUserId, secondUserId) {
-  await prismaClient.$transaction([
-    prismaClient.message.deleteMany({
+  await databaseClient.$transaction([
+    databaseClient.message.deleteMany({
       where: { userId: { in: [currentUserId, secondUserId] } },
     }),
-    prismaClient.chat.deleteMany({
+    databaseClient.chat.deleteMany({
       where: {
         users: { some: { userId: { in: [currentUserId, secondUserId] } } },
       },
     }),
-    prismaClient.place.deleteMany({
+    databaseClient.place.deleteMany({
       where: { id: { in: [currentUserId, secondUserId] } },
     }),
-    prismaClient.user.deleteMany({
+    databaseClient.user.deleteMany({
       where: { id: { in: [currentUserId, secondUserId] } },
     }),
   ]);

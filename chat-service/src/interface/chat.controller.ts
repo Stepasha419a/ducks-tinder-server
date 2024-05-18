@@ -9,12 +9,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { User } from '@app/common/shared/decorator';
 import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { ChatControllerEvent } from './chat.controller-event';
 import { PaginationDto } from 'src/domain/repository/dto';
+import { User } from './decorator';
 
 @Controller('chat')
 export class ChatController {

@@ -6,17 +6,17 @@ import {
   UnauthorizedException,
   Inject,
 } from '@nestjs/common';
-import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../constant';
 import { UserTokenDto } from './user-token.dto';
+import { SERVICE } from 'src/infrastructure/rabbitmq/service/service';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
+    @Inject(SERVICE.USER) private readonly userClient: ClientProxy,
   ) {}
 
   async canActivate(context: ExecutionContext) {

@@ -1,19 +1,14 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMessagesQuery } from './get-messages.query';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { ChatRepository } from 'src/domain/repository';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from '@app/common/shared/constant';
 import { MessagesPaginationView } from '../../view';
 
 @QueryHandler(GetMessagesQuery)
 export class GetMessagesQueryHandler
   implements IQueryHandler<GetMessagesQuery>
 {
-  constructor(
-    private readonly repository: ChatRepository,
-    @Inject(SERVICES.USER) private readonly userClient: ClientProxy,
-  ) {}
+  constructor(private readonly repository: ChatRepository) {}
 
   async execute(query: GetMessagesQuery): Promise<MessagesPaginationView> {
     const { userId, dto } = query;

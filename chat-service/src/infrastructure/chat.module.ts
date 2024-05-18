@@ -11,11 +11,10 @@ import { ChatFacade } from '../application';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from '@app/common/auth/guard';
-import { AuthModule } from '@app/common/auth';
-import { SERVICES } from '@app/common/shared/constant';
 import { DatabaseModule } from './database';
 import { RabbitMQModule } from './rabbitmq';
+import { AccessTokenGuard } from 'src/interface/guard';
+import { SERVICE } from './rabbitmq/service/service';
 
 @Module({
   controllers: [ChatController],
@@ -50,8 +49,7 @@ import { RabbitMQModule } from './rabbitmq';
     DatabaseModule,
     CqrsModule,
     EventEmitterModule.forRoot(),
-    RabbitMQModule.register(SERVICES.USER),
-    AuthModule,
+    RabbitMQModule.register(SERVICE.USER),
   ],
 })
 export class ChatModule {}

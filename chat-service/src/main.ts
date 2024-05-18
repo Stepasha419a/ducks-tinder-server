@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ChatModule } from './infrastructure/chat.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RabbitMQService } from '@app/common/rabbitmq';
+import { RabbitMQService } from './infrastructure/rabbitmq';
 
 async function bootstrap() {
   const app = await NestFactory.create(ChatModule);
