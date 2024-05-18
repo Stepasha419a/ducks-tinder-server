@@ -1,4 +1,4 @@
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserAggregate } from 'src/domain/user';
 import { PairsFilterDto } from './dto';
 import { PictureEntity, PlaceEntity, UserCheckEntity } from '../entity';
 

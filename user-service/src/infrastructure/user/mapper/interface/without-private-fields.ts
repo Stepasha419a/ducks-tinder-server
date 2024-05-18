@@ -1,4 +1,4 @@
-import { User } from 'user-service/src/domain/user';
+import { User } from 'src/domain/user';
 import { UserPictureInfo } from './user-picture-info';
 
 export interface WithoutPrivateFields

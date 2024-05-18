@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@app/common/database';
 import { Token } from '@prisma/client';
-import { TokenRepository } from 'user-service/src/domain/token/repository';
-import { RefreshTokenEntity } from 'user-service/src/domain/token';
+import { TokenRepository } from 'src/domain/token/repository';
+import { RefreshTokenEntity } from 'src/domain/token';
 
 @Injectable()
 export class TokenAdapter implements TokenRepository {

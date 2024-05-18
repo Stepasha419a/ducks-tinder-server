@@ -22,7 +22,7 @@ import {
   GetPairsQuery,
   GetUserQuery,
 } from './query';
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserAggregate } from 'src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { PairsInfoView } from './view';
 import { PairsFilterDto } from '../../domain/user/repository/dto';

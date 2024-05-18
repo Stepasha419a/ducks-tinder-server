@@ -1,7 +1,7 @@
 import { QueryBus } from '@nestjs/cqrs';
 import { GetCoordsGeocodeQuery } from './query';
 import { Injectable } from '@nestjs/common';
-import { GeocodeView, MapApi } from 'user-service/src/application/user/adapter';
+import { GeocodeView, MapApi } from 'src/application/user/adapter';
 
 @Injectable()
 export class MapApiImplementation implements MapApi {

@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { DeletePairCommandHandler } from './delete-pair.command-handler';
 import { DeletePairCommand } from './delete-pair.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { HttpStatus } from '@nestjs/common';
-import { UserRepositoryMock } from 'user-service/src/test/mock';
-import { UserAggregateStub, UserStub } from 'user-service/src/test/stub';
+import { UserRepositoryMock } from 'src/test/mock';
+import { UserAggregateStub, UserStub } from 'src/test/stub';
 
 describe('when delete pair is called', () => {
   let repository: UserRepository;

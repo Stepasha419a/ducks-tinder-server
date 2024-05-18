@@ -8,13 +8,10 @@ import {
   RefreshTokenValueObjectStub,
   UserAggregateStub,
   UserStub,
-} from 'user-service/src/test/stub';
+} from 'src/test/stub';
 import { COMMON_ERROR } from '@app/common/shared/constant';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import {
-  TokenFacadeMock,
-  UserRepositoryMock,
-} from 'user-service/src/test/mock';
+import { UserRepository } from 'src/domain/user/repository';
+import { TokenFacadeMock, UserRepositoryMock } from 'src/test/mock';
 import { TokenFacade } from '../../../token';
 import { AuthUserView } from '../../view';
 
@@ -28,7 +25,7 @@ jest.mock('user-service/src/domain/user', () => ({
   UserAggregate: jest.fn(),
 }));
 
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserAggregate } from 'src/domain/user';
 
 describe('when registration is called', () => {
   let userRepository: UserRepository;

@@ -1,7 +1,7 @@
 import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { ClientProxy } from '@nestjs/microservices';
 import { ChatServiceEvent, SERVICES } from '@app/common/shared/constant';
 

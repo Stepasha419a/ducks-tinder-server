@@ -1,4 +1,4 @@
-import { PairsFilterDto } from 'user-service/src/domain/user/repository';
+import { PairsFilterDto } from 'src/domain/user/repository';
 
 export class GetPairsQuery {
   constructor(

@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LoginCommand } from './login.command';
 import { ForbiddenException } from '@nestjs/common';
 import { compare } from 'bcryptjs';
-import { ERROR } from 'user-service/src/infrastructure/auth/common/constant';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { ERROR } from 'src/infrastructure/auth/common/constant';
+import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
 import { TokenFacade } from '../../../token';
 

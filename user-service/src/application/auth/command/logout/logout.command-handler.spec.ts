@@ -3,7 +3,7 @@ import { LogoutCommandHandler } from './logout.command-handler';
 import { LogoutCommand } from './logout.command';
 import { HttpStatus } from '@nestjs/common';
 import { TokenFacade } from '../../../token';
-import { TokenFacadeMock } from 'user-service/src/test/mock';
+import { TokenFacadeMock } from 'src/test/mock';
 
 describe('when logout is called', () => {
   let tokenFacade: TokenFacade;

@@ -1,4 +1,4 @@
-import { PatchUserDto } from 'user-service/src/application/user/command/dto';
+import { PatchUserDto } from 'src/application/user/command/dto';
 
 export class PatchUserCommand {
   constructor(

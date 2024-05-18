@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPairsInfoQuery } from './get-pairs-info.query';
 import { PairsInfoView } from '../../view';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 
 @QueryHandler(GetPairsInfoQuery)
 export class GetPairsInfoQueryHandler

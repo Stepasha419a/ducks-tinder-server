@@ -1,4 +1,4 @@
-import { UserStub } from 'user-service/src/test/stub';
+import { UserStub } from 'src/test/stub';
 
 export const CREATE_USER_DTO = {
   email: UserStub().email,

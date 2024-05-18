@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { RefreshCommand } from './refresh.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
 import { TokenFacade } from '../../../token';
 

@@ -1,5 +1,5 @@
-import { AuthUserView } from 'user-service/src/application/auth/view';
-import { UserPictureInfo } from 'user-service/src/infrastructure/user/mapper';
+import { AuthUserView } from 'src/application/auth/view';
+import { UserPictureInfo } from 'src/infrastructure/user/mapper';
 
 export class AuthMapper {
   getWithoutPrivateFields(authUser: AuthUserView) {

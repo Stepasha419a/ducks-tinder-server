@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { LikeUserCommandHandler } from './like-user.command-handler';
 import { LikeUserCommand } from './like-user.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { HttpStatus } from '@nestjs/common';
-import { UserRepositoryMock } from 'user-service/src/test/mock';
-import { UserAggregateStub, UserStub } from 'user-service/src/test/stub';
-import { ERROR } from 'user-service/src/infrastructure/user/common/constant';
+import { UserRepositoryMock } from 'src/test/mock';
+import { UserAggregateStub, UserStub } from 'src/test/stub';
+import { ERROR } from 'src/infrastructure/user/common/constant';
 
 describe('when like user is called', () => {
   let repository: UserRepository;

@@ -1,4 +1,4 @@
-import { MixPicturesDto } from 'user-service/src/application/user/command/dto';
+import { MixPicturesDto } from 'src/application/user/command/dto';
 
 export class MixPicturesCommand {
   constructor(

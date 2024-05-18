@@ -14,7 +14,7 @@ import {
   SocialNetworksActivity,
   TrainingAttitude,
   ZodiacSign,
-} from 'user-service/src/domain/user';
+} from 'src/domain/user';
 import {
   ArrayMaxSize,
   IsArray,

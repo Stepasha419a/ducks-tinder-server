@@ -6,14 +6,11 @@ import {
   ConfigServiceMock,
   JwtServiceMock,
   TokenRepositoryMock,
-} from 'user-service/src/test/mock';
-import {
-  RefreshTokenValueObjectStub,
-  UserStub,
-} from 'user-service/src/test/stub';
+} from 'src/test/mock';
+import { RefreshTokenValueObjectStub, UserStub } from 'src/test/stub';
 import { ValidateRefreshTokenQueryHandler } from './validate-refresh-token.query-handler';
 import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
-import { TokenRepository } from 'user-service/src/domain/token/repository';
+import { TokenRepository } from 'src/domain/token/repository';
 import { UserTokenDto } from '../../command';
 
 describe('when validateRefreshToken is called', () => {

@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DislikeUserCommand } from './dislike-user.command';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { ERROR } from 'user-service/src/infrastructure/user/common/constant';
+import { UserRepository } from 'src/domain/user/repository';
+import { ERROR } from 'src/infrastructure/user/common/constant';
 
 @CommandHandler(DislikeUserCommand)
 export class DislikeUserCommandHandler

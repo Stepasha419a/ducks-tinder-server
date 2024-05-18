@@ -4,8 +4,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from './register.command';
 import { COMMON_ERROR } from '@app/common/shared/constant';
 import { randomUUID } from 'crypto';
-import { UserAggregate } from 'user-service/src/domain/user';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
+import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
 import { TokenFacade } from '../../../token';
 

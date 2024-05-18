@@ -1,14 +1,11 @@
-import { User } from 'user-service/src/domain/user';
+import { User } from 'src/domain/user';
 import {
   ShortUserPlaceInfo,
   UserPictureInfo,
   WithoutPrivateFields,
 } from './interface';
 import { ShortUserWithDistance } from './interface/short-user-with-distance';
-import {
-  PictureEntity,
-  PlaceEntity,
-} from 'user-service/src/domain/user/entity';
+import { PictureEntity, PlaceEntity } from 'src/domain/user/entity';
 
 export class UserMapper {
   getWithoutPrivateFields(user: User): WithoutPrivateFields {

@@ -2,14 +2,11 @@ import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  ClientProxyMock,
-  UserRepositoryMock,
-} from 'user-service/src/test/mock';
-import { UserAggregateStub, UserStub } from 'user-service/src/test/stub';
+import { ClientProxyMock, UserRepositoryMock } from 'src/test/mock';
+import { UserAggregateStub, UserStub } from 'src/test/stub';
 
 describe('when accept pair is called', () => {
   let repository: UserRepository;

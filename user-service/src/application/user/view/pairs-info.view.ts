@@ -1,4 +1,4 @@
-import { PictureEntity } from 'user-service/src/domain/user/entity';
+import { PictureEntity } from 'src/domain/user/entity';
 
 export interface PairsInfoView {
   count: number;

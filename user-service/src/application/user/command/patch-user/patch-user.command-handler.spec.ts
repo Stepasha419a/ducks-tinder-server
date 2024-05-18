@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { PatchUserCommandHandler } from './patch-user.command-handler';
 import { PatchUserCommand } from './patch-user.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserRepository } from 'src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
 import { COMMON_ERROR } from '@app/common/shared/constant';
-import { UserRepositoryMock } from 'user-service/src/test/mock';
-import { UserAggregateStub, UserStub } from 'user-service/src/test/stub';
+import { UserRepositoryMock } from 'src/test/mock';
+import { UserAggregateStub, UserStub } from 'src/test/stub';
 
 describe('when patch is called', () => {
   let repository: UserRepository;

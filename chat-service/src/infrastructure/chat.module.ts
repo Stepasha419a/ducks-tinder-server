@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatController, ChatGateway } from '../interface';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatRepository } from '../domain/repository';
@@ -48,7 +47,6 @@ import { SERVICE } from './rabbitmq/service/service';
     }),
     DatabaseModule,
     CqrsModule,
-    EventEmitterModule.forRoot(),
     RabbitMQModule.register(SERVICE.USER),
   ],
 })

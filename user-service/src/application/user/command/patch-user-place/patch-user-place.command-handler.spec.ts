@@ -1,8 +1,8 @@
 import { PatchUserPlaceCommandHandler } from './patch-user-place.command-handler';
 import { Test } from '@nestjs/testing';
 import { MapApi } from '../../adapter';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserRepository } from 'src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
 import { PatchUserPlaceCommand } from './patch-user-place.command';
 
 jest.mock('user-service/src/domain/user/value-object', () => ({
@@ -10,12 +10,12 @@ jest.mock('user-service/src/domain/user/value-object', () => ({
 }));
 
 import { PlaceValueObject } from 'user-service/src/domain/user/value-object';
-import { MapApiMock, UserRepositoryMock } from 'user-service/src/test/mock';
+import { MapApiMock, UserRepositoryMock } from 'src/test/mock';
 import {
   PlaceValueObjectStub,
   UserAggregateStub,
   UserStub,
-} from 'user-service/src/test/stub';
+} from 'src/test/stub';
 
 describe('when patch user place is called', () => {
   let patchUserPlaceCommandHandler: PatchUserPlaceCommandHandler;

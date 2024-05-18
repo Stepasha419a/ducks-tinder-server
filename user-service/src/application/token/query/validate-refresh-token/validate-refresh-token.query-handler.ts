@@ -3,7 +3,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
-import { TokenRepository } from 'user-service/src/domain/token/repository';
+import { TokenRepository } from 'src/domain/token/repository';
 import { UserTokenDto } from '../../command';
 
 @QueryHandler(ValidateRefreshTokenQuery)

@@ -7,14 +7,14 @@ import {
   ConfigServiceMock,
   JwtServiceMock,
   TokenRepositoryMock,
-} from 'user-service/src/test/mock';
+} from 'src/test/mock';
 import {
   AccessTokenValueObjectStub,
   RefreshTokenValueObjectStub,
   UserStub,
-} from 'user-service/src/test/stub';
-import { TokenRepository } from 'user-service/src/domain/token/repository';
-import { RefreshTokenValueObject } from 'user-service/src/domain/token';
+} from 'src/test/stub';
+import { TokenRepository } from 'src/domain/token/repository';
+import { RefreshTokenValueObject } from 'src/domain/token';
 
 describe('when generateTokens is called', () => {
   let repository: TokenRepository;

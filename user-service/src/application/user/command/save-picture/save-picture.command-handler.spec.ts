@@ -1,25 +1,22 @@
 import { Test } from '@nestjs/testing';
 import { SavePictureCommandHandler } from './save-picture.command-handler';
 import { SavePictureCommand } from './save-picture.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import {
-  FileAdapterMock,
-  UserRepositoryMock,
-} from 'user-service/src/test/mock';
+import { UserRepository } from 'src/domain/user/repository';
+import { FileAdapterMock, UserRepositoryMock } from 'src/test/mock';
 import { FileAdapter } from '../../adapter';
 import {
   PictureValueObjectStub,
   UserAggregateStub,
   UserStub,
-} from 'user-service/src/test/stub';
-import { UserAggregate } from 'user-service/src/domain/user';
+} from 'src/test/stub';
+import { UserAggregate } from 'src/domain/user';
 
 jest.mock('user-service/src/domain/user/value-object', () => ({
   PictureValueObject: jest.fn(),
 }));
 
 import { PictureValueObject } from 'user-service/src/domain/user/value-object';
-import { ERROR } from 'user-service/src/infrastructure/user/common/constant';
+import { ERROR } from 'src/infrastructure/user/common/constant';
 import { HttpStatus } from '@nestjs/common';
 
 describe('when save picture is called', () => {

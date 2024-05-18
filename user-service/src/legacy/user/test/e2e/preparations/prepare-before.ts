@@ -1,4 +1,4 @@
-import { UserSelector } from 'user-service/src/infrastructure/user/repository/user.selector';
+import { UserSelector } from 'src/infrastructure/user/repository/user.selector';
 import prismaClient from '@app/common/database/test/database-client';
 
 export async function prepareBefore(currentUserId, secondUserId) {

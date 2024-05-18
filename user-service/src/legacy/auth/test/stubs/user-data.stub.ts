@@ -1,4 +1,4 @@
-import { UserStub } from 'user-service/src/test/stub';
+import { UserStub } from 'src/test/stub';
 
 export const userDataStub = () => ({
   data: { user: UserStub(), accessToken: 'access-token' },

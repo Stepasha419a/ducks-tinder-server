@@ -2,19 +2,16 @@ import { Test } from '@nestjs/testing';
 import { RefreshCommand } from './refresh.command';
 import { RefreshCommandHandler } from './refresh.command-handler';
 import { HttpStatus } from '@nestjs/common';
-import {
-  TokenFacadeMock,
-  UserRepositoryMock,
-} from 'user-service/src/test/mock';
+import { TokenFacadeMock, UserRepositoryMock } from 'src/test/mock';
 import {
   AccessTokenValueObjectStub,
   AuthUserViewStub,
   RefreshTokenValueObjectStub,
   UserAggregateStub,
   UserStub,
-} from 'user-service/src/test/stub';
+} from 'src/test/stub';
 import { TokenFacade } from '../../../token';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
 
 describe('when refresh is called', () => {

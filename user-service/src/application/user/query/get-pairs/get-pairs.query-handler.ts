@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPairsQuery } from './get-pairs.query';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserRepository } from 'src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
 
 @QueryHandler(GetPairsQuery)
 export class GetPairsQueryHandler implements IQueryHandler<GetPairsQuery> {

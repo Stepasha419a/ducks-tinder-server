@@ -5,14 +5,14 @@ import { HttpStatus } from '@nestjs/common';
 import {
   TokenFacadeMock,
   UserRepositoryMock,
-} from 'user-service/src/test/mock';
+} from 'src/test/mock';
 import {
   AccessTokenValueObjectStub,
   AuthUserViewStub,
   RefreshTokenValueObjectStub,
   UserAggregateStub,
   UserStub,
-} from 'user-service/src/test/stub';
+} from 'src/test/stub';
 
 jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
@@ -21,8 +21,8 @@ jest.mock('bcryptjs', () => ({
 import * as bcryptjs from 'bcryptjs';
 import { TokenFacade } from '../../../token';
 import { AuthUserView } from '../../view';
-import { ERROR } from 'user-service/src/infrastructure/auth/common/constant';
-import { UserRepository } from 'user-service/src/domain/user/repository';
+import { ERROR } from 'src/infrastructure/auth/common/constant';
+import { UserRepository } from 'src/domain/user/repository';
 
 describe('when login is called', () => {
   let userRepository: UserRepository;

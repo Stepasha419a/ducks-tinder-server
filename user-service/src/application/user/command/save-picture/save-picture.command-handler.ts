@@ -1,11 +1,11 @@
 import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { UserAggregate } from 'user-service/src/domain/user';
-import { ERROR } from 'user-service/src/infrastructure/user/common/constant';
+import { UserRepository } from 'src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
+import { ERROR } from 'src/infrastructure/user/common/constant';
 import { FileAdapter } from '@app/common/file/adapter';
-import { PictureEntity } from 'user-service/src/domain/user/entity';
+import { PictureEntity } from 'src/domain/user/entity';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler

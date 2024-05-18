@@ -1,8 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MixPicturesCommand } from './mix-pictures.command';
-import { UserRepository } from 'user-service/src/domain/user/repository';
-import { UserAggregate } from 'user-service/src/domain/user';
+import { UserRepository } from 'src/domain/user/repository';
+import { UserAggregate } from 'src/domain/user';
 
 @CommandHandler(MixPicturesCommand)
 export class MixPicturesCommandHandler

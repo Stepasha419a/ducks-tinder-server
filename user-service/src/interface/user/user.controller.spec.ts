@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { UsersController } from 'user-service/src/interface/user/user.controller';
+import { UsersController } from 'src/interface/user/user.controller';
 import { CommandBusMock, QueryBusMock } from 'user-service/src/test/mocks';
 import { AccessTokenGuard } from '@app/common/auth/guard';
 import {

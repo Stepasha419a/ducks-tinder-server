@@ -1,4 +1,4 @@
-import { USERS_PATCH_EXPECT } from './../../values/users.e2e-const.expect';
+import { USERS_PATCH_EXPECT } from '../../values/users.e2e-const.expect';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
 import { NestApplication } from '@nestjs/core';

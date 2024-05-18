@@ -1,6 +1,6 @@
-import { authUserStub } from 'user-service/src/legacy/auth/test/stubs';
+import { authUserStub } from 'src/legacy/auth/test/stubs';
 import prismaClient from '@app/common/database/test/database-client/database-client';
-import { UserStub } from 'user-service/src/test/stub';
+import { UserStub } from 'src/test/stub';
 
 export async function prepareBefore() {
   await prismaClient.user.create({
