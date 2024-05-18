@@ -6,6 +6,11 @@ generator chatService {
   output   = "../chat-service/node_modules/.prisma/client"
 }
 
+generator userService {
+  provider = "prisma-client-js"
+  output   = "../user-service/node_modules/.prisma/client"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
