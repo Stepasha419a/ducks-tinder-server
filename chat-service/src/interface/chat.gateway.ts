@@ -13,12 +13,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { WsHttpExceptionFilter } from '@app/common/shared/filter';
 import { AccessTokenGuard, RefreshTokenGuard } from '@app/common/auth/guard';
 import { User } from '@app/common/shared/decorator';
 import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { ChatGatewayEvent } from './chat.gateway-event';
+import { WsHttpExceptionFilter } from './filter';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)

@@ -3,7 +3,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { DeleteMessageCommand } from './delete-message.command';
 import { ChatRepository } from 'src/domain/repository';
 import { MessageAggregate } from 'src/domain';
-import { DateUtil } from '@app/common/shared/util/date.util';
+import { DateUtil } from 'src/infrastructure/util';
 
 @CommandHandler(DeleteMessageCommand)
 export class DeleteMessageCommandHandler
