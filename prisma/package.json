@@ -1,0 +1,15 @@
+{
+  "name": "ducks-tinder-server-prisma",
+  "version": "1.0.0",
+  "description": "orm environment to support services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "prisma": "^5.14.0"
+  }
+}
