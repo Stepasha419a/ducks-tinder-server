@@ -1,5 +1,4 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ValidateRefreshTokenQuery } from './validate-refresh-token.query';
@@ -22,19 +21,17 @@ export class ValidateRefreshTokenQueryHandler
     const existingRefreshToken =
       await this.repository.findOneRefreshTokenByValue(value);
     if (!existingRefreshToken) {
-      throw new UnauthorizedException();
-    }
-
-    try {
-      const userData: UserTokenDto = await this.jwtService.verify(
-        existingRefreshToken.value,
-        {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        },
-      );
-      return userData;
-    } catch (error) {
       return null;
     }
+
+    const userData: UserTokenDto = await this.jwtService
+      .verifyAsync(existingRefreshToken.value, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      })
+      .catch(() => {
+        return null;
+      });
+
+    return userData;
   }
 }

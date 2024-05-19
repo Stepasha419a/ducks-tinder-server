@@ -9,6 +9,7 @@ import { AccessTokenGuard } from 'src/interface/common';
 import { RabbitMQModule } from './rabbitmq';
 import { SERVICE } from './rabbitmq/service/service';
 import { FileModule } from './file';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
@@ -34,6 +35,7 @@ import { FileModule } from './file';
     AuthModule,
     RabbitMQModule.register(SERVICE.CHAT),
     FileModule,
+    JwtModule,
   ],
 })
 export class AppModule {}

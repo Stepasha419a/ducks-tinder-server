@@ -17,7 +17,7 @@ import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { ChatGatewayEvent } from './chat.gateway-event';
 import { WsHttpExceptionFilter } from './filter';
-import { AccessTokenGuard, RefreshTokenGuard } from './guard';
+import { AccessTokenGuard } from './guard';
 import { User } from './decorator';
 
 @UseFilters(WsHttpExceptionFilter)
@@ -58,7 +58,7 @@ export class ChatGateway {
     client.emit(ChatGatewayEvent.ConnectChat);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.DisconnectChat)
   async handleDisconnectChat(
     @ConnectedSocket() client: Socket,
@@ -71,7 +71,7 @@ export class ChatGateway {
     client.emit(ChatGatewayEvent.DisconnectChat);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.SendMessage)
   async sendMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -92,7 +92,7 @@ export class ChatGateway {
     });
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.DeleteMessage)
   async deleteMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -107,7 +107,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit(ChatGatewayEvent.DeleteMessage, message);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.EditMessage)
   async editMessage(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -122,7 +122,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit(ChatGatewayEvent.EditMessage, message);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.BlockChat)
   async blockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -134,7 +134,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit(ChatGatewayEvent.BlockChat, chat);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.UnblockChat)
   async unblockChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,
@@ -146,7 +146,7 @@ export class ChatGateway {
     this.wss.to(userIds).emit(ChatGatewayEvent.UnblockChat, chat);
   }
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.DeleteChat)
   async deleteChat(
     @User({ isSocket: true }, ParseUUIDPipe) userId: string,

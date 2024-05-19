@@ -13,15 +13,16 @@ export class ValidateAccessTokenQueryHandler
   ) {}
 
   async execute(query: ValidateAccessTokenQuery) {
-    try {
-      const { accessTokenValue } = query;
+    const { accessTokenValue } = query;
 
-      const userData = this.jwtService.verify(accessTokenValue, {
+    const userData = this.jwtService
+      .verifyAsync(accessTokenValue, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      })
+      .catch(() => {
+        return null;
       });
-      return userData;
-    } catch (error) {
-      return null;
-    }
+
+    return userData;
   }
 }

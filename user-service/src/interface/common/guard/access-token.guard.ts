@@ -4,19 +4,17 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-  Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../constant';
-import { UserTokenDto } from './user-token.dto';
-import { SERVICE } from 'src/infrastructure/rabbitmq/service/service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(SERVICE.USER) private readonly userClient: ClientProxy,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -34,22 +32,24 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.userClient.send('validate_access_token', accessTokenValue),
-    );
+    const userData = await this.jwtService
+      .verifyAsync(accessTokenValue, {
+        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      })
+      .catch(() => {
+        return false;
+      });
 
-    if (!userTokenDto) {
+    if (!userData) {
       throw new UnauthorizedException();
     }
 
-    this.addUserId(userTokenDto.userId, context);
+    this.addUserId(userData.userId, context);
 
     return true;
   }
 
-  private extractTokenFromHeader(
-    context: ExecutionContext,
-  ): string | undefined {
+  private extractTokenFromHeader(context: ExecutionContext): string | null {
     let authorization: string;
     if (context.getType() === 'ws') {
       authorization = context.switchToWs().getClient().handshake
@@ -59,8 +59,12 @@ export class AccessTokenGuard implements CanActivate {
         .headers?.authorization;
     }
 
+    if (!authorization) {
+      return null;
+    }
+
     const [type, token] = authorization.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    return type === 'Bearer' ? token : null;
   }
 
   private addUserId(userId: string, context: ExecutionContext) {
