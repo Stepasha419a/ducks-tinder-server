@@ -24,6 +24,7 @@ import { SERVICE } from './rabbitmq/service/service';
     { provide: ChatRepository, useClass: ChatAdapter },
     {
       provide: ChatFacade,
+
       inject: [CommandBus, QueryBus],
       useFactory: chatFacadeFactory,
     },
@@ -35,7 +36,7 @@ import { SERVICE } from './rabbitmq/service/service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './chat-service/.env',
+      envFilePath: '.env',
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
