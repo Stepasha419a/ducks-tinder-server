@@ -10,25 +10,23 @@ import (
 	"github.com/google/uuid"
 )
 
-type DataType int8
-
 const (
-	Image = iota
+	Image = "image"
 )
 
-func HandleUploadFile(buffer []byte, dataType DataType) string {
-	fileExtension, err := getFileExtension(dataType)
+func HandleUploadFile(event *UploadFile) string {
+	fileExtension, err := getFileExtension(event.Type)
 	if err != nil {
 		log.Fatal("not implemented data type")
 		return ""
 	}
 
-	fileName := writeFile(buffer, fileExtension)
+	fileName := writeFile([]byte(event.Data), fileExtension)
 
 	return fileName
 }
 
-func getFileExtension(dataType DataType) (string, error) {
+func getFileExtension(dataType string) (string, error) {
 	if dataType == Image {
 		return "jpg", nil
 	}
@@ -60,7 +58,3 @@ func writeDir() {
 		}
 	}
 }
-
-/* func throwStatusBadRequest(w http.ResponseWriter) {
-	util.JSONError(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-} */

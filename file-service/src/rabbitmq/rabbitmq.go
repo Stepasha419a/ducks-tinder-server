@@ -1,8 +1,12 @@
 package rabbitmq
 
 import (
+	"encoding/json"
+	"fmt"
+	"go-file-server/src/handler"
 	"os"
 
+	"github.com/mitchellh/mapstructure"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -56,19 +60,76 @@ func HandleFileQueueMessages(ch *amqp.Channel, q *amqp.Queue) {
 
 	go func() {
 		for message := range messages {
-			err = ch.Publish(
-				"",              // exchange
-				message.ReplyTo, // routing key
-				false,           // mandatory
-				false,           // immediate
-				amqp.Publishing{
-					ContentType:   "text/plain",
-					CorrelationId: message.CorrelationId,
-					Body:          []byte("asdasd"),
-				})
-			//handler.HandleUploadFile(message.Body, handler.Image)
+			handleMessage(&message, ch)
 		}
 	}()
 
 	<-forever
+}
+
+type Event string
+
+const (
+	UploadFilePattern Event = "upload_file"
+	DeleteFilePattern Event = "delete_file"
+)
+
+type Message struct {
+	Pattern Event       `json:"pattern"`
+	Data    interface{} `json:"data"`
+}
+
+func handleMessage(message *amqp.Delivery, ch *amqp.Channel) {
+	decodedMessage := Message{}
+	err := json.Unmarshal(message.Body, &decodedMessage)
+	if err != nil {
+		panic(err)
+	}
+	switch decodedMessage.Pattern {
+	case UploadFilePattern:
+		event := handler.UploadFile{}
+
+		mapstructure.Decode(decodedMessage.Data, &event)
+		fmt.Println(event)
+		body := handler.HandleUploadFile(&event)
+		responseEvent(ch, message, body)
+	default:
+		return
+	}
+
+	/* err = ch.Publish(
+		"",              // exchange
+		message.ReplyTo, // routing key
+		false,           // mandatory
+		false,           // immediate
+		amqp.Publishing{
+			ContentType:   "text/plain",
+			CorrelationId: message.CorrelationId,
+			Body:          []byte("asdasd"),
+		})
+	if err != nil {
+		panic(err)
+	} */
+	//handler.HandleUploadFile(message.Body, handler.Image)
+}
+
+func responseEvent(ch *amqp.Channel, message *amqp.Delivery, body interface{}) {
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		panic(err)
+	}
+
+	err = ch.Publish(
+		"",              // exchange
+		message.ReplyTo, // routing key
+		false,           // mandatory
+		false,           // immediate
+		amqp.Publishing{
+			ContentType:   "text/plain",
+			CorrelationId: message.CorrelationId,
+			Body:          jsonBody,
+		})
+	if err != nil {
+		panic(err)
+	}
 }
