@@ -6,8 +6,6 @@ import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
-import { RabbitMQModule } from './rabbitmq';
-import { SERVICE } from './rabbitmq/service/service';
 import { FileModule } from './file';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -33,7 +31,6 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     TokenModule,
     AuthModule,
-    RabbitMQModule.register(SERVICE.CHAT),
     FileModule,
     JwtModule,
   ],
