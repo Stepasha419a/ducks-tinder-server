@@ -2,7 +2,6 @@ package rabbitmq
 
 import (
 	"encoding/json"
-	"fmt"
 	"go-file-server/src/handler"
 	"os"
 
@@ -90,27 +89,15 @@ func handleMessage(message *amqp.Delivery, ch *amqp.Channel) {
 		event := handler.UploadFile{}
 
 		mapstructure.Decode(decodedMessage.Data, &event)
-		fmt.Println(event)
-		body := handler.HandleUploadFile(&event)
+		body, err := handler.HandleUploadFile(&event)
+		if err != nil {
+			responseEvent(ch, message, map[string]string{"message": err.Error()})
+		}
+
 		responseEvent(ch, message, body)
 	default:
 		return
 	}
-
-	/* err = ch.Publish(
-		"",              // exchange
-		message.ReplyTo, // routing key
-		false,           // mandatory
-		false,           // immediate
-		amqp.Publishing{
-			ContentType:   "text/plain",
-			CorrelationId: message.CorrelationId,
-			Body:          []byte("asdasd"),
-		})
-	if err != nil {
-		panic(err)
-	} */
-	//handler.HandleUploadFile(message.Body, handler.Image)
 }
 
 func responseEvent(ch *amqp.Channel, message *amqp.Delivery, body interface{}) {
