@@ -46,7 +46,7 @@ import { FileModule } from '../file';
     DatabaseModule,
     CqrsModule,
     HttpModule,
-    RabbitMQModule.register(SERVICE.CHAT),
+    RabbitMQModule.register(SERVICE.CHAT, SERVICE.FILE),
     FileModule,
   ],
   exports: [UserRepository],

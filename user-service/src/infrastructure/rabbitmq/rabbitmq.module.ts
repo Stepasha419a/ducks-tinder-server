@@ -8,12 +8,12 @@ import { ConfigService } from '@nestjs/config';
   exports: [RabbitMQService],
 })
 export class RabbitMQModule {
-  static register(name: string): DynamicModule {
+  static register(...names: string[]): DynamicModule {
     return {
       module: RabbitMQModule,
       imports: [
-        ClientsModule.registerAsync([
-          {
+        ClientsModule.registerAsync(
+          names.map((name) => ({
             name,
             useFactory: (configService: ConfigService): RmqOptions => ({
               transport: Transport.RMQ,
@@ -23,8 +23,8 @@ export class RabbitMQModule {
               },
             }),
             inject: [ConfigService],
-          },
-        ]),
+          })),
+        ),
       ],
       exports: [ClientsModule],
     };
