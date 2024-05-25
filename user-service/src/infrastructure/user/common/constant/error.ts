@@ -4,4 +4,5 @@ export enum ERROR {
   MAX_PICTURES_COUNT = 'You have max pictures count',
   USER_ALREADY_CHECKED = 'User is already checked',
   FAILED_TO_UPLOAD_PICTURE = 'Failed to upload picture',
+  FAILED_TO_DELETE_PICTURE = 'Failed to delete picture',
 }
