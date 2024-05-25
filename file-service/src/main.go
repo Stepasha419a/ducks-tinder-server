@@ -6,18 +6,13 @@ import (
 	"os"
 	"sync"
 
+	config "go-file-server/src/config"
 	rabbitmq "go-file-server/src/rabbitmq"
 	router "go-file-server/src/router"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	config.RequireEnv()
 
 	setUpListeners()
 }
