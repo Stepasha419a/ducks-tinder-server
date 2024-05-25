@@ -2,26 +2,20 @@ package handler
 
 import (
 	"errors"
-	util "go-file-server/src/util"
-	"net/http"
+	"fmt"
 	"os"
 	"path"
-
-	"github.com/gorilla/mux"
 )
 
-func HandleDeleteFile(w http.ResponseWriter, r *http.Request) {
-	fileName := mux.Vars(r)["fileName"]
-
-	if _, err := os.Stat(path.Join("static", fileName)); errors.Is(err, os.ErrNotExist) {
-		util.JSONError(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		return
+func DeleteFile(event *DeleteFileEvent) error {
+	if _, err := os.Stat(path.Join("static", event.Filename)); errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("not found")
 	}
 
-	e := os.Remove(path.Join("static", fileName))
+	e := os.Remove(path.Join("static", event.Filename))
 	if e != nil {
 		panic(e)
 	}
 
-	util.JSONResponse(w, map[string]interface{}{"fileName": fileName}, http.StatusOK)
+	return nil
 }

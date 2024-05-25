@@ -15,7 +15,7 @@ const (
 	Image = "image"
 )
 
-func HandleUploadFile(event *UploadFile) (map[string]string, error) {
+func UploadFile(event *UploadFileEvent) (map[string]string, error) {
 	fileExtension, err := getFileExtension(event.Type)
 	if err != nil {
 		return nil, err
@@ -52,11 +52,8 @@ func writeFile(data []byte, filename string) {
 }
 
 func writeDir() {
-	dirInfo, err := os.Stat("static")
+	_, err := os.Stat("static")
 	if err != nil {
-		panic(err)
-	}
-	if dirInfo == nil {
 		if err := os.Mkdir("static", 0770); err != nil {
 			panic(err)
 		}

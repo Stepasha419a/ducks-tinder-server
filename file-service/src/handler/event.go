@@ -1,10 +1,10 @@
 package handler
 
-type UploadFile struct {
+type UploadFileEvent struct {
 	Data string `json:"data"`
 	Type string `json:"type"`
 }
 
-type DeleteFile struct {
-	Name string `json:"name"`
+type DeleteFileEvent struct {
+	Filename string `json:"filename"`
 }

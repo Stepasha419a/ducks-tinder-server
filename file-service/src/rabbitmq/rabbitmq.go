@@ -86,15 +86,25 @@ func handleMessage(message *amqp.Delivery, ch *amqp.Channel) {
 	}
 	switch decodedMessage.Pattern {
 	case UploadFilePattern:
-		event := handler.UploadFile{}
+		event := handler.UploadFileEvent{}
 
 		mapstructure.Decode(decodedMessage.Data, &event)
-		body, err := handler.HandleUploadFile(&event)
+		body, err := handler.UploadFile(&event)
 		if err != nil {
 			responseEvent(ch, message, map[string]string{"message": err.Error()})
 		}
 
 		responseEvent(ch, message, body)
+	case DeleteFilePattern:
+		event := handler.DeleteFileEvent{}
+
+		mapstructure.Decode(decodedMessage.Data, &event)
+		err := handler.DeleteFile(&event)
+		if err != nil {
+			responseEvent(ch, message, map[string]string{"message": err.Error()})
+		}
+
+		responseEvent(ch, message, map[string]string{"filename": event.Filename})
 	default:
 		return
 	}
