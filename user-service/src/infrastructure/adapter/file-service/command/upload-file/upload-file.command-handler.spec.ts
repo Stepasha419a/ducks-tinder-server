@@ -3,8 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
 import { Test } from '@nestjs/testing';
-import { SavePictureCommand } from './save-picture.command';
-import { SavePictureCommandHandler } from './save-picture.command-handler';
+import { SavePictureCommand } from './upload-file.command';
+import { SavePictureCommandHandler } from './upload-file.command-handler';
 
 jest.mock('fs');
 const mockedFs = fs as jest.Mocked<typeof fs>;

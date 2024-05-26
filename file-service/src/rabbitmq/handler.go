@@ -23,8 +23,6 @@ type Message struct {
 func handleMessage(message *amqp.Delivery, ch *amqp.Channel) {
 	defer handlePanic(ch, message)
 
-	panic("asd")
-
 	decodedMessage := Message{}
 	err := json.Unmarshal(message.Body, &decodedMessage)
 	if err != nil {

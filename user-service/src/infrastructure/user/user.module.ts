@@ -18,7 +18,8 @@ import {
 import { DatabaseModule } from '../database';
 import { SERVICE } from '../rabbitmq/service/service';
 import { RabbitMQModule } from '../rabbitmq';
-import { FileModule } from '../file';
+import { FileService } from 'src/domain/service/file';
+import { FILE_COMMAND_HANDLERS, FileAdapter } from '../adapter/file-service';
 
 @Module({
   providers: [
@@ -26,6 +27,7 @@ import { FileModule } from '../file';
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
+    ...FILE_COMMAND_HANDLERS,
     UserMapper,
     {
       provide: UserFacade,
@@ -40,6 +42,10 @@ import { FileModule } from '../file';
       provide: MapApi,
       useClass: MapApiImplementation,
     },
+    {
+      provide: FileService,
+      useClass: FileAdapter,
+    },
   ],
   controllers: [UserController],
   imports: [
@@ -47,7 +53,6 @@ import { FileModule } from '../file';
     CqrsModule,
     HttpModule,
     RabbitMQModule.register(SERVICE.CHAT, SERVICE.FILE),
-    FileModule,
   ],
   exports: [UserRepository],
 })

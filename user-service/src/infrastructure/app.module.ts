@@ -6,7 +6,6 @@ import { AuthModule } from './auth/auth.module';
 import { TokenModule } from './token/token.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
-import { FileModule } from './file';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -31,7 +30,6 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     TokenModule,
     AuthModule,
-    FileModule,
     JwtModule,
   ],
 })

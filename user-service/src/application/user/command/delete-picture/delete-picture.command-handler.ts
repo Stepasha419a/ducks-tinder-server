@@ -1,24 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletePictureCommand } from './delete-picture.command';
-import {
-  Inject,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
-import { firstValueFrom } from 'rxjs';
-import { SERVICE } from 'src/infrastructure/rabbitmq/service';
-import { ClientProxy } from '@nestjs/microservices';
-import { ERROR } from 'src/infrastructure/user/common/constant';
-
-interface SuccessDeleteFile {
-  filename: string;
-}
-
-interface FailDeleteFile {
-  message: string;
-}
+import { FileService } from 'src/domain/service/file';
 
 @CommandHandler(DeletePictureCommand)
 export class DeletePictureCommandHandler
@@ -26,7 +11,7 @@ export class DeletePictureCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    @Inject(SERVICE.FILE) private readonly fileClient: ClientProxy,
+    private readonly fileService: FileService,
   ) {}
 
   async execute(command: DeletePictureCommand): Promise<UserAggregate> {
@@ -42,15 +27,7 @@ export class DeletePictureCommandHandler
       throw new NotFoundException();
     }
 
-    const response = await firstValueFrom<SuccessDeleteFile | FailDeleteFile>(
-      this.fileClient.send('delete_file', {
-        filename: existingPicture.name,
-      }),
-    );
-
-    if ('message' in response) {
-      throw new InternalServerErrorException(ERROR.FAILED_TO_DELETE_PICTURE);
-    }
+    await this.fileService.deleteFile(existingPicture.name);
 
     await userAggregate.deletePicture(pictureId);
 

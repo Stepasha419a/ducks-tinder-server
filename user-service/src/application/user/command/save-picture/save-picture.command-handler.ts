@@ -1,25 +1,11 @@
-import {
-  BadRequestException,
-  Inject,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SavePictureCommand } from './save-picture.command';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
 import { ERROR } from 'src/infrastructure/user/common/constant';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICE } from 'src/infrastructure/rabbitmq/service';
-import { firstValueFrom } from 'rxjs';
 import { PictureEntity } from 'src/domain/user/entity';
-
-interface SuccessUploadFile {
-  filename: string;
-}
-
-interface FailUploadFile {
-  message: string;
-}
+import { FileService, UploadFileType } from 'src/domain/service/file';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler
@@ -27,7 +13,7 @@ export class SavePictureCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    @Inject(SERVICE.FILE) private readonly fileClient: ClientProxy,
+    private readonly fileService: FileService,
   ) {}
 
   async execute(command: SavePictureCommand): Promise<UserAggregate> {
@@ -38,16 +24,10 @@ export class SavePictureCommandHandler
       throw new BadRequestException(ERROR.MAX_PICTURES_COUNT);
     }
 
-    const response = await firstValueFrom<SuccessUploadFile | FailUploadFile>(
-      this.fileClient.send('upload_file', {
-        data: picture.buffer.toString('base64'),
-        type: 'image',
-      }),
+    const response = await this.fileService.uploadFile(
+      picture,
+      UploadFileType.IMAGE,
     );
-
-    if ('message' in response) {
-      throw new InternalServerErrorException(ERROR.FAILED_TO_UPLOAD_PICTURE);
-    }
 
     const pictureAggregate = PictureEntity.create({
       name: response.filename,

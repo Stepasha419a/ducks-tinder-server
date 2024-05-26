@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Test } from '@nestjs/testing';
-import { DeletePictureCommandHandler } from './delete-picture.command-handler';
-import { DeletePictureCommand } from './delete-picture.command';
+import { DeletePictureCommandHandler } from './delete-file.command-handler';
+import { DeletePictureCommand } from './delete-file.command';
 
 jest.mock('fs');
 const mockedFs = fs as jest.Mocked<typeof fs>;
