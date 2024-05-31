@@ -18,14 +18,14 @@ type AuthUser struct {
 	UpdatedAt time.Time
 }
 
-func NewAuthUser(email string, password string, refreshToken string) *AuthUser {
+func NewAuthUser(email string, password string) *AuthUser {
 	hashedPassword := crypto_service.Hash(password, []byte(os.Getenv("PASSWORD_SALT")))
 
 	return &AuthUser{
 		Id:           uuid.New().String(),
 		Email:        email,
 		Password:     hashedPassword,
-		RefreshToken: refreshToken,
+		RefreshToken: "",
 
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
