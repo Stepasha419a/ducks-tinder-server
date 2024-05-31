@@ -1,4 +1,4 @@
-.PHONY: dev user-service chat-service file-service
+.PHONY: dev user-service chat-service file-service auth-service
 
 dev:
 	@$(MAKE) -j user-service chat-service file-service
@@ -11,3 +11,6 @@ chat-service:
 
 file-service:
 	cd file-service && air
+
+auth-service:
+	cd auth-service && air
