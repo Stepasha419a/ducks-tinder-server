@@ -5,17 +5,18 @@ import (
 	entity "auth-service/internal/domain/entity"
 	repository "auth-service/internal/domain/repository"
 	jwt_service "auth-service/internal/domain/service/jwt"
-	"errors"
+	"net/http"
 )
 
-func RegisterCommandHandler(command *RegisterCommand, authUserRepository repository.AuthUserRepository) (*mapper.AuthUserResponse, error) {
+func RegisterCommandHandler(command *RegisterCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository) (*mapper.AuthUserResponse, error) {
 	candidate, err := authUserRepository.FindByEmail(command.Email)
 	if err != nil {
 		return nil, err
 	}
 
 	if candidate != nil {
-		return nil, errors.New("email is used")
+		responseError(http.StatusBadRequest, "user already exists")
+		return nil, nil
 	}
 
 	authUser := entity.NewAuthUser(command.Email, command.Password)
