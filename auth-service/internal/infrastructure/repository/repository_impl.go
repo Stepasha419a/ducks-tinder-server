@@ -55,25 +55,32 @@ func (r *authUserRepository) Find(id string) (*entity.AuthUser, error) {
 	}).Scan(authUser)
 
 	if err != nil {
-		return nil, err
+		return nil, HandleError(err)
 	}
 
 	return authUser, nil
 }
 
 func (r *authUserRepository) FindByEmail(email string) (*entity.AuthUser, error) {
-	authUser := &entity.AuthUser{}
+	authUser := entity.AuthUser{}
 	err := r.pool.Db.QueryRow(context.TODO(), "SELECT * FROM auth_users WHERE email=@email", pgx.NamedArgs{
 		"email": email,
-	}).Scan(authUser)
+	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
 
 	if err != nil {
-		return nil, err
+		return nil, HandleError(err)
 	}
 
-	return authUser, nil
+	return &authUser, nil
 }
 
 func NewAuthUserRepository(pool *database.Postgres) domain.AuthUserRepository {
 	return &authUserRepository{pool}
+}
+
+func HandleError(err error) error {
+	if err == pgx.ErrNoRows {
+		return nil
+	}
+	return nil
 }
