@@ -9,6 +9,7 @@ import (
 type RegisterDto struct {
 	Email    string `json:"email" validate:"required,email,max=50"`
 	Password string `json:"password" validate:"required,min=6,max=30"`
+	Name     string `json:"name" validate:"required,min=2,max=14"`
 }
 
 func (dto *RegisterDto) ToRegisterCommand(validate *validator.Validate) (*register.RegisterCommand, error) {
@@ -20,5 +21,6 @@ func (dto *RegisterDto) ToRegisterCommand(validate *validator.Validate) (*regist
 	return &register.RegisterCommand{
 		Email:    dto.Email,
 		Password: dto.Password,
+		Name:     dto.Name,
 	}, nil
 }
