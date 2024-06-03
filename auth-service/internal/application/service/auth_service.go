@@ -6,7 +6,9 @@ import (
 )
 
 type (
+	ResponseError func(status int, message string)
+
 	AuthService interface {
-		Register(command *register.RegisterCommand, responseError func(status int, message string)) (*mapper.AuthUserResponse, error)
+		Register(command *register.RegisterCommand, responseError ResponseError) (*mapper.AuthUserResponse, error)
 	}
 )

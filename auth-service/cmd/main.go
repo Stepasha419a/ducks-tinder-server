@@ -2,6 +2,8 @@ package main
 
 import (
 	"auth-service/internal/application/facade"
+	broker_service "auth-service/internal/domain/service/broker"
+	"auth-service/internal/infrastructure/adapter"
 	"auth-service/internal/infrastructure/database"
 	"auth-service/internal/infrastructure/repository"
 	"auth-service/internal/interface/http/controller"
@@ -21,9 +23,13 @@ func main() {
 
 	pgPool := database.NewPostgresInstance()
 
+	brokerConn := broker_service.InitBroker()
+
+	userService := adapter.NewUserService(brokerConn)
+
 	authUserRepository := repository.NewAuthUserRepository(pgPool)
 
-	authFacade := facade.NewAuthFacade(authUserRepository)
+	authFacade := facade.NewAuthFacade(authUserRepository, userService)
 
 	e := gin.Default()
 
