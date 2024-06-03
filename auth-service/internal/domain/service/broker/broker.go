@@ -43,13 +43,16 @@ func InitQueue(conn *amqp.Connection, queueName string) *QueueConnection {
 	return &QueueConnection{ch, &q}
 }
 
-func (queueConn *QueueConnection) PublishQueueMessage(message *amqp.Publishing) {
+func (queueConn *QueueConnection) PublishQueueMessage(message []byte) {
 	err := queueConn.channel.Publish(
 		"",                   // exchange
 		queueConn.queue.Name, // routing key
 		false,                // mandatory
 		false,                // immediate
-		*message,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        message,
+		},
 	)
 	if err != nil {
 		panic(err)
