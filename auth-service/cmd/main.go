@@ -22,6 +22,7 @@ func main() {
 	}
 
 	pgPool := database.NewPostgresInstance()
+	transactionService := database.NewTransactionService(pgPool.Db)
 
 	brokerConn := broker_service.InitBroker()
 
@@ -29,7 +30,7 @@ func main() {
 
 	authUserRepository := repository.NewAuthUserRepository(pgPool)
 
-	authFacade := facade.NewAuthFacade(authUserRepository, userService)
+	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
 	e := gin.Default()
 

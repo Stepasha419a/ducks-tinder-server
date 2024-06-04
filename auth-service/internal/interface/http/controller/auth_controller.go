@@ -48,7 +48,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	res, err := ac.service.Register(registerCommand, responseErrorContext(c))
+	res, err := ac.service.Register(c.Request.Context(), registerCommand, responseErrorContext(c))
 	if res == nil {
 		return
 	}
