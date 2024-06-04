@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func MigrateDB(pool *Postgres) {
+func MigrateDB(db *Postgres) {
 	err := godotenv.Load(".env")
 
 	if err != nil {
@@ -29,7 +29,7 @@ func MigrateDB(pool *Postgres) {
 
 	log.Info("migration - start")
 
-	err = initMigration(ctx, pool)
+	err = initMigration(ctx, db)
 	if err != nil {
 		log.Info("migration - failed")
 		panic(err)
@@ -55,10 +55,10 @@ func submitMigration() bool {
 	return submitted
 }
 
-func initMigration(ctx context.Context, pool *Postgres) error {
+func initMigration(ctx context.Context, db *Postgres) error {
 	log.Info("migration - init tables migration")
 
-	_, err := pool.Db.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
+	_, err := db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
 		id UUID PRIMARY KEY,
 		email VARCHAR(100) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,

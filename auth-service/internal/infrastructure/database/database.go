@@ -5,11 +5,13 @@ import (
 	"os"
 	"sync"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Postgres struct {
-	Db *pgxpool.Pool
+	Pool *pgxpool.Pool
 }
 
 var (
@@ -19,17 +21,25 @@ var (
 
 func NewPostgresInstance() *Postgres {
 	pgOnce.Do(func() {
-		db, err := pgxpool.New(context.TODO(), os.Getenv("DATABASE_URL"))
+		pool, err := pgxpool.New(context.TODO(), os.Getenv("DATABASE_URL"))
 		if err != nil {
 			panic(err)
 		}
 
-		pgInstance = &Postgres{db}
+		pgInstance = &Postgres{pool}
 	})
 
 	return pgInstance
 }
 
 func (pg *Postgres) Close() {
-	pg.Db.Close()
+	pg.Pool.Close()
+}
+
+func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
+	if tx != nil {
+		return tx.Exec
+	}
+
+	return pool.Exec
 }

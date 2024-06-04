@@ -21,14 +21,14 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	pgPool := database.NewPostgresInstance()
-	transactionService := database.NewTransactionService(pgPool.Db)
+	db := database.NewPostgresInstance()
+	transactionService := database.NewTransactionService(db.Pool)
 
 	brokerConn := broker_service.InitBroker()
 
 	userService := adapter.NewUserService(brokerConn)
 
-	authUserRepository := repository.NewAuthUserRepository(pgPool)
+	authUserRepository := repository.NewAuthUserRepository(db.Pool)
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 

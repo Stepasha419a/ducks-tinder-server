@@ -7,11 +7,11 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type authUserRepository struct {
-	pool *database.Postgres
+	pool *pgxpool.Pool
 }
 
 func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser, tx pgx.Tx) (*entity.AuthUser, error) {
@@ -21,7 +21,7 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 	}
 
 	if storedAuthUser != nil {
-		_, err := r.exec(tx)(ctx, "UPDATE auth_users SET email=@email, password=@password, refreshToken=@refreshToken, updatedAt=@updatedAt WHERE id=@id", &pgx.NamedArgs{
+		_, err := database.Exec(r.pool, tx)(ctx, "UPDATE auth_users SET email=@email, password=@password, refreshToken=@refreshToken, updatedAt=@updatedAt WHERE id=@id", &pgx.NamedArgs{
 			"email":        authUser.Email,
 			"password":     authUser.Password,
 			"refreshToken": authUser.RefreshToken,
@@ -34,7 +34,7 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 		return authUser, nil
 	}
 
-	_, err = r.exec(tx)(ctx, "INSERT INTO auth_users(id, email, password, refreshToken, updatedAt, createdAt) VALUES (@id, @email, @password, @refreshToken, @updatedAt, @createdAt)", &pgx.NamedArgs{
+	_, err = database.Exec(r.pool, tx)(ctx, "INSERT INTO auth_users(id, email, password, refreshToken, updatedAt, createdAt) VALUES (@id, @email, @password, @refreshToken, @updatedAt, @createdAt)", &pgx.NamedArgs{
 		"id":           authUser.Id,
 		"email":        authUser.Email,
 		"password":     authUser.Password,
@@ -49,16 +49,9 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 	return authUser, nil
 }
 
-func (r *authUserRepository) exec(tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
-	if tx != nil {
-		return tx.Exec
-	}
-	return r.pool.Db.Exec
-}
-
 func (r *authUserRepository) Find(ctx context.Context, id string) (*entity.AuthUser, error) {
 	authUser := &entity.AuthUser{}
-	err := r.pool.Db.QueryRow(ctx, "SELECT * FROM auth_users WHERE id=@id", pgx.NamedArgs{
+	err := r.pool.QueryRow(ctx, "SELECT * FROM auth_users WHERE id=@id", pgx.NamedArgs{
 		"id": id,
 	}).Scan(authUser)
 
@@ -71,7 +64,7 @@ func (r *authUserRepository) Find(ctx context.Context, id string) (*entity.AuthU
 
 func (r *authUserRepository) FindByEmail(ctx context.Context, email string) (*entity.AuthUser, error) {
 	authUser := entity.AuthUser{}
-	err := r.pool.Db.QueryRow(ctx, "SELECT * FROM auth_users WHERE email=@email", pgx.NamedArgs{
+	err := r.pool.QueryRow(ctx, "SELECT * FROM auth_users WHERE email=@email", pgx.NamedArgs{
 		"email": email,
 	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
 
@@ -82,7 +75,7 @@ func (r *authUserRepository) FindByEmail(ctx context.Context, email string) (*en
 	return &authUser, nil
 }
 
-func NewAuthUserRepository(pool *database.Postgres) domain.AuthUserRepository {
+func NewAuthUserRepository(pool *pgxpool.Pool) domain.AuthUserRepository {
 	return &authUserRepository{pool}
 }
 
