@@ -7,6 +7,6 @@ type (
 	}
 
 	UserService interface {
-		EmitUserRegistered(dto *UserRegisteredDto)
+		EmitUserRegistered(dto *UserRegisteredDto) error
 	}
 )

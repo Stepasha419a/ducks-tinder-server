@@ -21,11 +21,13 @@ func NewUserService(brokerConn *amqp.Connection) user_service.UserService {
 	}
 }
 
-func (adapter *UserServiceAdapter) EmitUserRegistered(dto *user_service.UserRegisteredDto) {
+func (adapter *UserServiceAdapter) EmitUserRegistered(dto *user_service.UserRegisteredDto) error {
 	body, err := json.Marshal(dto)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	adapter.userQueue.PublishQueueMessage(body)
+	err = adapter.userQueue.PublishQueueMessage(body)
+
+	return err
 }
