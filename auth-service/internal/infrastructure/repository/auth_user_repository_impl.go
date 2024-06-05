@@ -15,7 +15,7 @@ type authUserRepository struct {
 }
 
 func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser, tx pgx.Tx) (*entity.AuthUser, error) {
-	storedAuthUser, err := r.Find(ctx, authUser.Id)
+	storedAuthUser, err := r.Find(ctx, authUser.Id, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -49,9 +49,9 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 	return authUser, nil
 }
 
-func (r *authUserRepository) Find(ctx context.Context, id string) (*entity.AuthUser, error) {
+func (r *authUserRepository) Find(ctx context.Context, id string, tx pgx.Tx) (*entity.AuthUser, error) {
 	authUser := &entity.AuthUser{}
-	err := r.pool.QueryRow(ctx, "SELECT * FROM auth_users WHERE id=@id", pgx.NamedArgs{
+	err := database.QueryRow(r.pool, tx)(ctx, "SELECT * FROM auth_users WHERE id=@id", pgx.NamedArgs{
 		"id": id,
 	}).Scan(authUser)
 
@@ -62,9 +62,9 @@ func (r *authUserRepository) Find(ctx context.Context, id string) (*entity.AuthU
 	return authUser, nil
 }
 
-func (r *authUserRepository) FindByEmail(ctx context.Context, email string) (*entity.AuthUser, error) {
+func (r *authUserRepository) FindByEmail(ctx context.Context, email string, tx pgx.Tx) (*entity.AuthUser, error) {
 	authUser := entity.AuthUser{}
-	err := r.pool.QueryRow(ctx, "SELECT * FROM auth_users WHERE email=@email", pgx.NamedArgs{
+	err := database.QueryRow(r.pool, tx)(ctx, "SELECT * FROM auth_users WHERE email=@email", pgx.NamedArgs{
 		"email": email,
 	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
 

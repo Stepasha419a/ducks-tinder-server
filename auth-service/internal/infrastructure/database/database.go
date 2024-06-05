@@ -43,3 +43,19 @@ func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, a
 
 	return pool.Exec
 }
+
+func Query(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+	if tx != nil {
+		return tx.Query
+	}
+
+	return pool.Query
+}
+
+func QueryRow(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) pgx.Row {
+	if tx != nil {
+		return tx.QueryRow
+	}
+
+	return pool.QueryRow
+}

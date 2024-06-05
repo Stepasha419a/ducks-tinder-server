@@ -13,7 +13,7 @@ import (
 func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository, transactionService *database.TransactionService) (*mapper.AuthUserResponse, error) {
 	tx := transactionService.Begin(ctx)
 
-	candidate, err := authUserRepository.FindByEmail(ctx, command.Email)
+	candidate, err := authUserRepository.FindByEmail(ctx, command.Email, nil)
 	if err != nil {
 		return nil, err
 	}

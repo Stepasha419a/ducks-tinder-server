@@ -9,6 +9,6 @@ import (
 
 type AuthUserRepository interface {
 	Save(ctx context.Context, authUser *entity.AuthUser, tx pgx.Tx) (*entity.AuthUser, error)
-	Find(ctx context.Context, id string) (*entity.AuthUser, error)
-	FindByEmail(ctx context.Context, email string) (*entity.AuthUser, error)
+	Find(ctx context.Context, id string, tx pgx.Tx) (*entity.AuthUser, error)
+	FindByEmail(ctx context.Context, email string, tx pgx.Tx) (*entity.AuthUser, error)
 }
