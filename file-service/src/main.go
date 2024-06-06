@@ -6,21 +6,23 @@ import (
 	"os"
 	"sync"
 
-	config "go-file-server/src/config"
-	rabbitmq "go-file-server/src/rabbitmq"
 	router "go-file-server/src/router"
+	config_service "go-file-server/src/service/config"
+	grpc_service "go-file-server/src/service/grpc"
+	rabbitmq_service "go-file-server/src/service/rabbitmq"
 )
 
 func main() {
-	config.RequireEnv()
+	config_service.RequireEnv()
 
 	setUpListeners()
 }
 
 func setUpListeners() {
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(3)
 
+	go grpc_service.Init()
 	go setUpHttp()
 	go setUpBroker()
 
@@ -37,16 +39,18 @@ func setUpHttp() {
 }
 
 func setUpBroker() {
-	conn := rabbitmq.InitBroker()
+	conn := rabbitmq_service.InitBroker()
 
 	RABBIT_MQ_FILE_QUEUE := os.Getenv("RABBIT_MQ_FILE_QUEUE")
-	ch, q := rabbitmq.InitQueue(conn, RABBIT_MQ_FILE_QUEUE)
+	ch, q := rabbitmq_service.InitQueue(conn, RABBIT_MQ_FILE_QUEUE)
+
+	log.Printf("Serving on Broker queue: %v", RABBIT_MQ_FILE_QUEUE)
 
 	var wg sync.WaitGroup
 
-	wg.Add(2)
+	wg.Add(1)
 
-	go rabbitmq.HandleFileQueueMessages(ch, q)
+	go rabbitmq_service.HandleFileQueueMessages(ch, q)
 
 	wg.Wait()
 

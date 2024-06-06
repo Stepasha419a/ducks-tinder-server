@@ -1,4 +1,4 @@
-package rabbitmq
+package rabbitmq_service
 
 import (
 	"log"
