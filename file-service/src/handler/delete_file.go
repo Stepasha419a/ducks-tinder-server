@@ -7,15 +7,25 @@ import (
 	"path"
 )
 
-func DeleteFile(event *DeleteFileEvent) error {
-	if _, err := os.Stat(path.Join("static", event.Filename)); errors.Is(err, os.ErrNotExist) {
-		return fmt.Errorf("not found")
+type (
+	DeleteFileRequest struct {
+		Filename string `json:"filename"`
 	}
 
-	e := os.Remove(path.Join("static", event.Filename))
+	DeleteFileResponse struct {
+		Filename string `json:"filename"`
+	}
+)
+
+func DeleteFile(req *DeleteFileRequest) (*DeleteFileResponse, error) {
+	if _, err := os.Stat(path.Join("static", req.Filename)); errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("not found")
+	}
+
+	e := os.Remove(path.Join("static", req.Filename))
 	if e != nil {
 		panic(e)
 	}
 
-	return nil
+	return &DeleteFileResponse{Filename: req.Filename}, nil
 }

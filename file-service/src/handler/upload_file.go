@@ -6,8 +6,6 @@ import (
 
 	"os"
 
-	"encoding/base64"
-
 	"github.com/google/uuid"
 )
 
@@ -15,8 +13,19 @@ const (
 	Image = "image"
 )
 
-func UploadFile(event *UploadFileEvent) (map[string]string, error) {
-	fileExtension, err := getFileExtension(event.Type)
+type (
+	UploadFileRequest struct {
+		Data []byte `json:"data"`
+		Type string `json:"type"`
+	}
+
+	UploadFileResponse struct {
+		Filename string `json:"filename"`
+	}
+)
+
+func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
+	fileExtension, err := getFileExtension(req.Type)
 	if err != nil {
 		return nil, err
 	}
@@ -24,14 +33,14 @@ func UploadFile(event *UploadFileEvent) (map[string]string, error) {
 	filename := uuid.New()
 	fullFilename := filename.String() + "." + fileExtension
 
-	fileBuffer, err := base64.StdEncoding.DecodeString(event.Data)
+	//fileBuffer, err := base64.StdEncoding.DecodeString(req.Data)
 	if err != nil {
 		return nil, err
 	}
 
-	writeFile(fileBuffer, fullFilename)
+	writeFile(req.Data, fullFilename)
 
-	return map[string]string{"filename": fullFilename}, nil
+	return &UploadFileResponse{Filename: fullFilename}, nil
 }
 
 func getFileExtension(dataType string) (string, error) {
