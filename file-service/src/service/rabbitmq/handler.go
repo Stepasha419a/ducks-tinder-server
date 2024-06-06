@@ -39,7 +39,7 @@ func handleMessage(message *amqp.Delivery, ch *amqp.Channel) {
 }
 
 func uploadFile(ch *amqp.Channel, message *amqp.Delivery, decodedMessage *Message) {
-	event := handler.UploadFileEvent{}
+	event := handler.UploadFileRequest{}
 
 	mapstructure.Decode(decodedMessage.Data, &event)
 	body, err := handler.UploadFile(&event)
@@ -52,14 +52,14 @@ func uploadFile(ch *amqp.Channel, message *amqp.Delivery, decodedMessage *Messag
 }
 
 func deleteFile(ch *amqp.Channel, message *amqp.Delivery, decodedMessage *Message) {
-	event := handler.DeleteFileEvent{}
+	event := handler.DeleteFileRequest{}
 
 	mapstructure.Decode(decodedMessage.Data, &event)
-	err := handler.DeleteFile(&event)
+	body, err := handler.DeleteFile(&event)
 	if err != nil {
 		responseEvent(ch, message, map[string]string{"message": err.Error()})
 		return
 	}
 
-	responseEvent(ch, message, map[string]string{"filename": event.Filename})
+	responseEvent(ch, message, body)
 }

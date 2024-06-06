@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"log"
 	"os"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -9,6 +10,7 @@ import (
 func InitBroker() *amqp.Connection {
 	RABBIT_MQ_URI := os.Getenv("RABBIT_MQ_URI")
 
+	log.Printf("Serving on amqp: %v\n", RABBIT_MQ_URI)
 	conn, err := amqp.Dial(RABBIT_MQ_URI)
 	if err != nil {
 		panic(err)
