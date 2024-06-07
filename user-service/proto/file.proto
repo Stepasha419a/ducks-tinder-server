@@ -1,0 +1,25 @@
+syntax="proto3";
+
+package file;
+
+service FileService {
+    rpc UploadFile (UploadFileRequest) returns (UploadFileResponse);
+    rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse);
+}
+
+message UploadFileRequest {
+    bytes data = 1;
+    string type = 2;
+}
+
+message UploadFileResponse {
+    string filename = 3;
+}
+
+message DeleteFileRequest {
+    string filename = 3;
+}
+
+message DeleteFileResponse {
+    string filename = 3;
+}

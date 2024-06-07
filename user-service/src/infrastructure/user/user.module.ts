@@ -20,6 +20,8 @@ import { SERVICE } from '../rabbitmq/service/service';
 import { RabbitMQModule } from '../rabbitmq';
 import { FileService } from 'src/domain/service/file';
 import { FILE_COMMAND_HANDLERS, FileAdapter } from '../adapter/file-service';
+import { GrpcModule } from '../grpc';
+import { GRPC_SERVICE } from '../grpc/service/service';
 
 @Module({
   providers: [
@@ -53,6 +55,7 @@ import { FILE_COMMAND_HANDLERS, FileAdapter } from '../adapter/file-service';
     CqrsModule,
     HttpModule,
     RabbitMQModule.register(SERVICE.CHAT, SERVICE.FILE),
+    GrpcModule.register(GRPC_SERVICE.FILE),
   ],
   exports: [UserRepository],
 })
