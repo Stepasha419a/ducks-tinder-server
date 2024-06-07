@@ -18,11 +18,11 @@ type (
 )
 
 func DeleteFile(req *DeleteFileRequest) (*DeleteFileResponse, error) {
-	if _, err := os.Stat(path.Join("static", req.Filename)); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(path.Join("../static", req.Filename)); errors.Is(err, os.ErrNotExist) {
 		return nil, fmt.Errorf("not found")
 	}
 
-	e := os.Remove(path.Join("static", req.Filename))
+	e := os.Remove(path.Join("../static", req.Filename))
 	if e != nil {
 		panic(e)
 	}

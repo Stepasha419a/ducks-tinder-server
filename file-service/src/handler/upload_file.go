@@ -54,7 +54,7 @@ func getFileExtension(dataType string) (string, error) {
 func writeFile(data []byte, filename string) {
 	writeDir()
 
-	err := os.WriteFile(path.Join("static", filename), data, 0644)
+	err := os.WriteFile(path.Join("../static", filename), data, 0644)
 	if err != nil {
 		panic(err)
 	}
