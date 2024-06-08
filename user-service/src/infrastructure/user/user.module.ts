@@ -21,7 +21,7 @@ import { RabbitMQModule } from '../rabbitmq';
 import { FileService } from 'src/domain/service/file';
 import { FILE_COMMAND_HANDLERS, FileAdapter } from '../adapter/file-service';
 import { GrpcModule } from '../grpc';
-import { GRPC_SERVICE } from '../grpc/service/service';
+import { GRPC_SERVICE } from '../grpc/service';
 
 @Module({
   providers: [

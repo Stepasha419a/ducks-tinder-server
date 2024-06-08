@@ -1,12 +1,11 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_SERVICE, getGrpcPackageName } from './service/service';
-import { FileGrpcServiceAdapter } from './service/file/file.grpc-service-adapter';
-import { FileGrpcService } from './service/file';
 import { ConfigService } from '@nestjs/config';
+import { FileGrpcService } from './service/file';
 
 @Module({
-  providers: [{ provide: FileGrpcService, useClass: FileGrpcServiceAdapter }],
+  providers: [FileGrpcService],
   exports: [FileGrpcService],
 })
 export class GrpcModule {
@@ -14,7 +13,7 @@ export class GrpcModule {
     return {
       module: GrpcModule,
       imports: [
-        ClientsModule.register(
+        ClientsModule.registerAsync(
           names.map((name) => {
             const packageName = getGrpcPackageName(name);
             return {
@@ -25,15 +24,11 @@ export class GrpcModule {
                   keepalive: {
                     keepaliveTimeMs: 10 * 1000,
                     keepaliveTimeoutMs: 5 * 1000,
+                    keepalivePermitWithoutCalls: 1,
                   },
                   url: configService.get(`${name}_URL`),
                   package: packageName,
                   protoPath: `proto/${packageName}.proto`,
-                  channelOptions: {
-                    'grpc.keepalive_time_ms': 10 * 1000,
-                    'grpc.keepalive_timeout_ms': 5 * 1000,
-                    'grpc.keepalive_permit_without_calls': 1,
-                  },
                 },
               }),
               inject: [ConfigService],
