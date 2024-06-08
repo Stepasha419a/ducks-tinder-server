@@ -7,9 +7,8 @@ import { authFacadeFactory } from './facade';
 import { AuthController } from '../../interface/auth';
 import { UserModule } from '../user/user.module';
 import { TokenModule } from '../token/token.module';
-import { JwtService } from 'src/domain/service/jwt';
-import { JwtAdapter } from '../adapter/jwt';
 import { JwtModule } from '@nestjs/jwt';
+import { DomainModule } from 'src/domain';
 
 @Module({
   providers: [
@@ -20,9 +19,8 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [CommandBus],
       useFactory: authFacadeFactory,
     },
-    { provide: JwtService, useClass: JwtAdapter },
   ],
   controllers: [AuthController],
-  imports: [CqrsModule, TokenModule, UserModule, JwtModule],
+  imports: [CqrsModule, TokenModule, UserModule, JwtModule, DomainModule],
 })
 export class AuthModule {}

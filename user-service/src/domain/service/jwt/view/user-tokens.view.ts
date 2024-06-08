@@ -1,4 +1,6 @@
+import { AccessTokenValueObject, RefreshTokenEntity } from 'src/domain/token';
+
 export interface UserTokensView {
-  accessToken: string;
-  refreshToken: string;
+  accessToken: AccessTokenValueObject;
+  refreshToken: RefreshTokenEntity;
 }
