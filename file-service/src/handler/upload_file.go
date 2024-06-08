@@ -33,11 +33,6 @@ func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
 	filename := uuid.New()
 	fullFilename := filename.String() + "." + fileExtension
 
-	//fileBuffer, err := base64.StdEncoding.DecodeString(req.Data)
-	if err != nil {
-		return nil, err
-	}
-
 	writeFile(req.Data, fullFilename)
 
 	return &UploadFileResponse{Filename: fullFilename}, nil
