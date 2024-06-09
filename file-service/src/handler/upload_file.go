@@ -56,9 +56,9 @@ func writeFile(data []byte, filename string) {
 }
 
 func writeDir() {
-	_, err := os.Stat("static")
+	_, err := os.Stat("../static")
 	if err != nil {
-		if err := os.Mkdir("static", 0770); err != nil {
+		if err := os.Mkdir("../static", 0770); err != nil {
 			panic(err)
 		}
 	}

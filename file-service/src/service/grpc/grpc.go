@@ -12,7 +12,7 @@ import (
 )
 
 func Init() {
-	server := grpc.NewServer(grpc.UnaryInterceptor(RecoveryUnaryInterceptor))
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor, AuthUnaryInterceptor))
 
 	fileServer := FileServiceServerImpl{}
 
