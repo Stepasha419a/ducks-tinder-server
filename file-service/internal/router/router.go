@@ -1,7 +1,7 @@
 package router
 
 import (
-	"go-file-server/src/middleware"
+	"go-file-server/internal/middleware"
 
 	"net/http"
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 
-	util "go-file-server/src/util"
+	util "go-file-server/internal/util"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {

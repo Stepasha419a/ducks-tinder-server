@@ -2,8 +2,8 @@ package grpc_service
 
 import (
 	"context"
+	"go-file-server/internal/handler"
 	"go-file-server/proto/gen"
-	"go-file-server/src/handler"
 )
 
 type FileServiceServerImpl struct {

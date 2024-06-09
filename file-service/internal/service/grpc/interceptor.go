@@ -2,7 +2,7 @@ package grpc_service
 
 import (
 	"context"
-	jwt_service "go-file-server/src/service/jwt"
+	jwt_service "go-file-server/internal/service/jwt"
 	"log"
 	"runtime/debug"
 
