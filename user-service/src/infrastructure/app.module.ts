@@ -24,6 +24,7 @@ import { DomainModule } from 'src/domain';
         RABBIT_MQ_USER_QUEUE: Joi.string().required(),
         RABBIT_MQ_CHAT_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
+        JWT_FILE_SERVICE_SECRET: Joi.string().required(),
       }),
     }),
     UserModule,

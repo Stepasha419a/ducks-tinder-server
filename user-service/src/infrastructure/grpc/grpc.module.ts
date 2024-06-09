@@ -3,10 +3,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_SERVICE, getGrpcPackageName } from './service/service';
 import { ConfigService } from '@nestjs/config';
 import { FileGrpcService } from './service/file';
+import { DomainModule } from 'src/domain';
 
 @Module({
   providers: [FileGrpcService],
   exports: [FileGrpcService],
+  imports: [DomainModule],
 })
 export class GrpcModule {
   static register(...names: GRPC_SERVICE[]): DynamicModule {

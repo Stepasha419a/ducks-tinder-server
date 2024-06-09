@@ -63,10 +63,13 @@ export class JwtService {
   private readonly minute = 1000 * 60;
 
   generateFileServiceToken(): ServiceTokenView {
-    const accessToken = this.jwtService.sign(null, {
-      expiresIn: '60m',
-      secret: this.configService.get<string>('JWT_FILE_SERVICE_SECRET'),
-    });
+    const accessToken = this.jwtService.sign(
+      {},
+      {
+        expiresIn: '60m',
+        secret: this.configService.get<string>('JWT_FILE_SERVICE_SECRET'),
+      },
+    );
 
     const expiresIn = new Date(Date.now() + this.minute * 59);
 
