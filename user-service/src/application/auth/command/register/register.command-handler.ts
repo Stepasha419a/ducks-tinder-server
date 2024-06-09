@@ -6,8 +6,9 @@ import { randomUUID } from 'crypto';
 import { UserAggregate } from 'src/domain/user';
 import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
-import { TokenFacade } from '../../../token';
 import { COMMON_ERROR } from 'src/application/common';
+import { JwtService } from 'src/domain/service/jwt';
+import { TokenRepository } from 'src/domain/token/repository';
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
@@ -15,7 +16,8 @@ export class RegisterCommandHandler
 {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenFacade: TokenFacade,
+    private readonly jwtService: JwtService,
+    private readonly tokenRepository: TokenRepository,
   ) {}
 
   async execute(command: RegisterCommand): Promise<AuthUserView> {
@@ -41,16 +43,15 @@ export class RegisterCommandHandler
       throw new BadRequestException(err);
     });
 
-    const { accessTokenValueObject, refreshTokenEntity } =
-      await this.tokenFacade.commands.generateTokens({
-        userId: user.id,
-        email: user.email,
-      });
+    const { accessToken, refreshToken } =
+      await this.jwtService.generateUserTokens(user.id);
+
+    await this.tokenRepository.saveRefreshToken(refreshToken);
 
     return {
       ...savedUser,
-      accessToken: accessTokenValueObject,
-      refreshToken: refreshTokenEntity,
+      accessToken,
+      refreshToken,
     };
   }
 }

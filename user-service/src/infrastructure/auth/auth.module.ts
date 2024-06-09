@@ -9,6 +9,9 @@ import { UserModule } from '../user/user.module';
 import { TokenModule } from '../token/token.module';
 import { JwtModule } from '@nestjs/jwt';
 import { DomainModule } from 'src/domain';
+import { TokenRepository } from 'src/domain/token/repository';
+import { TokenAdapter } from '../token/repository';
+import { DatabaseModule } from '../database';
 
 @Module({
   providers: [
@@ -19,8 +22,19 @@ import { DomainModule } from 'src/domain';
       inject: [CommandBus],
       useFactory: authFacadeFactory,
     },
+    {
+      provide: TokenRepository,
+      useClass: TokenAdapter,
+    },
   ],
   controllers: [AuthController],
-  imports: [CqrsModule, TokenModule, UserModule, JwtModule, DomainModule],
+  imports: [
+    CqrsModule,
+    TokenModule,
+    UserModule,
+    JwtModule,
+    DomainModule,
+    DatabaseModule,
+  ],
 })
 export class AuthModule {}

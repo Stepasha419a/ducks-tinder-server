@@ -7,6 +7,7 @@ import { TokenModule } from './token/token.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
 import { JwtModule } from '@nestjs/jwt';
+import { DomainModule } from 'src/domain';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
@@ -30,6 +31,7 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     TokenModule,
     AuthModule,
+    DomainModule,
     JwtModule,
   ],
 })

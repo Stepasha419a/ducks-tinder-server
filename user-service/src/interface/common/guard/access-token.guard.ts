@@ -6,15 +6,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { IS_PUBLIC_KEY } from '../constant';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { JwtService } from 'src/domain/service/jwt';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -32,13 +30,8 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const userData = await this.jwtService
-      .verifyAsync(accessTokenValue, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      })
-      .catch(() => {
-        return false;
-      });
+    const userData =
+      await this.jwtService.validateAccessToken(accessTokenValue);
 
     if (!userData) {
       throw new UnauthorizedException();

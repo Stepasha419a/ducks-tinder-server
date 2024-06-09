@@ -5,13 +5,15 @@ import { compare } from 'bcryptjs';
 import { ERROR } from 'src/infrastructure/auth/common/constant';
 import { UserRepository } from 'src/domain/user/repository';
 import { AuthUserView } from '../../view';
-import { TokenFacade } from '../../../token';
+import { JwtService } from 'src/domain/service/jwt';
+import { TokenRepository } from 'src/domain/token/repository';
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenFacade: TokenFacade,
+    private readonly jwtService: JwtService,
+    private readonly tokenRepository: TokenRepository,
   ) {}
 
   async execute(command: LoginCommand): Promise<AuthUserView> {
@@ -28,16 +30,15 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
       throw new ForbiddenException(ERROR.INCORRECT_EMAIL_OR_PASSWORD);
     }
 
-    const { accessTokenValueObject, refreshTokenEntity } =
-      await this.tokenFacade.commands.generateTokens({
-        userId: user.id,
-        email: user.email,
-      });
+    const { accessToken, refreshToken } =
+      await this.jwtService.generateUserTokens(user.id);
+
+    await this.tokenRepository.saveRefreshToken(refreshToken);
 
     return {
       ...user,
-      accessToken: accessTokenValueObject,
-      refreshToken: refreshTokenEntity,
+      accessToken,
+      refreshToken,
     };
   }
 }

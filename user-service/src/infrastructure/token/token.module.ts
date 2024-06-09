@@ -9,6 +9,7 @@ import { tokenFacadeFactory } from './facade';
 import { TokenController } from '../../interface/token';
 import { JwtModule } from '@nestjs/jwt';
 import { DatabaseModule } from '../database';
+import { DomainModule } from 'src/domain';
 
 @Module({
   providers: [
@@ -25,7 +26,7 @@ import { DatabaseModule } from '../database';
     },
   ],
   controllers: [TokenController],
-  imports: [DatabaseModule, JwtModule, CqrsModule],
+  imports: [DatabaseModule, JwtModule, CqrsModule, DomainModule],
   exports: [TokenFacade],
 })
 export class TokenModule {}
