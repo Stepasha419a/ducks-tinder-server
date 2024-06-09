@@ -3,10 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { TokenModule } from './token/token.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
-import { JwtModule } from '@nestjs/jwt';
 import { DomainModule } from 'src/domain';
 
 @Module({
@@ -29,10 +27,8 @@ import { DomainModule } from 'src/domain';
       }),
     }),
     UserModule,
-    TokenModule,
     AuthModule,
     DomainModule,
-    JwtModule,
   ],
 })
 export class AppModule {}

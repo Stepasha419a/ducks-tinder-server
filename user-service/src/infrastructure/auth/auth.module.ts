@@ -6,11 +6,9 @@ import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { authFacadeFactory } from './facade';
 import { AuthController } from '../../interface/auth';
 import { UserModule } from '../user/user.module';
-import { TokenModule } from '../token/token.module';
-import { JwtModule } from '@nestjs/jwt';
 import { DomainModule } from 'src/domain';
 import { TokenRepository } from 'src/domain/token/repository';
-import { TokenAdapter } from '../token/repository';
+import { TokenAdapter } from './repository';
 import { DatabaseModule } from '../database';
 
 @Module({
@@ -28,13 +26,6 @@ import { DatabaseModule } from '../database';
     },
   ],
   controllers: [AuthController],
-  imports: [
-    CqrsModule,
-    TokenModule,
-    UserModule,
-    JwtModule,
-    DomainModule,
-    DatabaseModule,
-  ],
+  imports: [CqrsModule, UserModule, DomainModule, DatabaseModule],
 })
 export class AuthModule {}
