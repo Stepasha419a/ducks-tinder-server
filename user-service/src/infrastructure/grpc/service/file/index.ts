@@ -1,1 +1,1 @@
-export { FileGrpcService } from './file-grpc.service';
+export * from './file.proto-service';

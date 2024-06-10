@@ -2,12 +2,13 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_SERVICE, getGrpcPackageName } from './service/service';
 import { ConfigService } from '@nestjs/config';
-import { FileGrpcService } from './service/file';
 import { DomainModule } from 'src/domain';
+import { FileService } from 'src/domain/service/file';
+import { FileServiceAdapter } from '../adapter/file-service';
 
 @Module({
-  providers: [FileGrpcService],
-  exports: [FileGrpcService],
+  providers: [{ provide: FileService, useClass: FileServiceAdapter }],
+  exports: [FileService],
   imports: [DomainModule],
 })
 export class GrpcModule {

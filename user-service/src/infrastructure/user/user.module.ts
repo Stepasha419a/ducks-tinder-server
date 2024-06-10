@@ -18,8 +18,6 @@ import {
 import { DatabaseModule } from '../database';
 import { SERVICE } from '../rabbitmq/service/service';
 import { RabbitMQModule } from '../rabbitmq';
-import { FileService } from 'src/domain/service/file';
-import { FILE_COMMAND_HANDLERS, FileAdapter } from '../adapter/file-service';
 import { GrpcModule } from '../grpc';
 import { GRPC_SERVICE } from '../grpc/service';
 
@@ -29,7 +27,6 @@ import { GRPC_SERVICE } from '../grpc/service';
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
-    ...FILE_COMMAND_HANDLERS,
     UserMapper,
     {
       provide: UserFacade,
@@ -44,17 +41,13 @@ import { GRPC_SERVICE } from '../grpc/service';
       provide: MapApi,
       useClass: MapApiImplementation,
     },
-    {
-      provide: FileService,
-      useClass: FileAdapter,
-    },
   ],
   controllers: [UserController],
   imports: [
     DatabaseModule,
     CqrsModule,
     HttpModule,
-    RabbitMQModule.register(SERVICE.CHAT, SERVICE.FILE),
+    RabbitMQModule.register(SERVICE.CHAT),
     GrpcModule.register(GRPC_SERVICE.FILE),
   ],
   exports: [UserRepository],
