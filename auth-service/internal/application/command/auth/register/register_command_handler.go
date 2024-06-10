@@ -19,7 +19,7 @@ func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, respo
 	}
 
 	if candidate != nil {
-		responseError(http.StatusBadRequest, "user already exists")
+		responseError(http.StatusBadRequest, "User already exists")
 		return nil, nil
 	}
 
@@ -28,12 +28,12 @@ func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, respo
 	tokens := jwt_service.GenerateTokens(authUser.Id)
 	authUser.RefreshToken = tokens.RefreshToken
 
-	savedAuthUser, err := authUserRepository.Save(ctx, authUser, tx.Tx)
+	_, err = authUserRepository.Save(ctx, authUser, tx.Tx)
 	if err != nil {
 		return nil, err
 	}
 
 	defer tx.Commit(ctx)
 
-	return mapper.NewAuthUserResponse(savedAuthUser, tokens.AccessToken), nil
+	return mapper.NewAuthUserResponse(authUser, tokens), nil
 }

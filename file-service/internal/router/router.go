@@ -13,7 +13,7 @@ func InitRouter() *mux.Router {
 
 	router.Use(middleware.AuthMiddleware)
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("static"))).Methods("GET")
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("../static"))).Methods("GET")
 
 	return router
 }

@@ -1,4 +1,4 @@
-package controller
+package auth_controller
 
 import (
 	"auth-service/internal/application/service"
@@ -22,6 +22,7 @@ func NewAuthController(e *gin.Engine, service service.AuthService) *AuthControll
 	}
 
 	e.POST("/auth/register", controller.Register)
+	e.POST("/auth/login", controller.Login)
 
 	return controller
 }
@@ -61,7 +62,43 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, res)
+	c.JSON(http.StatusCreated, NewAuthUserPublicResponse(res))
+}
+
+func (ac *AuthController) Login(c *gin.Context) {
+	var loginDto *LoginDto
+
+	if err := c.Bind(&loginDto); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+			"message":    "Failed to parse request body",
+			"statusCode": strconv.Itoa(http.StatusBadRequest),
+		})
+		return
+	}
+
+	loginCommand, err := loginDto.ToLoginCommand(validate)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{
+			"message":    "Validation failed: " + err.Error(),
+			"statusCode": strconv.Itoa(http.StatusBadRequest),
+		})
+		return
+	}
+
+	res, err := ac.service.Login(c.Request.Context(), loginCommand, responseErrorContext(c))
+	if res == nil {
+		return
+	}
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
+			"message":    "Failed to login",
+			"statusCode": strconv.Itoa(http.StatusInternalServerError),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, NewAuthUserPublicResponse(res))
 }
 
 func responseErrorContext(c *gin.Context) func(status int, message string) {

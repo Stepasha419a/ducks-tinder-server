@@ -6,7 +6,7 @@ import (
 	"auth-service/internal/infrastructure/adapter"
 	"auth-service/internal/infrastructure/database"
 	"auth-service/internal/infrastructure/repository"
-	"auth-service/internal/interface/http/controller"
+	auth_controller "auth-service/internal/interface/http/controller/auth"
 	"net/http"
 	"os"
 
@@ -34,7 +34,7 @@ func main() {
 
 	e := gin.Default()
 
-	controller.NewAuthController(e, authFacade)
+	auth_controller.NewAuthController(e, authFacade)
 
 	PORT := os.Getenv("PORT")
 	http.ListenAndServe("127.0.0.1:"+PORT, e)

@@ -2,24 +2,28 @@ package mapper
 
 import (
 	domain "auth-service/internal/domain/entity"
+	jwt_service "auth-service/internal/domain/service/jwt"
 	"time"
 )
 
 type AuthUserResponse struct {
-	Id          string
-	Email       string
-	AccessToken string
+	Id           string `json:"id"`
+	Email        string `json:"email"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func NewAuthUserResponse(authUser *domain.AuthUser, accessToken string) *AuthUserResponse {
+func NewAuthUserResponse(authUser *domain.AuthUser, tokens *jwt_service.Tokens) *AuthUserResponse {
 	return &AuthUserResponse{
-		Id:          authUser.Id,
-		Email:       authUser.Email,
-		AccessToken: accessToken,
-		CreatedAt:   authUser.CreatedAt,
-		UpdatedAt:   authUser.UpdatedAt,
+		Id:           authUser.Id,
+		Email:        authUser.Email,
+		AccessToken:  tokens.AccessToken,
+		RefreshToken: tokens.RefreshToken,
+
+		CreatedAt: authUser.CreatedAt,
+		UpdatedAt: authUser.UpdatedAt,
 	}
 }

@@ -50,16 +50,16 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 }
 
 func (r *authUserRepository) Find(ctx context.Context, id string, tx pgx.Tx) (*entity.AuthUser, error) {
-	authUser := &entity.AuthUser{}
+	authUser := entity.AuthUser{}
 	err := database.QueryRow(r.pool, tx)(ctx, "SELECT * FROM auth_users WHERE id=@id", pgx.NamedArgs{
 		"id": id,
-	}).Scan(authUser)
+	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
 
 	if err != nil {
 		return nil, HandleError(err)
 	}
 
-	return authUser, nil
+	return &authUser, nil
 }
 
 func (r *authUserRepository) FindByEmail(ctx context.Context, email string, tx pgx.Tx) (*entity.AuthUser, error) {
