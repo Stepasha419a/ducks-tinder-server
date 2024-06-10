@@ -3,6 +3,7 @@ package auth_controller
 import (
 	"auth-service/internal/application/service"
 	"net/http"
+	"os"
 
 	"strconv"
 
@@ -62,6 +63,8 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
+	setCookie(c, res.RefreshToken)
+
 	c.JSON(http.StatusCreated, NewAuthUserPublicResponse(res))
 }
 
@@ -98,7 +101,17 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
+	setCookie(c, res.RefreshToken)
+
 	c.JSON(http.StatusCreated, NewAuthUserPublicResponse(res))
+}
+
+func setCookie(c *gin.Context, refreshToken string) {
+	maxAge, err := strconv.Atoi(os.Getenv("COOKIE_REFRESH_TOKEN_MAX_AGE"))
+	if err != nil {
+		panic("wrong max age")
+	}
+	c.SetCookie("refreshToken", refreshToken, maxAge, "/auth", os.Getenv("COOKIE_REFRESH_TOKEN_DOMAIN"), true, true)
 }
 
 func responseErrorContext(c *gin.Context) func(status int, message string) {
