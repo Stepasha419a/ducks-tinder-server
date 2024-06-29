@@ -1,0 +1,9 @@
+password_salt: 456234
+jwt_refresh_secret: hfhdj567ghj45hjkdfcvx456vbn
+jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
+cookie_refresh_token_max_age: 604800
+cookie_refresh_token_domain: localhost
+port: 5003
+database_url: postgresql://prisma:prisma@localhost:5433/auth-service
+rabbit_mq_url: amqp://localhost:5672
+rabbit_mq_user_queue: user

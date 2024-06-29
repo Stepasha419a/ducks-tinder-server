@@ -6,6 +6,8 @@ tmp
 .env
 .env.dev
 
+dev.yaml
+
 # Logs
 logs
 *.log
