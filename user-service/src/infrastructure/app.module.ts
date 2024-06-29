@@ -12,7 +12,7 @@ import { DomainModule } from 'src/domain';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),

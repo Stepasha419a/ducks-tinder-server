@@ -4,7 +4,7 @@
   "description": "orm environment to support services",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate:postgres": "dotenv -e .env.dev -- npx prisma migrate dev"
   },
   "author": "",
   "license": "MIT",
