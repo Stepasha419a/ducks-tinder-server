@@ -1,8 +1,8 @@
 package jwt_service
 
 import (
+	config_service "auth-service/internal/infrastructure/service/config"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -18,8 +18,8 @@ type Tokens struct {
 }
 
 func GenerateTokens(userId string) *Tokens {
-	accessTokenSecret := []byte(os.Getenv("JWT_ACCESS_SECRET"))
-	refreshTokenSecret := []byte(os.Getenv("JWT_REFRESH_SECRET"))
+	accessTokenSecret := []byte(config_service.GetConfig().JwtAccessSecret)
+	refreshTokenSecret := []byte(config_service.GetConfig().JwtRefreshSecret)
 
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId":    userId,
@@ -48,7 +48,7 @@ func GenerateTokens(userId string) *Tokens {
 }
 
 func ValidateAccessToken(accessToken string) (*TokenPayload, error) {
-	secretKey := os.Getenv("JWT_ACCESS_SECRET")
+	secretKey := config_service.GetConfig().JwtAccessSecret
 
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
@@ -71,7 +71,7 @@ func ValidateAccessToken(accessToken string) (*TokenPayload, error) {
 }
 
 func ValidateRefreshToken(refreshToken string) (*TokenPayload, error) {
-	secretKey := os.Getenv("JWT_REFRESH_SECRET")
+	secretKey := config_service.GetConfig().JwtRefreshSecret
 
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {

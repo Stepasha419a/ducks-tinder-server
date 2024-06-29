@@ -5,9 +5,9 @@ import (
 	repository "auth-service/internal/domain/repository"
 	crypto_service "auth-service/internal/domain/service/crypto"
 	jwt_service "auth-service/internal/domain/service/jwt"
+	config_service "auth-service/internal/infrastructure/service/config"
 	"context"
 	"net/http"
-	"os"
 )
 
 func LoginCommandHandler(ctx context.Context, command *LoginCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository) (*mapper.AuthUserResponse, error) {
@@ -21,7 +21,7 @@ func LoginCommandHandler(ctx context.Context, command *LoginCommand, responseErr
 		return nil, nil
 	}
 
-	isEqual := crypto_service.Compare(command.Password, authUser.Password, []byte(os.Getenv("PASSWORD_SALT")))
+	isEqual := crypto_service.Compare(command.Password, authUser.Password, []byte(config_service.GetConfig().PasswordSalt))
 	if !isEqual {
 		responseError(http.StatusForbidden, "Incorrect email or password")
 		return nil, nil

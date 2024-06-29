@@ -9,13 +9,13 @@ import (
 	config_service "auth-service/internal/infrastructure/service/config"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	"net/http"
-	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	config_service.RequireEnv()
+	config_service.RequireConfig()
 
 	db := database.NewPostgresInstance()
 	transactionService := database.NewTransactionService(db.Pool)
@@ -32,6 +32,5 @@ func main() {
 
 	auth_controller.NewAuthController(e, authFacade)
 
-	PORT := os.Getenv("PORT")
-	http.ListenAndServe("127.0.0.1:"+PORT, e)
+	http.ListenAndServe("127.0.0.1:"+strconv.Itoa(int(config_service.GetConfig().Port)), e)
 }

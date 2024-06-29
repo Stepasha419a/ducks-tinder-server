@@ -1,15 +1,15 @@
 package broker_service
 
 import (
-	"os"
+	config_service "auth-service/internal/infrastructure/service/config"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func InitBroker() *amqp.Connection {
-	RABBIT_MQ_URI := os.Getenv("RABBIT_MQ_URI")
+	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
 
-	conn, err := amqp.Dial(RABBIT_MQ_URI)
+	conn, err := amqp.Dial(RABBIT_MQ_URL)
 	if err != nil {
 		panic(err)
 	}

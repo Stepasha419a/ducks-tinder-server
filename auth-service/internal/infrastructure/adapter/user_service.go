@@ -3,8 +3,8 @@ package adapter
 import (
 	broker_service "auth-service/internal/domain/service/broker"
 	user_service "auth-service/internal/domain/service/user"
+	config_service "auth-service/internal/infrastructure/service/config"
 	"encoding/json"
-	"os"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -14,7 +14,7 @@ type UserServiceAdapter struct {
 }
 
 func NewUserService(brokerConn *amqp.Connection) user_service.UserService {
-	userQueue := broker_service.InitQueue(brokerConn, os.Getenv("RABBIT_MQ_USER_QUEUE"))
+	userQueue := broker_service.InitQueue(brokerConn, config_service.GetConfig().RabbitMqUserQueue)
 
 	return &UserServiceAdapter{
 		userQueue,

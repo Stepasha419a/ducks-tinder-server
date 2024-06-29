@@ -1,8 +1,8 @@
 package database
 
 import (
+	config_service "auth-service/internal/infrastructure/service/config"
 	"context"
-	"os"
 	"sync"
 
 	"github.com/jackc/pgx/v5"
@@ -21,7 +21,7 @@ var (
 
 func NewPostgresInstance() *Postgres {
 	pgOnce.Do(func() {
-		pool, err := pgxpool.New(context.TODO(), os.Getenv("DATABASE_URL"))
+		pool, err := pgxpool.New(context.TODO(), config_service.GetConfig().DatabaseUrl)
 		if err != nil {
 			panic(err)
 		}

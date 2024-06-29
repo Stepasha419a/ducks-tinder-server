@@ -2,7 +2,7 @@ package domain
 
 import (
 	crypto_service "auth-service/internal/domain/service/crypto"
-	"os"
+	config_service "auth-service/internal/infrastructure/service/config"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,7 +19,7 @@ type AuthUser struct {
 }
 
 func NewAuthUser(email string, password string) *AuthUser {
-	hashedPassword := crypto_service.Hash(password, []byte(os.Getenv("PASSWORD_SALT")))
+	hashedPassword := crypto_service.Hash(password, []byte(config_service.GetConfig().PasswordSalt))
 
 	return &AuthUser{
 		Id:           uuid.New().String(),
