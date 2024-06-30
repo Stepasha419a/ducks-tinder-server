@@ -21,4 +21,5 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	google.golang.org/grpc v1.64.0
+	gopkg.in/yaml.v3 v3.0.1
 )
