@@ -28,7 +28,7 @@ var (
 	config *Config = &Config{}
 )
 
-func RequireConfig() *Config {
+func RequireConfig() {
 	err := godotenv.Load(".env")
 
 	if err != nil {
@@ -52,8 +52,6 @@ func RequireConfig() *Config {
 	if err := decoder.Decode(config); err != nil {
 		panic(err)
 	}
-
-	return config
 }
 
 func GetConfig() *Config {

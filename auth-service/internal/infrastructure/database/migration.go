@@ -7,17 +7,9 @@ import (
 	"os"
 
 	log "log/slog"
-
-	"github.com/joho/godotenv"
 )
 
 func MigrateDB(db *Postgres) {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		panic("Error loading .env file")
-	}
-
 	ctx := context.TODO()
 
 	submitted := submitMigration()
@@ -29,11 +21,7 @@ func MigrateDB(db *Postgres) {
 
 	log.Info("migration - start")
 
-	err = initMigration(ctx, db)
-	if err != nil {
-		log.Info("migration - failed")
-		panic(err)
-	}
+	runMigrations(ctx, db)
 
 	log.Info("migration - successful")
 }
@@ -55,8 +43,20 @@ func submitMigration() bool {
 	return submitted
 }
 
+func runMigrations(ctx context.Context, db *Postgres) {
+	checkMigration(initMigration(ctx, db))
+	checkMigration(refreshTokenIndexMigration(ctx, db))
+}
+
+func checkMigration(err error) {
+	if err != nil {
+		log.Info("migration - failed")
+		panic(err)
+	}
+}
+
 func initMigration(ctx context.Context, db *Postgres) error {
-	log.Info("migration - init tables migration")
+	log.Info("migration - init tables")
 
 	_, err := db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
 		id UUID PRIMARY KEY,
@@ -66,6 +66,17 @@ func initMigration(ctx context.Context, db *Postgres) error {
 		createdAt timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updatedAt timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func refreshTokenIndexMigration(ctx context.Context, db *Postgres) error {
+	log.Info("migration - refresh token index")
+
+	_, err := db.Pool.Exec(ctx, `CREATE UNIQUE INDEX CONCURRENTLY refresh_token_index ON auth_users (refreshToken)`)
 
 	if err != nil {
 		return err
