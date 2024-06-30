@@ -3,10 +3,10 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/golang-jwt/jwt"
 
+	config_service "go-file-server/internal/service/config"
 	util "go-file-server/internal/util"
 )
 
@@ -41,7 +41,7 @@ func getAccessToken(r *http.Request) (string, error) {
 }
 
 func verifyAccessToken(tokenString string) error {
-	secretKey := os.Getenv("JWT_ACCESS_SECRET")
+	secretKey := config_service.GetConfig().JwtAccessSecret
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil
 	})

@@ -2,11 +2,10 @@ package grpc_service
 
 import (
 	"fmt"
+	config_service "go-file-server/internal/service/config"
 	"go-file-server/proto/gen"
 	"log"
 	"net"
-	"os"
-	"strconv"
 
 	"google.golang.org/grpc"
 )
@@ -18,9 +17,9 @@ func Init() {
 
 	gen.RegisterFileServiceServer(server, &fileServer)
 
-	PORT := os.Getenv("GRPC_PORT")
+	PORT := config_service.GetConfig().GrpcPort
 
-	con, err := net.Listen("tcp", fmt.Sprintf(":%s", PORT))
+	con, err := net.Listen("tcp", fmt.Sprintf(":%d", PORT))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -30,8 +29,7 @@ func Init() {
 		con.Close()
 	}()
 
-	INT_PORT, _ := strconv.Atoi(PORT)
-	log.Printf("gRPC server listening on port %d", INT_PORT)
+	log.Printf("gRPC server listening on port %d", PORT)
 	if err := server.Serve(con); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

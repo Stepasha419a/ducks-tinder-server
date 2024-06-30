@@ -1,13 +1,13 @@
 package jwt_service
 
 import (
-	"os"
+	config_service "go-file-server/internal/service/config"
 
 	"github.com/golang-jwt/jwt"
 )
 
 func ValidateAccessToken(accessToken string) bool {
-	secretKey := os.Getenv("JWT_FILE_SERVICE_SECRET")
+	secretKey := config_service.GetConfig().JwtFileServiceSecret
 
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {

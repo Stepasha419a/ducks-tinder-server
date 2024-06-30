@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 
 	router "go-file-server/internal/router"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	config_service.RequireEnv()
+	config_service.RequireConfig()
 
 	setUpListeners()
 }
@@ -28,10 +28,10 @@ func setUpListeners() {
 }
 
 func setUpHttp() {
-	PORT := os.Getenv("PORT")
+	PORT := config_service.GetConfig().Port
 
 	r := router.InitRouter()
 
 	log.Printf("serving on HTTP port: %v\n", PORT)
-	log.Fatal(http.ListenAndServe("127.0.0.1:"+PORT, r))
+	log.Fatal(http.ListenAndServe("127.0.0.1:"+fmt.Sprintf("%d", PORT), r))
 }
