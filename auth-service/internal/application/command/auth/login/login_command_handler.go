@@ -28,7 +28,7 @@ func LoginCommandHandler(ctx context.Context, command *LoginCommand, responseErr
 	}
 
 	tokens := jwt_service.GenerateTokens(authUser.Id)
-	authUser.RefreshToken = tokens.RefreshToken
+	authUser.RefreshToken = &tokens.RefreshToken
 
 	savedAuthUser, err := authUserRepository.Save(ctx, authUser, nil)
 	if err != nil {

@@ -20,7 +20,7 @@ func RefreshCommandHandler(ctx context.Context, command *RefreshCommand, respons
 	}
 
 	tokens := jwt_service.GenerateTokens(authUser.Id)
-	authUser.RefreshToken = tokens.RefreshToken
+	authUser.RefreshToken = &tokens.RefreshToken
 
 	_, err = authUserRepository.Save(ctx, authUser, nil)
 	if err != nil {

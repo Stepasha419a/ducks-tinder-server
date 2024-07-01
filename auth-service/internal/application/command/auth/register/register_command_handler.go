@@ -26,7 +26,7 @@ func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, respo
 	authUser := entity.NewAuthUser(command.Email, command.Password)
 
 	tokens := jwt_service.GenerateTokens(authUser.Id)
-	authUser.RefreshToken = tokens.RefreshToken
+	authUser.RefreshToken = &tokens.RefreshToken
 
 	_, err = authUserRepository.Save(ctx, authUser, tx.Tx)
 	if err != nil {

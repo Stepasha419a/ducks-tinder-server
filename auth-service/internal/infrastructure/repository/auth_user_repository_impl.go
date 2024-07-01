@@ -1,4 +1,4 @@
-package repository
+package repository_impl
 
 import (
 	entity "auth-service/internal/domain/entity"

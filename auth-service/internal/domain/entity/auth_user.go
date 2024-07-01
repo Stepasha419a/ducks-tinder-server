@@ -12,7 +12,7 @@ type AuthUser struct {
 	Id           string
 	Email        string
 	Password     string
-	RefreshToken string
+	RefreshToken *string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -25,7 +25,7 @@ func NewAuthUser(email string, password string) *AuthUser {
 		Id:           uuid.New().String(),
 		Email:        email,
 		Password:     hashedPassword,
-		RefreshToken: "",
+		RefreshToken: nil,
 
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),

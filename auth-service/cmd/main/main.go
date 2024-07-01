@@ -5,7 +5,7 @@ import (
 	broker_service "auth-service/internal/domain/service/broker"
 	"auth-service/internal/infrastructure/adapter"
 	"auth-service/internal/infrastructure/database"
-	"auth-service/internal/infrastructure/repository"
+	repository_impl "auth-service/internal/infrastructure/repository"
 	config_service "auth-service/internal/infrastructure/service/config"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	"net/http"
@@ -24,7 +24,7 @@ func main() {
 
 	userService := adapter.NewUserService(brokerConn)
 
-	authUserRepository := repository.NewAuthUserRepository(db.Pool)
+	authUserRepository := repository_impl.NewAuthUserRepository(db.Pool)
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
