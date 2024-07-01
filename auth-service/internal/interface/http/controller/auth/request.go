@@ -2,6 +2,7 @@ package auth_controller
 
 import (
 	"auth-service/internal/application/command/auth/login"
+	"auth-service/internal/application/command/auth/logout"
 	"auth-service/internal/application/command/auth/refresh"
 	"auth-service/internal/application/command/auth/register"
 
@@ -55,6 +56,21 @@ func (dto *RawRefreshDto) ToRefreshCommand(validate *validator.Validate) (*refre
 	}
 
 	return &refresh.RefreshCommand{
+		RefreshToken: dto.RefreshToken,
+	}, nil
+}
+
+type RawLogoutDto struct {
+	RefreshToken string `validate:"required,jwt"`
+}
+
+func (dto *RawLogoutDto) ToLogoutCommand(validate *validator.Validate) (*logout.LogoutCommand, error) {
+	err := validate.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &logout.LogoutCommand{
 		RefreshToken: dto.RefreshToken,
 	}, nil
 }

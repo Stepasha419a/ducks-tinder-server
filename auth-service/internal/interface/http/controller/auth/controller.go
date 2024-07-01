@@ -3,6 +3,7 @@ package auth_controller
 import (
 	"auth-service/internal/application/service"
 	config_service "auth-service/internal/infrastructure/service/config"
+	"log/slog"
 	"net/http"
 
 	"strconv"
@@ -25,6 +26,7 @@ func NewAuthController(e *gin.Engine, service service.AuthService) *AuthControll
 	e.POST("/auth/register", controller.Register)
 	e.POST("/auth/login", controller.Login)
 	e.GET("/auth/refresh", controller.Refresh)
+	e.PATCH("/auth/logout", controller.Logout)
 
 	return controller
 }
@@ -143,6 +145,41 @@ func (ac *AuthController) Refresh(c *gin.Context) {
 	setCookie(c, res.RefreshToken)
 
 	c.JSON(http.StatusOK, NewAuthUserPublicResponse(res))
+}
+
+func (ac *AuthController) Logout(c *gin.Context) {
+	refreshToken, err := c.Cookie("refreshToken")
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{
+			"message":    "Unauthorized",
+			"statusCode": strconv.Itoa(http.StatusUnauthorized),
+		})
+		return
+	}
+
+	rawLogoutDto := RawLogoutDto{RefreshToken: refreshToken}
+	logoutCommand, err := rawLogoutDto.ToLogoutCommand(validate)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{
+			"message":    "Unauthorized",
+			"statusCode": strconv.Itoa(http.StatusUnauthorized),
+		})
+		return
+	}
+
+	err = ac.service.Logout(c.Request.Context(), logoutCommand, responseErrorContext(c))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
+			"message":    "Failed to refresh",
+			"statusCode": strconv.Itoa(http.StatusInternalServerError),
+		})
+		slog.Error(err.Error())
+		return
+	}
+
+	c.SetCookie("refreshToken", "", -1000, "/auth", config_service.GetConfig().CookieRefreshTokenDomain, true, true)
+
+	c.JSON(http.StatusOK, nil)
 }
 
 func setCookie(c *gin.Context, refreshToken string) {
