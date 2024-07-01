@@ -75,6 +75,19 @@ func (r *authUserRepository) FindByEmail(ctx context.Context, email string, tx p
 	return &authUser, nil
 }
 
+func (r *authUserRepository) FindByRefreshToken(ctx context.Context, refreshToken string, tx pgx.Tx) (*entity.AuthUser, error) {
+	authUser := entity.AuthUser{}
+	err := database.QueryRow(r.pool, tx)(ctx, "SELECT * FROM auth_users WHERE refreshToken=@refreshToken", pgx.NamedArgs{
+		"refreshToken": refreshToken,
+	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
+
+	if err != nil {
+		return nil, HandleError(err)
+	}
+
+	return &authUser, nil
+}
+
 func NewAuthUserRepository(pool *pgxpool.Pool) domain.AuthUserRepository {
 	return &authUserRepository{pool}
 }

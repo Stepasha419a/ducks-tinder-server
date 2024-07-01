@@ -2,6 +2,7 @@ package auth_controller
 
 import (
 	"auth-service/internal/application/command/auth/login"
+	"auth-service/internal/application/command/auth/refresh"
 	"auth-service/internal/application/command/auth/register"
 
 	"github.com/go-playground/validator/v10"
@@ -40,5 +41,20 @@ func (dto *LoginDto) ToLoginCommand(validate *validator.Validate) (*login.LoginC
 	return &login.LoginCommand{
 		Email:    dto.Email,
 		Password: dto.Password,
+	}, nil
+}
+
+type RawRefreshDto struct {
+	RefreshToken string `validate:"required,jwt"`
+}
+
+func (dto *RawRefreshDto) ToRefreshCommand(validate *validator.Validate) (*refresh.RefreshCommand, error) {
+	err := validate.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &refresh.RefreshCommand{
+		RefreshToken: dto.RefreshToken,
 	}, nil
 }

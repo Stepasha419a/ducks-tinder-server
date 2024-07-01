@@ -24,6 +24,7 @@ func NewAuthController(e *gin.Engine, service service.AuthService) *AuthControll
 
 	e.POST("/auth/register", controller.Register)
 	e.POST("/auth/login", controller.Login)
+	e.GET("/auth/refresh", controller.Refresh)
 
 	return controller
 }
@@ -106,11 +107,46 @@ func (ac *AuthController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, NewAuthUserPublicResponse(res))
 }
 
-func setCookie(c *gin.Context, refreshToken string) {
-	maxAge, err := strconv.Atoi(strconv.Itoa(int(config_service.GetConfig().CookieRefreshTokenMaxAge)))
+func (ac *AuthController) Refresh(c *gin.Context) {
+	refreshToken, err := c.Cookie("refreshToken")
 	if err != nil {
-		panic("wrong max age")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{
+			"message":    "Unauthorized",
+			"statusCode": strconv.Itoa(http.StatusUnauthorized),
+		})
+		return
 	}
+
+	rawRefreshDto := RawRefreshDto{RefreshToken: refreshToken}
+	refreshCommand, err := rawRefreshDto.ToRefreshCommand(validate)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, map[string]string{
+			"message":    "Unauthorized",
+			"statusCode": strconv.Itoa(http.StatusUnauthorized),
+		})
+		return
+	}
+
+	res, err := ac.service.Refresh(c.Request.Context(), refreshCommand, responseErrorContext(c))
+	if res == nil {
+		return
+	}
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
+			"message":    "Failed to refresh",
+			"statusCode": strconv.Itoa(http.StatusInternalServerError),
+		})
+		return
+	}
+
+	setCookie(c, res.RefreshToken)
+
+	c.JSON(http.StatusOK, NewAuthUserPublicResponse(res))
+}
+
+func setCookie(c *gin.Context, refreshToken string) {
+	maxAge := int(config_service.GetConfig().CookieRefreshTokenMaxAge)
 	c.SetCookie("refreshToken", refreshToken, maxAge, "/auth", config_service.GetConfig().CookieRefreshTokenDomain, true, true)
 }
 
