@@ -30,6 +30,19 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+  auth-service:
+    container_name: auth-service
+    restart: always
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    env_file:
+      - ./auth-service/.env
+    ports:
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+    deploy:
+      restart_policy:
+        condition: on-failure
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:management
