@@ -11,6 +11,11 @@ generator userService {
   output   = "../user-service/node_modules/.prisma/client"
 }
 
+generator dockerDefault {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

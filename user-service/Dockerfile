@@ -2,17 +2,18 @@ FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY user-service/package*.json .
+COPY user-service/tsconfig*.json .
 
 RUN npm install
 
-COPY . .
+COPY user-service .
 
-RUN npx prisma generate
+COPY prisma ./prisma
 
-COPY prisma ./prisma/
+RUN npx prisma generate --generator dockerDefault
 
-RUN npm run build user
+RUN npm run build
 
 FROM node:alpine AS production
 
@@ -21,12 +22,12 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY user-service/package*.json ./
 
 RUN npm install --only=production
 
-COPY . .
+COPY user-service .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD [ "npm", "run", "start:prod", "user" ]
+CMD [ "npm", "run", "start:prod" ]

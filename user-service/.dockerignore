@@ -1,11 +1,9 @@
-.git
 .gitignore
 .dockerignore
 
 dist
-*/node_modules
-*/tmp
+node_modules
 
-.eslint.js
+.eslintrc.js
 .prettierrc
 README.md

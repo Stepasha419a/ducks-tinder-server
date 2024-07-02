@@ -4,8 +4,8 @@ services:
     container_name: chat-service
     restart: always
     build:
-      context: .
-      dockerfile: ./chat-service/Dockerfile
+      context: chat-service
+      dockerfile: Dockerfile
       target: development
     command: npm run start:dev chat
     depends_on:
@@ -20,7 +20,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./apps/user/Dockerfile
+      dockerfile: user-service/Dockerfile
       target: development
     command: npm run start:dev user
     depends_on:
