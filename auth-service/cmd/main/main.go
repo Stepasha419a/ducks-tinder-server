@@ -32,5 +32,5 @@ func main() {
 
 	auth_controller.NewAuthController(e, authFacade)
 
-	http.ListenAndServe("127.0.0.1:"+strconv.Itoa(int(config_service.GetConfig().Port)), e)
+	http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(config_service.GetConfig().Port)), e)
 }
