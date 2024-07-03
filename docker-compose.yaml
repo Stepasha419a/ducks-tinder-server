@@ -1,20 +1,18 @@
-name: 'ducks-tinder'
+name: "ducks-tinder"
 services:
   chat-service:
     container_name: chat-service
     restart: always
     build:
-      context: chat-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: chat-service/Dockerfile
       target: development
-    command: npm run start:dev chat
+    command: npm run start:dev
     depends_on:
       - rabbitmq
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - postgres
     ports:
-      - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
+      - "${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}"
   user-service:
     container_name: user-service
     restart: always
@@ -25,8 +23,9 @@ services:
     command: npm run start:dev
     depends_on:
       - rabbitmq
+      - postgres
     ports:
-      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
   auth-service:
     container_name: auth-service
     restart: always
@@ -36,16 +35,19 @@ services:
     env_file:
       - ./auth-service/.env
     ports:
-      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     deploy:
       restart_policy:
         condition: on-failure
+    depends_on:
+      - rabbitmq
+      - postgres
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:management
     ports:
-      - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
-      - '15672:15672'
+      - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+      - "15672:15672"
   postgres:
     container_name: postgres
     image: postgres:13
@@ -55,4 +57,4 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'
+      - "${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}"

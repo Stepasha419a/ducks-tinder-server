@@ -2,17 +2,17 @@ FROM node:alpine AS development
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY chat-service/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY chat-service .
 
-RUN npx prisma generate
+COPY prisma/schema.prisma ./prisma/schema.prisma
 
-COPY prisma ./prisma/
+RUN npx prisma generate --generator dockerDefault
 
-RUN npm run build chat
+RUN npm run build
 
 FROM node:alpine AS production
 
@@ -21,12 +21,12 @@ ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY chat-service/package*.json ./
 
 RUN npm install --only=production
 
-COPY . .
+COPY chat-service .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD [ "npm", "run", "start:prod", "chat" ]
+CMD [ "npm", "run", "start:prod" ]
