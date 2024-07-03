@@ -10,6 +10,7 @@ import { DomainModule } from 'src/domain';
 import { TokenRepository } from 'src/domain/token/repository';
 import { TokenAdapter } from './repository';
 import { DatabaseModule } from '../database';
+import { TokenController } from 'src/interface/token';
 
 @Module({
   providers: [
@@ -25,7 +26,7 @@ import { DatabaseModule } from '../database';
       useClass: TokenAdapter,
     },
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, TokenController],
   imports: [CqrsModule, UserModule, DomainModule, DatabaseModule],
 })
 export class AuthModule {}
