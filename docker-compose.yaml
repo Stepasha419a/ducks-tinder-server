@@ -22,12 +22,9 @@ services:
       context: .
       dockerfile: user-service/Dockerfile
       target: development
-    command: npm run start:dev user
+    command: npm run start:dev
     depends_on:
       - rabbitmq
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
     ports:
       - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
   auth-service:

@@ -3,13 +3,12 @@ FROM node:alpine AS development
 WORKDIR /usr/src/app
 
 COPY user-service/package*.json .
-COPY user-service/tsconfig*.json .
 
 RUN npm install
 
 COPY user-service .
 
-COPY prisma ./prisma
+COPY prisma/schema.prisma ./prisma/schema.prisma
 
 RUN npx prisma generate --generator dockerDefault
 
