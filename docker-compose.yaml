@@ -34,8 +34,8 @@ services:
     container_name: auth-service
     restart: always
     build:
-      context: .
-      dockerfile: ./auth-service/Dockerfile
+      context: auth-service
+      dockerfile: Dockerfile
     env_file:
       - ./auth-service/.env
     ports:
