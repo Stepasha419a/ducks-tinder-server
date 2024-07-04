@@ -1,6 +1,10 @@
-import { User } from 'src/domain/user';
+import { IsString, IsUUID, Length } from 'class-validator';
 
-export type CreateUserDto = Pick<
-  User,
-  'password' | 'name' | 'activationLink' | 'email'
->;
+export class CreateUserDto {
+  @IsUUID()
+  id: string;
+
+  @IsString()
+  @Length(2, 14)
+  name: string;
+}

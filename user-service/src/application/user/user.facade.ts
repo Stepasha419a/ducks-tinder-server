@@ -14,6 +14,8 @@ import {
   ReturnUserCommand,
   SavePictureCommand,
   PatchUserCommand,
+  CreateUserDto,
+  CreateUserCommand,
 } from './command';
 import {
   GetManyUsersQuery,
@@ -36,6 +38,7 @@ export class UserFacade {
   ) {}
 
   commands = {
+    createUser: (dto: CreateUserDto) => this.createUser(dto),
     patchUser: (userId: string, dto: PatchUserDto) =>
       this.patchUser(userId, dto),
     patchUserPlace: (userId: string, dto: PatchUserPlaceDto) =>
@@ -68,6 +71,12 @@ export class UserFacade {
     createPairsDEV: (id: string) => this.createPairsDEV(id),
     removeAllPairsDEV: (id: string) => this.removeAllPairsDEV(id),
   };
+
+  private createUser(dto: CreateUserDto) {
+    return this.commandBus.execute<CreateUserCommand, UserAggregate>(
+      new CreateUserCommand(dto),
+    );
+  }
 
   private patchUser(userId: string, dto: PatchUserDto) {
     return this.commandBus.execute<PatchUserCommand, UserAggregate>(

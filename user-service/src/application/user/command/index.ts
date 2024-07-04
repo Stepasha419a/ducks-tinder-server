@@ -1,4 +1,5 @@
 export { PatchUserCommand, PatchUserCommandHandler } from './patch-user';
+export { CreateUserCommand, CreateUserCommandHandler } from './create-user';
 export {
   PatchUserPlaceCommand,
   PatchUserPlaceCommandHandler,
@@ -19,6 +20,7 @@ export * from './dto';
 
 import { Type } from '@nestjs/common';
 import { ICommandHandler } from '@nestjs/cqrs';
+import { CreateUserCommandHandler } from './create-user';
 import { PatchUserCommandHandler } from './patch-user';
 import { PatchUserPlaceCommandHandler } from './patch-user-place';
 import { LikeUserCommandHandler } from './like-user';
@@ -31,6 +33,7 @@ import { ReturnUserCommandHandler } from './return-user';
 import { DeletePairCommandHandler } from './delete-pair';
 
 export const USER_COMMAND_HANDLERS: Type<ICommandHandler>[] = [
+  CreateUserCommandHandler,
   PatchUserCommandHandler,
   PatchUserPlaceCommandHandler,
   LikeUserCommandHandler,
