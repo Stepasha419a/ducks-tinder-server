@@ -54,15 +54,16 @@ func (ac *AuthController) Register(c *gin.Context) {
 	}
 
 	res, err := ac.service.Register(c.Request.Context(), registerCommand, responseErrorContext(c))
-	if res == nil {
-		return
-	}
 
 	if err != nil {
+		slog.ErrorContext(c.Request.Context(), err.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
 			"message":    "Failed to register",
 			"statusCode": strconv.Itoa(http.StatusInternalServerError),
 		})
+		return
+	}
+	if res == nil {
 		return
 	}
 
@@ -92,15 +93,16 @@ func (ac *AuthController) Login(c *gin.Context) {
 	}
 
 	res, err := ac.service.Login(c.Request.Context(), loginCommand, responseErrorContext(c))
-	if res == nil {
-		return
-	}
 
 	if err != nil {
+		slog.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
 			"message":    "Failed to login",
 			"statusCode": strconv.Itoa(http.StatusInternalServerError),
 		})
+		return
+	}
+	if res == nil {
 		return
 	}
 
@@ -130,15 +132,16 @@ func (ac *AuthController) Refresh(c *gin.Context) {
 	}
 
 	res, err := ac.service.Refresh(c.Request.Context(), refreshCommand, responseErrorContext(c))
-	if res == nil {
-		return
-	}
 
 	if err != nil {
+		slog.Error(err.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
 			"message":    "Failed to refresh",
 			"statusCode": strconv.Itoa(http.StatusInternalServerError),
 		})
+		return
+	}
+	if res == nil {
 		return
 	}
 
