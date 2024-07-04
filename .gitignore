@@ -8,6 +8,8 @@ tmp
 
 dev.yaml
 
+node_modules
+
 # Logs
 logs
 *.log

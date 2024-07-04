@@ -44,13 +44,15 @@ export class UserAggregate extends UserServices implements User {
   @IsUUID()
   id: string = randomUUID();
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password: string = 'stub-password';
 
+  @IsOptional()
   @IsEmail()
   @MaxLength(50)
-  email: string;
+  email: string = this.id + 'stub@mail.ru';
 
   @IsString()
   @Length(2, 14)

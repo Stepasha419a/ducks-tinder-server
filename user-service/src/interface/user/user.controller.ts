@@ -15,10 +15,17 @@ import {
   FileTypeValidator,
   ParseUUIDPipe,
   Query,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserFacade } from '../../application/user';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 import { UserAggregate } from '../../domain/user';
 import {
   ShortUser,
@@ -27,6 +34,7 @@ import {
   WithoutPrivateFields,
 } from '../../infrastructure/user/mapper';
 import {
+  CreateUserDto,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
@@ -43,6 +51,8 @@ export class UserController {
     private readonly facade: UserFacade,
     private readonly mapper: UserMapper,
   ) {}
+
+  private readonly logger = new Logger(UserController.name);
 
   @Patch()
   @HttpCode(HttpStatus.OK)
@@ -191,6 +201,21 @@ export class UserController {
     @Param('id') pairId: string,
   ): Promise<string> {
     return this.facade.commands.deletePair(userId, pairId);
+  }
+
+  @EventPattern('create_user')
+  async createUser(@Payload() dto: CreateUserDto, @Ctx() context: RmqContext) {
+    const savedUser = await this.facade.commands
+      .createUser(dto)
+      .catch((err) => {
+        this.logger.error(err);
+      });
+
+    /* if (savedUser) {
+      const channel = context.getChannelRef();
+      const originalMsg = context.getMessage();
+      channel.ack(originalMsg);
+    } */
   }
 
   @MessagePattern('get_many_users')
