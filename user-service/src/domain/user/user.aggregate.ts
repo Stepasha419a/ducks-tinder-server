@@ -121,7 +121,7 @@ export class UserAggregate extends UserServices implements User {
   @IsObject()
   @IsNotEmptyObject()
   @Type(() => PlaceEntity)
-  place: PlaceEntity;
+  place?: PlaceEntity;
 
   @IsOptional()
   @IsDetailedEnum(ZodiacSign)

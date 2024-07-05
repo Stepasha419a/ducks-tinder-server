@@ -34,7 +34,7 @@ export interface User {
   communicationStyle?: CommunicationStyle;
   attentionSign?: AttentionSign;
 
-  place: PlaceEntity;
+  place?: PlaceEntity;
 
   pictures: PictureEntity[];
 

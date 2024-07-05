@@ -52,7 +52,7 @@ export class UserMapper {
       this.getUserPictureInfo(picture),
     );
 
-    const place = this.getShortUserPictureInfo(user.place);
+    const place = user.place ? this.getShortUserPictureInfo(user.place) : null;
 
     return {
       id: user.id,
