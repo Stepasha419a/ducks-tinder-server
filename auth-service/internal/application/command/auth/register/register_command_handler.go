@@ -5,15 +5,25 @@ import (
 	entity "auth-service/internal/domain/entity"
 	repository "auth-service/internal/domain/repository"
 	jwt_service "auth-service/internal/domain/service/jwt"
+	user_service "auth-service/internal/domain/service/user"
 	"auth-service/internal/infrastructure/database"
 	"context"
 	"net/http"
 )
 
-func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository, transactionService *database.TransactionService) (*mapper.AuthUserResponse, error) {
+func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository, transactionService *database.TransactionService, userService user_service.UserService) (*mapper.AuthUserResponse, error) {
 	tx := transactionService.Begin(ctx)
 
 	candidate, err := authUserRepository.FindByEmail(ctx, command.Email, nil)
+
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +43,10 @@ func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, respo
 		return nil, err
 	}
 
-	defer tx.Commit(ctx)
+	err = userService.EmitUserRegistered(&user_service.UserRegisteredDto{Id: authUser.Id, Name: command.Name})
+	if err != nil {
+		return nil, err
+	}
 
 	return mapper.NewAuthUserResponse(authUser, tokens), nil
 }

@@ -20,7 +20,7 @@ type AuthFacade struct {
 }
 
 func (f *AuthFacade) Register(ctx context.Context, command *register.RegisterCommand, responseError service.ResponseError) (*mapper.AuthUserResponse, error) {
-	return register.RegisterCommandHandler(ctx, command, responseError, f.authUserRepository, f.transactionService)
+	return register.RegisterCommandHandler(ctx, command, responseError, f.authUserRepository, f.transactionService, f.userService)
 }
 
 func (f *AuthFacade) Login(ctx context.Context, command *login.LoginCommand, responseError service.ResponseError) (*mapper.AuthUserResponse, error) {

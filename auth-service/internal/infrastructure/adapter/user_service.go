@@ -22,7 +22,7 @@ func NewUserService(brokerConn *amqp.Connection) user_service.UserService {
 }
 
 func (adapter *UserServiceAdapter) EmitUserRegistered(dto *user_service.UserRegisteredDto) error {
-	body, err := json.Marshal(dto)
+	body, err := json.Marshal(map[string]interface{}{"data": dto, "pattern": "create_user"})
 	if err != nil {
 		return err
 	}
