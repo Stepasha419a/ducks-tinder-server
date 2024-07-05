@@ -23,7 +23,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const rabbitMQService = app.get(RabbitMQService);
 
-  app.connectMicroservice(rabbitMQService.getOptions('USER', true));
+  app.connectMicroservice(rabbitMQService.getOptions('USER', false));
 
   await app.startAllMicroservices();
 

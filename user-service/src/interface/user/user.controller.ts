@@ -211,21 +211,40 @@ export class UserController {
         this.logger.error(err);
       });
 
-    /* if (savedUser) {
+    if (savedUser) {
       const channel = context.getChannelRef();
       const originalMsg = context.getMessage();
       channel.ack(originalMsg);
-    } */
+    }
   }
 
   @MessagePattern('get_many_users')
-  getManyUsers(@Payload() ids: string[]): Promise<UserAggregate[]> {
-    return this.facade.queries.getManyUsers(ids);
+  async getManyUsers(
+    @Payload() ids: string[],
+    @Ctx() context: RmqContext,
+  ): Promise<UserAggregate[]> {
+    const users = await this.facade.queries.getManyUsers(ids).catch((err) => {
+      this.logger.error(err);
+    });
+
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+    channel.ack(originalMsg);
+
+    return users || [];
   }
 
   @MessagePattern('get_short_user')
-  async getUser(@Payload() id: string): Promise<ShortUser> {
+  async getUser(
+    @Payload() id: string,
+    @Ctx() context: RmqContext,
+  ): Promise<ShortUser> {
     const user = await this.facade.queries.getUser(id);
+
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+    channel.ack(originalMsg);
+
     if (!user) {
       return null;
     }
