@@ -20,7 +20,7 @@ async function bootstrap() {
 
   await app.init();
 
-  app.connectMicroservice(rabbitMQService.getOptions('CHAT', true));
+  app.connectMicroservice(rabbitMQService.getOptions('CHAT'));
 
   await app.startAllMicroservices();
 

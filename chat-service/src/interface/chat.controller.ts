@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  Logger,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -11,14 +13,16 @@ import {
 } from '@nestjs/common';
 import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ChatControllerEvent } from './chat.controller-event';
 import { PaginationDto } from 'src/domain/repository/dto';
-import { User } from './decorator';
+import { User, Util } from './common';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly facade: ChatFacade) {}
+
+  private readonly logger = new Logger(ChatController.name);
 
   @Get()
   async getChats(
@@ -141,7 +145,14 @@ export class ChatController {
   }
 
   @EventPattern(ChatControllerEvent.CreateChat)
-  createChat(@Payload() memberIds: string[]) {
-    this.facade.commands.createChat(memberIds);
+  createChat(@Payload() memberIds: string[], @Ctx() context: RmqContext) {
+    this.facade.commands
+      .createChat(memberIds)
+      .then(() => {
+        Util.ackMessage(context);
+      })
+      .catch((err: HttpException) => {
+        this.logger.error(err, err.stack);
+      });
   }
 }
