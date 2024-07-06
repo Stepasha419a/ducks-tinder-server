@@ -12,7 +12,7 @@ import * as Joi from 'joi';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule } from './database';
 import { RabbitMQModule } from './rabbitmq';
-import { AccessTokenGuard } from 'src/interface/guard';
+import { AccessTokenGuard } from 'src/interface/common/guard';
 import { SERVICE } from './rabbitmq/service/service';
 
 @Module({

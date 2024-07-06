@@ -16,9 +16,7 @@ import {
 import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { ChatGatewayEvent } from './chat.gateway-event';
-import { WsHttpExceptionFilter } from './filter';
-import { AccessTokenGuard } from './guard';
-import { User } from './decorator';
+import { WsHttpExceptionFilter, AccessTokenGuard, User } from './common';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
