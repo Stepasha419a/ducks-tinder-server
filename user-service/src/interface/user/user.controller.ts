@@ -16,6 +16,7 @@ import {
   ParseUUIDPipe,
   Query,
   Logger,
+  HttpException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserFacade } from '../../application/user';
@@ -42,7 +43,7 @@ import {
 import { CONSTANT } from '../../infrastructure/user/common/constant';
 import { PairsInfoView } from '../../application/user/view';
 import { PairsFilterDto } from '../../domain/user/repository/dto';
-import { User } from '../common';
+import { User, Util } from '../common';
 import { OptionalValidationPipe } from '../common';
 
 @Controller('user')
@@ -207,14 +208,12 @@ export class UserController {
   async createUser(@Payload() dto: CreateUserDto, @Ctx() context: RmqContext) {
     const savedUser = await this.facade.commands
       .createUser(dto)
-      .catch((err) => {
-        this.logger.error(err);
+      .catch((err: HttpException) => {
+        this.logger.error(err, err.stack);
       });
 
     if (savedUser) {
-      const channel = context.getChannelRef();
-      const originalMsg = context.getMessage();
-      channel.ack(originalMsg);
+      Util.ackMessage(context);
     }
   }
 
@@ -223,13 +222,13 @@ export class UserController {
     @Payload() ids: string[],
     @Ctx() context: RmqContext,
   ): Promise<UserAggregate[]> {
-    const users = await this.facade.queries.getManyUsers(ids).catch((err) => {
-      this.logger.error(err);
-    });
+    const users = await this.facade.queries
+      .getManyUsers(ids)
+      .catch((err: HttpException) => {
+        this.logger.error(err, err.stack);
+      });
 
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
-    channel.ack(originalMsg);
+    Util.ackMessage(context);
 
     return users || [];
   }
@@ -239,11 +238,13 @@ export class UserController {
     @Payload() id: string,
     @Ctx() context: RmqContext,
   ): Promise<ShortUser> {
-    const user = await this.facade.queries.getUser(id);
+    const user = await this.facade.queries
+      .getUser(id)
+      .catch((err: HttpException) => {
+        this.logger.error(err, err.stack);
+      });
 
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
-    channel.ack(originalMsg);
+    Util.ackMessage(context);
 
     if (!user) {
       return null;
