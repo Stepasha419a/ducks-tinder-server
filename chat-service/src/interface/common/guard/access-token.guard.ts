@@ -4,19 +4,15 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-  Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../constant';
-import { UserTokenDto } from './user-token.dto';
-import { SERVICE } from 'src/infrastructure/rabbitmq/service/service';
+import { JwtService } from 'src/domain/service/jwt';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    @Inject(SERVICE.USER) private readonly userClient: ClientProxy,
+    private readonly jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
@@ -34,9 +30,8 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const userTokenDto = await firstValueFrom<UserTokenDto | null>(
-      this.userClient.send('validate_access_token', accessTokenValue),
-    );
+    const userTokenDto =
+      await this.jwtService.validateAccessToken(accessTokenValue);
 
     if (!userTokenDto) {
       throw new UnauthorizedException();
@@ -57,6 +52,10 @@ export class AccessTokenGuard implements CanActivate {
     } else if (context.getType() === 'http') {
       authorization = context.switchToHttp().getRequest()
         .headers?.authorization;
+    }
+
+    if (!authorization) {
+      return null;
     }
 
     const [type, token] = authorization.split(' ') ?? [];

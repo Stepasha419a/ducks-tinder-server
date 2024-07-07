@@ -42,6 +42,7 @@ import { DomainModule } from 'src/domain';
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
         PORT: Joi.number().default(5000),
+        JWT_ACCESS_SECRET: Joi.string().required(),
         RABBIT_MQ_USER_QUEUE: Joi.string().required(),
         RABBIT_MQ_CHAT_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
