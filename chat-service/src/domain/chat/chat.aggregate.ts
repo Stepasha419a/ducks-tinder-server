@@ -6,9 +6,9 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from './error';
+import { DomainError } from '../common';
 import { Chat } from './chat.interface';
-import { ChatServices } from './services';
+import { ChatServices } from './service';
 import { randomUUID } from 'crypto';
 
 export class ChatAggregate extends ChatServices implements Chat {

@@ -1,4 +1,4 @@
-import { Message } from '../../domain';
+import { Message } from '../../domain/chat';
 
 export class MessagesPaginationView {
   chatId: string;

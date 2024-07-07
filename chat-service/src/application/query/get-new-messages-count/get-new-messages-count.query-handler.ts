@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetNewMessagesCountQuery } from './get-new-messages-count.query';
-import { ChatRepository } from 'src/domain/repository';
+import { ChatRepository } from 'src/domain/chat/repository';
 
 @QueryHandler(GetNewMessagesCountQuery)
 export class GetNewMessagesCountQueryHandler

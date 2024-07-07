@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SaveLastSeenCommand } from './save-last-seen.command';
-import { ChatRepository } from 'src/domain/repository';
-import { UserChatConnectionEntity } from 'src/domain/entity';
+import { ChatRepository } from 'src/domain/chat/repository';
+import { UserChatConnectionEntity } from 'src/domain/chat/entity';
 
 @CommandHandler(SaveLastSeenCommand)
 export class SaveLastSeenCommandHandler

@@ -1,5 +1,5 @@
-import { Message, MessageAggregate } from 'src/domain';
-import { ChatAggregate } from 'src/domain/chat.aggregate';
+import { Message, MessageAggregate } from 'src/domain/chat';
+import { ChatAggregate } from 'src/domain/chat/chat.aggregate';
 import { ChatPaginationEntity, UserChatConnectionEntity } from '../entity';
 import { PaginationDto } from './dto';
 

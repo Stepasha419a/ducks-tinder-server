@@ -6,10 +6,10 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '../error';
+import { DomainError } from 'src/domain/common';
 import { Message, RepliedMessage } from './message.interface';
 import { Type } from 'class-transformer';
-import { MessageServices } from './services';
+import { MessageServices } from './service';
 import { randomUUID } from 'crypto';
 
 export class MessageAggregate extends MessageServices implements Message {

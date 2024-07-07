@@ -6,7 +6,7 @@ import {
   Min,
   validateSync,
 } from 'class-validator';
-import { DomainError } from '../error';
+import { DomainError } from '../../common';
 
 export class UserChatConnectionEntity {
   @IsUUID()

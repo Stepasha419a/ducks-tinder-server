@@ -1,16 +1,16 @@
 import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { ChatRepository } from '../../domain/repository/chat.repository';
-import { ChatAggregate } from 'src/domain';
-import { MessageAggregate } from 'src/domain';
+import { ChatRepository } from 'src/domain/chat/repository';
+import { ChatAggregate } from 'src/domain/chat';
+import { MessageAggregate } from 'src/domain/chat';
 import { ChatSelector } from './chat.selector';
 import {
   ChatPaginationEntity,
   UserChatConnectionEntity,
-} from '../../domain/entity';
-import { RepliedMessage } from '../../domain/message/message.interface';
+} from '../../domain/chat/entity';
+import { RepliedMessage } from 'src/domain/chat/message/message.interface';
 import { DatabaseService } from '../database';
-import { PaginationDto } from 'src/domain/repository/dto';
+import { PaginationDto } from 'src/domain/chat/repository/dto';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {

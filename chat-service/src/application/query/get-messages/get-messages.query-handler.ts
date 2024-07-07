@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMessagesQuery } from './get-messages.query';
 import { NotFoundException } from '@nestjs/common';
-import { ChatRepository } from 'src/domain/repository';
+import { ChatRepository } from 'src/domain/chat/repository';
 import { MessagesPaginationView } from '../../view';
 
 @QueryHandler(GetMessagesQuery)

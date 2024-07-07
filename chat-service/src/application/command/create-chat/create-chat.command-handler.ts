@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ChatRepository } from 'src/domain/repository';
-import { ChatAggregate } from 'src/domain';
+import { ChatRepository } from 'src/domain/chat/repository';
+import { ChatAggregate } from 'src/domain/chat';
 import { CreateChatCommand } from './create-chat.command';
 import { BadRequestException, Logger } from '@nestjs/common';
-import { UserChatConnectionEntity } from 'src/domain/entity';
+import { UserChatConnectionEntity } from 'src/domain/chat/entity';
 
 @CommandHandler(CreateChatCommand)
 export class CreateChatCommandHandler

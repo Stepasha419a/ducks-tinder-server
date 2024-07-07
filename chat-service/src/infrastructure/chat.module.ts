@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ChatController, ChatGateway } from '../interface';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
-import { ChatRepository } from '../domain/repository';
+import { ChatRepository } from 'src/domain/chat/repository';
 import { ChatAdapter } from './repository';
 import { chatFacadeFactory } from './facade';
 import { CHAT_COMMAND_HANDLERS } from 'src/application/command';

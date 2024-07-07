@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetChatsQuery } from './get-chats.query';
-import { ChatRepository } from 'src/domain/repository';
-import { ChatPaginationEntity } from 'src/domain/entity';
+import { ChatRepository } from 'src/domain/chat/repository';
+import { ChatPaginationEntity } from 'src/domain/chat/entity';
 
 @QueryHandler(GetChatsQuery)
 export class GetChatsQueryHandler implements IQueryHandler<GetChatsQuery> {

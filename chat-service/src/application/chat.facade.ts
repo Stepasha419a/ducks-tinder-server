@@ -21,12 +21,12 @@ import {
   GetNewMessagesCountQuery,
   ValidateChatMemberQuery,
 } from './query';
-import { ChatAggregate, MessageAggregate } from 'src/domain';
+import { ChatAggregate, MessageAggregate } from 'src/domain/chat';
 import { DeleteMessageCommand } from './command/delete-message';
 import { MessagesPaginationView, NewMessageView } from './view';
 import { ChatMemberView } from './view/chat-member.view';
-import { ChatPaginationEntity } from '../domain/entity';
-import { PaginationDto } from 'src/domain/repository/dto';
+import { ChatPaginationEntity } from '../domain/chat/entity';
+import { PaginationDto } from 'src/domain/chat/repository/dto';
 
 @Injectable()
 export class ChatFacade {

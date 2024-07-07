@@ -15,7 +15,7 @@ import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ChatControllerEvent } from './chat.controller-event';
-import { PaginationDto } from 'src/domain/repository/dto';
+import { PaginationDto } from 'src/domain/chat/repository/dto';
 import { User, Util } from './common';
 
 @Controller('chat')
