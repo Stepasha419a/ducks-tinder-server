@@ -14,6 +14,7 @@ import { DatabaseModule } from './database';
 import { RabbitMQModule } from './rabbitmq';
 import { AccessTokenGuard } from 'src/interface/common/guard';
 import { SERVICE } from './rabbitmq/service/service';
+import { DomainModule } from 'src/domain';
 
 @Module({
   controllers: [ChatController],
@@ -49,6 +50,7 @@ import { SERVICE } from './rabbitmq/service/service';
     DatabaseModule,
     CqrsModule,
     RabbitMQModule.register(SERVICE.USER),
+    DomainModule,
   ],
 })
 export class ChatModule {}
