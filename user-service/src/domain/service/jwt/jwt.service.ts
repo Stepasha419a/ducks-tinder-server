@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ServiceTokenView, UserTokenData, UserTokensView } from './view';
+import { ServiceTokenView, UserTokenData } from './view';
 import { ConfigService } from '@nestjs/config';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
-import { AccessTokenValueObject, RefreshTokenEntity } from 'src/domain/token';
 
 @Injectable()
 export class JwtService {
@@ -10,31 +9,6 @@ export class JwtService {
     private readonly jwtService: NestJwtService,
     private readonly configService: ConfigService,
   ) {}
-
-  generateUserTokens(userId: string): UserTokensView {
-    const data = { userId };
-    const accessTokenValue = this.jwtService.sign(data, {
-      expiresIn: '60m',
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-    });
-    const refreshTokenValue = this.jwtService.sign(data, {
-      expiresIn: '7d',
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    });
-
-    const accessToken = AccessTokenValueObject.create({
-      value: accessTokenValue,
-    });
-    const refreshToken = RefreshTokenEntity.create({
-      id: userId,
-      value: refreshTokenValue,
-    });
-
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }
 
   async validateAccessToken(accessToken: string): Promise<UserTokenData> {
     const userData = await this.jwtService
