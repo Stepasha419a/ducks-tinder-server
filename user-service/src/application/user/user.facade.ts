@@ -139,7 +139,7 @@ export class UserFacade {
   }
 
   private getUser(id: string) {
-    return this.queryBus.execute<GetUserQuery, UserAggregate>(
+    return this.queryBus.execute<GetUserQuery, UserAggregate | null>(
       new GetUserQuery(id),
     );
   }

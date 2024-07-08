@@ -17,6 +17,7 @@ import {
   Query,
   Logger,
   HttpException,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserFacade } from '../../application/user';
@@ -54,6 +55,20 @@ export class UserController {
   ) {}
 
   private readonly logger = new Logger(UserController.name);
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  async getMe(
+    @User(ParseUUIDPipe) userId: string,
+  ): Promise<WithoutPrivateFields> {
+    const userAggregate = await this.facade.queries.getUser(userId);
+
+    if (!userAggregate) {
+      throw new NotFoundException();
+    }
+
+    return this.mapper.getWithoutPrivateFields(userAggregate);
+  }
 
   @Patch()
   @HttpCode(HttpStatus.OK)
