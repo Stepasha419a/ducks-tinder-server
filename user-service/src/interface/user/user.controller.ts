@@ -31,7 +31,6 @@ import {
 import { UserAggregate } from '../../domain/user';
 import {
   ShortUser,
-  ShortUserWithDistance,
   UserMapper,
   WithoutPrivateFields,
 } from '../../infrastructure/user/mapper';
@@ -95,11 +94,9 @@ export class UserController {
 
   @Get('match')
   @HttpCode(HttpStatus.OK)
-  async getMatchUser(
-    @User(ParseUUIDPipe) userId: string,
-  ): Promise<ShortUserWithDistance> {
+  async getMatchUser(@User(ParseUUIDPipe) userId: string): Promise<ShortUser> {
     const userAggregate = await this.facade.queries.getMatch(userId);
-    return this.mapper.getShortUserWithDistance(userAggregate);
+    return this.mapper.getShortUser(userAggregate);
   }
 
   @Post('picture')
@@ -167,16 +164,14 @@ export class UserController {
 
   @Put('return')
   @HttpCode(HttpStatus.OK)
-  async returnUser(
-    @User(ParseUUIDPipe) userId: string,
-  ): Promise<ShortUserWithDistance> {
+  async returnUser(@User(ParseUUIDPipe) userId: string): Promise<ShortUser> {
     const userCheckAggregate = await this.facade.commands.returnUser(userId);
     const returnedMatchUser = await this.facade.queries.getMatch(
       userId,
       userCheckAggregate.checkedId,
     );
 
-    return this.mapper.getShortUserWithDistance(returnedMatchUser);
+    return this.mapper.getShortUser(returnedMatchUser);
   }
 
   @Get('pairs')
@@ -185,11 +180,11 @@ export class UserController {
     @User(ParseUUIDPipe) userId: string,
     @Query()
     query: PairsFilterDto,
-  ): Promise<ShortUserWithDistance[]> {
+  ): Promise<ShortUser[]> {
     const pairsWithDistance = await this.facade.queries.getPairs(userId, query);
 
     const pairs = pairsWithDistance.map((pair) => {
-      return this.mapper.getShortUserWithDistance(pair);
+      return this.mapper.getShortUser(pair);
     });
 
     return pairs;
@@ -265,7 +260,7 @@ export class UserController {
       return null;
     }
 
-    return this.mapper.getShortUserWithDistance(user);
+    return this.mapper.getShortUser(user);
   }
 
   // for dev

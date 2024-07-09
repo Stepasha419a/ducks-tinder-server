@@ -1,10 +1,10 @@
 import { User } from 'src/domain/user';
 import {
+  ShortUser,
   ShortUserPlaceInfo,
   UserPictureInfo,
   WithoutPrivateFields,
 } from './interface';
-import { ShortUserWithDistance } from './interface/short-user-with-distance';
 import { PictureEntity, PlaceEntity } from 'src/domain/user/entity';
 
 export class UserMapper {
@@ -46,7 +46,7 @@ export class UserMapper {
     };
   }
 
-  getShortUserWithDistance(user: User): ShortUserWithDistance {
+  getShortUser(user: User): ShortUser {
     const pictures = user.pictures.map((picture) =>
       this.getUserPictureInfo(picture),
     );

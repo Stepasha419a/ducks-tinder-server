@@ -23,6 +23,7 @@ export interface ShortUser {
   age: number;
   description: string;
   isActivated: boolean;
+  distance: number;
 
   interests: Interest[];
   zodiacSign?: ZodiacSign;
