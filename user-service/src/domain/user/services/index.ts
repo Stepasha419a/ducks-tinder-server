@@ -2,7 +2,10 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { IsDefined } from 'class-validator';
 import { SET_DESCRIPTION, SetDescription } from './set-description.case';
 import { SET_PLACE, SetPlace } from './set-place.case';
-import { SET_DISTANCE, SetDistance } from './set-distance.case';
+import {
+  SET_DISTANCE_BETWEEN_PLACES,
+  SetDistanceBetweenPlaces,
+} from './set-distance-between-places.case';
 import {
   GET_PRIMITIVE_FIELDS,
   GetPrimitiveFields,
@@ -23,7 +26,7 @@ export class UserServices
   implements
     SetDescription,
     SetPlace,
-    SetDistance,
+    SetDistanceBetweenPlaces,
     GetPrimitiveFields,
     AddPicture,
     DeletePicture,
@@ -37,7 +40,7 @@ export class UserServices
   setPlace = SET_PLACE;
 
   @IsDefined()
-  setDistance = SET_DISTANCE;
+  setDistanceBetweenPlaces = SET_DISTANCE_BETWEEN_PLACES;
 
   @IsDefined()
   getPrimitiveFields = GET_PRIMITIVE_FIELDS;

@@ -3,7 +3,7 @@ import { GetMatchQuery } from './get-match.query';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { User, UserAggregate } from 'src/domain/user';
-import { MapUtil } from 'src/infrastructure/util';
+import { ERROR } from 'src/infrastructure/user/common/constant';
 
 @QueryHandler(GetMatchQuery)
 export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
@@ -19,7 +19,7 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
     const user = await this.repository.findOne(userId);
 
     if (!this.validateUserFields(user)) {
-      throw new BadRequestException('Validation Failed');
+      throw new BadRequestException(ERROR.VALIDATION_FAILED);
     }
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
@@ -40,14 +40,7 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
       throw new NotFoundException();
     }
 
-    const distance = MapUtil.getDistanceFromLatLonInKm(
-      user.place.latitude,
-      user.place.longitude,
-      matchUser.place.latitude,
-      matchUser.place.longitude,
-    );
-
-    matchUser.setDistance(distance);
+    matchUser.setDistanceBetweenPlaces(user.place);
 
     return matchUser;
   }
@@ -62,14 +55,8 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
     }
 
     const place = await this.repository.findPlace(userId);
-    const distance = MapUtil.getDistanceFromLatLonInKm(
-      place.latitude,
-      place.longitude,
-      matchUser.place.latitude,
-      matchUser.place.longitude,
-    );
 
-    matchUser.setDistance(distance);
+    matchUser.setDistanceBetweenPlaces(place);
 
     return matchUser;
   }

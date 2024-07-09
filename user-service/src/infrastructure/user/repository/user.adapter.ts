@@ -16,7 +16,6 @@ import {
   UserCheckEntity,
 } from 'src/domain/user/entity';
 import { DatabaseService } from 'src/infrastructure/database';
-import { MapUtil } from 'src/infrastructure/util';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -351,21 +350,15 @@ export class UserAdapter implements UserRepository {
       include: UserSelector.selectUser(),
     });
 
-    const userPlace = await this.databaseService.place.findUnique({
-      where: { id },
-    });
+    const userPlace = await this.findPlace(id);
 
     return pairs.map((pair) => {
       this.standardUser(pair);
       const aggregate = this.getUserAggregate(pair);
 
-      const distance = MapUtil.getDistanceFromLatLonInKm(
-        userPlace.latitude,
-        userPlace.longitude,
-        pair.place?.latitude,
-        pair.place?.longitude,
-      );
-      aggregate.setDistance(distance);
+      if (userPlace) {
+        aggregate.setDistanceBetweenPlaces(userPlace);
+      }
 
       return aggregate;
     });
@@ -511,6 +504,10 @@ export class UserAdapter implements UserRepository {
     const place = await this.databaseService.place.findUnique({
       where: { id: userId },
     });
+
+    if (!place) {
+      return null;
+    }
 
     return this.getPlaceEntity(place);
   }
