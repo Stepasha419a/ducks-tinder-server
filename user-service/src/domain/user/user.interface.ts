@@ -4,13 +4,10 @@ export type Sex = 'male' | 'female';
 
 export interface User {
   id: string;
-  password: string;
-  email: string;
   name: string;
   description?: string;
   nickname?: string;
   isActivated: boolean;
-  activationLink: string;
   age?: number;
   sex?: string;
   distance?: number;

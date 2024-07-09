@@ -1,9 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PatchUserCommand } from './patch-user.command';
-import { ForbiddenException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
-import { COMMON_ERROR } from 'src/application/common';
 
 @CommandHandler(PatchUserCommand)
 export class PatchUserCommandHandler
@@ -15,13 +13,6 @@ export class PatchUserCommandHandler
     const { userId, dto } = command;
 
     const existingUser = await this.repository.findOne(userId);
-
-    if (dto.email) {
-      const candidate = await this.repository.findOneByEmail(dto.email);
-      if (candidate) {
-        throw new ForbiddenException(COMMON_ERROR.USER_ALREADY_EXISTS);
-      }
-    }
 
     Object.assign(existingUser, dto);
 

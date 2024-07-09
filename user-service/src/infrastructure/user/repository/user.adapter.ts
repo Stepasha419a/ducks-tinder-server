@@ -60,9 +60,7 @@ export class UserAdapter implements UserRepository {
     const saved = await this.databaseService.user.create({
       data: {
         id: user.id,
-        email: user.email,
         name: user.name,
-        password: user.password,
       },
       include: UserSelector.selectUser(),
     });
@@ -224,26 +222,6 @@ export class UserAdapter implements UserRepository {
     const existingUser = await this.databaseService.user
       .findUnique({
         where: { id },
-        include: UserSelector.selectUser(),
-      })
-      .catch((err) => {
-        this.logger.error(err);
-        return null;
-      });
-
-    if (!existingUser) {
-      return null;
-    }
-
-    this.standardUser(existingUser);
-
-    return this.getUserAggregate(existingUser);
-  }
-
-  async findOneByEmail(email: string): Promise<UserAggregate | null> {
-    const existingUser = await this.databaseService.user
-      .findUnique({
-        where: { email },
         include: UserSelector.selectUser(),
       })
       .catch((err) => {
