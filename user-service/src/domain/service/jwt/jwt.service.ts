@@ -22,18 +22,6 @@ export class JwtService {
     return userData;
   }
 
-  async validateRefreshToken(refreshToken: string): Promise<UserTokenData> {
-    const userData = await this.jwtService
-      .verifyAsync(refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      })
-      .catch(() => {
-        return null;
-      });
-
-    return userData;
-  }
-
   private readonly minute = 1000 * 60;
 
   generateFileServiceToken(): ServiceTokenView {
