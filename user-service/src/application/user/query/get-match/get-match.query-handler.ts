@@ -1,8 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMatchQuery } from './get-match.query';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
-import { UserAggregate } from 'src/domain/user';
+import { User, UserAggregate } from 'src/domain/user';
 import { MapUtil } from 'src/infrastructure/util';
 
 @QueryHandler(GetMatchQuery)
@@ -17,6 +17,10 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
     }
 
     const user = await this.repository.findOne(userId);
+
+    if (!this.validateUserFields(user)) {
+      throw new BadRequestException('Validation Failed');
+    }
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
 
@@ -68,5 +72,20 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
     matchUser.setDistance(distance);
 
     return matchUser;
+  }
+
+  private validateUserFields(user: User): boolean {
+    if (
+      !user.place ||
+      !user.distance ||
+      !user.preferAgeFrom ||
+      !user.preferAgeTo ||
+      !user.age ||
+      !user.preferSex ||
+      !user.sex
+    ) {
+      return false;
+    }
+    return true;
   }
 }

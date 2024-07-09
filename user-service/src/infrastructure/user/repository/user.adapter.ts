@@ -291,6 +291,10 @@ export class UserAdapter implements UserRepository {
         },
       });
 
+      if (!place) {
+        return [];
+      }
+
       joinQuery += 'inner join places on places.id = users.id ';
       whereQuery += ` and 6371 * 2 * asin(
         sqrt(

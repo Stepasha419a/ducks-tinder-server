@@ -20,7 +20,6 @@ import { UserServices } from './services';
 import {
   IsArray,
   IsBoolean,
-  IsEmail,
   IsNotEmpty,
   IsNotEmptyObject,
   IsNumber,
@@ -31,7 +30,6 @@ import {
   Length,
   Matches,
   Max,
-  MaxLength,
   Min,
   validateSync,
 } from 'class-validator';
@@ -43,16 +41,6 @@ import { DomainError, IsDetailedEnum } from '../common';
 export class UserAggregate extends UserServices implements User {
   @IsUUID()
   id: string = randomUUID();
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  password: string = 'stub-password';
-
-  @IsOptional()
-  @IsEmail()
-  @MaxLength(50)
-  email: string = this.id + 'stub@mail.ru';
 
   @IsString()
   @Length(2, 14)
@@ -71,11 +59,6 @@ export class UserAggregate extends UserServices implements User {
   @IsOptional()
   @IsBoolean()
   isActivated = false;
-
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  activationLink: string = randomUUID();
 
   @IsOptional()
   @IsNumber()
