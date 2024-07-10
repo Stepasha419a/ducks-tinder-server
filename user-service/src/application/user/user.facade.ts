@@ -97,7 +97,7 @@ export class UserFacade {
   }
 
   private dislikeUser(userId: string, pairId: string) {
-    return this.commandBus.execute<DislikeUserCommand>(
+    return this.commandBus.execute<DislikeUserCommand, UserAggregate>(
       new DislikeUserCommand(userId, pairId),
     );
   }
