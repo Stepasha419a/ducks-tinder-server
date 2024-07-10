@@ -18,7 +18,7 @@ export class CreatePairsCommandHandler
 
     const pairs = await this.databaseService.user.findMany({
       take: 20,
-      where: { preferSex: user.sex },
+      where: { preferSex: user.sex, id: { not: user.id } },
     });
 
     await this.databaseService.user.update({

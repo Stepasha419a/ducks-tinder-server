@@ -103,7 +103,7 @@ export class UserFacade {
   }
 
   private acceptPair(userId: string, pairId: string) {
-    return this.commandBus.execute<AcceptPairCommand, string>(
+    return this.commandBus.execute<AcceptPairCommand, UserAggregate>(
       new AcceptPairCommand(userId, pairId),
     );
   }
