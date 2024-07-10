@@ -146,11 +146,13 @@ export class UserController {
 
   @Post('like/:id')
   @HttpCode(HttpStatus.OK)
-  likeUser(
+  async likeUser(
     @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
-  ): Promise<void> {
-    return this.facade.commands.likeUser(userId, pairId);
+  ): Promise<ShortUser> {
+    const userAggregate = await this.facade.commands.likeUser(userId, pairId);
+
+    return this.mapper.getShortUser(userAggregate);
   }
 
   @Post('dislike/:id')

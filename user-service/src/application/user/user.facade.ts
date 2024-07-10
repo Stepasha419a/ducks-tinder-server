@@ -91,7 +91,7 @@ export class UserFacade {
   }
 
   private likeUser(userId: string, pairId: string) {
-    return this.commandBus.execute<LikeUserCommand>(
+    return this.commandBus.execute<LikeUserCommand, UserAggregate>(
       new LikeUserCommand(userId, pairId),
     );
   }
