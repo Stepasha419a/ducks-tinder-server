@@ -6,8 +6,6 @@ export async function prepareBefore(currentUserId, secondUserId, chatId) {
       data: [
         {
           id: currentUserId,
-          email: `${currentUserId}@gmail.com`,
-          password: '123123',
           name: 'Jason',
           age: 20,
           distance: 50,
@@ -20,8 +18,6 @@ export async function prepareBefore(currentUserId, secondUserId, chatId) {
         },
         {
           id: secondUserId,
-          email: `${secondUserId}@gmail.com`,
-          password: '456456',
           name: 'Loren',
           age: 21,
           distance: 70,

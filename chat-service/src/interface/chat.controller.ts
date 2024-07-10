@@ -153,6 +153,10 @@ export class ChatController {
       })
       .catch((err: HttpException) => {
         this.logger.error(err, err.stack);
+
+        if (err.message === 'Chat already exists') {
+          Util.ackMessage(context);
+        }
       });
   }
 }
