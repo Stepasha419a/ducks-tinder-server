@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: chat-service/Dockerfile
       target: development
-    command: npm run start:dev
+    command: npm run start:dev:docker
     depends_on:
       - rabbitmq
       - postgres
