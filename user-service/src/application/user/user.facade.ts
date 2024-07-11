@@ -109,7 +109,7 @@ export class UserFacade {
   }
 
   private deletePair(userId: string, pairId: string) {
-    return this.commandBus.execute<DeletePairCommand, string>(
+    return this.commandBus.execute<DeletePairCommand, UserAggregate>(
       new DeletePairCommand(userId, pairId),
     );
   }

@@ -215,11 +215,12 @@ export class UserController {
 
   @Put('pairs/:id')
   @HttpCode(HttpStatus.OK)
-  deletePair(
+  async deletePair(
     @User(ParseUUIDPipe) userId: string,
     @Param('id') pairId: string,
-  ): Promise<string> {
-    return this.facade.commands.deletePair(userId, pairId);
+  ): Promise<ShortUser> {
+    const pair = await this.facade.commands.deletePair(userId, pairId);
+    return this.mapper.getShortUser(pair);
   }
 
   @EventPattern('create_user')
