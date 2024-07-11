@@ -12,6 +12,7 @@
     "start": "nest start",
     "start:microservices": "concurrently \"npm:start:dev user\"",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
+    "start:dev:docker": "cross-env NODE_ENV=dev-docker nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint ./src/**/*{.ts,.tsx,.js,.jsx}",

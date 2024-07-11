@@ -14,7 +14,9 @@ import { DomainModule } from 'src/domain';
       envFilePath: `.env.${process.env.NODE_ENV}`,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
-        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').default('dev'),
+        NODE_ENV: Joi.string()
+          .valid('dev', 'dev-docker', 'prod', 'test')
+          .default('dev'),
         PORT: Joi.number().default(5000),
         GEOCODE_API_URL: Joi.string().required(),
         GEOCODE_API_KEY: Joi.string().required(),
