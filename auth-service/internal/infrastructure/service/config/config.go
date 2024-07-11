@@ -24,7 +24,7 @@ type (
 )
 
 var (
-	mods           = []string{"dev"}
+	mods           = []string{"dev", "dev-docker"}
 	config *Config = &Config{}
 )
 
@@ -32,7 +32,7 @@ func RequireConfig() {
 	err := godotenv.Load(".env")
 
 	if err != nil {
-		panic("Error loading .env.dev file")
+		panic("Error loading .env file")
 	}
 
 	mode := os.Getenv("MODE")
