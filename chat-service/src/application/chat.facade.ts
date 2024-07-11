@@ -23,7 +23,11 @@ import {
 } from './query';
 import { ChatAggregate, MessageAggregate } from 'src/domain/chat';
 import { DeleteMessageCommand } from './command/delete-message';
-import { MessagesPaginationView, NewMessageView } from './view';
+import {
+  MessagesPaginationView,
+  NewMessageView,
+  NewMessagesCountView,
+} from './view';
 import { ChatMemberView } from './view/chat-member.view';
 import { ChatPaginationEntity } from '../domain/chat/entity';
 import { PaginationDto } from 'src/domain/chat/repository/dto';
@@ -142,9 +146,10 @@ export class ChatFacade {
   }
 
   private getNewMessagesCount(userId: string) {
-    return this.queryBus.execute<GetNewMessagesCountQuery, number>(
-      new GetNewMessagesCountQuery(userId),
-    );
+    return this.queryBus.execute<
+      GetNewMessagesCountQuery,
+      NewMessagesCountView
+    >(new GetNewMessagesCountQuery(userId));
   }
 
   private getChatMemberIds(userId: string, chatId: string) {
