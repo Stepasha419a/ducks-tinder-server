@@ -2,19 +2,53 @@ package broker_service
 
 import (
 	config_service "auth-service/internal/infrastructure/service/config"
+	"log/slog"
+	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
+)
+
+var (
+	conn *amqp.Connection = nil
+	err  error            = nil
 )
 
 func InitBroker() *amqp.Connection {
 	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
 
-	conn, err := amqp.Dial(RABBIT_MQ_URL)
+	slog.Info("Broker connecting")
+
+	conn, err = amqp.Dial(RABBIT_MQ_URL)
 	if err != nil {
-		panic(err)
+		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
+		reconnect()
 	}
 
+	slog.Info("Broker successfully connected")
+
 	return conn
+}
+
+func reconnect() {
+	attempts := 0
+	ticker := time.NewTicker(time.Second * 3)
+	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
+
+	for range ticker.C {
+		attempts++
+		slog.Info("Broker connecting", slog.Int("attempts", attempts))
+		if attempts >= 10 {
+			slog.Error("Broker connection error", slog.Any("err", err))
+			panic(err)
+		}
+		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
+
+		conn, err = amqp.Dial(RABBIT_MQ_URL)
+		if err == nil {
+			ticker.Stop()
+			break
+		}
+	}
 }
 
 type QueueConnection struct {
