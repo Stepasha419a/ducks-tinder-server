@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: chat-service/Dockerfile
-      target: development
-    command: npm run start:dev:docker
     depends_on:
       - rabbitmq
       - postgres
@@ -19,8 +17,6 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-      target: development
-    command: npm run start:dev:docker
     depends_on:
       - rabbitmq
       - postgres
