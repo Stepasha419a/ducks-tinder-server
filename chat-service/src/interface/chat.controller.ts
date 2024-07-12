@@ -53,8 +53,13 @@ export class ChatController {
     query: PaginationDto,
     @Param('id', ParseUUIDPipe) chatId: string,
   ) {
+    const messages = await this.facade.queries.getMessages(userId, {
+      ...query,
+      chatId,
+    });
     await this.facade.commands.saveLastSeen(userId, chatId);
-    return this.facade.queries.getMessages(userId, { ...query, chatId });
+
+    return messages;
   }
 
   @Get('member/:id')
