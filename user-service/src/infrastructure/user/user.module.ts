@@ -20,6 +20,7 @@ import { SERVICE } from '../rabbitmq/service/service';
 import { RabbitMQModule } from '../rabbitmq';
 import { GrpcModule } from '../grpc';
 import { GRPC_SERVICE } from '../grpc/service';
+import { MetricsModule } from '../metrics';
 
 @Module({
   providers: [
@@ -49,6 +50,7 @@ import { GRPC_SERVICE } from '../grpc/service';
     HttpModule,
     RabbitMQModule.register(SERVICE.CHAT),
     GrpcModule.register(GRPC_SERVICE.FILE),
+    MetricsModule,
   ],
   exports: [UserRepository],
 })

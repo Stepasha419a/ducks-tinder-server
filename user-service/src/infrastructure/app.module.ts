@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
 import { DomainModule } from 'src/domain';
+import { MetricsModule } from './metrics';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
@@ -31,6 +32,7 @@ import { DomainModule } from 'src/domain';
     }),
     UserModule,
     DomainModule,
+    MetricsModule,
   ],
 })
 export class AppModule {}
