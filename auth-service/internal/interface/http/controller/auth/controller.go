@@ -170,19 +170,21 @@ func (ac *AuthController) Logout(c *gin.Context) {
 		return
 	}
 
-	err = ac.service.Logout(c.Request.Context(), logoutCommand, responseErrorContext(c))
+	res, err := ac.service.Logout(c.Request.Context(), logoutCommand, responseErrorContext(c))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, map[string]string{
 			"message":    "Failed to refresh",
 			"statusCode": strconv.Itoa(http.StatusInternalServerError),
 		})
-		slog.Error(err.Error())
+		return
+	}
+	if !res {
 		return
 	}
 
 	c.SetCookie("refreshToken", "", -1000, "/auth", config_service.GetConfig().CookieRefreshTokenDomain, true, true)
 
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, res)
 }
 
 func setCookie(c *gin.Context, refreshToken string) {

@@ -31,7 +31,7 @@ func (f *AuthFacade) Refresh(ctx context.Context, command *refresh.RefreshComman
 	return refresh.RefreshCommandHandler(ctx, command, responseError, f.authUserRepository)
 }
 
-func (f *AuthFacade) Logout(ctx context.Context, command *logout.LogoutCommand, responseError service.ResponseError) error {
+func (f *AuthFacade) Logout(ctx context.Context, command *logout.LogoutCommand, responseError service.ResponseError) (bool, error) {
 	return logout.LogoutCommandHandler(ctx, command, responseError, f.authUserRepository)
 }
 

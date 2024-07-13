@@ -16,6 +16,6 @@ type (
 		Register(ctx context.Context, command *register.RegisterCommand, responseError ResponseError) (*mapper.AuthUserResponse, error)
 		Login(ctx context.Context, command *login.LoginCommand, responseError ResponseError) (*mapper.AuthUserResponse, error)
 		Refresh(ctx context.Context, command *refresh.RefreshCommand, responseError ResponseError) (*mapper.AuthUserResponse, error)
-		Logout(ctx context.Context, command *logout.LogoutCommand, responseError ResponseError) error
+		Logout(ctx context.Context, command *logout.LogoutCommand, responseError ResponseError) (bool, error)
 	}
 )
