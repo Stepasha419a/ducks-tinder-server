@@ -45,14 +45,12 @@ import { PairsInfoView } from '../../application/user/view';
 import { PairsFilterDto } from '../../domain/user/repository/dto';
 import { User, Util } from '../common';
 import { OptionalValidationPipe } from '../common';
-import { MetricsService } from 'src/infrastructure/metrics';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly facade: UserFacade,
     private readonly mapper: UserMapper,
-    private readonly metricService: MetricsService,
   ) {}
 
   private readonly logger = new Logger(UserController.name);
@@ -62,8 +60,6 @@ export class UserController {
   async getMe(
     @User(ParseUUIDPipe) userId: string,
   ): Promise<WithoutPrivateFields> {
-    await this.metricService.incrementCounter();
-
     const userAggregate = await this.facade.queries.getUser(userId);
 
     if (!userAggregate) {
