@@ -3,7 +3,6 @@ import { collectDefaultMetrics, Registry } from 'prom-client';
 
 @Injectable()
 export class MetricsService implements OnModuleInit {
-  constructor() {}
   private registry: Registry;
 
   async onModuleInit() {
