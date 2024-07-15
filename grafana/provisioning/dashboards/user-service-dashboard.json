@@ -915,14 +915,14 @@
           "type": "prometheus",
           "uid": "PBFA97CFB590B2093"
         },
-        "definition": "label_values(nodejs_version_info, instance)",
+        "definition": "label_values(nodejs_version_info{job=\"$job_name\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "instance",
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "label_values(nodejs_version_info, instance)",
+        "query": "label_values(nodejs_version_info{job=\"$job_name\"}, instance)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -931,6 +931,23 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "name": "job_name",
+        "label": "Job Name",
+        "type": "custom",
+        "current": {
+          "text": "user-service",
+          "value": "user-service"
+        },
+        "options": [
+          {
+            "selected": true,
+            "text": "user-service",
+            "value": "user-service"
+          }
+        ],
+        "hide": 0
       }
     ]
   },

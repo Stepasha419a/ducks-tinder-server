@@ -8,7 +8,7 @@ export class MetricsController {
 
   @Public()
   @Get()
-  getMetrics() {
+  getMetrics(): Promise<string> {
     return this.metricsService.getMetrics();
   }
 }
