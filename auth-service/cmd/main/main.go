@@ -8,6 +8,7 @@ import (
 	repository_impl "auth-service/internal/infrastructure/repository"
 	config_service "auth-service/internal/infrastructure/service/config"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
+	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"net/http"
 	"strconv"
 
@@ -31,6 +32,7 @@ func main() {
 	e := gin.Default()
 
 	auth_controller.NewAuthController(e, authFacade)
+	metrics_controller.NewMetricsController(e)
 
 	http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(config_service.GetConfig().Port)), e)
 }
