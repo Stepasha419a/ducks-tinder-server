@@ -274,11 +274,6 @@
         "justifyMode": "auto",
         "orientation": "horizontal",
         "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["mean"],
-          "fields": "/^__name__$/",
-          "values": false
-        },
         "showPercentChange": false,
         "textMode": "name",
         "wideLayout": true

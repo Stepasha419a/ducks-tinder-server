@@ -8,7 +8,7 @@ export class MetricsService implements OnModuleInit {
   async onModuleInit() {
     this.registry = new Registry();
     this.registry.setDefaultLabels({
-      app: 'nestjs-prometheus',
+      app: 'chat-service',
     });
 
     this.registerMetrics();
