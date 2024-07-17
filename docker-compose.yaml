@@ -44,6 +44,8 @@ services:
     build:
       context: .
       dockerfile: file-service/Dockerfile
+    volumes:
+      - file_service_static_data:/usr/src/static
     environment:
       MODE: dev-docker
     ports:
@@ -106,3 +108,9 @@ services:
 volumes:
   prometheus_data: {}
   grafana_data: {}
+  file_service_static_data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'static'
