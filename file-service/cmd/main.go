@@ -33,5 +33,5 @@ func setUpHttp() {
 	r := router.InitRouter()
 
 	log.Printf("serving on HTTP port: %v\n", PORT)
-	log.Fatal(http.ListenAndServe("127.0.0.1:"+fmt.Sprintf("%d", PORT), r))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+fmt.Sprintf("%d", PORT), r))
 }

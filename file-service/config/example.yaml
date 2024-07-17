@@ -3,6 +3,3 @@ grpc_port: 6000
 
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 jwt_file_service_secret: dfgh567sdfgdfg456sdfgdfg
-
-rabbit_mq_url: amqp://localhost:5672
-rabbit_mq_file_queue: file

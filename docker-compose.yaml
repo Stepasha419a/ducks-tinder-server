@@ -38,6 +38,20 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+  file-service:
+    container_name: file-service
+    restart: always
+    build:
+      context: .
+      dockerfile: file-service/Dockerfile
+    environment:
+      MODE: dev-docker
+    ports:
+      - '${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}'
+      - '${FILE_SERVICE_GRPC_PORT}:${FILE_SERVICE_GRPC_PORT}'
+    deploy:
+      restart_policy:
+        condition: on-failure
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:management
