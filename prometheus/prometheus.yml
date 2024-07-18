@@ -9,6 +9,10 @@ scrape_configs:
     static_configs:
       - targets: ['host.docker.internal:5001']
 
+  - job_name: 'file-service'
+    static_configs:
+      - targets: ['host.docker.internal:5002']
+
   - job_name: 'auth-service'
     static_configs:
       - targets: ['host.docker.internal:5003']
