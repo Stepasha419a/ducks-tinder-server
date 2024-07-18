@@ -831,7 +831,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_gc_duration_seconds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_gc_duration_seconds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}}: {{quantile}}",

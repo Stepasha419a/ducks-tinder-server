@@ -98,7 +98,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_resident_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "process_resident_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - resident",
@@ -107,7 +107,7 @@
           "step": 4
         },
         {
-          "expr": "process_virtual_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "process_virtual_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - virtual",
@@ -204,7 +204,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(process_resident_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "rate(process_resident_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - resident",
@@ -213,7 +213,7 @@
           "step": 4
         },
         {
-          "expr": "deriv(process_virtual_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "deriv(process_virtual_memory_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - virtual",
@@ -310,7 +310,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - bytes allocated",
@@ -319,7 +319,7 @@
           "step": 4
         },
         {
-          "expr": "rate(go_memstats_alloc_bytes_total{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[30s])",
+          "expr": "rate(go_memstats_alloc_bytes_total{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[30s])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - alloc rate",
@@ -328,7 +328,7 @@
           "step": 4
         },
         {
-          "expr": "go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - stack inuse",
@@ -337,7 +337,7 @@
           "step": 4
         },
         {
-          "expr": "go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -435,7 +435,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "deriv(go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "deriv(go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - bytes allocated",
@@ -444,7 +444,7 @@
           "step": 4
         },
         {
-          "expr": "rate(go_memstats_alloc_bytes_total{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "rate(go_memstats_alloc_bytes_total{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - alloc rate",
@@ -453,7 +453,7 @@
           "step": 4
         },
         {
-          "expr": "deriv(go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "deriv(go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}} - stack inuse",
@@ -462,7 +462,7 @@
           "step": 4
         },
         {
-          "expr": "deriv(go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "deriv(go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -555,7 +555,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "process_open_fds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "process_open_fds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}}",
@@ -647,7 +647,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "deriv(process_open_fds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}[$interval])",
+          "expr": "deriv(process_open_fds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}}",
@@ -739,7 +739,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_goroutines{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_goroutines{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}}",
@@ -831,7 +831,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "go_gc_duration_seconds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\"}",
+          "expr": "go_gc_duration_seconds{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{pod}}: {{quantile}}",
@@ -972,6 +972,23 @@
         "query": "1m,5m,10m,30m,1h",
         "refresh": 2,
         "type": "interval"
+      },
+      {
+        "name": "job_name",
+        "label": "Job Name",
+        "type": "custom",
+        "current": {
+          "text": "auth-service",
+          "value": "auth-service"
+        },
+        "options": [
+          {
+            "selected": true,
+            "text": "auth-service",
+            "value": "auth-service"
+          }
+        ],
+        "hide": 0
       }
     ]
   },
