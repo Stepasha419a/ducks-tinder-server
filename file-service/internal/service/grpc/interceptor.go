@@ -30,12 +30,19 @@ func AuthUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.Unary
 	}
 
 	authorizationData := md.Get("authorization")
-	if len(authorizationData) == 0 {
+	if len(authorizationData) < 1 || authorizationData[0] == "null" {
 		err = status.Error(codes.Unauthenticated, "unauthorized")
 		return nil, err
 	}
 
-	isValid := jwt_service.ValidateAccessToken(authorizationData[0])
+	bearerToken := authorizationData[0]
+
+	if bearerToken == "" || bearerToken[:6] != "Bearer" || len(bearerToken) < 7 {
+		err = status.Error(codes.Unauthenticated, "unauthorized")
+		return nil, err
+	}
+
+	isValid := jwt_service.ValidateAccessToken(bearerToken[7:])
 	if !isValid {
 		err = status.Error(codes.Unauthenticated, "unauthorized")
 		return nil, err

@@ -1,4 +1,10 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import {
   GRPC_SERVICE,
@@ -27,6 +33,8 @@ export class FileServiceAdapter implements OnModuleInit {
     private readonly jwtService: JwtService,
   ) {}
 
+  private readonly logger = new Logger(FileServiceAdapter.name);
+
   onModuleInit() {
     this.fileGrpcService = this.client.getService<FileProtoService>(
       getGrpcPackageServiceName(GRPC_SERVICE.FILE),
@@ -40,7 +48,10 @@ export class FileServiceAdapter implements OnModuleInit {
 
     if (!this.serviceToken || this.serviceToken.expiresIn < new Date()) {
       this.serviceToken = this.jwtService.generateFileServiceToken();
-      this.metadata.set('authorization', this.serviceToken.accessToken);
+      this.metadata.set(
+        'authorization',
+        'Bearer ' + this.serviceToken.accessToken,
+      );
     }
 
     return this.metadata;
@@ -66,7 +77,10 @@ export class FileServiceAdapter implements OnModuleInit {
 
     return firstValueFrom(
       this.fileGrpcService.uploadFile(req, this.getMetadata()),
-    );
+    ).catch((err) => {
+      this.logger.error(err.message, err.stack);
+      throw new InternalServerErrorException();
+    });
   }
 
   deleteFile(filename: string): Promise<DeleteFileResponse> {
@@ -74,6 +88,9 @@ export class FileServiceAdapter implements OnModuleInit {
 
     return firstValueFrom(
       this.fileGrpcService.deleteFile(req, this.getMetadata()),
-    );
+    ).catch((err) => {
+      this.logger.error(err.message, err.stack);
+      throw new InternalServerErrorException();
+    });
   }
 }
