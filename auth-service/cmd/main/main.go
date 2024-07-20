@@ -9,6 +9,7 @@ import (
 	config_service "auth-service/internal/infrastructure/service/config"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
+	"auth-service/internal/interface/http/middleware"
 	"net/http"
 	"strconv"
 
@@ -30,6 +31,8 @@ func main() {
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
 	e := gin.Default()
+
+	e.Use(middleware.Cors)
 
 	auth_controller.NewAuthController(e, authFacade)
 	metrics_controller.NewMetricsController(e)
