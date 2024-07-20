@@ -16,6 +16,7 @@ import {
   UserCheckEntity,
 } from 'src/domain/user/entity';
 import { DatabaseService } from 'src/infrastructure/database';
+import { DomainError } from 'src/domain/common';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -279,21 +280,17 @@ export class UserAdapter implements UserRepository {
     let whereQuery = '';
     let groupByQuery = '';
 
+    const place = await this.findPlace(id);
+
+    if (!place) {
+      throw new DomainError([], 'Place is not defined');
+    }
+
     if (dto.ageFrom !== 18 || dto.ageTo !== 100) {
       whereQuery += ` and users.age between ${dto.ageFrom} and ${dto.ageTo} `;
     }
 
     if (dto.distance !== 100) {
-      const place = await this.databaseService.place.findUnique({
-        where: {
-          id,
-        },
-      });
-
-      if (!place) {
-        return [];
-      }
-
       joinQuery += 'inner join places on places.id = users.id ';
       whereQuery += ` and 6371 * 2 * asin(
         sqrt(
@@ -350,18 +347,16 @@ export class UserAdapter implements UserRepository {
       include: UserSelector.selectUser(),
     });
 
-    const userPlace = await this.findPlace(id);
+    return Promise.all(
+      pairs.map(async (pair) => {
+        this.standardUser(pair);
+        const aggregate = this.getUserAggregate(pair);
 
-    return pairs.map((pair) => {
-      this.standardUser(pair);
-      const aggregate = this.getUserAggregate(pair);
+        await aggregate.setDistanceBetweenPlaces(place);
 
-      if (userPlace) {
-        aggregate.setDistanceBetweenPlaces(userPlace);
-      }
-
-      return aggregate;
-    });
+        return aggregate;
+      }),
+    );
   }
 
   findPairsCount(id: string): Promise<number> {
