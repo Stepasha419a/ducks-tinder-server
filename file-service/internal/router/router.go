@@ -1,8 +1,6 @@
 package router
 
 import (
-	"go-file-server/internal/middleware"
-
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -12,22 +10,11 @@ import (
 func InitRouter() *mux.Router {
 	router := mux.NewRouter()
 
-	initRoutes(router)
-	initPrivateRoutes(router)
-
-	return router
-}
-
-func initRoutes(router *mux.Router) {
 	metricsHandler := promhttp.Handler()
 
 	router.Path("/metrics").Handler(metricsHandler)
-}
 
-func initPrivateRoutes(router *mux.Router) {
-	privateRouter := router.PathPrefix("/").Subrouter()
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("../static"))).Methods("GET")
 
-	privateRouter.Use(middleware.AuthMiddleware)
-
-	privateRouter.PathPrefix("/").Handler(http.FileServer(http.Dir("../static"))).Methods("GET")
+	return router
 }
