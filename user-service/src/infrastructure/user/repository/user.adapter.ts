@@ -16,7 +16,6 @@ import {
   UserCheckEntity,
 } from 'src/domain/user/entity';
 import { DatabaseService } from 'src/infrastructure/database';
-import { DomainError } from 'src/domain/common';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -282,15 +281,11 @@ export class UserAdapter implements UserRepository {
 
     const place = await this.findPlace(id);
 
-    if (!place) {
-      throw new DomainError([], 'Place is not defined');
-    }
-
     if (dto.ageFrom !== 18 || dto.ageTo !== 100) {
       whereQuery += ` and users.age between ${dto.ageFrom} and ${dto.ageTo} `;
     }
 
-    if (dto.distance !== 100) {
+    if (dto.distance !== 100 && place) {
       joinQuery += 'inner join places on places.id = users.id ';
       whereQuery += ` and 6371 * 2 * asin(
         sqrt(

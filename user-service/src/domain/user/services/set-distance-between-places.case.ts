@@ -1,17 +1,17 @@
-import { DomainError } from 'src/domain/common';
 import { User } from '../user.interface';
 import { PlaceEntity } from '../entity';
 
 export interface SetDistanceBetweenPlaces {
-  setDistanceBetweenPlaces(place: PlaceEntity): void;
+  setDistanceBetweenPlaces(place?: PlaceEntity): void;
 }
 
 export async function SET_DISTANCE_BETWEEN_PLACES(
   this: User,
-  place: PlaceEntity,
+  place?: PlaceEntity,
 ) {
-  if (!this.place) {
-    throw new DomainError([], 'Place is not defined');
+  if (!this.place || !place) {
+    this.distance = null;
+    return;
   }
 
   this.distance = getDistanceFromLatLonInKm(

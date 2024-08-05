@@ -1,8 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletePairCommand } from './delete-pair.command';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
-import { ERROR } from 'src/infrastructure/user/common/constant';
 import { UserAggregate } from 'src/domain/user';
 
 @CommandHandler(DeletePairCommand)
@@ -20,10 +19,6 @@ export class DeletePairCommandHandler
     }
 
     const place = await this.repository.findPlace(userId);
-
-    if (!place || !pair.place) {
-      throw new BadRequestException(ERROR.NULL_PLACE);
-    }
 
     pair.setDistanceBetweenPlaces(place);
 

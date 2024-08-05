@@ -37,10 +37,6 @@ export class DislikeUserCommandHandler
 
     const place = await this.repository.findPlace(userId);
 
-    if (!place || !userPair.place) {
-      throw new BadRequestException(ERROR.NULL_PLACE);
-    }
-
     userPair.setDistanceBetweenPlaces(place);
 
     await this.repository.makeChecked(pairId, userId);
