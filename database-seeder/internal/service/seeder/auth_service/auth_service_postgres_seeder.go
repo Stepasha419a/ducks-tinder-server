@@ -3,7 +3,6 @@ package auth_service_seeder
 import (
 	"context"
 	database_service "database-seeder/internal/service/database"
-	"encoding/json"
 	"log"
 	"os"
 
@@ -48,54 +47,31 @@ func SeedAuthServicePostgres(instance *database_service.AuthServicePostgresInsta
 }
 
 func seedAuthUsers(ctx context.Context, tx pgx.Tx) error {
-	authUsers := getSeedData()
-
-	_, err := tx.Exec(ctx, "TRUNCATE TABLE auth_users")
+	insertQuery, err := getInsertQuery()
 	if err != nil {
 		return err
 	}
 
-	query := "INSERT INTO auth_users (id, email, password, refreshToken, createdAt, updatedAt) VALUES (@id, @email, @password, @refreshToken, @createdAt, @updatedAt)"
-
-	batch := &pgx.Batch{}
-
-	for _, authUser := range authUsers {
-		args := pgx.NamedArgs{
-			"id":           authUser.Id,
-			"email":        authUser.Email,
-			"password":     authUser.Password,
-			"refreshToken": authUser.RefreshToken,
-			"createdAt":    authUser.CreatedAt,
-			"updatedAt":    authUser.UpdatedAt,
-		}
-
-		batch.Queue(query, args)
+	_, err = tx.Exec(ctx, "TRUNCATE TABLE auth_users")
+	if err != nil {
+		return err
 	}
 
-	results := tx.SendBatch(ctx, batch)
-	defer results.Close()
-
-	for range authUsers {
-		_, err := results.Exec()
-		if err != nil {
-			return err
-		}
+	_, err = tx.Exec(ctx, *insertQuery)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func getSeedData() []AuthUser {
-	bytes, err := os.ReadFile("data/auth_service_postgres/data.json")
+func getInsertQuery() (*string, error) {
+	bytes, err := os.ReadFile("data/auth_service_postgres/auth_users.sql")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	authUsers := []AuthUser{}
-	err = json.Unmarshal(bytes, &authUsers)
-	if err != nil {
-		panic(err)
-	}
+	query := string(bytes)
 
-	return authUsers
+	return &query, nil
 }
