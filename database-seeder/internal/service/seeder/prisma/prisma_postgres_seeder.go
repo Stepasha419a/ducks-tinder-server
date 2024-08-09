@@ -54,47 +54,20 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 }
 
 func truncateTables(ctx context.Context, tx pgx.Tx) error {
-	_, err := tx.Exec(ctx, "TRUNCATE TABLE messages")
-	if err != nil {
-		return err
-	}
+	log.Print("seed prisma postgres - truncating tables")
 
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE users-on-chats")
-	if err != nil {
-		return err
-	}
+	_, err := tx.Exec(ctx, `
+	TRUNCATE TABLE messages CASCADE;
+	TRUNCATE TABLE "users-on-chats" CASCADE;
+	TRUNCATE TABLE "checked-users" CASCADE;
+	TRUNCATE TABLE chats CASCADE;
+	TRUNCATE TABLE "_Pairs" CASCADE;
+	TRUNCATE TABLE "users-on-interests" CASCADE;
+	TRUNCATE TABLE pictures CASCADE;
+	TRUNCATE TABLE places CASCADE;
+	TRUNCATE TABLE users CASCADE;
+	`)
 
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE chats")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE checked-users")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE _Pairs")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE users-on-interests")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE pictures")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE users")
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE places")
 	if err != nil {
 		return err
 	}
