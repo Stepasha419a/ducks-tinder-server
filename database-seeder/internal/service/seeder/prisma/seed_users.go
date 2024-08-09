@@ -3,6 +3,7 @@ package prisma_seeder
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"os"
 
 	"github.com/jackc/pgx/v5"
@@ -11,7 +12,7 @@ import (
 type (
 	User struct {
 		Id                  string  `json:"id" validate:"required"`
-		Name                string  `json:"email" validate:"required"`
+		Name                string  `json:"name" validate:"required"`
 		Description         *string `json:"description"`
 		Nickname            *string `json:"nickname"`
 		IsActivated         bool    `json:"isActivated" validate:"required"`
@@ -21,7 +22,7 @@ type (
 		UpdatedAt           string  `json:"updatedAt" validate:"required"`
 		Distance            *int8   `json:"distance"`
 		UsersOnlyInDistance bool    `json:"usersOnlyInDistance" validate:"required"`
-		PreferSex           *bool   `json:"preferSex"`
+		PreferSex           *string `json:"preferSex"`
 		PreferAgeFrom       *int8   `json:"preferAgeFrom"`
 		PreferAgeTo         *int8   `json:"preferAgeTo"`
 
@@ -42,14 +43,13 @@ type (
 )
 
 func seedUsers(ctx context.Context, tx pgx.Tx) error {
+	log.Print("seed prisma postgres - users")
 	users := getUsersSeedData()
 
-	_, err := tx.Exec(ctx, "TRUNCATE TABLE auth_users")
-	if err != nil {
-		return err
-	}
-
-	query := "INSERT INTO users (id, email, password, refreshToken, createdAt, updatedAt) VALUES (@id, @email, @password, @refreshToken, @createdAt, @updatedAt)"
+	query := `INSERT INTO users 
+	(id, name, description, nickname, "isActivated", age, sex, distance, "usersOnlyInDistance", "preferSex", "preferAgeFrom", "preferAgeTo", "zodiacSign", education, "alcoholAttitude", chronotype, "foodPreference", pet, "smokingAttitude", "socialNetworksActivity", "trainingAttitude", "childrenAttitude", "personalityType", "communicationStyle", "attentionSign", "createdAt", "updatedAt") 
+	VALUES 
+	(@id, @name, @description, @nickname, @isActivated, @age, @sex, @distance, @usersOnlyInDistance, @preferSex, @preferAgeFrom, @preferAgeTo, @zodiacSign, @education, @alcoholAttitude, @chronotype, @foodPreference, @pet, @smokingAttitude, @socialNetworksActivity, @trainingAttitude, @childrenAttitude, @personalityType, @communicationStyle, @attentionSign, @createdAt, @updatedAt)`
 
 	batch := &pgx.Batch{}
 

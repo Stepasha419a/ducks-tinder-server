@@ -52,10 +52,14 @@ func seedAuthUsers(ctx context.Context, tx pgx.Tx) error {
 		return err
 	}
 
-	_, err = tx.Exec(ctx, "TRUNCATE TABLE auth_users")
+	log.Print("seed auth service postgres - truncating tables")
+
+	_, err = tx.Exec(ctx, "TRUNCATE TABLE auth_users CASCADE")
 	if err != nil {
 		return err
 	}
+
+	log.Print("seed prisma postgres - auth_users")
 
 	_, err = tx.Exec(ctx, *insertQuery)
 	if err != nil {
