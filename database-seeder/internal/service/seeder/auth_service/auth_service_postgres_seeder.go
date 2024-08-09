@@ -86,7 +86,7 @@ func seedAuthUsers(ctx context.Context, tx pgx.Tx) error {
 }
 
 func getSeedData() []AuthUser {
-	bytes, err := os.ReadFile("internal/service/seeder/auth_service/data.json")
+	bytes, err := os.ReadFile("data/auth_service_postgres/data.json")
 	if err != nil {
 		panic(err)
 	}
