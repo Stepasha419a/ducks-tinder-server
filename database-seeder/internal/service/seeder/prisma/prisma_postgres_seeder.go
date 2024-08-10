@@ -63,6 +63,11 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 		return err
 	}
 
+	err = seedPairs(ctx, tx)
+	if err != nil {
+		return err
+	}
+
 	log.Print("seed prisma postgres - end")
 
 	return nil
