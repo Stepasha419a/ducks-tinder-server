@@ -20,8 +20,6 @@ type (
 )
 
 func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error {
-	log.Print("seed prisma postgres - start")
-
 	ctx := context.Background()
 
 	tx, err := instance.Conn.Begin(ctx)
@@ -67,8 +65,6 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 	if err != nil {
 		return err
 	}
-
-	log.Print("seed prisma postgres - end")
 
 	return nil
 }

@@ -21,8 +21,6 @@ type (
 )
 
 func SeedAuthServicePostgres(instance *database_service.AuthServicePostgresInstance) error {
-	log.Print("seed auth service postgres - start")
-
 	ctx := context.Background()
 
 	tx, err := instance.Conn.Begin(ctx)
@@ -41,8 +39,6 @@ func SeedAuthServicePostgres(instance *database_service.AuthServicePostgresInsta
 
 	seedAuthUsers(ctx, tx)
 
-	log.Print("seed auth service postgres - end")
-
 	return nil
 }
 
@@ -59,7 +55,7 @@ func seedAuthUsers(ctx context.Context, tx pgx.Tx) error {
 		return err
 	}
 
-	log.Print("seed prisma postgres - auth_users")
+	log.Print("seed auth service postgres - auth_users")
 
 	_, err = tx.Exec(ctx, *insertQuery)
 	if err != nil {

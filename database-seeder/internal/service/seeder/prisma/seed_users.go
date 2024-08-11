@@ -18,8 +18,6 @@ type (
 		IsActivated         bool    `json:"isActivated" validate:"required"`
 		Age                 *int8   `json:"age"`
 		Sex                 *string `json:"sex"`
-		CreatedAt           string  `json:"createdAt" validate:"required"`
-		UpdatedAt           string  `json:"updatedAt" validate:"required"`
 		Distance            *int8   `json:"distance"`
 		UsersOnlyInDistance bool    `json:"usersOnlyInDistance" validate:"required"`
 		PreferSex           *string `json:"preferSex"`
@@ -39,6 +37,9 @@ type (
 		PersonalityType        *string `json:"personalityType"`
 		CommunicationStyle     *string `json:"communicationStyle"`
 		AttentionSign          *string `json:"attentionSign"`
+
+		CreatedAt string `json:"createdAt" validate:"required"`
+		UpdatedAt string `json:"updatedAt" validate:"required"`
 	}
 )
 
