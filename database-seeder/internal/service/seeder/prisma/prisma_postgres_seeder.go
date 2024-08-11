@@ -66,6 +66,11 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 		return err
 	}
 
+	err = seedChats(ctx, tx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
