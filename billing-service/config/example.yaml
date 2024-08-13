@@ -1,0 +1,4 @@
+jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
+jwt_billing_service_secret: dfgh567sdfgdfg456sdfgdfg
+port: 5004
+database_url: postgresql://prisma:prisma@postgres:5432/billing-service
