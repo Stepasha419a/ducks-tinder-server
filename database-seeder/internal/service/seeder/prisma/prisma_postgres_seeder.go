@@ -2,8 +2,10 @@ package prisma_seeder
 
 import (
 	"context"
+	config_service "database-seeder/internal/service/config"
 	database_service "database-seeder/internal/service/database"
 	"log"
+	"os"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -37,6 +39,11 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 	}
 
 	err = truncateTables(ctx, tx)
+	if err != nil {
+		return err
+	}
+
+	err = deleteFileServiceStaticPictures()
 	if err != nil {
 		return err
 	}
@@ -81,6 +88,11 @@ func SeedPrismaPostgres(instance *database_service.PrismaPostgresInstance) error
 		return err
 	}
 
+	err = seedPictures(ctx, tx)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -99,6 +111,22 @@ func truncateTables(ctx context.Context, tx pgx.Tx) error {
 	TRUNCATE TABLE users CASCADE;
 	`)
 
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func deleteFileServiceStaticPictures() error {
+	log.Print("seed prisma postgres - deleting file-service static pictures")
+
+	err := os.RemoveAll(config_service.GetConfig().FileServiceStaticPath)
+	if err != nil {
+		return err
+	}
+
+	err = os.MkdirAll(config_service.GetConfig().FileServiceStaticPath, 0644)
 	if err != nil {
 		return err
 	}

@@ -11,6 +11,7 @@ require (
 require github.com/pkg/errors v0.9.1 // indirect
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
