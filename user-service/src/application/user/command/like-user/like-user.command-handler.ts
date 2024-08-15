@@ -23,16 +23,11 @@ export class LikeUserCommandHandler
       throw new NotFoundException();
     }
 
-    const checkedUsersIds = await this.repository.findCheckedUserIds(
+    const userChecks = await this.repository.findUserChecksWithUser(
       userId,
       pairId,
     );
-
-    const isSomeonePairForAnotherOne = checkedUsersIds.find(
-      (checkedUserId) => checkedUserId == userId || checkedUserId == pairId,
-    );
-
-    if (isSomeonePairForAnotherOne) {
+    if (userChecks.length > 0) {
       throw new BadRequestException(ERROR.USER_ALREADY_CHECKED);
     }
 

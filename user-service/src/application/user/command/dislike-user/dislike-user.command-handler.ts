@@ -23,15 +23,11 @@ export class DislikeUserCommandHandler
       throw new NotFoundException();
     }
 
-    const checkedUserIds = await this.repository.findCheckedUserIds(
+    const userChecks = await this.repository.findUserChecksWithUser(
       userId,
       pairId,
     );
-    const isSomeonePairForAnotherOne = checkedUserIds.find(
-      (checkedUserId) => checkedUserId === pairId,
-    );
-
-    if (isSomeonePairForAnotherOne) {
+    if (userChecks.length > 0) {
       throw new BadRequestException(ERROR.USER_ALREADY_CHECKED);
     }
 

@@ -10,7 +10,10 @@ export abstract class UserRepository {
   abstract findPairs(id: string, dto: PairsFilterDto): Promise<UserAggregate[]>;
   abstract findPairsCount(id: string): Promise<number>;
   abstract findFirstPairsPicture(id: string): Promise<PictureEntity>;
-  abstract findCheckedUserIds(id: string, checkId: string): Promise<string[]>;
+  abstract findUserChecksWithUser(
+    id: string,
+    checkId: string,
+  ): Promise<UserCheckEntity[]>;
   abstract findUserNotPairCheck(
     checkedByUserId: string,
   ): Promise<UserCheckEntity>;

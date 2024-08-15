@@ -372,20 +372,21 @@ export class UserAdapter implements UserRepository {
     return this.getPictureEntity(picture);
   }
 
-  async findCheckedUserIds(id: string, checkId: string): Promise<string[]> {
+  async findUserChecksWithUser(
+    id: string,
+    checkId: string,
+  ): Promise<UserCheckEntity[]> {
     // TODO: optimize by not getting an array with many checks (too big arrays)
     const checkedUsers = await this.databaseService.checkedUsers.findMany({
-      where: { OR: [{ checkedId: id }, { checkedId: checkId }] },
-      select: {
-        checked: { select: { id: true } },
-        wasChecked: { select: { id: true } },
+      where: {
+        OR: [
+          { checkedId: id, wasCheckedId: checkId },
+          { checkedId: checkId, wasCheckedId: id },
+        ],
       },
     });
 
-    const checkedIds = checkedUsers.map((user) => user.checked.id);
-    const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
-
-    return checkedIds.concat(wasCheckedIds);
+    return checkedUsers.map((item) => this.getUserCheckEntity(item));
   }
 
   async findUserNotPairCheck(
