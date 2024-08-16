@@ -25,7 +25,8 @@ export class SendMessageCommandHandler
     const replied = dto.repliedId
       ? await this.repository.findMessage(dto.repliedId)
       : undefined;
-    if (dto.repliedId && !replied) {
+    const wrongChatId = dto.chatId !== replied?.chatId;
+    if (dto.repliedId && (!replied || wrongChatId)) {
       throw new NotFoundException();
     }
 
