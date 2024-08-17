@@ -27,8 +27,7 @@ import {
 import { UserAggregate } from 'src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { PairsInfoView } from './view';
-import { PairsFilterDto } from '../../domain/user/repository/dto';
-import { UserCheckEntity } from '../../domain/user/entity';
+import { PairsFilterDto } from 'src/domain/user/repository/dto';
 
 @Injectable()
 export class UserFacade {
@@ -133,7 +132,7 @@ export class UserFacade {
   }
 
   private returnUser(userId: string) {
-    return this.commandBus.execute<ReturnUserCommand, UserCheckEntity>(
+    return this.commandBus.execute<ReturnUserCommand, UserAggregate>(
       new ReturnUserCommand(userId),
     );
   }

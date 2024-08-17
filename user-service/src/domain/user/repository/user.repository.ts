@@ -14,9 +14,7 @@ export abstract class UserRepository {
     id: string,
     checkId: string,
   ): Promise<UserCheckEntity[]>;
-  abstract findUserNotPairCheck(
-    checkedByUserId: string,
-  ): Promise<UserCheckEntity>;
+  abstract findLastReturnableUser(id: string): Promise<UserAggregate | null>;
   abstract findMatch(
     id: string,
     latitude: number,
@@ -33,8 +31,5 @@ export abstract class UserRepository {
   abstract makeChecked(id: string, forId: string): Promise<boolean>;
   abstract delete(id: string): Promise<boolean>;
   abstract deletePair(id: string, forId: string): Promise<boolean>;
-  abstract deleteUserCheck(
-    checkedId: string,
-    wasCheckedId: string,
-  ): Promise<boolean>;
+  abstract deleteLastReturnable(id: string): Promise<boolean>;
 }

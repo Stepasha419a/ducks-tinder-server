@@ -172,13 +172,9 @@ export class UserController {
   @Put('return')
   @HttpCode(HttpStatus.OK)
   async returnUser(@User(ParseUUIDPipe) userId: string): Promise<ShortUser> {
-    const userCheckAggregate = await this.facade.commands.returnUser(userId);
-    const returnedMatchUser = await this.facade.queries.getMatch(
-      userId,
-      userCheckAggregate.checkedId,
-    );
+    const returnedUserAggregate = await this.facade.commands.returnUser(userId);
 
-    return this.mapper.getShortUser(returnedMatchUser);
+    return this.mapper.getShortUser(returnedUserAggregate);
   }
 
   @Get('pairs')

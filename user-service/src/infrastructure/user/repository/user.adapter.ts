@@ -389,29 +389,23 @@ export class UserAdapter implements UserRepository {
     return checkedUsers.map((item) => this.getUserCheckEntity(item));
   }
 
-  async findUserNotPairCheck(
-    checkedByUserId: string,
-  ): Promise<UserCheckEntity> {
-    const pairIds = (
+  async findLastReturnableUser(id: string): Promise<UserAggregate | null> {
+    const lastReturnableUser = (
       await this.databaseService.user.findUnique({
-        where: { id: checkedByUserId },
-        select: { pairFor: { select: { id: true } } },
+        where: { id },
+        select: {
+          lastReturnable: {
+            include: UserSelector.selectUser(),
+          },
+        },
       })
-    ).pairFor.map((pair) => pair.id);
+    )?.lastReturnable;
 
-    const userCheck = await this.databaseService.checkedUsers.findFirst({
-      where: {
-        wasCheckedId: checkedByUserId,
-        checked: { id: { notIn: pairIds } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    if (!userCheck) {
+    if (!lastReturnableUser) {
       return null;
     }
 
-    return this.getUserCheckEntity(userCheck);
+    return this.getUserAggregate(lastReturnableUser);
   }
 
   async createPair(id: string, forId: string): Promise<UserAggregate> {
@@ -523,20 +517,17 @@ export class UserAdapter implements UserRepository {
     return Boolean(deletedPair);
   }
 
-  async deleteUserCheck(
-    checkedId: string,
-    wasCheckedId: string,
-  ): Promise<boolean> {
-    const deletedUserCheck = await this.databaseService.checkedUsers.delete({
+  async deleteLastReturnable(id: string): Promise<boolean> {
+    const deleted = await this.databaseService.user.update({
       where: {
-        checkedId_wasCheckedId: {
-          checkedId: checkedId,
-          wasCheckedId: wasCheckedId,
-        },
+        id,
+      },
+      data: {
+        lastReturnable: null,
       },
     });
 
-    return Boolean(deletedUserCheck);
+    return Boolean(deleted);
   }
 
   private getPictureEntity(picture: PrismaPicture): PictureEntity {
