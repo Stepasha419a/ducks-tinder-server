@@ -217,6 +217,25 @@ export class UserAdapter implements UserRepository {
     return keysToUpdate;
   }
 
+  async saveLastReturnable(
+    id: string,
+    returnableUser: UserAggregate,
+  ): Promise<UserAggregate> {
+    const existingUsers = await this.findMany([id, returnableUser.id]);
+    if (!existingUsers || !existingUsers.length) {
+      return null;
+    }
+
+    const lastReturnableUser = await this.databaseService.user.update({
+      where: { id: id },
+      data: { lastReturnableId: returnableUser.id },
+      include: UserSelector.selectUser(),
+    });
+
+    this.standardUser(lastReturnableUser);
+    return this.getUserAggregate(lastReturnableUser);
+  }
+
   async findOne(id: string): Promise<UserAggregate | null> {
     const existingUser = await this.databaseService.user
       .findUnique({
@@ -404,6 +423,8 @@ export class UserAdapter implements UserRepository {
     if (!lastReturnableUser) {
       return null;
     }
+
+    this.standardUser(lastReturnableUser);
 
     return this.getUserAggregate(lastReturnableUser);
   }

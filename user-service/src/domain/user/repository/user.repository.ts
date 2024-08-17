@@ -4,6 +4,10 @@ import { PictureEntity, PlaceEntity, UserCheckEntity } from '../entity';
 
 export abstract class UserRepository {
   abstract save(user: UserAggregate): Promise<UserAggregate>;
+  abstract saveLastReturnable(
+    id: string,
+    returnableUser: UserAggregate,
+  ): Promise<UserAggregate>;
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findMany(ids: string[]): Promise<UserAggregate[]>;
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
