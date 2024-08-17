@@ -52,6 +52,10 @@ model User {
   checked    CheckedUsers[] @relation(name: "Checked")
   wasChecked CheckedUsers[] @relation(name: "WasChecked")
 
+  lastReturnable    User?   @relation(name: "Returnable", fields: [lastReturnableId], references: [id])
+  lastReturnableId  String?
+  lastReturnableFor User[]  @relation(name: "Returnable")
+
   zodiacSign             String?
   education              String?
   childrenAttitude       String?
