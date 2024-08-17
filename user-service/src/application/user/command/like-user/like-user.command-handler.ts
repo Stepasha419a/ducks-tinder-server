@@ -35,7 +35,7 @@ export class LikeUserCommandHandler
 
     userPair.setDistanceBetweenPlaces(place);
 
-    await this.repository.createPair(userId, pairId);
+    await this.repository.savePair(userId, pairId);
     await this.repository.makeChecked(pairId, userId);
 
     return userPair;

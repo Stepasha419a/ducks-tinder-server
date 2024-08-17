@@ -8,6 +8,7 @@ export abstract class UserRepository {
     id: string,
     returnableUser: UserAggregate,
   ): Promise<UserAggregate>;
+  abstract savePair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract findOne(id: string): Promise<UserAggregate | null>;
   abstract findMany(ids: string[]): Promise<UserAggregate[]>;
   abstract findPair(id: string, forId: string): Promise<UserAggregate | null>;
@@ -31,7 +32,6 @@ export abstract class UserRepository {
     sex: 'male' | 'female',
   ): Promise<UserAggregate | null>;
   abstract findPlace(userId: string): Promise<PlaceEntity | null>;
-  abstract createPair(id: string, forId: string): Promise<UserAggregate | null>;
   abstract makeChecked(id: string, forId: string): Promise<boolean>;
   abstract delete(id: string): Promise<boolean>;
   abstract deletePair(id: string, forId: string): Promise<boolean>;

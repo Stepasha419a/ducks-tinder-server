@@ -217,6 +217,20 @@ export class UserAdapter implements UserRepository {
     return keysToUpdate;
   }
 
+  async savePair(id: string, forId: string): Promise<UserAggregate> {
+    const pair = await this.databaseService.user.update({
+      where: { id: forId },
+      data: {
+        pairs: { connect: { id } },
+      },
+      include: UserSelector.selectUser(),
+    });
+
+    this.standardUser(pair);
+
+    return this.getUserAggregate(pair);
+  }
+
   async saveLastReturnable(
     id: string,
     returnableUser: UserAggregate,
@@ -427,20 +441,6 @@ export class UserAdapter implements UserRepository {
     this.standardUser(lastReturnableUser);
 
     return this.getUserAggregate(lastReturnableUser);
-  }
-
-  async createPair(id: string, forId: string): Promise<UserAggregate> {
-    const pair = await this.databaseService.user.update({
-      where: { id: forId },
-      data: {
-        pairs: { connect: { id } },
-      },
-      include: UserSelector.selectUser(),
-    });
-
-    this.standardUser(pair);
-
-    return this.getUserAggregate(pair);
   }
 
   async makeChecked(id: string, forId: string): Promise<boolean> {
