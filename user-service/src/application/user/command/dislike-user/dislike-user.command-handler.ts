@@ -41,6 +41,7 @@ export class DislikeUserCommandHandler
       wasCheckedId: userId,
     });
     await this.repository.saveUserCheck(userCheck);
+    await this.repository.saveLastReturnable(userId, userPair);
 
     return userPair;
   }
