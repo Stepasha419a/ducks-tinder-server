@@ -231,6 +231,21 @@ export class UserAdapter implements UserRepository {
     return this.getUserAggregate(pair);
   }
 
+  async saveUserCheck(userCheck: UserCheckEntity): Promise<UserCheckEntity> {
+    const saved = await this.databaseService.checkedUsers.upsert({
+      where: {
+        checkedId_wasCheckedId: {
+          checkedId: userCheck.checkedId,
+          wasCheckedId: userCheck.wasCheckedId,
+        },
+      },
+      create: userCheck,
+      update: userCheck,
+    });
+
+    return this.getUserCheckEntity(saved);
+  }
+
   async saveLastReturnable(
     id: string,
     returnableUser: UserAggregate,
@@ -441,14 +456,6 @@ export class UserAdapter implements UserRepository {
     this.standardUser(lastReturnableUser);
 
     return this.getUserAggregate(lastReturnableUser);
-  }
-
-  async makeChecked(id: string, forId: string): Promise<boolean> {
-    const result = await this.databaseService.checkedUsers.create({
-      data: { wasCheckedId: forId, checkedId: id },
-    });
-
-    return Boolean(result);
   }
 
   async findMatch(

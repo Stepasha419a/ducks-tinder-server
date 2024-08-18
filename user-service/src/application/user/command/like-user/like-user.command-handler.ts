@@ -4,6 +4,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { ERROR } from 'src/infrastructure/user/common/constant';
 import { UserAggregate } from 'src/domain/user';
+import { UserCheckEntity } from 'src/domain/user/entity';
 
 @CommandHandler(LikeUserCommand)
 export class LikeUserCommandHandler
@@ -36,7 +37,12 @@ export class LikeUserCommandHandler
     userPair.setDistanceBetweenPlaces(place);
 
     await this.repository.savePair(userId, pairId);
-    await this.repository.makeChecked(pairId, userId);
+
+    const userCheck = UserCheckEntity.create({
+      checkedId: pairId,
+      wasCheckedId: userId,
+    });
+    await this.repository.saveUserCheck(userCheck);
 
     return userPair;
   }
