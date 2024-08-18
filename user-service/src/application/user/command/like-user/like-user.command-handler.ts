@@ -43,6 +43,7 @@ export class LikeUserCommandHandler
       wasCheckedId: userId,
     });
     await this.repository.saveUserCheck(userCheck);
+    await this.repository.deleteLastReturnable(userId);
 
     return userPair;
   }
