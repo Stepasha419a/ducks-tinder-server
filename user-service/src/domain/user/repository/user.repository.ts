@@ -36,4 +36,8 @@ export abstract class UserRepository {
   abstract delete(id: string): Promise<boolean>;
   abstract deletePair(id: string, forId: string): Promise<boolean>;
   abstract deleteLastReturnable(id: string): Promise<boolean>;
+  abstract deleteUserCheck(
+    checkedId: string,
+    wasCheckedId: string,
+  ): Promise<boolean>;
 }

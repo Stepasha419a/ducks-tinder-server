@@ -551,7 +551,23 @@ export class UserAdapter implements UserRepository {
         id,
       },
       data: {
-        lastReturnable: null,
+        lastReturnableId: null,
+      },
+    });
+
+    return Boolean(deleted);
+  }
+
+  async deleteUserCheck(
+    checkedId: string,
+    wasCheckedId: string,
+  ): Promise<boolean> {
+    const deleted = await this.databaseService.checkedUsers.delete({
+      where: {
+        checkedId_wasCheckedId: {
+          checkedId,
+          wasCheckedId,
+        },
       },
     });
 
