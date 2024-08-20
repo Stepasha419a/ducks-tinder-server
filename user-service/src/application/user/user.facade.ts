@@ -60,8 +60,7 @@ export class UserFacade {
   queries = {
     getUser: (id: string) => this.getUser(id),
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
-    getMatch: (id: string, matchUserId?: string) =>
-      this.getMatch(id, matchUserId),
+    getMatch: (id: string) => this.getMatch(id),
     getPairs: (id: string, dto: PairsFilterDto) => this.getPairs(id, dto),
     getPairsInfo: (id: string) => this.getPairsInfo(id),
   };
@@ -149,9 +148,9 @@ export class UserFacade {
     );
   }
 
-  private getMatch(id: string, matchUserId?: string) {
+  private getMatch(id: string) {
     return this.queryBus.execute<GetMatchQuery, UserAggregate>(
-      new GetMatchQuery(id, matchUserId),
+      new GetMatchQuery(id),
     );
   }
 

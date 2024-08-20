@@ -10,11 +10,7 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
   constructor(private readonly repository: UserRepository) {}
 
   async execute(query: GetMatchQuery): Promise<UserAggregate> {
-    const { userId, matchUserId } = query;
-
-    if (matchUserId) {
-      return this.getCertainMatchUser(userId, matchUserId);
-    }
+    const { userId } = query;
 
     const user = await this.repository.findOne(userId);
 
@@ -41,22 +37,6 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
     }
 
     matchUser.setDistanceBetweenPlaces(user.place);
-
-    return matchUser;
-  }
-
-  private async getCertainMatchUser(
-    userId: string,
-    matchUserId: string,
-  ): Promise<UserAggregate> {
-    const matchUser = await this.repository.findOne(matchUserId);
-    if (!matchUser) {
-      throw new NotFoundException();
-    }
-
-    const place = await this.repository.findPlace(userId);
-
-    matchUser.setDistanceBetweenPlaces(place);
 
     return matchUser;
   }
