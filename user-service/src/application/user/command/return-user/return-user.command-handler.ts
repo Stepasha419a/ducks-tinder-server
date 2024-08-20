@@ -1,9 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ReturnUserCommand } from './return-user.command';
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
 
@@ -21,10 +18,8 @@ export class ReturnUserCommandHandler
       throw new NotFoundException();
     }
 
-    const deleted = await this.repository.deleteLastReturnable(userId);
-    if (!deleted) {
-      throw new InternalServerErrorException();
-    }
+    await this.repository.deleteLastReturnable(userId);
+    await this.repository.deleteUserCheck(returnedUser.id, userId);
 
     const place = await this.repository.findPlace(userId);
 
