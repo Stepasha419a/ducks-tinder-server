@@ -5,7 +5,7 @@ import {
   IsArray,
   IsNumber,
   IsOptional,
-  IsString,
+  IsUUID,
   Max,
   Min,
   ValidateIf,
@@ -23,7 +23,7 @@ export class MatchFilterDto {
   @IsArray()
   @ArrayMinSize(0)
   @ArrayMaxSize(2)
-  @IsString({ each: true })
+  @IsUUID('4', { each: true })
   @Type(() => String)
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   skipUserIds: string[] = [];

@@ -139,7 +139,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async deletePicture(
     @User(ParseUUIDPipe) userId: string,
-    @Param('id') pictureId: string,
+    @Param('id', ParseUUIDPipe) pictureId: string,
   ): Promise<WithoutPrivateFields> {
     const userAggregate = await this.facade.commands.deletePicture(
       userId,
@@ -152,7 +152,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async likeUser(
     @User(ParseUUIDPipe) userId: string,
-    @Param('id') pairId: string,
+    @Param('id', ParseUUIDPipe) pairId: string,
   ): Promise<ShortUser> {
     const userAggregate = await this.facade.commands.likeUser(userId, pairId);
 
@@ -163,7 +163,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async dislikeUser(
     @User(ParseUUIDPipe) userId: string,
-    @Param('id') pairId: string,
+    @Param('id', ParseUUIDPipe) pairId: string,
   ): Promise<ShortUser> {
     const userAggregate = await this.facade.commands.dislikeUser(
       userId,
@@ -207,7 +207,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async acceptPair(
     @User(ParseUUIDPipe) userId: string,
-    @Param('id') pairId: string,
+    @Param('id', ParseUUIDPipe) pairId: string,
   ): Promise<ShortUser> {
     const pair = await this.facade.commands.acceptPair(userId, pairId);
     return this.mapper.getShortUser(pair);
@@ -217,7 +217,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async deletePair(
     @User(ParseUUIDPipe) userId: string,
-    @Param('id') pairId: string,
+    @Param('id', ParseUUIDPipe) pairId: string,
   ): Promise<ShortUser> {
     const pair = await this.facade.commands.deletePair(userId, pairId);
     return this.mapper.getShortUser(pair);

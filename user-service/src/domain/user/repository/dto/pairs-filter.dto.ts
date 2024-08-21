@@ -1,14 +1,8 @@
 import { Transform, Type } from 'class-transformer';
-import {
-  IsArray,
-  IsBoolean,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, Max, Min } from 'class-validator';
 import { PaginationDto } from './pagination.dto';
-import { IsGreaterThan } from 'src/domain/common';
+import { IsDetailedEnum, IsGreaterThan } from 'src/domain/common';
+import { Interest } from '../../user.interface';
 
 export class PairsFilterDto extends PaginationDto {
   @IsOptional()
@@ -46,7 +40,7 @@ export class PairsFilterDto extends PaginationDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
+  @IsDetailedEnum(Interest, { each: true })
   @Type(() => String)
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
   interests: string[] = [];
