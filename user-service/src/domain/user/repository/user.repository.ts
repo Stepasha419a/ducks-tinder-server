@@ -22,16 +22,8 @@ export abstract class UserRepository {
   ): Promise<UserCheckEntity[]>;
   abstract findLastReturnableUser(id: string): Promise<UserAggregate | null>;
   abstract findMatch(
-    id: string,
+    user: UserAggregate,
     dto: MatchFilterDto,
-    latitude: number,
-    longitude: number,
-    distance: number,
-    preferAgeFrom: number,
-    preferAgeTo: number,
-    age: number,
-    preferSex: 'male' | 'female',
-    sex: 'male' | 'female',
   ): Promise<UserAggregate[]>;
   abstract findPlace(userId: string): Promise<PlaceEntity | null>;
   abstract delete(id: string): Promise<boolean>;

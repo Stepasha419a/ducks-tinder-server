@@ -459,17 +459,21 @@ export class UserAdapter implements UserRepository {
   }
 
   async findMatch(
-    id: string,
+    user: UserAggregate,
     dto: MatchFilterDto,
-    latitude: number,
-    longitude: number,
-    distance: number,
-    preferAgeFrom: number,
-    preferAgeTo: number,
-    age: number,
-    preferSex: 'male' | 'female',
-    sex: 'male' | 'female',
   ): Promise<UserAggregate[]> {
+    const {
+      id,
+      place: { latitude, longitude },
+      preferAgeFrom,
+      preferAgeTo,
+      age,
+      preferSex,
+      sex,
+    } = user;
+
+    const distance = user.usersOnlyInDistance ? user.distance : 150;
+
     const checkedUsers = await this.databaseService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { wasCheckedId: id }] },
       select: {

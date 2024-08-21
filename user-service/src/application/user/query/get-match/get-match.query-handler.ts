@@ -18,20 +18,7 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
       throw new BadRequestException(ERROR.VALIDATION_FAILED);
     }
 
-    const userDistance = user.usersOnlyInDistance ? user.distance : 150;
-
-    const matchUsers = await this.repository.findMatch(
-      userId,
-      dto,
-      user.place.latitude,
-      user.place.longitude,
-      userDistance,
-      user.preferAgeFrom,
-      user.preferAgeTo,
-      user.age,
-      user.preferSex,
-      user.sex,
-    );
+    const matchUsers = await this.repository.findMatch(user, dto);
 
     if (!matchUsers.length) {
       return matchUsers;
