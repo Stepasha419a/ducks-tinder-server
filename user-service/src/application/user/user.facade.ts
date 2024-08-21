@@ -27,7 +27,7 @@ import {
 import { UserAggregate } from 'src/domain/user';
 import { CreatePairsCommand, RemoveAllPairsCommand } from './command/dev';
 import { PairsInfoView } from './view';
-import { PairsFilterDto } from 'src/domain/user/repository/dto';
+import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
 
 @Injectable()
 export class UserFacade {
@@ -60,7 +60,7 @@ export class UserFacade {
   queries = {
     getUser: (id: string) => this.getUser(id),
     getManyUsers: (ids: string[]) => this.getManyUsers(ids),
-    getMatch: (id: string) => this.getMatch(id),
+    getMatch: (id: string, dto: MatchFilterDto) => this.getMatch(id, dto),
     getPairs: (id: string, dto: PairsFilterDto) => this.getPairs(id, dto),
     getPairsInfo: (id: string) => this.getPairsInfo(id),
   };
@@ -148,9 +148,9 @@ export class UserFacade {
     );
   }
 
-  private getMatch(id: string) {
-    return this.queryBus.execute<GetMatchQuery, UserAggregate>(
-      new GetMatchQuery(id),
+  private getMatch(id: string, dto: MatchFilterDto) {
+    return this.queryBus.execute<GetMatchQuery, UserAggregate[]>(
+      new GetMatchQuery(id, dto),
     );
   }
 

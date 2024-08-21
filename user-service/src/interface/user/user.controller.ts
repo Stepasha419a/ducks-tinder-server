@@ -20,7 +20,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UserFacade } from '../../application/user';
+import { UserFacade } from 'src/application/user';
 import {
   Ctx,
   EventPattern,
@@ -28,21 +28,21 @@ import {
   Payload,
   RmqContext,
 } from '@nestjs/microservices';
-import { UserAggregate } from '../../domain/user';
+import { UserAggregate } from 'src/domain/user';
 import {
   ShortUser,
   UserMapper,
   WithoutPrivateFields,
-} from '../../infrastructure/user/mapper';
+} from 'src/infrastructure/user/mapper';
 import {
   CreateUserDto,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
-} from '../../application/user/command';
-import { CONSTANT } from '../../infrastructure/user/common/constant';
-import { PairsInfoView } from '../../application/user/view';
-import { PairsFilterDto } from '../../domain/user/repository/dto';
+} from 'src/application/user/command';
+import { CONSTANT } from 'src/infrastructure/user/common/constant';
+import { PairsInfoView } from 'src/application/user/view';
+import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
 import { User, Util } from '../common';
 import { OptionalValidationPipe } from '../common';
 
@@ -94,9 +94,13 @@ export class UserController {
 
   @Get('match')
   @HttpCode(HttpStatus.OK)
-  async getMatchUser(@User(ParseUUIDPipe) userId: string): Promise<ShortUser> {
-    const userAggregate = await this.facade.queries.getMatch(userId);
-    return this.mapper.getShortUser(userAggregate);
+  async getMatchUser(
+    @User(ParseUUIDPipe) userId: string,
+    @Query()
+    query: MatchFilterDto,
+  ): Promise<ShortUser[]> {
+    const userAggregates = await this.facade.queries.getMatch(userId, query);
+    return userAggregates.map((user) => this.mapper.getShortUser(user));
   }
 
   @Post('picture')

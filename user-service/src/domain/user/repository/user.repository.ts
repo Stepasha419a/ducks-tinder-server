@@ -1,5 +1,5 @@
 import { UserAggregate } from 'src/domain/user';
-import { PairsFilterDto } from './dto';
+import { MatchFilterDto, PairsFilterDto } from './dto';
 import { PictureEntity, PlaceEntity, UserCheckEntity } from '../entity';
 
 export abstract class UserRepository {
@@ -23,6 +23,7 @@ export abstract class UserRepository {
   abstract findLastReturnableUser(id: string): Promise<UserAggregate | null>;
   abstract findMatch(
     id: string,
+    dto: MatchFilterDto,
     latitude: number,
     longitude: number,
     distance: number,
@@ -31,7 +32,7 @@ export abstract class UserRepository {
     age: number,
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
-  ): Promise<UserAggregate | null>;
+  ): Promise<UserAggregate[]>;
   abstract findPlace(userId: string): Promise<PlaceEntity | null>;
   abstract delete(id: string): Promise<boolean>;
   abstract deletePair(id: string, forId: string): Promise<boolean>;

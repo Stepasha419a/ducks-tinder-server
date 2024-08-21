@@ -9,7 +9,7 @@ import {
   Place as PrismaPlace,
   Prisma,
 } from '@prisma/client';
-import { PairsFilterDto } from 'src/domain/user/repository/dto';
+import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
 import {
   PictureEntity,
   PlaceEntity,
@@ -460,6 +460,7 @@ export class UserAdapter implements UserRepository {
 
   async findMatch(
     id: string,
+    dto: MatchFilterDto,
     latitude: number,
     longitude: number,
     distance: number,
@@ -468,7 +469,7 @@ export class UserAdapter implements UserRepository {
     age: number,
     preferSex: 'male' | 'female',
     sex: 'male' | 'female',
-  ): Promise<UserAggregate | null> {
+  ): Promise<UserAggregate[]> {
     const checkedUsers = await this.databaseService.checkedUsers.findMany({
       where: { OR: [{ checkedId: id }, { wasCheckedId: id }] },
       select: {
@@ -478,6 +479,11 @@ export class UserAdapter implements UserRepository {
     });
     const checkedIds = checkedUsers.map((user) => user.checked.id);
     const wasCheckedIds = checkedUsers.map((user) => user.wasChecked.id);
+
+    let skip = '';
+    if (dto.skipUserIds.length) {
+      skip = `and users.id not in ('${dto.skipUserIds.join("', '")}')`;
+    }
 
     const query = `select users.id from users
     inner join places on users.id = places.id
@@ -493,24 +499,29 @@ export class UserAdapter implements UserRepository {
     and users."preferAgeTo" > ${age}
     and users.sex = '${preferSex}'
     and users."preferSex" = '${sex}'
+    ${skip}
+    fetch next ${dto.take} rows only
     `;
 
-    const matchId = (
-      await this.databaseService.$queryRaw`${Prisma.raw(query)}`
-    )?.[0]?.id as string | undefined;
+    const matchRes = (await this.databaseService
+      .$queryRaw`${Prisma.raw(query)}`) as { id: string }[];
 
-    if (!matchId) {
-      return null;
+    if (!matchRes || !matchRes.length) {
+      return [];
     }
 
-    const matchUser = await this.databaseService.user.findUnique({
-      where: { id: matchId },
+    const matchIds = matchRes.map((match) => match.id);
+
+    const matchUsers = await this.databaseService.user.findMany({
+      where: { id: { in: matchIds } },
       include: UserSelector.selectUser(),
     });
 
-    this.standardUser(matchUser);
+    return matchUsers.map((user) => {
+      this.standardUser(user);
 
-    return this.getUserAggregate(matchUser);
+      return this.getUserAggregate(user);
+    });
   }
 
   async findPlace(userId: string): Promise<PlaceEntity | null> {

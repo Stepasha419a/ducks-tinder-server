@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetMatchQuery } from './get-match.query';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { User, UserAggregate } from 'src/domain/user';
 import { ERROR } from 'src/infrastructure/user/common/constant';
@@ -9,8 +9,8 @@ import { ERROR } from 'src/infrastructure/user/common/constant';
 export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(query: GetMatchQuery): Promise<UserAggregate> {
-    const { userId } = query;
+  async execute(query: GetMatchQuery): Promise<UserAggregate[]> {
+    const { userId, dto } = query;
 
     const user = await this.repository.findOne(userId);
 
@@ -20,8 +20,9 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
 
     const userDistance = user.usersOnlyInDistance ? user.distance : 150;
 
-    const matchUser = await this.repository.findMatch(
+    const matchUsers = await this.repository.findMatch(
       userId,
+      dto,
       user.place.latitude,
       user.place.longitude,
       userDistance,
@@ -32,18 +33,20 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
       user.sex,
     );
 
-    if (!matchUser) {
-      throw new NotFoundException();
+    if (!matchUsers.length) {
+      return matchUsers;
     }
 
-    matchUser.setDistanceBetweenPlaces(user.place);
+    matchUsers.forEach((user) => {
+      user.setDistanceBetweenPlaces(user.place);
+    });
 
-    return matchUser;
+    return matchUsers;
   }
 
   private validateUserFields(user: User): boolean {
     if (
-      !user.place ||
+      !user?.place ||
       !user.distance ||
       !user.preferAgeFrom ||
       !user.preferAgeTo ||
