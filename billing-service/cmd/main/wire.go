@@ -8,12 +8,13 @@ import (
 )
 
 type Container struct {
-	ConfigService *config_service.ConfigService
+	ConfigService config_service.ConfigService
 }
 
-func newContainer() (config_service.ConfigService, func(), error) {
+func newContainer() (*Container, func(), error) {
 	panic(wire.Build(
 		wire.Bind(new(config_service.ConfigService), new(*config_service_impl.ConfigServiceImpl)),
 		config_service_impl.NewConfigService,
+		wire.Struct(new(Container), "*"),
 	))
 }

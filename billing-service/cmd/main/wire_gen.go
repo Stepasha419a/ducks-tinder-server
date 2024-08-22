@@ -13,14 +13,17 @@ import (
 
 // Injectors from wire.go:
 
-func newContainer() (config_service.ConfigService, func(), error) {
+func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
-	return configServiceImpl, func() {
+	container := &Container{
+		ConfigService: configServiceImpl,
+	}
+	return container, func() {
 	}, nil
 }
 
 // wire.go:
 
 type Container struct {
-	ConfigService *config_service.ConfigService
+	ConfigService config_service.ConfigService
 }

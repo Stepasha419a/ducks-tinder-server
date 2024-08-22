@@ -9,5 +9,5 @@ func main() {
 	}
 
 	defer cleaner()
-	fmt.Println(container.GetConfig().DatabaseUrl)
+	fmt.Println(container.ConfigService.GetConfig())
 }
