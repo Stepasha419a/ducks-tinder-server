@@ -8,6 +8,7 @@ package main
 
 import (
 	"billing-service/internal/domain/service/config"
+	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/service/config_impl"
 )
 
@@ -15,8 +16,10 @@ import (
 
 func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
+	postgresInstance := database.NewPostgresInstance(configServiceImpl)
 	container := &Container{
 		ConfigService: configServiceImpl,
+		Postgres:      postgresInstance,
 	}
 	return container, func() {
 	}, nil
@@ -26,4 +29,5 @@ func newContainer() (*Container, func(), error) {
 
 type Container struct {
 	ConfigService config_service.ConfigService
+	Postgres      *database.PostgresInstance
 }
