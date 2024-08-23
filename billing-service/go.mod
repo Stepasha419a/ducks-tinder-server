@@ -6,6 +6,7 @@ require github.com/jackc/pgx/v5 v5.6.0
 
 require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 )
 
