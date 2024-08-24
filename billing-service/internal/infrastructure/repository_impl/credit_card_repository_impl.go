@@ -19,6 +19,44 @@ func NewCreditCardRepository(pg *database.PostgresInstance) *CreditCardRepositor
 	return &CreditCardRepositoryImpl{pg}
 }
 
+func (r *CreditCardRepositoryImpl) Save(ctx context.Context, creditCard *entity.CreditCard, tx pgx.Tx) (*entity.CreditCard, error) {
+	existingCreditCard, err := r.Find(ctx, creditCard.Id, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	if existingCreditCard != nil {
+		_, err = database.Exec(r.pg.Pool, tx)(ctx, "UPDATE credit_cards SET user_id=@user_id, pan=@pan, holder=@holder, cvc=@cvc, expires_at=@expires_at, created_at=@created_at, updated_at=@updated_at WHERE id=@id", &pgx.NamedArgs{
+			"user_id":    creditCard.UserId,
+			"pan":        creditCard.Pan,
+			"holder":     creditCard.Holder,
+			"cvc":        creditCard.Cvc,
+			"expires_at": creditCard.ExpiresAt,
+			"created_at": creditCard.CreatedAt,
+			"updated_at": creditCard.UpdatedAt,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return creditCard, nil
+	}
+
+	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO credit_cards (id, user_id, pan, holder, cvc, expires_at, created_at, updated_at) VALUES (@id, @user_id, @pan, @holder, @cvc, @expires_at, @created_at, @updated_at)", &pgx.NamedArgs{
+		"user_id":    creditCard.UserId,
+		"pan":        creditCard.Pan,
+		"holder":     creditCard.Holder,
+		"cvc":        creditCard.Cvc,
+		"expires_at": creditCard.ExpiresAt,
+		"created_at": creditCard.CreatedAt,
+		"updated_at": creditCard.UpdatedAt,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return creditCard, nil
+}
+
 func (r *CreditCardRepositoryImpl) Find(ctx context.Context, id string, tx pgx.Tx) (*entity.CreditCard, error) {
 	creditCard := &entity.CreditCard{}
 
