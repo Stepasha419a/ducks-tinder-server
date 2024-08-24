@@ -32,6 +32,19 @@ func (r *CreditCardRepositoryImpl) Find(ctx context.Context, id string, tx pgx.T
 	return creditCard, nil
 }
 
+func (r *CreditCardRepositoryImpl) FindByUserId(ctx context.Context, userId string, tx pgx.Tx) (*entity.CreditCard, error) {
+	creditCard := &entity.CreditCard{}
+
+	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT id, user_id, pan, holder, cvc, expires_at, created_at, updated_at FROM credit_cards WHERE user_id=@user_id", &pgx.NamedArgs{
+		"user_id": userId,
+	}).Scan(&creditCard.Id, &creditCard.UserId, &creditCard.Pan, &creditCard.Holder, &creditCard.Cvc, &creditCard.ExpiresAt, &creditCard.CreatedAt, &creditCard.UpdatedAt)
+	if err != nil {
+		return nil, handleError(err)
+	}
+
+	return creditCard, nil
+}
+
 func handleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
