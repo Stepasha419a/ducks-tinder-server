@@ -24,8 +24,8 @@ export class GetMatchQueryHandler implements IQueryHandler<GetMatchQuery> {
       return matchUsers;
     }
 
-    matchUsers.forEach((user) => {
-      user.setDistanceBetweenPlaces(user.place);
+    matchUsers.forEach((matchUser) => {
+      matchUser.setDistanceBetweenPlaces(user.place);
     });
 
     return matchUsers;
