@@ -22,7 +22,7 @@ export class MatchFilterDto {
   @ValidateIf((value) => value !== undefined)
   @IsArray()
   @ArrayMinSize(0)
-  @ArrayMaxSize(2)
+  @ArrayMaxSize(10)
   @IsUUID('4', { each: true })
   @Type(() => String)
   @Transform(({ value }) => (Array.isArray(value) ? value : value.split(',')))
