@@ -83,6 +83,19 @@ func (r *CreditCardRepositoryImpl) FindByUserId(ctx context.Context, userId stri
 	return creditCard, nil
 }
 
+func (r *CreditCardRepositoryImpl) FindPurchase(ctx context.Context, id string, tx pgx.Tx) (*entity.Purchase, error) {
+	purchase := &entity.Purchase{}
+
+	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT id, credit_card_id, amount, created_at FROM purchases WHERE id=@id", &pgx.NamedArgs{
+		"id": id,
+	}).Scan(&purchase.Id, &purchase.CreditCardId, &purchase.Amount, &purchase.CreatedAt)
+	if err != nil {
+		return nil, handleError(err)
+	}
+
+	return purchase, nil
+}
+
 func handleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
