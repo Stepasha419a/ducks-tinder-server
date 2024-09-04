@@ -57,6 +57,37 @@ func (r *CreditCardRepositoryImpl) Save(ctx context.Context, creditCard *entity.
 	return creditCard, nil
 }
 
+func (r *CreditCardRepositoryImpl) SavePurchase(ctx context.Context, purchase *entity.Purchase, tx pgx.Tx) (*entity.Purchase, error) {
+	existingPurchase, err := r.FindPurchase(ctx, purchase.Id, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	if existingPurchase != nil {
+		_, err = database.Exec(r.pg.Pool, tx)(ctx, "UPDATE purchases SET credit_card_id=@credit_card_id, amount=@amount, created_at=@created_at WHERE id=@id", &pgx.NamedArgs{
+			"credit_card_id": purchase.CreditCardId,
+			"amount":         purchase.Amount,
+			"created_at":     purchase.CreatedAt,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return purchase, nil
+	}
+
+	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO purchases (id, credit_card_id, amount, created_at) VALUES (@id, @credit_card_id, @amount, @created_at)", &pgx.NamedArgs{
+		"id":             purchase.Id,
+		"credit_card_id": purchase.CreditCardId,
+		"amount":         purchase.Amount,
+		"created_at":     purchase.CreatedAt,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return purchase, nil
+}
+
 func (r *CreditCardRepositoryImpl) Find(ctx context.Context, id string, tx pgx.Tx) (*entity.CreditCard, error) {
 	creditCard := &entity.CreditCard{}
 
