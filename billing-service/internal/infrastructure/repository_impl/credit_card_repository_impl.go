@@ -96,6 +96,17 @@ func (r *CreditCardRepositoryImpl) FindPurchase(ctx context.Context, id string, 
 	return purchase, nil
 }
 
+func (r *CreditCardRepositoryImpl) Delete(ctx context.Context, id string, tx pgx.Tx) error {
+	_, err := database.Exec(r.pg.Pool, tx)(ctx, "DELETE FROM purchases WHERE id=@id", &pgx.NamedArgs{
+		"id": id,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func handleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
