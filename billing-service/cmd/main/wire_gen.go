@@ -10,18 +10,24 @@ import (
 	"billing-service/internal/domain/service/config"
 	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/service/config_impl"
+	"billing-service/internal/interface/http/fiber"
+	"github.com/gofiber/fiber/v3"
 )
 
 // Injectors from wire.go:
 
 func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
-	postgresInstance := database.NewPostgresInstance(configServiceImpl)
+	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
+	app, cleanup2 := fiber_impl.NewFiberApp()
 	container := &Container{
 		ConfigService: configServiceImpl,
 		Postgres:      postgresInstance,
+		App:           app,
 	}
 	return container, func() {
+		cleanup2()
+		cleanup()
 	}, nil
 }
 
@@ -30,4 +36,5 @@ func newContainer() (*Container, func(), error) {
 type Container struct {
 	ConfigService config_service.ConfigService
 	Postgres      *database.PostgresInstance
+	App           *fiber.App
 }
