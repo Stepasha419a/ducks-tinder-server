@@ -7,8 +7,10 @@
 package main
 
 import (
+	"billing-service/internal/domain/repository"
 	"billing-service/internal/domain/service/config"
 	"billing-service/internal/infrastructure/database"
+	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
 	"billing-service/internal/interface/http/fiber"
 	"github.com/gofiber/fiber/v3"
@@ -20,10 +22,12 @@ func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
 	app, cleanup2 := fiber_impl.NewFiberApp()
+	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	container := &Container{
-		ConfigService: configServiceImpl,
-		Postgres:      postgresInstance,
-		App:           app,
+		ConfigService:        configServiceImpl,
+		Postgres:             postgresInstance,
+		App:                  app,
+		CreditCardRepository: creditCardRepositoryImpl,
 	}
 	return container, func() {
 		cleanup2()
@@ -34,7 +38,8 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
-	ConfigService config_service.ConfigService
-	Postgres      *database.PostgresInstance
-	App           *fiber.App
+	ConfigService        config_service.ConfigService
+	Postgres             *database.PostgresInstance
+	App                  *fiber.App
+	CreditCardRepository repository.CreditCardRepository
 }
