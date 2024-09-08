@@ -1,6 +1,8 @@
 package main
 
 import (
+	"billing-service/internal/application/facade"
+	"billing-service/internal/application/service"
 	"billing-service/internal/domain/repository"
 	config_service "billing-service/internal/domain/service/config"
 	"billing-service/internal/infrastructure/database"
@@ -13,10 +15,10 @@ import (
 )
 
 type Container struct {
-	ConfigService        config_service.ConfigService
-	Postgres             *database.PostgresInstance
-	App                  *fiber.App
-	CreditCardRepository repository.CreditCardRepository
+	ConfigService  config_service.ConfigService
+	Postgres       *database.PostgresInstance
+	App            *fiber.App
+	BillingService service.BillingService
 }
 
 func newContainer() (*Container, func(), error) {
@@ -27,6 +29,8 @@ func newContainer() (*Container, func(), error) {
 		fiber_impl.NewFiberApp,
 		wire.Bind(new(repository.CreditCardRepository), new(*repository_impl.CreditCardRepositoryImpl)),
 		repository_impl.NewCreditCardRepository,
+		wire.Bind(new(service.BillingService), new(*facade.BillingFacade)),
+		facade.NewBillingFacade,
 		wire.Struct(new(Container), "*"),
 	))
 }
