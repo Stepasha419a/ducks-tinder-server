@@ -42,6 +42,7 @@ func (r *CreditCardRepositoryImpl) Save(ctx context.Context, creditCard *entity.
 	}
 
 	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO credit_cards (id, user_id, pan, holder, cvc, expires_at, created_at, updated_at) VALUES (@id, @user_id, @pan, @holder, @cvc, @expires_at, @created_at, @updated_at)", &pgx.NamedArgs{
+		"id":         creditCard.Id,
 		"user_id":    creditCard.UserId,
 		"pan":        creditCard.Pan,
 		"holder":     creditCard.Holder,
