@@ -10,6 +10,7 @@ import (
 	"billing-service/internal/application/facade"
 	"billing-service/internal/application/service"
 	"billing-service/internal/domain/service/config"
+	"billing-service/internal/domain/service/jwt"
 	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
@@ -22,14 +23,15 @@ import (
 func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
-	app, cleanup2 := fiber_impl.NewFiberApp()
+	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	container := &Container{
-		ConfigService:  configServiceImpl,
-		Postgres:       postgresInstance,
-		App:            app,
-		BillingService: billingFacade,
+		ConfigService:     configServiceImpl,
+		Postgres:          postgresInstance,
+		App:               app,
+		BillingService:    billingFacade,
+		JwtService:        jwtService,
 	}
 	return container, func() {
 		cleanup2()
@@ -40,8 +42,9 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
-	ConfigService  config_service.ConfigService
-	Postgres       *database.PostgresInstance
-	App            *fiber.App
-	BillingService service.BillingService
+	ConfigService     config_service.ConfigService
+	Postgres          *database.PostgresInstance
+	App               *fiber.App
+	BillingService    service.BillingService
+	JwtService        *jwt_service.JwtService
 }
