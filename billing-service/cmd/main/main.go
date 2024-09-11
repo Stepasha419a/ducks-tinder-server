@@ -1,6 +1,15 @@
 package main
 
-import "fmt"
+import (
+	fiber_impl "billing-service/internal/interface/http/fiber"
+	"context"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"golang.org/x/sync/errgroup"
+)
 
 func main() {
 	container, cleaner, err := newContainer()
@@ -8,6 +17,38 @@ func main() {
 		panic(err)
 	}
 
-	defer cleaner()
-	fmt.Println(container.ConfigService.GetConfig())
+	setUpWithGracefulShutdown(container, cleaner)
+}
+
+func setUpWithGracefulShutdown(container *Container, cleaner func()) {
+	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	g, gCtx := errgroup.WithContext(mainCtx)
+
+	initListeners(g, container)
+	gracefulShutdown(gCtx, g, cleaner)
+
+	err := g.Wait()
+	if err != nil {
+		log.Printf("error: %s \n", err)
+	}
+}
+
+func initListeners(g *errgroup.Group, container *Container) {
+	g.Go(func() error {
+		return fiber_impl.InitHttpListener(container.App, container.ConfigService)
+	})
+}
+
+func gracefulShutdown(gCtx context.Context, g *errgroup.Group, cleaner func()) {
+	g.Go(func() error {
+		<-gCtx.Done()
+
+		log.Println("start graceful shutdown")
+		cleaner()
+		log.Println("finish graceful shutdown")
+
+		return nil
+	})
 }
