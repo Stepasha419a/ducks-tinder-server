@@ -1,11 +1,10 @@
 package facade
 
 import (
-	"billing-service/internal/application/mapper"
 	get_user_credit_card "billing-service/internal/application/query/get-user-credit-card"
 	"billing-service/internal/application/service"
+	service_context "billing-service/internal/application/service/context"
 	"billing-service/internal/domain/repository"
-	"context"
 )
 
 type BillingFacade struct {
@@ -20,6 +19,6 @@ func NewBillingFacade(creditCardRepository repository.CreditCardRepository) *Bil
 	return &BillingFacade{creditCardRepository}
 }
 
-func (f *BillingFacade) GetUserCreditCard(ctx context.Context, query *get_user_credit_card.GetUserCreditCardQuery) (*mapper.CreditCardResponse, error) {
+func (f *BillingFacade) GetUserCreditCard(ctx service_context.ServiceContext, query *get_user_credit_card.GetUserCreditCardQuery) error {
 	return get_user_credit_card.GetUserCreditCardQueryHandler(ctx, query, f.creditCardRepository)
 }
