@@ -8,6 +8,8 @@ import (
 func main() {
 	configService := config_service_impl.NewConfigService()
 
-	db := database.NewPostgresInstance(configService)
+	db, cleanup := database.NewPostgresInstance(configService)
 	database.MigrateDB(db)
+
+	cleanup()
 }
