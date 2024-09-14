@@ -15,9 +15,8 @@ func GetUserCreditCardQueryHandler(ctx service_context.ServiceContext, query *Ge
 	}
 
 	if creditCard == nil {
-		responseError(http.StatusNotFound, "Not found")
-		return nil, nil
+		return ctx.Response(http.StatusNotFound, response_service.NotFound)
 	}
 
-	return mapper.NewCreditCardResponse(creditCard), nil
+	return ctx.Response(http.StatusOK, mapper.NewCreditCardResponse(creditCard))
 }

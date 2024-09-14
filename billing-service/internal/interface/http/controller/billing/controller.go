@@ -24,12 +24,12 @@ func NewBillingController(f *fiber.App, service service.BillingService) *Billing
 
 var validate = validator.New()
 
-func (bc *BillingController) GetUserCreditCard(c fiber.Ctx) error {
-	rawUserId := c.Locals("userId")
+func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
+	rawUserId := ctx.Locals("userId")
 
 	userId, ok := rawUserId.(string)
 	if !ok {
-		return fiber.NewError(http.StatusInternalServerError, "Internal server error")
+		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
 	}
 
 	dto := GetUserCreditCardDto{UserId: userId}
@@ -39,10 +39,6 @@ func (bc *BillingController) GetUserCreditCard(c fiber.Ctx) error {
 		return fiber.NewError(http.StatusBadRequest, "Validation failed: "+err.Error())
 	}
 
-	res, err := bc.service.GetUserCreditCard(c.Context(), query)
-	if err != nil {
-		return err
-	}
-
-	return c.Status(fiber.StatusOK).JSON(res)
+	serviceContext := fiber_impl.NewServiceContext(ctx)
+	return bc.service.GetUserCreditCard(serviceContext, query)
 }
