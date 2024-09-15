@@ -20,7 +20,7 @@ type CreditCard struct {
 }
 
 func NewCreditCard(userId string, pan string, holder string, cvc string, expiresAt string) (*CreditCard, error) {
-	expiresAtTime, err := time_service.ParseISOString(expiresAt)
+	expiresAtTime, err := time_service.ParseDateMonthString(expiresAt)
 	if err != nil {
 		return nil, err
 	}
