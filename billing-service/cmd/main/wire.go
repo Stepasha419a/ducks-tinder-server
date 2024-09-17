@@ -11,7 +11,9 @@ import (
 	"billing-service/internal/infrastructure/repository_impl"
 	config_service_impl "billing-service/internal/infrastructure/service/config_impl"
 	validator_service_impl "billing-service/internal/infrastructure/service/validator_impl"
+	billing_controller "billing-service/internal/interface/http/controller/billing"
 	fiber_impl "billing-service/internal/interface/http/fiber"
+	"billing-service/internal/interface/http/middleware"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/wire"
@@ -35,6 +37,7 @@ func newContainer() (*Container, func(), error) {
 		config_service_impl.NewConfigService,
 		database.NewPostgresInstance,
 		jwt_service.NewJwtService,
+		middleware.NewMiddleware,
 		fiber_impl.NewFiberApp,
 		wire.Bind(new(repository.CreditCardRepository), new(*repository_impl.CreditCardRepositoryImpl)),
 		repository_impl.NewCreditCardRepository,

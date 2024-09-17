@@ -18,6 +18,7 @@ import (
 	"billing-service/internal/infrastructure/service/validator_impl"
 	"billing-service/internal/interface/http/controller/billing"
 	"billing-service/internal/interface/http/fiber"
+	"billing-service/internal/interface/http/middleware"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -28,6 +29,8 @@ func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService()
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
+	middlewareMiddleware := middleware.NewMiddleware(jwtService)
+	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware)
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
