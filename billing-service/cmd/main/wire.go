@@ -24,6 +24,7 @@ type Container struct {
 	App               *fiber.App
 	BillingService    service.BillingService
 	JwtService        *jwt_service.JwtService
+	BillingController *billing_controller.BillingController
 }
 
 func newContainer() (*Container, func(), error) {
@@ -39,6 +40,7 @@ func newContainer() (*Container, func(), error) {
 		repository_impl.NewCreditCardRepository,
 		wire.Bind(new(service.BillingService), new(*facade.BillingFacade)),
 		facade.NewBillingFacade,
+		billing_controller.NewBillingController,
 		wire.Struct(new(Container), "*"),
 	))
 }
