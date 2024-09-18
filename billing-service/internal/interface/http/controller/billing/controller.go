@@ -2,27 +2,28 @@ package billing_controller
 
 import (
 	"billing-service/internal/application/service"
+	validator_service "billing-service/internal/domain/service/validator"
+	fiber_impl "billing-service/internal/interface/http/fiber"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 )
 
 type BillingController struct {
-	service service.BillingService
+	service          service.BillingService
+	validatorService validator_service.ValidatorService
 }
 
-func NewBillingController(f *fiber.App, service service.BillingService) *BillingController {
+func NewBillingController(f *fiber.App, service service.BillingService, validatorService validator_service.ValidatorService) *BillingController {
 	controller := &BillingController{
 		service,
+		validatorService,
 	}
 
 	f.Get("/billing/card", controller.GetUserCreditCard)
 
 	return controller
 }
-
-var validate = validator.New()
 
 func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
 	rawUserId := ctx.Locals("userId")
@@ -34,7 +35,7 @@ func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
 
 	dto := GetUserCreditCardDto{UserId: userId}
 
-	query, err := dto.ToGetUserCreditCardQuery(validate)
+	query, err := dto.ToGetUserCreditCardQuery(bc.validatorService)
 	if err != nil {
 		return fiber.NewError(http.StatusBadRequest, "Validation failed: "+err.Error())
 	}
