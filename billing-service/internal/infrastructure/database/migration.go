@@ -62,7 +62,7 @@ func initMigration(ctx context.Context, pg *PostgresInstance) error {
 		user_id UUID NOT NULL UNIQUE,
 		pan VARCHAR(16) NOT NULL,
 		holder VARCHAR(40),
-		cvc VARCHAR(3),
+		cvc VARCHAR(4),
 		expires_at timestamp(3) without time zone NOT NULL,
 		
 		created_at timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
