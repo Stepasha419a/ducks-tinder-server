@@ -22,6 +22,7 @@ func NewValidatorService() *ValidatorServiceImpl {
 	validate := validator.New()
 
 	validate.RegisterValidation("credit_card_holder", ValidateCreditCardHolder)
+	validate.RegisterValidation("credit_card_cvc", ValidateCreditCardCVC)
 
 	return &ValidatorServiceImpl{
 		validate,
@@ -37,4 +38,15 @@ func ValidateCreditCardHolder(fl validator.FieldLevel) bool {
 
 	parts := strings.Split(value, " ")
 	return len(parts) == 2
+}
+
+func ValidateCreditCardCVC(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+
+	_, err := strconv.Atoi(value)
+	if err != nil {
+		return false
+	}
+
+	return len(value) == 3 || len(value) == 4
 }
