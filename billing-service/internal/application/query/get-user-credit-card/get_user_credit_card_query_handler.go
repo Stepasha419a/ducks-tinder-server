@@ -1,7 +1,6 @@
 package get_user_credit_card
 
 import (
-	response_service "billing-service/internal/application/common/response"
 	"billing-service/internal/application/mapper"
 	service_context "billing-service/internal/application/service/context"
 	"billing-service/internal/domain/repository"
@@ -15,7 +14,7 @@ func GetUserCreditCardQueryHandler(ctx service_context.ServiceContext, query *Ge
 	}
 
 	if creditCard == nil {
-		return ctx.Response(http.StatusNotFound, response_service.NotFound)
+		return ctx.NotFound()
 	}
 
 	return ctx.Response(http.StatusOK, mapper.NewCreditCardResponse(creditCard))
