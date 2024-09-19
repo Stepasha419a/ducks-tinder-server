@@ -4,6 +4,7 @@ import (
 	time_service "billing-service/internal/domain/service/time"
 	validator_service "billing-service/internal/domain/service/validator"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,6 +24,7 @@ func NewValidatorService() *ValidatorServiceImpl {
 
 	validate.RegisterValidation("credit_card_holder", ValidateCreditCardHolder)
 	validate.RegisterValidation("credit_card_cvc", ValidateCreditCardCVC)
+	validate.RegisterValidation("credit_card_expires_date_month", ValidateNotExpiredDateMonth)
 
 	return &ValidatorServiceImpl{
 		validate,
@@ -49,4 +51,18 @@ func ValidateCreditCardCVC(fl validator.FieldLevel) bool {
 	}
 
 	return len(value) == 3 || len(value) == 4
+}
+
+func ValidateNotExpiredDateMonth(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	parsedTime, err := time_service.ParseDateMonthString(value)
+	if err != nil {
+		return false
+	}
+
+	if parsedTime.Before(time.Now()) {
+		return false
+	}
+
+	return true
 }
