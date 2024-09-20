@@ -9,8 +9,12 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func NewFiberApp() (*fiber.App, func()) {
-	app := fiber.New()
+func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
+	app := fiber.New(fiber.Config{
+		ErrorHandler: func(ctx fiber.Ctx, err error) error {
+			return ctx.Status(http.StatusInternalServerError).JSON(fiber_impl_context.InternalServerErrorResponse)
+		},
+	})
 
 	return app, func() {
 		log.Println("close fiber app")
