@@ -32,6 +32,22 @@ func (s *ServiceContextImpl) Response(status int, body interface{}) error {
 	return s.ctx.Status(status).JSON(body)
 }
 
+func (s *ServiceContextImpl) BadRequest() error {
+	return s.ctx.Status(http.StatusBadRequest).JSON(BadRequest)
+}
+
+func (s *ServiceContextImpl) Unauthorized() error {
+	return s.ctx.Status(http.StatusUnauthorized).JSON(UnauthorizedResponse)
+}
+
+func (s *ServiceContextImpl) NotFound() error {
+	return s.ctx.Status(http.StatusNotFound).JSON(NotFound)
+}
+
+func (s *ServiceContextImpl) InternalServerError() error {
+	return s.ctx.Status(http.StatusInternalServerError).JSON(InternalServerErrorResponse)
+}
+
 func MapResponse(status int, message string) map[string]interface{} {
 	return map[string]interface{}{
 		"status":  strconv.Itoa(status),
