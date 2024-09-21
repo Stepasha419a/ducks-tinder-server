@@ -26,7 +26,7 @@ import (
 
 func newContainer() (*Container, func(), error) {
 	validatorServiceImpl := validator_service_impl.NewValidatorService()
-	configServiceImpl := config_service_impl.NewConfigService()
+	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)

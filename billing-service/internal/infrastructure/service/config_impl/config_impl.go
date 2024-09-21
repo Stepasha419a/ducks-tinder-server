@@ -2,6 +2,7 @@ package config_service_impl
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	validator_service "billing-service/internal/domain/service/validator"
 	"log"
 	"os"
 	"path"
@@ -14,10 +15,10 @@ import (
 
 type (
 	parsedConfig struct {
-		JwtAccessSecret         string `yaml:"jwt_access_secret"`
-		JwtBillingServiceSecret string `yaml:"jwt_billing_service_secret"`
-		Port                    int16  `yaml:"port"`
-		DatabaseUrl             string `yaml:"database_url"`
+		JwtAccessSecret         string `validate:"required" yaml:"jwt_access_secret"`
+		JwtBillingServiceSecret string `validate:"required" yaml:"jwt_billing_service_secret"`
+		Port                    uint16 `validate:"required" yaml:"port"`
+		DatabaseUrl             string `validate:"required" yaml:"database_url"`
 	}
 
 	ConfigServiceImpl struct{}
@@ -29,15 +30,15 @@ var (
 	_      config_service.ConfigService = (*ConfigServiceImpl)(nil)
 )
 
-func NewConfigService() *ConfigServiceImpl {
+func NewConfigService(validatorService validator_service.ValidatorService) *ConfigServiceImpl {
 	log.Println("new config service")
 
-	requireConfig()
+	requireConfig(validatorService)
 
 	return &ConfigServiceImpl{}
 }
 
-func requireConfig() {
+func requireConfig(validatorService validator_service.ValidatorService) {
 	err := godotenv.Load(".env")
 
 	if err != nil {
@@ -60,6 +61,11 @@ func requireConfig() {
 
 	parsedConfig := parsedConfig{}
 	if err := decoder.Decode(&parsedConfig); err != nil {
+		panic(err)
+	}
+
+	err = validatorService.Struct(parsedConfig)
+	if err != nil {
 		panic(err)
 	}
 
