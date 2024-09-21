@@ -18,6 +18,7 @@ type (
 		JwtAccessSecret         string `validate:"required" yaml:"jwt_access_secret"`
 		JwtBillingServiceSecret string `validate:"required" yaml:"jwt_billing_service_secret"`
 		Port                    uint16 `validate:"required" yaml:"port"`
+		GrpcPort                uint16 `validate:"required" yaml:"grpc_port"`
 		DatabaseUrl             string `validate:"required" yaml:"database_url"`
 	}
 
