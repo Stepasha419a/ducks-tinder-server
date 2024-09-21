@@ -9,6 +9,7 @@ type (
 		JwtAccessSecret         string
 		JwtBillingServiceSecret string
 		Port                    uint16
+		GrpcPort                uint16
 		DatabaseUrl             string
 	}
 )
