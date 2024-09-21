@@ -2,8 +2,12 @@ package fiber_impl
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	fiber_impl_context "billing-service/internal/interface/http/fiber/context"
+	"billing-service/internal/interface/http/middleware"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
@@ -12,7 +16,14 @@ import (
 func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx fiber.Ctx, err error) error {
-			return ctx.Status(http.StatusInternalServerError).JSON(fiber_impl_context.InternalServerErrorResponse)
+			status := http.StatusInternalServerError
+
+			var e *fiber.Error
+			if errors.As(err, &e) {
+				status = e.Code
+			}
+
+			return ctx.Status(status).JSON(fiber_impl_context.InternalServerErrorResponse)
 		},
 	})
 
