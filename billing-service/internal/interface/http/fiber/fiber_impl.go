@@ -11,6 +11,8 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
 func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
@@ -26,6 +28,9 @@ func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 			return ctx.Status(status).JSON(fiber_impl_context.InternalServerErrorResponse)
 		},
 	})
+
+	app.Use(logger.New())
+	app.Use(recover.New())
 
 	return app, func() {
 		log.Println("close fiber app")
