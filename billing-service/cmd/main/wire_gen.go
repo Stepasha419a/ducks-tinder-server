@@ -16,9 +16,11 @@ import (
 	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
 	"billing-service/internal/infrastructure/service/validator_impl"
+	"billing-service/internal/interface/grpc/server"
 	"billing-service/internal/interface/http/controller/billing"
 	"billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
+	"billing-service/proto/gen"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -34,14 +36,16 @@ func newContainer() (*Container, func(), error) {
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
+	billingServiceServerImpl := grpc_billing_server_impl.NewBillingServiceServerImpl()
 	container := &Container{
-		ValidatorService:  validatorServiceImpl,
-		ConfigService:     configServiceImpl,
-		Postgres:          postgresInstance,
-		App:               app,
-		BillingService:    billingFacade,
-		JwtService:        jwtService,
-		BillingController: billingController,
+		ValidatorService:     validatorServiceImpl,
+		ConfigService:        configServiceImpl,
+		Postgres:             postgresInstance,
+		App:                  app,
+		BillingService:       billingFacade,
+		JwtService:           jwtService,
+		BillingController:    billingController,
+		BillingServiceServer: billingServiceServerImpl,
 	}
 	return container, func() {
 		cleanup2()
@@ -52,11 +56,12 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
-	ValidatorService  validator_service.ValidatorService
-	ConfigService     config_service.ConfigService
-	Postgres          *database.PostgresInstance
-	App               *fiber.App
-	BillingService    service.BillingService
-	JwtService        *jwt_service.JwtService
-	BillingController *billing_controller.BillingController
+	ValidatorService     validator_service.ValidatorService
+	ConfigService        config_service.ConfigService
+	Postgres             *database.PostgresInstance
+	App                  *fiber.App
+	BillingService       service.BillingService
+	JwtService           *jwt_service.JwtService
+	BillingController    *billing_controller.BillingController
+	BillingServiceServer gen.BillingServiceServer
 }

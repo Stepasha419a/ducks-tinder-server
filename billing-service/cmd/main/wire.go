@@ -11,22 +11,25 @@ import (
 	"billing-service/internal/infrastructure/repository_impl"
 	config_service_impl "billing-service/internal/infrastructure/service/config_impl"
 	validator_service_impl "billing-service/internal/infrastructure/service/validator_impl"
+	grpc_billing_server_impl "billing-service/internal/interface/grpc/server"
 	billing_controller "billing-service/internal/interface/http/controller/billing"
 	fiber_impl "billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
+	"billing-service/proto/gen"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/wire"
 )
 
 type Container struct {
-	ValidatorService  validator_service.ValidatorService
-	ConfigService     config_service.ConfigService
-	Postgres          *database.PostgresInstance
-	App               *fiber.App
-	BillingService    service.BillingService
-	JwtService        *jwt_service.JwtService
-	BillingController *billing_controller.BillingController
+	ValidatorService     validator_service.ValidatorService
+	ConfigService        config_service.ConfigService
+	Postgres             *database.PostgresInstance
+	App                  *fiber.App
+	BillingService       service.BillingService
+	JwtService           *jwt_service.JwtService
+	BillingController    *billing_controller.BillingController
+	BillingServiceServer gen.BillingServiceServer
 }
 
 func newContainer() (*Container, func(), error) {
@@ -44,6 +47,8 @@ func newContainer() (*Container, func(), error) {
 		wire.Bind(new(service.BillingService), new(*facade.BillingFacade)),
 		facade.NewBillingFacade,
 		billing_controller.NewBillingController,
+		wire.Bind(new(gen.BillingServiceServer), new(*grpc_billing_server_impl.BillingServiceServerImpl)),
+		grpc_billing_server_impl.NewBillingServiceServerImpl,
 		wire.Struct(new(Container), "*"),
 	))
 }
