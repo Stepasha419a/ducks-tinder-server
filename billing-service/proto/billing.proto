@@ -11,7 +11,8 @@ service BillingService {
 
 message WithdrawUserCreditCardRequest {
     string userId = 1;
-    Purchase purchase = 2;
+    string creditCardId = 2;
+    uint32 amount = 3;
 }
 
 message Purchase {
