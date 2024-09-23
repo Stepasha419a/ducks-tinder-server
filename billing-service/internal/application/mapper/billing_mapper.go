@@ -29,3 +29,21 @@ func NewCreditCardResponse(creditCard *entity.CreditCard) *CreditCardResponse {
 		UpdatedAt: creditCard.UpdatedAt,
 	}
 }
+
+type PurchaseResponse struct {
+	Id           string `json:"id"`
+	CreditCardId string `json:"creditCardId"`
+	Amount       int64  `json:"amount"`
+
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+func NewPurchaseResponse(purchase *entity.Purchase) *PurchaseResponse {
+	return &PurchaseResponse{
+		Id:           purchase.Id,
+		CreditCardId: purchase.CreditCardId,
+		Amount:       purchase.Amount,
+
+		CreatedAt: purchase.CreatedAt,
+	}
+}
