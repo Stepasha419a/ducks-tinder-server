@@ -16,12 +16,14 @@ import (
 	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
 	"billing-service/internal/infrastructure/service/validator_impl"
+	"billing-service/internal/interface/grpc"
 	"billing-service/internal/interface/grpc/server"
 	"billing-service/internal/interface/http/controller/billing"
 	"billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
 	"billing-service/proto/gen"
 	"github.com/gofiber/fiber/v3"
+	"google.golang.org/grpc"
 )
 
 // Injectors from wire.go:
@@ -36,7 +38,8 @@ func newContainer() (*Container, func(), error) {
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
-	billingServiceServerImpl := grpc_billing_server_impl.NewBillingServiceServerImpl()
+	billingServiceServerImpl := grpc_billing_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
+	server, cleanup3 := grpc_interface.NewGrpc(billingServiceServerImpl)
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
@@ -46,8 +49,10 @@ func newContainer() (*Container, func(), error) {
 		JwtService:           jwtService,
 		BillingController:    billingController,
 		BillingServiceServer: billingServiceServerImpl,
+		GrpcServer:           server,
 	}
 	return container, func() {
+		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil
@@ -64,4 +69,5 @@ type Container struct {
 	JwtService           *jwt_service.JwtService
 	BillingController    *billing_controller.BillingController
 	BillingServiceServer gen.BillingServiceServer
+	GrpcServer           *grpc.Server
 }
