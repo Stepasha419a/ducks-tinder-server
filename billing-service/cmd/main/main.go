@@ -1,6 +1,7 @@
 package main
 
 import (
+	grpc_interface "billing-service/internal/interface/grpc"
 	fiber_impl "billing-service/internal/interface/http/fiber"
 	"context"
 	"log"
@@ -38,6 +39,9 @@ func setUpWithGracefulShutdown(container *Container, cleaner func()) {
 func initListeners(g *errgroup.Group, container *Container) {
 	g.Go(func() error {
 		return fiber_impl.InitHttpListener(container.App, container.ConfigService)
+	})
+	g.Go(func() error {
+		return grpc_interface.InitGrpcListener(container.GrpcServer, container.ConfigService)
 	})
 }
 
