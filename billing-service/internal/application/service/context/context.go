@@ -2,8 +2,8 @@ package service_context
 
 import "context"
 
-type ServiceContext interface {
-	Response(status int, body interface{}) error
+type ServiceContext[r any] interface {
+	Response(status int, body r) error
 	Context() context.Context
 
 	BadRequest() error
