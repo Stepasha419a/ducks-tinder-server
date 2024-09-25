@@ -1,6 +1,9 @@
-package billing_controller
+package interface_common
 
 import (
+	"billing-service/internal/application/command/add_user_credit_card"
+	"billing-service/internal/application/command/delete_user_credit_card"
+	"billing-service/internal/application/command/withdraw_user_credit_card"
 	get_user_credit_card "billing-service/internal/application/query/get-user-credit-card"
 	validator_service "billing-service/internal/domain/service/validator"
 )
@@ -19,3 +22,4 @@ func (dto *GetUserCreditCardDto) ToGetUserCreditCardQuery(validatorService valid
 		UserId: dto.UserId,
 	}, nil
 }
+
