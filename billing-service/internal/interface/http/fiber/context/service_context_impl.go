@@ -16,35 +16,38 @@ var (
 	NotFound                    = map[string]string{"status": "404", "message": "Not found"}
 )
 
-type ServiceContextImpl struct {
-	ctx fiber.Ctx
+type ServiceContextImpl[R any] struct {
+	ctx          fiber.Ctx
+	ResponseData R
 }
 
-func NewServiceContext(ctx fiber.Ctx) service_context.ServiceContext {
-	return &ServiceContextImpl{ctx}
+func NewServiceContext[R any](ctx fiber.Ctx) service_context.ServiceContext[R] {
+	return &ServiceContextImpl[R]{ctx: ctx}
 }
 
-func (s *ServiceContextImpl) Context() context.Context {
+func (s *ServiceContextImpl[R]) Context() context.Context {
 	return s.ctx.Context()
 }
 
-func (s *ServiceContextImpl) Response(status int, body interface{}) error {
+func (s *ServiceContextImpl[R]) Response(status int, body R) error {
+	s.ResponseData = body
+
 	return s.ctx.Status(status).JSON(body)
 }
 
-func (s *ServiceContextImpl) BadRequest() error {
+func (s *ServiceContextImpl[R]) BadRequest() error {
 	return s.ctx.Status(http.StatusBadRequest).JSON(BadRequest)
 }
 
-func (s *ServiceContextImpl) Unauthorized() error {
+func (s *ServiceContextImpl[R]) Unauthorized() error {
 	return s.ctx.Status(http.StatusUnauthorized).JSON(UnauthorizedResponse)
 }
 
-func (s *ServiceContextImpl) NotFound() error {
+func (s *ServiceContextImpl[R]) NotFound() error {
 	return s.ctx.Status(http.StatusNotFound).JSON(NotFound)
 }
 
-func (s *ServiceContextImpl) InternalServerError() error {
+func (s *ServiceContextImpl[R]) InternalServerError() error {
 	return s.ctx.Status(http.StatusInternalServerError).JSON(InternalServerErrorResponse)
 }
 
