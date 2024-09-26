@@ -4,6 +4,7 @@ import (
 	"billing-service/internal/application/mapper"
 	"billing-service/internal/application/service"
 	validator_service "billing-service/internal/domain/service/validator"
+	interface_common "billing-service/internal/interface/common"
 	fiber_impl_context "billing-service/internal/interface/http/fiber/context"
 	"net/http"
 
@@ -34,7 +35,7 @@ func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
 		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
 	}
 
-	dto := GetUserCreditCardDto{UserId: userId}
+	dto := interface_common.GetUserCreditCardDto{UserId: userId}
 
 	query, err := dto.ToGetUserCreditCardQuery(bc.validatorService)
 	if err != nil {
