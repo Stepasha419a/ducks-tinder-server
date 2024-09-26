@@ -38,7 +38,7 @@ func newContainer() (*Container, func(), error) {
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
-	billingServiceServerImpl := grpc_billing_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
+	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
 	server, cleanup3 := grpc_interface.NewGrpc(billingServiceServerImpl)
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,

@@ -12,7 +12,7 @@ import (
 	config_service_impl "billing-service/internal/infrastructure/service/config_impl"
 	validator_service_impl "billing-service/internal/infrastructure/service/validator_impl"
 	grpc_interface "billing-service/internal/interface/grpc"
-	grpc_billing_server_impl "billing-service/internal/interface/grpc/server"
+	grpc_billing_service_server_impl "billing-service/internal/interface/grpc/server"
 	billing_controller "billing-service/internal/interface/http/controller/billing"
 	fiber_impl "billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
@@ -50,8 +50,8 @@ func newContainer() (*Container, func(), error) {
 		wire.Bind(new(service.BillingService), new(*facade.BillingFacade)),
 		facade.NewBillingFacade,
 		billing_controller.NewBillingController,
-		wire.Bind(new(gen.BillingServiceServer), new(*grpc_billing_server_impl.BillingServiceServerImpl)),
-		grpc_billing_server_impl.NewBillingServiceServerImpl,
+		wire.Bind(new(gen.BillingServiceServer), new(*grpc_billing_service_server_impl.BillingServiceServerImpl)),
+		grpc_billing_service_server_impl.NewBillingServiceServerImpl,
 		grpc_interface.NewGrpc,
 		wire.Struct(new(Container), "*"),
 	))
