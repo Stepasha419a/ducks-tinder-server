@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func AddUserCreditCardCommandHandler(ctx service_context.ServiceContext, command *AddUserCreditCardCommand, creditCardRepository repository.CreditCardRepository) error {
+func AddUserCreditCardCommandHandler(ctx service_context.ServiceContext[*mapper.CreditCardResponse], command *AddUserCreditCardCommand, creditCardRepository repository.CreditCardRepository) error {
 	creditCard, err := creditCardRepository.FindByUserId(ctx.Context(), command.UserId, nil)
 	if err != nil {
 		return err

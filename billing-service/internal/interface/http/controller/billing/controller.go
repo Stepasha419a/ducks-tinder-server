@@ -1,6 +1,7 @@
 package billing_controller
 
 import (
+	"billing-service/internal/application/mapper"
 	"billing-service/internal/application/service"
 	validator_service "billing-service/internal/domain/service/validator"
 	fiber_impl_context "billing-service/internal/interface/http/fiber/context"
@@ -40,6 +41,6 @@ func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
 		return fiber.NewError(http.StatusBadRequest, "Validation failed: "+err.Error())
 	}
 
-	serviceContext := fiber_impl_context.NewServiceContext(ctx)
+	serviceContext := fiber_impl_context.NewServiceContext[*mapper.CreditCardResponse](ctx)
 	return bc.service.GetUserCreditCard(serviceContext, query)
 }

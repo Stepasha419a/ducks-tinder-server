@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func GetUserCreditCardQueryHandler(ctx service_context.ServiceContext, query *GetUserCreditCardQuery, creditCardRepository repository.CreditCardRepository) error {
+func GetUserCreditCardQueryHandler(ctx service_context.ServiceContext[*mapper.CreditCardResponse], query *GetUserCreditCardQuery, creditCardRepository repository.CreditCardRepository) error {
 	creditCard, err := creditCardRepository.FindByUserId(ctx.Context(), query.UserId, nil)
 	if err != nil {
 		return err
