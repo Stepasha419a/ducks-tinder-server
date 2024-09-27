@@ -31,6 +31,7 @@ func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 
 	app.Use(logger.New())
 	app.Use(recover.New())
+	app.Use(middleware.AuthMiddleware)
 
 	return app, func() {
 		log.Println("close fiber app")
