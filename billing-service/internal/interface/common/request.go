@@ -23,3 +23,26 @@ func (dto *GetUserCreditCardDto) ToGetUserCreditCardQuery(validatorService valid
 	}, nil
 }
 
+type AddUserCreditCardDto struct {
+	UserId    string `validate:"required,uuid4"`
+	Pan       string `validate:"credit_card"`
+	Holder    string `validate:"credit_card_holder"`
+	Cvc       string `validate:"credit_card_cvc"`
+	ExpiresAt string `validate:"credit_card_expires_date_month"`
+}
+
+func (dto *AddUserCreditCardDto) ToAddUserCreditCardCommand(validatorService validator_service.ValidatorService) (*add_user_credit_card.AddUserCreditCardCommand, error) {
+	err := validatorService.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &add_user_credit_card.AddUserCreditCardCommand{
+		UserId:    dto.UserId,
+		Pan:       dto.Pan,
+		Holder:    dto.Holder,
+		Cvc:       dto.Cvc,
+		ExpiresAt: dto.ExpiresAt,
+	}, nil
+}
+
