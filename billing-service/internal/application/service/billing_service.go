@@ -9,5 +9,6 @@ import (
 type (
 	BillingService interface {
 		GetUserCreditCard(ctx service_context.ServiceContext[*mapper.CreditCardResponse], query *get_user_credit_card.GetUserCreditCardQuery) error
+		AddUserCreditCard(ctx service_context.ServiceContext[*mapper.CreditCardResponse], command *add_user_credit_card.AddUserCreditCardCommand) error
 	}
 )
