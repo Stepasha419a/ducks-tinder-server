@@ -23,6 +23,7 @@ func NewBillingController(f *fiber.App, service service.BillingService, validato
 	}
 
 	f.Get("/billing/card", controller.GetUserCreditCard)
+	f.Post("/billing/card", controller.AddUserCreditCard)
 
 	return controller
 }
@@ -44,4 +45,29 @@ func (bc *BillingController) GetUserCreditCard(ctx fiber.Ctx) error {
 
 	serviceContext := fiber_impl_context.NewServiceContext[*mapper.CreditCardResponse](ctx)
 	return bc.service.GetUserCreditCard(serviceContext, query)
+}
+
+func (bc *BillingController) AddUserCreditCard(ctx fiber.Ctx) error {
+	rawUserId := ctx.Locals("userId")
+
+	userId, ok := rawUserId.(string)
+	if !ok {
+		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
+	}
+
+	dto := new(interface_common.AddUserCreditCardDto)
+
+	err := ctx.Bind().Body(dto)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber_impl_context.BadRequest)
+	}
+
+	dto.UserId = userId
+	command, err := dto.ToAddUserCreditCardCommand(bc.validatorService)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber_impl_context.MapResponse(http.StatusBadRequest, "Validation failed: "+err.Error()))
+	}
+
+	serviceContext := fiber_impl_context.NewServiceContext[*mapper.CreditCardResponse](ctx)
+	return bc.service.AddUserCreditCard(serviceContext, command)
 }
