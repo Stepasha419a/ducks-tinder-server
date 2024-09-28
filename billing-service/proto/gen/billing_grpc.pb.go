@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BillingServiceClient interface {
 	WithdrawUserCreditCard(ctx context.Context, in *WithdrawUserCreditCardRequest, opts ...grpc.CallOption) (*Purchase, error)
+	GetUserCreditCard(ctx context.Context, in *GetUserCreditCardRequest, opts ...grpc.CallOption) (*CreditCard, error)
 }
 
 type billingServiceClient struct {
@@ -42,11 +43,21 @@ func (c *billingServiceClient) WithdrawUserCreditCard(ctx context.Context, in *W
 	return out, nil
 }
 
+func (c *billingServiceClient) GetUserCreditCard(ctx context.Context, in *GetUserCreditCardRequest, opts ...grpc.CallOption) (*CreditCard, error) {
+	out := new(CreditCard)
+	err := c.cc.Invoke(ctx, "/billing.BillingService/GetUserCreditCard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BillingServiceServer is the server API for BillingService service.
 // All implementations must embed UnimplementedBillingServiceServer
 // for forward compatibility
 type BillingServiceServer interface {
 	WithdrawUserCreditCard(context.Context, *WithdrawUserCreditCardRequest) (*Purchase, error)
+	GetUserCreditCard(context.Context, *GetUserCreditCardRequest) (*CreditCard, error)
 	mustEmbedUnimplementedBillingServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedBillingServiceServer struct {
 
 func (UnimplementedBillingServiceServer) WithdrawUserCreditCard(context.Context, *WithdrawUserCreditCardRequest) (*Purchase, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawUserCreditCard not implemented")
+}
+func (UnimplementedBillingServiceServer) GetUserCreditCard(context.Context, *GetUserCreditCardRequest) (*CreditCard, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserCreditCard not implemented")
 }
 func (UnimplementedBillingServiceServer) mustEmbedUnimplementedBillingServiceServer() {}
 
@@ -88,6 +102,24 @@ func _BillingService_WithdrawUserCreditCard_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BillingService_GetUserCreditCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserCreditCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BillingServiceServer).GetUserCreditCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/billing.BillingService/GetUserCreditCard",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BillingServiceServer).GetUserCreditCard(ctx, req.(*GetUserCreditCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BillingService_ServiceDesc is the grpc.ServiceDesc for BillingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var BillingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithdrawUserCreditCard",
 			Handler:    _BillingService_WithdrawUserCreditCard_Handler,
+		},
+		{
+			MethodName: "GetUserCreditCard",
+			Handler:    _BillingService_GetUserCreditCard_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
