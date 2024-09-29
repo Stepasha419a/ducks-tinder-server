@@ -36,17 +36,17 @@ func (s *ServiceContextImpl[R]) Response(status int, body R) error {
 }
 
 func (s *ServiceContextImpl[R]) BadRequest() error {
-	return status.Errorf(codes.InvalidArgument, BadRequest)
+	return status.Error(codes.InvalidArgument, BadRequest)
 }
 
 func (s *ServiceContextImpl[R]) Unauthorized() error {
-	return status.Errorf(codes.Unauthenticated, Unauthorized)
+	return status.Error(codes.Unauthenticated, Unauthorized)
 }
 
 func (s *ServiceContextImpl[R]) NotFound() error {
-	return status.Errorf(codes.NotFound, NotFound)
+	return status.Error(codes.NotFound, NotFound)
 }
 
 func (s *ServiceContextImpl[R]) InternalServerError() error {
-	return status.Errorf(codes.Internal, InternalServerError)
+	return status.Error(codes.Internal, InternalServerError)
 }

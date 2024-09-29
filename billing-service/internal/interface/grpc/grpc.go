@@ -30,7 +30,6 @@ func InitGrpcListener(server *grpc.Server, configService config_service.ConfigSe
 	}
 
 	defer func() {
-		server.Stop()
 		con.Close()
 	}()
 
