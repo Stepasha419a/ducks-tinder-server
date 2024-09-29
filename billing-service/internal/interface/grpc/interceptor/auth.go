@@ -1,0 +1,47 @@
+package grpc_interceptor
+
+import (
+	jwt_service "billing-service/internal/domain/service/jwt"
+	grpc_context_impl "billing-service/internal/interface/grpc/context"
+	"context"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+)
+
+func authUnaryInterceptor(ctx context.Context, req interface{}, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler, jwtService *jwt_service.JwtService) (_ interface{}, err error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		err = status.Error(codes.Unauthenticated, grpc_context_impl.Unauthorized)
+		return nil, err
+	}
+
+	authorizationData := md.Get("authorization")
+	if len(authorizationData) < 1 || authorizationData[0] == "null" {
+		err = status.Error(codes.Unauthenticated, grpc_context_impl.Unauthorized)
+		return nil, err
+	}
+
+	bearerToken := authorizationData[0]
+
+	if bearerToken == "" || bearerToken[:6] != "Bearer" || len(bearerToken) < 7 {
+		err = status.Error(codes.Unauthenticated, grpc_context_impl.Unauthorized)
+		return nil, err
+	}
+
+	isValid, _ := jwtService.ValidateBillingServiceToken(bearerToken[7:])
+	if !isValid {
+		err = status.Error(codes.Unauthenticated, grpc_context_impl.Unauthorized)
+		return nil, err
+	}
+
+	return handler(ctx, req)
+}
+
+func newAuthUnaryInterceptor(jwtService *jwt_service.JwtService) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
+		return authUnaryInterceptor(ctx, req, info, handler, jwtService)
+	}
+}
