@@ -17,6 +17,7 @@ import (
 	"billing-service/internal/infrastructure/service/config_impl"
 	"billing-service/internal/infrastructure/service/validator_impl"
 	"billing-service/internal/interface/grpc"
+	"billing-service/internal/interface/grpc/interceptor"
 	"billing-service/internal/interface/grpc/server"
 	"billing-service/internal/interface/http/controller/billing"
 	"billing-service/internal/interface/http/fiber"
@@ -39,7 +40,8 @@ func newContainer() (*Container, func(), error) {
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
 	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
-	server, cleanup3 := grpc_interface.NewGrpc(billingServiceServerImpl)
+	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
+	server, cleanup3 := grpc_interface.NewGrpc(billingServiceServerImpl, grpcInterceptor)
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
