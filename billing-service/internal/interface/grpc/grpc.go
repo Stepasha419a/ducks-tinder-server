@@ -2,6 +2,7 @@ package grpc_interface
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	grpc_interceptor "billing-service/internal/interface/grpc/interceptor"
 	"billing-service/proto/gen"
 	"fmt"
 	"log"
@@ -10,8 +11,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewGrpc(billingServer gen.BillingServiceServer) (*grpc.Server, func()) {
-	server := grpc.NewServer( /* grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor, AuthUnaryInterceptor) */ )
+func NewGrpc(billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func()) {
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(interceptor.RecoveryUnaryInterceptor, interceptor.AuthUnaryInterceptor))
 
 	gen.RegisterBillingServiceServer(server, billingServer)
 
