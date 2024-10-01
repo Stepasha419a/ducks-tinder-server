@@ -15,6 +15,7 @@ import (
 	grpc_interceptor "billing-service/internal/interface/grpc/interceptor"
 	grpc_billing_service_server_impl "billing-service/internal/interface/grpc/server"
 	billing_controller "billing-service/internal/interface/http/controller/billing"
+	metrics_controller "billing-service/internal/interface/http/controller/metrics"
 	fiber_impl "billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
 	"billing-service/proto/gen"
@@ -31,6 +32,7 @@ type Container struct {
 	App                  *fiber.App
 	BillingService       service.BillingService
 	JwtService           *jwt_service.JwtService
+	MetricsController    *metrics_controller.MetricsController
 	BillingController    *billing_controller.BillingController
 	BillingServiceServer gen.BillingServiceServer
 	GrpcServer           *grpc.Server
@@ -51,6 +53,7 @@ func newContainer() (*Container, func(), error) {
 		wire.Bind(new(service.BillingService), new(*facade.BillingFacade)),
 		facade.NewBillingFacade,
 		billing_controller.NewBillingController,
+		metrics_controller.NewMetricsController,
 		wire.Bind(new(gen.BillingServiceServer), new(*grpc_billing_service_server_impl.BillingServiceServerImpl)),
 		grpc_billing_service_server_impl.NewBillingServiceServerImpl,
 		grpc_interceptor.NewInterceptor,

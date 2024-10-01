@@ -20,6 +20,7 @@ import (
 	"billing-service/internal/interface/grpc/interceptor"
 	"billing-service/internal/interface/grpc/server"
 	"billing-service/internal/interface/http/controller/billing"
+	"billing-service/internal/interface/http/controller/metrics"
 	"billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
 	"billing-service/proto/gen"
@@ -38,6 +39,7 @@ func newContainer() (*Container, func(), error) {
 	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware)
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
+	metricsController := metrics_controller.NewMetricsController(app)
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
 	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
@@ -49,6 +51,7 @@ func newContainer() (*Container, func(), error) {
 		App:                  app,
 		BillingService:       billingFacade,
 		JwtService:           jwtService,
+		MetricsController:    metricsController,
 		BillingController:    billingController,
 		BillingServiceServer: billingServiceServerImpl,
 		GrpcServer:           server,
@@ -69,6 +72,7 @@ type Container struct {
 	App                  *fiber.App
 	BillingService       service.BillingService
 	JwtService           *jwt_service.JwtService
+	MetricsController    *metrics_controller.MetricsController
 	BillingController    *billing_controller.BillingController
 	BillingServiceServer gen.BillingServiceServer
 	GrpcServer           *grpc.Server
