@@ -3,8 +3,6 @@ package grpc_response
 import (
 	"billing-service/internal/application/mapper"
 	"billing-service/proto/gen"
-
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type PurchaseResponse struct {
@@ -12,7 +10,7 @@ type PurchaseResponse struct {
 }
 
 func (r *PurchaseResponse) ToPurchaseGrpcResponse() *gen.Purchase {
-	createdAt := timestamppb.New(r.CreatedAt)
+	createdAt := r.CreatedAt.Unix()
 
 	return &gen.Purchase{
 		Id:           r.Id,
@@ -27,9 +25,9 @@ type CreditCardResponse struct {
 }
 
 func (r *CreditCardResponse) ToCreditCardGrpcResponse() *gen.CreditCard {
-	expiresAt := timestamppb.New(r.ExpiresAt)
-	createdAt := timestamppb.New(r.CreatedAt)
-	updatedAt := timestamppb.New(r.UpdatedAt)
+	expiresAt := r.ExpiresAt.Unix()
+	createdAt := r.CreatedAt.Unix()
+	updatedAt := r.UpdatedAt.Unix()
 
 	return &gen.CreditCard{
 		Id:     r.Id,
