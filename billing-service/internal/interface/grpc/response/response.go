@@ -15,7 +15,7 @@ func (r *PurchaseResponse) ToPurchaseGrpcResponse() *gen.Purchase {
 	return &gen.Purchase{
 		Id:           r.Id,
 		CreditCardId: r.CreditCardId,
-		Amount:       uint32(r.Amount),
+		Amount:       r.Amount,
 		CreatedAt:    createdAt,
 	}
 }
