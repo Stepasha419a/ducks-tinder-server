@@ -11,13 +11,13 @@ service BillingService {
 message WithdrawUserCreditCardRequest {
     string userId = 1;
     string creditCardId = 2;
-    uint32 amount = 3;
+    int64 amount = 3;
 }
 
 message Purchase {
     string id = 1;
     string creditCardId = 2;
-    uint32 amount = 3;
+    int64 amount = 3;
     int64 createdAt = 4;
 }
 
