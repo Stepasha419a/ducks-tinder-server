@@ -2,6 +2,7 @@ package facade
 
 import (
 	"billing-service/internal/application/command/add_user_credit_card"
+	"billing-service/internal/application/command/withdraw_user_credit_card"
 	"billing-service/internal/application/mapper"
 	get_user_credit_card "billing-service/internal/application/query/get-user-credit-card"
 	service_context "billing-service/internal/application/service/context"
@@ -22,4 +23,8 @@ func (f *BillingFacade) GetUserCreditCard(ctx service_context.ServiceContext[*ma
 
 func (f *BillingFacade) AddUserCreditCard(ctx service_context.ServiceContext[*mapper.CreditCardResponse], command *add_user_credit_card.AddUserCreditCardCommand) error {
 	return add_user_credit_card.AddUserCreditCardCommandHandler(ctx, command, f.creditCardRepository)
+}
+
+func (f *BillingFacade) WithdrawUserCreditCard(ctx service_context.ServiceContext[*mapper.PurchaseResponse], command *withdraw_user_credit_card.WithdrawUserCreditCardCommand) error {
+	return withdraw_user_credit_card.WithdrawUserCreditCardCommandHandler(ctx, command, f.creditCardRepository)
 }
