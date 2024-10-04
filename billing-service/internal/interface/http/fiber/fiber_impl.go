@@ -42,7 +42,7 @@ func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 func InitHttpListener(app *fiber.App, configService config_service.ConfigService) error {
 	port := strconv.Itoa(int(configService.GetConfig().Port))
 
-	err := app.Listen(fmt.Sprintf("localhost:%s", port))
+	err := app.Listen(fmt.Sprintf("0.0.0.0:%s", port))
 	if err != nil {
 		return err
 	}
