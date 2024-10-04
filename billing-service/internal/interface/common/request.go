@@ -46,3 +46,21 @@ func (dto *AddUserCreditCardDto) ToAddUserCreditCardCommand(validatorService val
 	}, nil
 }
 
+type WithdrawUserCreditCardDto struct {
+	UserId       string `validate:"required,uuid4"`
+	CreditCardId string `validate:"required,uuid4"`
+	Amount       int64  `validate:"required,number,min=1"`
+}
+
+func (dto *WithdrawUserCreditCardDto) ToWithdrawUserCreditCardCommand(validatorService validator_service.ValidatorService) (*withdraw_user_credit_card.WithdrawUserCreditCardCommand, error) {
+	err := validatorService.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &withdraw_user_credit_card.WithdrawUserCreditCardCommand{
+		UserId:       dto.UserId,
+		CreditCardId: dto.CreditCardId,
+		Amount:       dto.Amount,
+	}, nil
+}
