@@ -21,6 +21,31 @@ func NewBillingServiceServerImpl(billingService service.BillingService, validato
 	return &BillingServiceServerImpl{billingService: billingService, validatorService: validatorService}
 }
 
+func (s *BillingServiceServerImpl) GetUserCreditCard(ctx context.Context, req *gen.GetUserCreditCardRequest) (*gen.CreditCard, error) {
+	dto := interface_common.GetUserCreditCardDto{UserId: req.UserId}
+
+	query, err := dto.ToGetUserCreditCardQuery(s.validatorService)
+	if err != nil {
+		return nil, err
+	}
+
+	serviceContext := grpc_context_impl.NewServiceContext[*mapper.CreditCardResponse](ctx)
+	err = s.billingService.GetUserCreditCard(serviceContext, query)
+
+	if err != nil {
+		return nil, err
+	}
+	if serviceContext.ResponseData == nil || serviceContext.ResponseStatus == 0 {
+		return nil, serviceContext.InternalServerError()
+	}
+
+	response := &grpc_response.CreditCardResponse{
+		CreditCardResponse: serviceContext.ResponseData,
+	}
+
+	return response.ToCreditCardGrpcResponse(), nil
+}
+
 func (s *BillingServiceServerImpl) WithdrawUserCreditCard(ctx context.Context, req *gen.WithdrawUserCreditCardRequest) (*gen.Purchase, error) {
 	dto := interface_common.WithdrawUserCreditCardDto{UserId: req.UserId, CreditCardId: req.CreditCardId, Amount: req.Amount}
 
