@@ -24,6 +24,7 @@ func NewBillingController(f *fiber.App, service service.BillingService, validato
 
 	f.Get("/billing/card", controller.GetUserCreditCard)
 	f.Post("/billing/card", controller.AddUserCreditCard)
+	f.Delete("/billing/card/:id", controller.DeleteUserCreditCard)
 
 	return controller
 }
@@ -70,4 +71,28 @@ func (bc *BillingController) AddUserCreditCard(ctx fiber.Ctx) error {
 
 	serviceContext := fiber_impl_context.NewServiceContext[*mapper.CreditCardResponse](ctx)
 	return bc.service.AddUserCreditCard(serviceContext, command)
+}
+
+func (bc *BillingController) DeleteUserCreditCard(ctx fiber.Ctx) error {
+	rawUserId := ctx.Locals("userId")
+
+	userId, ok := rawUserId.(string)
+	if !ok {
+		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
+	}
+
+	id := ctx.Params("id")
+
+	dto := &interface_common.DeleteUserCreditCardDto{
+		UserId:       userId,
+		CreditCardId: id,
+	}
+
+	command, err := dto.ToDeleteUserCreditCardCommand(bc.validatorService)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber_impl_context.MapResponse(http.StatusBadRequest, "Validation failed: "+err.Error()))
+	}
+
+	serviceContext := fiber_impl_context.NewServiceContext[*mapper.CreditCardResponse](ctx)
+	return bc.service.DeleteUserCreditCard(serviceContext, command)
 }
