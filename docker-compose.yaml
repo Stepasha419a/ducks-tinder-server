@@ -38,6 +38,22 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+  billing-service:
+    container_name: billing-service
+    restart: always
+    build:
+      context: billing-service
+      dockerfile: Dockerfile
+    environment:
+      MODE: dev-docker
+    ports:
+      - '${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}'
+      - '${BILLING_SERVICE_GRPC_PORT}:${BILLING_SERVICE_GRPC_PORT}'
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - postgres
   file-service:
     container_name: file-service
     restart: always
