@@ -12,10 +12,11 @@ import (
 
 type (
 	Config struct {
-		AuthServiceDatabaseUrl string `yaml:"auth_service_database_url"`
-		PrismaDatabaseUrl      string `yaml:"prisma_database_url"`
-		FileServiceStaticPath  string `yaml:"file_service_static_path"`
-		PicturesPath           string `yaml:"pictures_path"`
+		AuthServiceDatabaseUrl    string `yaml:"auth_service_database_url"`
+		BillingServiceDatabaseUrl string `yaml:"billing_service_database_url"`
+		PrismaDatabaseUrl         string `yaml:"prisma_database_url"`
+		FileServiceStaticPath     string `yaml:"file_service_static_path"`
+		PicturesPath              string `yaml:"pictures_path"`
 	}
 )
 
