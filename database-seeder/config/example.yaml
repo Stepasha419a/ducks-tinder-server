@@ -1,4 +1,5 @@
-auth_service_database_url: postgresql://prisma:prisma@postgres:5433/auth-service
+auth_service_database_url: postgresql://prisma:prisma@localhost:5433/auth-service
+billing_service_database_url: postgresql://prisma:prisma@localhost:5433/billing-service
 prisma_database_url: postgresql://prisma:prisma@localhost:5433/tinder
 
 file_service_static_path: ../static
