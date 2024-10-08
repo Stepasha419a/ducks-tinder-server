@@ -3,6 +3,7 @@ package seeder_service
 import (
 	database_service "database-seeder/internal/service/database"
 	auth_service_seeder "database-seeder/internal/service/seeder/auth_service"
+	billing_service_seeder "database-seeder/internal/service/seeder/billing_service"
 	prisma_seeder "database-seeder/internal/service/seeder/prisma"
 	"log"
 )
@@ -11,6 +12,12 @@ func Seed(databaseInstances *database_service.DatabaseInstances) {
 	err := auth_service_seeder.SeedAuthServicePostgres(databaseInstances.AuthServicePostgresInstance)
 	if err != nil {
 		log.Print("seed auth service postgres - error")
+		panic(err)
+	}
+
+	err = billing_service_seeder.SeedBillingServicePostgres(databaseInstances.BillingServicePostgresInstance)
+	if err != nil {
+		log.Print("seed billing service postgres - error")
 		panic(err)
 	}
 
