@@ -37,7 +37,10 @@ func SeedAuthServicePostgres(instance *database_service.AuthServicePostgresInsta
 		return err
 	}
 
-	seedAuthUsers(ctx, tx)
+	err = seedAuthUsers(ctx, tx)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
