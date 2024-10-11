@@ -10,11 +10,5 @@
   "entity_multiple": "entity_names",
   "__entity_camel_case": "{{ cookiecutter.entity.split('_')|map('capitalize')|join('') }}",
   "__entity_repository": "{{ cookiecutter.__entity_camel_case }}Repository",
-  "__entity_low_camel_case": "{{ cookiecutter.entity.split('_')[0].lower() + cookiecutter.entity.split('_')[1:]|map('capitalize')|join('') }}",
-  "has_grpc_server": true,
-  "grpc_server": "server_service",
-  "__grpc_server_camel_case": "{{ cookiecutter.grpc_server.split('_')|map('capitalize')|join('') }}",
-  "has_grpc_consumer": true,
-  "grpc_consumer": "consumer_service",
-  "__grpc_consumer_camel_case": "{{ cookiecutter.grpc_consumer.split('_')|map('capitalize')|join('') }}"
+  "__entity_low_camel_case": "{{ cookiecutter.entity.split('_')[0].lower() + cookiecutter.entity.split('_')[1:]|map('capitalize')|join('') }}"
 }
