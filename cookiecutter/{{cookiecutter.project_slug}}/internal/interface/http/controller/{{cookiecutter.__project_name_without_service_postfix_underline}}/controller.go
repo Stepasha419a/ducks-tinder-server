@@ -1,4 +1,4 @@
-package {{cookiecutter.__project_name_without_service_postfix}}_controller
+package {{cookiecutter.__project_name_without_service_postfix_underline}}_controller
 
 import (
 	"{{cookiecutter.module_name}}/internal/application/mapper"
@@ -22,7 +22,7 @@ func New{{cookiecutter.__project_name_without_service_postfix_camel_case}}Contro
 		validatorService,
 	}
 
-	f.Get("/{{cookiecutter.__project_name_without_service_postfix}}/{{cookiecutter.entity}}", controller.Get{{cookiecutter.__entity_camel_case}})
+	f.Get("/{{cookiecutter.__project_name_without_service_postfix_low_camel_case}}/{{cookiecutter.entity}}", controller.Get{{cookiecutter.__entity_camel_case}})
 
 	return controller
 }
