@@ -12,7 +12,7 @@ import (
 	config_service_impl "{{cookiecutter.module_name}}/internal/infrastructure/service/config_impl"
 	validator_service_impl "{{cookiecutter.module_name}}/internal/infrastructure/service/validator_impl"
 
-	{{cookiecutter.__project_name_without_service_postfix_underline}}_controller "{{cookiecutter.module_name}}/internal/interface/http/controller/{{cookiecutter.__project_name_without_service_postfix}}"
+	{{cookiecutter.__project_name_without_service_postfix_underline}}_controller "{{cookiecutter.module_name}}/internal/interface/http/controller/{{cookiecutter.__project_name_without_service_postfix_underline}}"
 	metrics_controller "{{cookiecutter.module_name}}/internal/interface/http/controller/metrics"
 	fiber_impl "{{cookiecutter.module_name}}/internal/interface/http/fiber"
 	"{{cookiecutter.module_name}}/internal/interface/http/middleware"
