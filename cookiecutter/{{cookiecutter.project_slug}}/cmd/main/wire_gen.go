@@ -8,7 +8,6 @@ package main
 
 import (
 	"{{cookiecutter.module_name}}/internal/application/facade"
-	"{{cookiecutter.module_name}}/internal/application/service"
 	"{{cookiecutter.module_name}}/internal/domain/service/config"
 	"{{cookiecutter.module_name}}/internal/domain/service/jwt"
 	"{{cookiecutter.module_name}}/internal/domain/service/validator"
@@ -39,15 +38,11 @@ func newContainer() (*Container, func(), error) {
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
-		Postgres:             postgresInstance,
 		App:                  app,
-		{{cookiecutter.__project_name_without_service_postfix_camel_case}}Service:       {{cookiecutter.__project_name_without_service_postfix_low_camel_case}}Facade,
-		JwtService:           jwtService,
 		MetricsController:    metricsController,
 		{{cookiecutter.__project_name_without_service_postfix_camel_case}}Controller:    {{cookiecutter.__project_name_without_service_postfix_low_camel_case}}Controller,
 	}
 	return container, func() {
-		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil
@@ -58,10 +53,7 @@ func newContainer() (*Container, func(), error) {
 type Container struct {
 	ValidatorService     validator_service.ValidatorService
 	ConfigService        config_service.ConfigService
-	Postgres             *database.PostgresInstance
 	App                  *fiber.App
-	{{cookiecutter.__project_name_without_service_postfix_camel_case}}Service       service.{{cookiecutter.__project_name_without_service_postfix_camel_case}}Service
-	JwtService           *jwt_service.JwtService
 	MetricsController    *metrics_controller.MetricsController
 	{{cookiecutter.__project_name_without_service_postfix_camel_case}}Controller    *{{cookiecutter.__project_name_without_service_postfix_underline}}_controller.{{cookiecutter.__project_name_without_service_postfix_camel_case}}Controller
 }
