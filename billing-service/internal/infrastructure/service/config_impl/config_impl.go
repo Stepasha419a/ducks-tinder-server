@@ -20,6 +20,7 @@ type (
 		Port                    uint16 `validate:"required" yaml:"port"`
 		GrpcPort                uint16 `validate:"required" yaml:"grpc_port"`
 		DatabaseUrl             string `validate:"required" yaml:"database_url"`
+		ClientUrl               string `validate:"required" yaml:"client_url"`
 	}
 
 	ConfigServiceImpl struct{}
