@@ -36,7 +36,7 @@ func newContainer() (*Container, func(), error) {
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
-	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware)
+	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
 	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
 	metricsController := metrics_controller.NewMetricsController(app)
