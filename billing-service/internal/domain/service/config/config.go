@@ -11,5 +11,6 @@ type (
 		Port                    uint16
 		GrpcPort                uint16
 		DatabaseUrl             string
+		ClientUrl               string
 	}
 )
