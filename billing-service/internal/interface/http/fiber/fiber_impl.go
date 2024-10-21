@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 )
@@ -37,6 +38,7 @@ func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 
 	app.Use(logger.New())
 	app.Use(recover.New())
+	app.Use(helmet.New())
 	app.Use(middleware.AuthMiddleware)
 
 	return app, func() {
