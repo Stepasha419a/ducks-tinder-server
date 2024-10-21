@@ -1,12 +1,16 @@
 package database
 
 import (
+	config_service "auth-service/internal/infrastructure/service/config"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	log "log/slog"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func MigrateDB(db *Postgres) {
@@ -56,9 +60,34 @@ func checkMigration(err error) {
 }
 
 func initMigration(ctx context.Context, db *Postgres) error {
-	log.Info("migration - init tables")
+	log.Info("migration - init")
 
-	_, err := db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
+	postgresInstanceUrl := strings.Split(config_service.GetConfig().DatabaseUrl, "auth-service")[0] + "postgres"
+
+	postgresInstance, err := pgx.Connect(ctx, postgresInstanceUrl)
+	if err != nil {
+		return err
+	}
+
+	defer postgresInstance.Close(ctx)
+
+	var dbExists bool
+	err = postgresInstance.QueryRow(ctx, `
+    SELECT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'auth-service'
+    )`).Scan(&dbExists)
+	if err != nil {
+		return err
+	}
+
+	if !dbExists {
+		_, err = postgresInstance.Exec(ctx, `CREATE DATABASE "auth-service"`)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
 		id UUID PRIMARY KEY,
 		email VARCHAR(100) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,
