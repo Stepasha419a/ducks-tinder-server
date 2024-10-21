@@ -1,15 +1,19 @@
 package database
 
 import (
+	config_service "billing-service/internal/domain/service/config"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	log "log/slog"
+
+	"github.com/jackc/pgx/v5"
 )
 
-func MigrateDB(pg *PostgresInstance) {
+func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService) {
 	ctx := context.TODO()
 
 	submitted := submitMigration()
@@ -21,7 +25,7 @@ func MigrateDB(pg *PostgresInstance) {
 
 	log.Info("migration - start")
 
-	runMigrations(ctx, pg)
+	runMigrations(ctx, pg, configService)
 
 	log.Info("migration - successful")
 }
@@ -43,8 +47,8 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runMigrations(ctx context.Context, pg *PostgresInstance) {
-	checkMigration(initMigration(ctx, pg))
+func runMigrations(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) {
+	checkMigration(initMigration(ctx, pg, configService))
 }
 
 func checkMigration(err error) {
@@ -54,10 +58,35 @@ func checkMigration(err error) {
 	}
 }
 
-func initMigration(ctx context.Context, pg *PostgresInstance) error {
-	log.Info("migration - init tables")
+func initMigration(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) error {
+	log.Info("migration - init")
 
-	_, err := pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS credit_cards (
+	postgresInstanceUrl := strings.Split(configService.GetConfig().DatabaseUrl, "billing-service")[0] + "postgres"
+
+	postgresInstance, err := pgx.Connect(ctx, postgresInstanceUrl)
+	if err != nil {
+		return err
+	}
+
+	defer postgresInstance.Close(ctx)
+
+	var dbExists bool
+	err = postgresInstance.QueryRow(ctx, `
+    SELECT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'billing-service'
+    )`).Scan(&dbExists)
+	if err != nil {
+		return err
+	}
+
+	if !dbExists {
+		_, err = postgresInstance.Exec(ctx, `CREATE DATABASE "billing-service"`)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS credit_cards (
 		id UUID PRIMARY KEY,
 		user_id UUID NOT NULL UNIQUE,
 		pan VARCHAR(16) NOT NULL,
