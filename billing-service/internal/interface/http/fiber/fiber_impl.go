@@ -11,12 +11,13 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
-func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
+func NewFiberApp(middleware *middleware.Middleware, configService config_service.ConfigService) (*fiber.App, func()) {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx fiber.Ctx, err error) error {
 			status := http.StatusInternalServerError
@@ -38,6 +39,12 @@ func NewFiberApp(middleware *middleware.Middleware) (*fiber.App, func()) {
 
 	app.Use(logger.New())
 	app.Use(recover.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{configService.GetConfig().ClientUrl},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "Origin", "Accept"},
+		MaxAge:           3600,
+		AllowCredentials: true,
+	}))
 	app.Use(helmet.New())
 	app.Use(middleware.AuthMiddleware)
 
