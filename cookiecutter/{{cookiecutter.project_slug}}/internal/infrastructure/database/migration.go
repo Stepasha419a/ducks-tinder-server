@@ -5,11 +5,16 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	log "log/slog"
+
+	"github.com/jackc/pgx/v5"
+
+	config_service "{{cookiecutter.module_name}}/internal/domain/service/config"
 )
 
-func MigrateDB(pg *PostgresInstance) {
+func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService) {
 	ctx := context.TODO()
 
 	submitted := submitMigration()
@@ -21,7 +26,7 @@ func MigrateDB(pg *PostgresInstance) {
 
 	log.Info("migration - start")
 
-	runMigrations(ctx, pg)
+	runMigrations(ctx, pg, configService)
 
 	log.Info("migration - successful")
 }
@@ -43,8 +48,8 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runMigrations(ctx context.Context, pg *PostgresInstance) {
-	checkMigration(initMigration(ctx, pg))
+func runMigrations(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) {
+	checkMigration(initMigration(ctx, pg, configService))
 }
 
 func checkMigration(err error) {
@@ -54,10 +59,35 @@ func checkMigration(err error) {
 	}
 }
 
-func initMigration(ctx context.Context, pg *PostgresInstance) error {
-	log.Info("migration - init tables")
+func initMigration(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) error {
+	log.Info("migration - init")
 
-	_, err := pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS {{cookiecutter.entity_multiple}} (
+	postgresInstanceUrl := strings.Split(configService.GetConfig().DatabaseUrl, "{{cookiecutter.project_name}}")[0] + "postgres"
+
+	postgresInstance, err := pgx.Connect(ctx, postgresInstanceUrl)
+	if err != nil {
+		return err
+	}
+
+	defer postgresInstance.Close(ctx)
+
+	var dbExists bool
+	err = postgresInstance.QueryRow(ctx, `
+    SELECT EXISTS (
+        SELECT FROM pg_database WHERE datname = '{{cookiecutter.project_name}}'
+    )`).Scan(&dbExists)
+	if err != nil {
+		return err
+	}
+
+	if !dbExists {
+		_, err = postgresInstance.Exec(ctx, `CREATE DATABASE "{{cookiecutter.project_name}}"`)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS {{cookiecutter.entity_multiple}} (
 		id UUID PRIMARY KEY,
 		property VARCHAR(40) NULL,
 		
