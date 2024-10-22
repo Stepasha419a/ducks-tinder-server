@@ -30,7 +30,7 @@ func newContainer() (*Container, func(), error) {
 	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
-	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware)
+	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
 	{{cookiecutter.__entity_low_camel_case}}RepositoryImpl := repository_impl.New{{cookiecutter.__entity_repository}}(postgresInstance)
 	{{cookiecutter.__project_name_without_service_postfix_low_camel_case}}Facade := facade.New{{cookiecutter.__project_name_without_service_postfix_camel_case}}Facade({{cookiecutter.__entity_low_camel_case}}RepositoryImpl)
 	metricsController := metrics_controller.NewMetricsController(app)
