@@ -9,5 +9,6 @@ type (
 		JwtAccessSecret string
 		Port            uint16
 		DatabaseUrl     string
+		ClientUrl       string
 	}
 )
