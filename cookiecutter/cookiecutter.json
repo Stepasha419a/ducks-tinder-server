@@ -7,6 +7,7 @@
   "__project_name_without_service_postfix_low_camel_case": "{{ cookiecutter.project_name.split('-service')[0].split('-')[0].lower() + cookiecutter.project_name.split('service')[0][:-1].split('-')[1:]|map('capitalize')|join('') }}",
   "project_slug": "{{ cookiecutter.project_name }}",
   "http_port": "5000",
+  "client_url": "http://localhost:3000",
   "author": "Stepasha419a",
   "module_name": "github.com/Stepasha419a/ducks-tinder-server/{{cookiecutter.project_name}}",
   "entity": "entity_name",
