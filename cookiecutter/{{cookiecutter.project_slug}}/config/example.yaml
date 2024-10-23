@@ -1,0 +1,4 @@
+jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
+port: {{ cookiecutter.http_port }}
+database_url: postgresql://prisma:prisma@postgres:5432/{{cookiecutter.project_name}}
+client_url: {{ cookiecutter.client_url }}
