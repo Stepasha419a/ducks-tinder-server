@@ -38,7 +38,7 @@ func (r *{{cookiecutter.__entity_repository}}Impl) Save(ctx context.Context, {{c
 		return {{cookiecutter.__entity_low_camel_case}}, nil
 	}
 
-	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO {{cookiecutter.entity_multiple}} (id, user_id, pan, holder, cvc, expires_at, created_at, updated_at) VALUES (@id, @user_id, @pan, @holder, @cvc, @expires_at, @created_at, @updated_at)", &pgx.NamedArgs{
+	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO {{cookiecutter.entity_multiple}} (id, property, created_at, updated_at) VALUES (@id, @property, @created_at, @updated_at)", &pgx.NamedArgs{
 		"id":         {{cookiecutter.__entity_low_camel_case}}.Id,
 		"property":   {{cookiecutter.__entity_low_camel_case}}.Property,
 		"created_at": {{cookiecutter.__entity_low_camel_case}}.CreatedAt,
