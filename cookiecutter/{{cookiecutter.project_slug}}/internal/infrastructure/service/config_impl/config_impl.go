@@ -19,6 +19,7 @@ type (
 		JwtAccessSecret string `validate:"required" yaml:"jwt_access_secret"`
 		Port            uint16 `validate:"required" yaml:"port"`
 		DatabaseUrl     string `validate:"required" yaml:"database_url"`
+		ClientUrl       string `validate:"required" yaml:"client_url"`
 	}
 
 	ConfigServiceImpl struct{}
