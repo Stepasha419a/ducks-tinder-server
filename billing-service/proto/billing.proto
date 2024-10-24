@@ -5,7 +5,6 @@ option go_package = "./gen";
 
 service BillingService {
     rpc WithdrawUserCreditCard (WithdrawUserCreditCardRequest) returns (Purchase);
-    rpc GetUserCreditCard (GetUserCreditCardRequest) returns (CreditCard);
 }
 
 message WithdrawUserCreditCardRequest {
@@ -19,20 +18,4 @@ message Purchase {
     string creditCardId = 2;
     int64 amount = 3;
     int64 createdAt = 4;
-}
-
-message GetUserCreditCardRequest {
-    string userId = 1;
-}
-
-message CreditCard {
-    string id = 1;
-    string userId = 2;
-    string pan = 3;
-    string holder = 4;
-    string cvc = 5;
-
-    int64 expiresAt = 6;
-    int64 createdAt = 7;
-    int64 updatedAt = 8;
 }
