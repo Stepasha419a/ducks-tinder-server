@@ -13,6 +13,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 )
@@ -45,6 +46,7 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 		MaxAge:           3600,
 		AllowCredentials: true,
 	}))
+	app.Use(helmet.New())
 	app.Use(middleware.AuthMiddleware)
 
 	return app, func() {
