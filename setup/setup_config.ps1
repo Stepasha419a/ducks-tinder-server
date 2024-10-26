@@ -41,3 +41,18 @@ foreach ($service in $golangServices) {
     }
 }
 
+foreach ($service in $typescriptServices) {
+    $servicePath = "../$service"
+
+    if (Test-Path "$servicePath/.env.example") {
+        Write-Host "setting up configs for $service..."
+
+        Copy-Item "$servicePath/.env.example" "$servicePath/.env.dev"
+        Copy-Item "$servicePath/.env.example" "$servicePath/.env.dev-docker"
+
+        SetLocalUrls("$servicePath/.env.dev")
+    }
+    else {
+        Write-Host "no example.yaml file found for $service"
+    }
+}
