@@ -9,6 +9,12 @@ import (
 )
 
 func RefreshCommandHandler(ctx context.Context, command *RefreshCommand, responseError func(status int, message string), authUserRepository repository.AuthUserRepository) (*mapper.AuthUserResponse, error) {
+	payload, err := jwt_service.ValidateRefreshToken(command.RefreshToken)
+	if err != nil || payload == nil {
+		responseError(http.StatusUnauthorized, "Unauthorized")
+		return nil, nil
+	}
+
 	authUser, err := authUserRepository.FindByRefreshToken(ctx, command.RefreshToken, nil)
 	if err != nil {
 		return nil, err
