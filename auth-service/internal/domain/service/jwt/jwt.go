@@ -9,7 +9,7 @@ import (
 )
 
 type TokenPayload struct {
-	userId string
+	UserId string
 }
 
 type Tokens struct {
@@ -22,8 +22,8 @@ func GenerateTokens(userId string) *Tokens {
 	refreshTokenSecret := []byte(config_service.GetConfig().JwtRefreshSecret)
 
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId":    userId,
-		"expiredAt": time.Now().Add(time.Hour).Unix(),
+		"userId": userId,
+		"exp":    time.Now().Add(time.Hour).Unix(),
 	})
 
 	accessTokenString, err := accessToken.SignedString(accessTokenSecret)
@@ -32,8 +32,8 @@ func GenerateTokens(userId string) *Tokens {
 	}
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId":    userId,
-		"expiredAt": time.Now().Add(time.Hour * 24 * 31).Unix(),
+		"userId": userId,
+		"exp":    time.Now().Add(time.Hour * 24 * 31).Unix(),
 	})
 
 	refreshTokenString, err := refreshToken.SignedString(refreshTokenSecret)
