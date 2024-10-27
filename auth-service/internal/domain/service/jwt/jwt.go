@@ -47,29 +47,6 @@ func GenerateTokens(userId string) *Tokens {
 	}
 }
 
-func ValidateAccessToken(accessToken string) (*TokenPayload, error) {
-	secretKey := config_service.GetConfig().JwtAccessSecret
-
-	claims := jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
-	})
-
-	if err != nil || !token.Valid {
-		return nil, err
-	}
-	if err = claims.Valid(); err != nil {
-		return nil, err
-	}
-
-	tokenPayload, err := extractTokenPayload(claims)
-	if err != nil {
-		return nil, err
-	}
-
-	return tokenPayload, nil
-}
-
 func ValidateRefreshToken(refreshToken string) (*TokenPayload, error) {
 	secretKey := config_service.GetConfig().JwtRefreshSecret
 
@@ -100,11 +77,11 @@ func extractTokenPayload(claims jwt.MapClaims) (*TokenPayload, error) {
 		return nil, fmt.Errorf("invalid payload")
 	}
 
-	userIdd, ok := data.(string)
+	userId, ok := data.(string)
 
 	if !ok {
 		return nil, fmt.Errorf("invalid payload")
 	}
 
-	return &TokenPayload{userId: userIdd}, nil
+	return &TokenPayload{UserId: userId}, nil
 }
