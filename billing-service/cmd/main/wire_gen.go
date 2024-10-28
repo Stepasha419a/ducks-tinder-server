@@ -43,7 +43,12 @@ func newContainer() (*Container, func(), error) {
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
 	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
-	server, cleanup3 := grpc_interface.NewGrpc(billingServiceServerImpl, grpcInterceptor)
+	server, cleanup3, err := grpc_interface.NewGrpc(billingServiceServerImpl, grpcInterceptor)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
