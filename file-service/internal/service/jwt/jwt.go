@@ -2,6 +2,7 @@ package jwt_service
 
 import (
 	config_service "go-file-server/internal/service/config"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -18,6 +19,10 @@ func ValidateAccessToken(accessToken string) bool {
 		return false
 	}
 	if err = claims.Valid(); err != nil {
+		return false
+	}
+
+	if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return false
 	}
 
