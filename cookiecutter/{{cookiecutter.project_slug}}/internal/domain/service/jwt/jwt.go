@@ -1,6 +1,8 @@
 package jwt_service
 
 import (
+	"time"
+
 	config_service "{{cookiecutter.module_name}}/internal/domain/service/config"
 
 	"github.com/golang-jwt/jwt"
@@ -45,6 +47,10 @@ func validateToken(accessToken string, secretKey string) (bool, *AccessTokenPayl
 
 	claims, ok := token.Claims.(*AccessTokenClaims)
 	if !ok || !token.Valid {
+		return false, nil
+	}
+
+	if time.Unix(claims.ExpiresAt, 0).Compare(time.Now()) < 0 {
 		return false, nil
 	}
 
