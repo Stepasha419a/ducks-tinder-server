@@ -21,6 +21,7 @@ import { firstValueFrom } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 import { JwtService, ServiceTokenView } from 'src/domain/service/jwt';
 import { UploadFileType } from 'src/domain/service/file';
+import { DateService } from 'src/domain/service/date';
 
 @Injectable()
 export class FileServiceAdapter implements OnModuleInit {
@@ -31,6 +32,7 @@ export class FileServiceAdapter implements OnModuleInit {
   constructor(
     @Inject(GRPC_SERVICE.FILE) private readonly client: ClientGrpc,
     private readonly jwtService: JwtService,
+    private readonly dateService: DateService,
   ) {}
 
   private readonly logger = new Logger(FileServiceAdapter.name);
@@ -46,12 +48,12 @@ export class FileServiceAdapter implements OnModuleInit {
       this.metadata = new Metadata();
     }
 
-    if (!this.serviceToken || this.serviceToken.expiresIn < new Date()) {
+    if (
+      !this.serviceToken ||
+      this.dateService.isUnixBeforeNow(this.serviceToken.exp)
+    ) {
       this.serviceToken = this.jwtService.generateFileServiceToken();
-      this.metadata.set(
-        'authorization',
-        'Bearer ' + this.serviceToken.accessToken,
-      );
+      this.metadata.set('authorization', 'Bearer ' + this.serviceToken.token);
     }
 
     return this.metadata;
