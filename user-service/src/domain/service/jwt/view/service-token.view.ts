@@ -1,4 +1,8 @@
 export interface ServiceTokenView {
-  accessToken: string;
-  expiresIn: Date;
+  token: string;
+  exp: number;
+}
+
+export interface ServiceTokenData {
+  exp: number;
 }
