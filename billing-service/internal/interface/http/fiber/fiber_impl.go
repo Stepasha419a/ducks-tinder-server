@@ -33,6 +33,11 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 				response = fiber_impl_context.NotFound
 			}
 
+			// method not allowed
+			if status == 405 {
+				response = fiber_impl_context.MethodNotAllowed
+			}
+
 			return ctx.Status(status).JSON(response)
 		},
 	})
