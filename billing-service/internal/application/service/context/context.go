@@ -9,5 +9,7 @@ type ServiceContext[R any] interface {
 	BadRequest() error
 	NotFound() error
 	Unauthorized() error
+	MethodNotAllowed() error
+
 	InternalServerError() error
 }
