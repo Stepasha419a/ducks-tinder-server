@@ -12,6 +12,7 @@ var (
 	BadRequest          = "Bad request"
 	Unauthorized        = "Unauthorized"
 	NotFound            = "Not found"
+	Unimplemented       = "Unimplemented"
 )
 
 type ServiceContextImpl[R any] struct {
@@ -45,6 +46,10 @@ func (s *ServiceContextImpl[R]) Unauthorized() error {
 
 func (s *ServiceContextImpl[R]) NotFound() error {
 	return status.Error(codes.NotFound, NotFound)
+}
+
+func (s *ServiceContextImpl[R]) MethodNotAllowed() error {
+	return status.Error(codes.Unimplemented, Unimplemented)
 }
 
 func (s *ServiceContextImpl[R]) InternalServerError() error {
