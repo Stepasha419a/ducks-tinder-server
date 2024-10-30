@@ -7,7 +7,8 @@ type ServiceContext[R any] interface {
 	Context() context.Context
 
 	BadRequest() error
-	NotFound() error
 	Unauthorized() error
+	NotFound() error
+	MethodNotAllowed() error
 	InternalServerError() error
 }
