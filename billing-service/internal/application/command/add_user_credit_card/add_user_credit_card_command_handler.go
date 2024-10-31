@@ -15,10 +15,7 @@ func AddUserCreditCardCommandHandler(ctx service_context.ServiceContext[*mapper.
 	}
 
 	if creditCard != nil {
-		err = creditCardRepository.Delete(ctx.Context(), creditCard.Id, nil)
-		if err != nil {
-			return err
-		}
+		return ctx.Conflict()
 	}
 
 	newCreditCard, err := entity.NewCreditCard(command.UserId, command.Pan, command.Holder, command.Cvc, command.ExpiresAt)
