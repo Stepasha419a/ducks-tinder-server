@@ -15,6 +15,7 @@ var (
 	UnauthorizedResponse        = map[string]string{"status": "401", "message": "Unauthorized"}
 	NotFound                    = map[string]string{"status": "404", "message": "Not found"}
 	MethodNotAllowed            = map[string]string{"status": "405", "message": "Method not allowed"}
+	Conflict                    = map[string]string{"status": "409", "message": "Conflict"}
 )
 
 type ServiceContextImpl[R any] struct {
@@ -50,6 +51,10 @@ func (s *ServiceContextImpl[R]) NotFound() error {
 
 func (s *ServiceContextImpl[R]) MethodNotAllowed() error {
 	return s.ctx.Status(http.StatusMethodNotAllowed).JSON(MethodNotAllowed)
+}
+
+func (s *ServiceContextImpl[R]) Conflict() error {
+	return s.ctx.Status(http.StatusConflict).JSON(Conflict)
 }
 
 func (s *ServiceContextImpl[R]) InternalServerError() error {
