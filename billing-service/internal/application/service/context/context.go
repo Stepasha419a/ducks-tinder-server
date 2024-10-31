@@ -10,6 +10,7 @@ type ServiceContext[R any] interface {
 	NotFound() error
 	Unauthorized() error
 	MethodNotAllowed() error
+	Conflict() error
 
 	InternalServerError() error
 }
