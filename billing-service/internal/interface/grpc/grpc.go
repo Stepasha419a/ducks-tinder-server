@@ -8,10 +8,25 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
 )
+
+var kaep = keepalive.EnforcementPolicy{
+	MinTime:             5 * time.Second,
+	PermitWithoutStream: true,
+}
+
+var kasp = keepalive.ServerParameters{
+	MaxConnectionIdle:     15 * time.Second,
+	MaxConnectionAge:      30 * time.Second,
+	MaxConnectionAgeGrace: 5 * time.Second,
+	Time:                  5 * time.Second,
+	Timeout:               1 * time.Second,
+}
 
 func NewGrpc(billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func(), error) {
 	// TODO: ssl
@@ -24,6 +39,9 @@ func NewGrpc(billingServer gen.BillingServiceServer, interceptor *grpc_intercept
 	opts := []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(interceptor.RecoveryUnaryInterceptor, interceptor.AuthUnaryInterceptor),
 		grpc.Creds(creds),
+
+		grpc.KeepaliveEnforcementPolicy(kaep),
+		grpc.KeepaliveParams(kasp),
 	}
 
 	server := grpc.NewServer(opts...)
