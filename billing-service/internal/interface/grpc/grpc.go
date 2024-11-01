@@ -30,7 +30,7 @@ var kasp = keepalive.ServerParameters{
 
 func NewGrpc(billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func(), error) {
 	// TODO: ssl
-	cert, err := tls.LoadX509KeyPair("cert/server.crt", "cert/server.key")
+	cert, err := tls.LoadX509KeyPair("cert/certificate.pem", "cert/private-key.pem")
 	if err != nil {
 		return nil, nil, err
 	}
