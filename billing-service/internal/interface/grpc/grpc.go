@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"path"
 	"time"
 
 	"google.golang.org/grpc"
@@ -28,9 +29,12 @@ var kasp = keepalive.ServerParameters{
 	Timeout:               1 * time.Second,
 }
 
-func NewGrpc(billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func(), error) {
+func NewGrpc(configService config_service.ConfigService, billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func(), error) {
 	// TODO: ssl
-	cert, err := tls.LoadX509KeyPair("cert/certificate.pem", "cert/private-key.pem")
+	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
+	privateKeyPath := path.Join("cert", configService.GetConfig().Mode, "private-key.pem")
+
+	cert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
 	if err != nil {
 		return nil, nil, err
 	}
