@@ -15,6 +15,7 @@ import (
 
 type (
 	parsedConfig struct {
+		Mode                    string `validate:"required" yaml:"mode"`
 		JwtAccessSecret         string `validate:"required" yaml:"jwt_access_secret"`
 		JwtBillingServiceSecret string `validate:"required" yaml:"jwt_billing_service_secret"`
 		Port                    uint16 `validate:"required" yaml:"port"`

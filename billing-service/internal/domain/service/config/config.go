@@ -6,6 +6,7 @@ type (
 	}
 
 	Config struct {
+		Mode                    string
 		JwtAccessSecret         string
 		JwtBillingServiceSecret string
 		Port                    uint16
