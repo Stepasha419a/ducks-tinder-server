@@ -56,3 +56,9 @@ foreach ($service in $typescriptServices) {
         Write-Host "no example.yaml file found for $service"
     }
 }
+
+Write-Host "setting up configs for docker..."
+        
+$dockerEnvExamplePath = "../.env.example"
+
+Copy-Item $dockerEnvExamplePath "../.env"
