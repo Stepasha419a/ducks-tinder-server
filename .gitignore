@@ -8,6 +8,7 @@ tmp
 .env
 .env.dev
 .env.dev-docker
+.env.secrets
 
 dev.yaml
 dev-docker.yaml
