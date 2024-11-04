@@ -1,3 +1,4 @@
+mode: dev-docker
 password_salt: 456234
 jwt_refresh_secret: hfhdj567ghj45hjkdfcvx456vbn
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
