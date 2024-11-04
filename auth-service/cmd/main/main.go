@@ -11,6 +11,7 @@ import (
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"auth-service/internal/interface/http/middleware"
 	"net/http"
+	"path"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -37,5 +38,8 @@ func main() {
 	auth_controller.NewAuthController(e, authFacade)
 	metrics_controller.NewMetricsController(e)
 
-	http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(config_service.GetConfig().Port)), e)
+	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
+	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
+
+	http.ListenAndServeTLS("127.0.0.1:"+strconv.Itoa(int(config_service.GetConfig().Port)), certPath, privateKeyPath, e)
 }
