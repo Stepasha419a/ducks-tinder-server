@@ -11,6 +11,7 @@ import (
 
 type (
 	Config struct {
+		Mode                     string `validate:"required" yaml:"mode"`
 		PasswordSalt             string `yaml:"password_salt"`
 		JwtRefreshSecret         string `yaml:"jwt_refresh_secret"`
 		JwtAccessSecret          string `yaml:"jwt_access_secret"`
