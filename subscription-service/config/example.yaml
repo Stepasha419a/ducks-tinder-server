@@ -1,7 +1,11 @@
+mode: dev-docker
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 jwt_subscription_service_secret: as234da234sds456df
+jwt_billing_service_secret: dfgh567sdfgdfg456sdfgdfg
 port: 5005
 grpc_port: 6002
 database_url: postgresql://prisma:prisma@postgres:5432/subscription-service
 client_url: http://localhost:3000
 grpc_billing_service_url: host.docker.internal:6001
+grpc_billing_service_domain: host.docker.internal
+login_service_url: login-service-url-example.com
