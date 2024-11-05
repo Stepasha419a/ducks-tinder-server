@@ -1,0 +1,21 @@
+syntax="proto3";
+
+package billing;
+option go_package = "./gen";
+
+service BillingService {
+    rpc WithdrawUserCreditCard (WithdrawUserCreditCardRequest) returns (Purchase);
+}
+
+message WithdrawUserCreditCardRequest {
+    string userId = 1;
+    string creditCardId = 2;
+    int64 amount = 3;
+}
+
+message Purchase {
+    string id = 1;
+    string creditCardId = 2;
+    int64 amount = 3;
+    int64 createdAt = 4;
+}
