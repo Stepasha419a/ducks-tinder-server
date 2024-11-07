@@ -25,3 +25,29 @@ func NewJwtService(configService config_service.ConfigService) *JwtService {
 	return &JwtService{configService}
 }
 
+
+func validateToken(accessToken string, secretKey string) (bool, *AccessTokenPayload) {
+	token, err := jwt.ParseWithClaims(accessToken, &AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		return false, nil
+	}
+
+	err = token.Claims.Valid()
+	if err != nil {
+		return false, nil
+	}
+
+	claims, ok := token.Claims.(*AccessTokenClaims)
+	if !ok || !token.Valid {
+		return false, nil
+	}
+
+	if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
+		return false, nil
+	}
+
+	return true, &AccessTokenPayload{UserId: claims.UserId}
+}
