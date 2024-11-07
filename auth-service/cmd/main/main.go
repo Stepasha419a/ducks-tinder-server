@@ -41,5 +41,5 @@ func main() {
 	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
 	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
 
-	http.ListenAndServeTLS("127.0.0.1:"+strconv.Itoa(int(config_service.GetConfig().Port)), certPath, privateKeyPath, e)
+	http.ListenAndServeTLS("0.0.0.0:"+strconv.Itoa(int(config_service.GetConfig().Port)), certPath, privateKeyPath, e)
 }
