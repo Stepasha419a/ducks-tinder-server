@@ -25,6 +25,12 @@ func NewJwtService(configService config_service.ConfigService) *JwtService {
 	return &JwtService{configService}
 }
 
+func (s *JwtService) ValidateSubscriptionServiceToken(serviceToken string) (bool, *AccessTokenPayload) {
+	secretKey := s.configService.GetConfig().JwtSubscriptionServiceSecret
+
+	return validateToken(serviceToken, secretKey)
+}
+
 func (s *JwtService) ValidateAccessToken(accessToken string) (bool, *AccessTokenPayload) {
 	secretKey := s.configService.GetConfig().JwtAccessSecret
 
