@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path"
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
@@ -60,9 +61,12 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 }
 
 func InitHttpListener(app *fiber.App, configService config_service.ConfigService) error {
+	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
+	privateKeyPath := path.Join("cert", configService.GetConfig().Mode, "private-key.pem")
+
 	port := strconv.Itoa(int(configService.GetConfig().Port))
 
-	err := app.Listen(fmt.Sprintf("0.0.0.0:%s", port))
+	err := app.Listen(fmt.Sprintf("0.0.0.0:%s", port), fiber.ListenConfig{CertFile: certPath, CertKeyFile: privateKeyPath})
 	if err != nil {
 		return err
 	}
