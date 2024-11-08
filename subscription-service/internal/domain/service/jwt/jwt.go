@@ -25,6 +25,11 @@ func NewJwtService(configService config_service.ConfigService) *JwtService {
 	return &JwtService{configService}
 }
 
+func (s *JwtService) ValidateAccessToken(accessToken string) (bool, *AccessTokenPayload) {
+	secretKey := s.configService.GetConfig().JwtAccessSecret
+
+	return validateToken(accessToken, secretKey)
+}
 
 func validateToken(accessToken string, secretKey string) (bool, *AccessTokenPayload) {
 	token, err := jwt.ParseWithClaims(accessToken, &AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
