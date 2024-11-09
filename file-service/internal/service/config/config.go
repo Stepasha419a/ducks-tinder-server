@@ -11,6 +11,7 @@ import (
 
 type (
 	Config struct {
+		Mode     string `yaml:"mode"`
 		Port     uint16 `yaml:"port"`
 		GrpcPort uint16 `yaml:"grpc_port"`
 

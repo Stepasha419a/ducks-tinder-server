@@ -1,3 +1,4 @@
+mode: dev-docker
 port: 5002
 grpc_port: 6000
 
