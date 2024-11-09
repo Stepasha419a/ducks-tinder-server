@@ -1,4 +1,4 @@
-$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service")
+$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus")
 
 $certExamplePath = "./cert-example"
 
