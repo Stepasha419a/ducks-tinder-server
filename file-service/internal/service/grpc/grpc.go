@@ -8,9 +8,25 @@ import (
 	"log"
 	"net"
 	"path"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/keepalive"
+)
+
+var kaep = keepalive.EnforcementPolicy{
+	MinTime:             5 * time.Second,
+	PermitWithoutStream: true,
+}
+
+var kasp = keepalive.ServerParameters{
+	MaxConnectionIdle:     5 * time.Minute,
+	MaxConnectionAge:      time.Minute,
+	MaxConnectionAgeGrace: 15 * time.Second,
+	Time:                  15 * time.Second,
+	Timeout:               1 * time.Second,
+}
 
 func Init() {
 	// TODO: ssl
@@ -27,6 +43,8 @@ func Init() {
 		grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor, AuthUnaryInterceptor),
 		grpc.Creds(creds),
 
+		grpc.KeepaliveEnforcementPolicy(kaep),
+		grpc.KeepaliveParams(kasp),
 	}
 
 	server := grpc.NewServer(opts...)
