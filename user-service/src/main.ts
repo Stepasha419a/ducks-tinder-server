@@ -4,18 +4,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import { RabbitMQService } from './infrastructure/rabbitmq';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 
 async function bootstrap() {
   const configService = new ConfigService();
 
   const mode = configService.get<string>('NODE_ENV');
-  const certPath = join('cert', mode, 'certificate.pem');
-  const keyPath = join('cert', mode, 'private-key.pem');
+  const certPath = path.join('cert', mode, 'certificate.pem');
+  const keyPath = path.join('cert', mode, 'private-key.pem');
   const httpsOptions = {
-    key: readFileSync(keyPath).toString(),
-    cert: readFileSync(certPath).toString(),
+    key: fs.readFileSync(keyPath).toString(),
+    cert: fs.readFileSync(certPath).toString(),
   };
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
