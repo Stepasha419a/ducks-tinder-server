@@ -4,7 +4,7 @@ $typescriptServices = ("user-service", "chat-service")
 $yamlConfigServices = ("database-seeder")
 $onlyDevConfigServices = ("database-seeder")
 
-$localVarsReplacement = ("postgresql://prisma:prisma@postgres:5432/", "postgresql://prisma:prisma@127.0.0.1:5433/"), ("host.docker.internal", "127.0.0.1"), ("amqp://rabbitmq:5672", "amqp://127.0.0.1:5672")
+$localVarsReplacement = ("postgresql://prisma:prisma@postgres:5432/", "postgresql://prisma:prisma@127.0.0.1:5433/"), ("host.docker.internal", "0.0.0.0"), ("amqp://rabbitmq:5672", "amqp://0.0.0.0:5672")
 
 $secretsReplacementEnvFilePath = "../.env.secrets"
 
