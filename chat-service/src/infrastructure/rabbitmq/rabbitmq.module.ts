@@ -2,6 +2,8 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { RabbitMQService } from './rabbitmq.service';
 import { ClientsModule, RmqOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Module({
   providers: [RabbitMQService],
@@ -15,13 +17,27 @@ export class RabbitMQModule {
         ClientsModule.registerAsync([
           {
             name,
-            useFactory: (configService: ConfigService): RmqOptions => ({
-              transport: Transport.RMQ,
-              options: {
-                urls: [configService.get<string>('RABBIT_MQ_URI')],
-                queue: configService.get<string>(`RABBIT_MQ_${name}_QUEUE`),
-              },
-            }),
+            useFactory: (configService: ConfigService): RmqOptions => {
+              const mode = configService.get<string>('NODE_ENV');
+              const certPath = path.join('cert', mode, 'certificate.pem');
+              const rootCertPath = path.join('cert', mode, 'ca.crt');
+              const keyPath = path.join('cert', mode, 'private-key.pem');
+
+              return {
+                transport: Transport.RMQ,
+                options: {
+                  urls: [configService.get<string>('RABBIT_MQ_URI')],
+                  queue: configService.get<string>(`RABBIT_MQ_${name}_QUEUE`),
+                  socketOptions: {
+                    connectionOptions: {
+                      cert: fs.readFileSync(certPath),
+                      key: fs.readFileSync(keyPath),
+                      ca: [fs.readFileSync(rootCertPath)],
+                    },
+                  },
+                },
+              };
+            },
             inject: [ConfigService],
           },
         ]),
