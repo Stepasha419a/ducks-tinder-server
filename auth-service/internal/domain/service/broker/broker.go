@@ -2,7 +2,11 @@ package broker_service
 
 import (
 	config_service "auth-service/internal/infrastructure/service/config"
+	"crypto/tls"
+	"crypto/x509"
 	"log/slog"
+	"os"
+	"path"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -14,11 +18,17 @@ var (
 )
 
 func InitBroker() *amqp.Connection {
+	MODE := config_service.GetConfig().Mode
 	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
+
+	cfg, err := requireTlsConfig(MODE)
+	if err != nil {
+		slog.Error("Broker cert error", slog.Any("err", err))
+	}
 
 	slog.Info("Broker connecting")
 
-	conn, err = amqp.Dial(RABBIT_MQ_URL)
+	conn, err = amqp.DialTLS(RABBIT_MQ_URL, cfg)
 	if err != nil {
 		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
 		reconnect()
@@ -27,6 +37,31 @@ func InitBroker() *amqp.Connection {
 	slog.Info("Broker successfully connected")
 
 	return conn
+}
+
+func requireTlsConfig(mode string) (*tls.Config, error) {
+	rootCertPath := path.Join("cert", mode, "ca.crt")
+	certPath := path.Join("cert", mode, "certificate.pem")
+	privateKeyPath := path.Join("cert", mode, "private-key.pem")
+
+	cfg := &tls.Config{}
+
+	cfg.RootCAs = x509.NewCertPool()
+
+	ca, err := os.ReadFile(rootCertPath)
+	if err != nil {
+		return nil, err
+	}
+
+	cert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
+	if err != nil {
+		return nil, err
+	}
+
+	cfg.Certificates = append(cfg.Certificates, cert)
+	cfg.RootCAs.AppendCertsFromPEM(ca)
+
+	return cfg, nil
 }
 
 func reconnect() {
