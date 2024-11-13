@@ -104,6 +104,7 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
       - '--web.enable-lifecycle'
       - '--web.enable-admin-api'
+      - '--web.config.file=/etc/prometheus/web-config.yml'
     ports:
       - 9090:9090
     deploy:
