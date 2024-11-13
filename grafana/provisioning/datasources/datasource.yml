@@ -10,7 +10,7 @@ datasources:
     uid: prometheusdatasource
     access: proxy
     orgId: 1
-    url: http://prometheus:9090
+    url: https://prometheus:9090
     password:
     user:
     database:
@@ -21,11 +21,12 @@ datasources:
     isDefault: true
     jsonData:
       graphiteVersion: '1.1'
-      tlsAuth: false
-      tlsAuthWithCACert: false
+      tlsAuth: true
+      tlsAuthWithCACert: true
+      tlsSkipVerify: false
     secureJsonData:
-      tlsCACert: '...'
-      tlsClientCert: '...'
-      tlsClientKey: '...'
+      tlsCACert: $__file{/etc/grafana/cert/dev-docker/ca.crt}
+      tlsClientCert: $__file{/etc/grafana/cert/dev-docker/certificate.pem}
+      tlsClientKey: $__file{/etc/grafana/cert/dev-docker/private-key.pem}
     version: 1
     editable: true
