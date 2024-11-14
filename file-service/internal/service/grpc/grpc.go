@@ -40,7 +40,7 @@ func Init() {
 	creds := credentials.NewServerTLSFromCert(&cert)
 
 	opts := []grpc.ServerOption{
-		grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor, AuthUnaryInterceptor),
+		grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor),
 		grpc.Creds(creds),
 
 		grpc.KeepaliveEnforcementPolicy(kaep),
