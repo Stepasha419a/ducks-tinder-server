@@ -11,15 +11,10 @@ import (
 
 type (
 	Config struct {
-		Mode     string `yaml:"mode"`
-		Port     uint16 `yaml:"port"`
+		Mode string `yaml:"mode"`
+		Port uint16 `yaml:"port"`
+
 		GrpcPort uint16 `yaml:"grpc_port"`
-
-		JwtAccessSecret      string `yaml:"jwt_access_secret"`
-		JwtFileServiceSecret string `yaml:"jwt_file_service_secret"`
-
-		RabbitMqUrl       string `yaml:"rabbit_mq_url"`
-		RabbitMqFileQueue string `yaml:"rabbit_mq_file_queue"`
 	}
 )
 
@@ -32,7 +27,7 @@ func RequireConfig() *Config {
 	err := godotenv.Load(".env")
 
 	if err != nil {
-		panic("Error loading .env.dev file")
+		panic("Error loading .env file")
 	}
 
 	mode := os.Getenv("MODE")
