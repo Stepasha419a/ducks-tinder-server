@@ -5,6 +5,9 @@ import { ConfigService } from '@nestjs/config';
 import { DomainModule } from 'src/domain';
 import { FileService } from 'src/domain/service/file';
 import { FileServiceAdapter } from '../adapter/file-service';
+import { ChannelCredentials } from '@grpc/grpc-js';
+import { readFileSync } from 'fs';
+import * as path from 'path';
 
 @Module({
   providers: [{ provide: FileService, useClass: FileServiceAdapter }],
@@ -19,21 +22,40 @@ export class GrpcModule {
         ClientsModule.registerAsync(
           names.map((name) => {
             const packageName = getGrpcPackageName(name);
+
             return {
               name,
-              useFactory: (configService: ConfigService) => ({
-                transport: Transport.GRPC,
-                options: {
-                  keepalive: {
-                    keepaliveTimeMs: 10 * 1000,
-                    keepaliveTimeoutMs: 5 * 1000,
-                    keepalivePermitWithoutCalls: 1,
+              useFactory: (configService: ConfigService) => {
+                const mode = configService.get<string>('NODE_ENV');
+                const rootCertPath = path.join('cert', mode, 'ca.crt');
+                const certPath = path.join('cert', mode, 'certificate.pem');
+                const privateKeyPath = path.join(
+                  'cert',
+                  mode,
+                  'private-key.pem',
+                );
+
+                const credentials = ChannelCredentials.createSsl(
+                  readFileSync(rootCertPath),
+                  readFileSync(privateKeyPath),
+                  readFileSync(certPath),
+                );
+
+                return {
+                  transport: Transport.GRPC,
+                  options: {
+                    keepalive: {
+                      keepaliveTimeMs: 10 * 1000,
+                      keepaliveTimeoutMs: 5 * 1000,
+                      keepalivePermitWithoutCalls: 1,
+                    },
+                    url: configService.get(`${name}_URL`),
+                    package: packageName,
+                    protoPath: `proto/${packageName}.proto`,
+                    credentials,
                   },
-                  url: configService.get(`${name}_URL`),
-                  package: packageName,
-                  protoPath: `proto/${packageName}.proto`,
-                },
-              }),
+                };
+              },
               inject: [ConfigService],
             };
           }),
