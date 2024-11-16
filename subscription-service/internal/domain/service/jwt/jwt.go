@@ -62,3 +62,31 @@ func validateToken(accessToken string, secretKey string) (bool, *AccessTokenPayl
 
 	return true, &AccessTokenPayload{UserId: claims.UserId}
 }
+
+type ServiceToken struct {
+	Token string
+	Exp   int64
+}
+
+func (s *JwtService) GenerateBillingServiceToken() *ServiceToken {
+	serviceTokenSecret := []byte(s.configService.GetConfig().JwtBillingServiceSecret)
+
+	exp := time.Now().Add(time.Hour).Unix()
+	serviceToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"exp": exp,
+	})
+
+	serviceTokenString, err := serviceToken.SignedString(serviceTokenSecret)
+	if err != nil {
+		panic(err)
+	}
+
+	return &ServiceToken{
+		Token: serviceTokenString,
+		Exp:   exp,
+	}
+}
+
+func (s *JwtService) IsExpiredUnix(unix int64) bool {
+	return time.Unix(unix, 0).Compare(time.Now()) < 0
+}
