@@ -26,8 +26,6 @@ import { MetricsModule } from './metrics';
         RABBIT_MQ_CHAT_QUEUE: Joi.string().required(),
         RABBIT_MQ_URI: Joi.string().required(),
         GRPC_FILE_SERVICE_URL: Joi.string().required(),
-        JWT_FILE_SERVICE_SECRET: Joi.string().required(),
-        JWT_FILE_SERVICE_EXPIRES_MS: Joi.number().required(),
       }),
     }),
     UserModule,
