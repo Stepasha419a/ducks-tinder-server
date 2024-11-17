@@ -20,6 +20,19 @@ func NewSubscriptionRepository(pg *database.PostgresInstance) *SubscriptionRepos
 	return &SubscriptionRepositoryImpl{pg}
 }
 
+func (r *SubscriptionRepositoryImpl) Find(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error) {
+	subscription := &entity.Subscription{}
+
+	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+		"user_id": userId,
+	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.ExpiresAt, &subscription.CreatedAt)
+	if err != nil {
+		return nil, handleError(err)
+	}
+
+	return subscription, nil
+}
+
 func handleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
