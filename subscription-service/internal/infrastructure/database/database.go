@@ -46,3 +46,27 @@ func cleanUp() {
 func (pg *PostgresInstance) Close() {
 	pg.Pool.Close()
 }
+
+func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
+	if tx != nil {
+		return tx.Exec
+	}
+
+	return pool.Exec
+}
+
+func Query(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+	if tx != nil {
+		return tx.Query
+	}
+
+	return pool.Query
+}
+
+func QueryRow(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) pgx.Row {
+	if tx != nil {
+		return tx.QueryRow
+	}
+
+	return pool.QueryRow
+}
