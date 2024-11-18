@@ -80,6 +80,17 @@ func (r *SubscriptionRepositoryImpl) FindByUserIdOrLogin(ctx context.Context, us
 	return subscription, nil
 }
 
+func (r *SubscriptionRepositoryImpl) Delete(ctx context.Context, userId string, tx pgx.Tx) error {
+	_, err := database.Exec(r.pg.Pool, tx)(ctx, "DELETE FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+		"user_id": userId,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func handleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
