@@ -35,3 +35,14 @@ func NewPostgresInstance(configService config_service.ConfigService) (*PostgresI
 
 	return pgInstance, cleanUp
 }
+
+func cleanUp() {
+	log.Println("close database postgres instance")
+
+	pgInstance.Pool.Close()
+	pgInstance.Close()
+}
+
+func (pg *PostgresInstance) Close() {
+	pg.Pool.Close()
+}
