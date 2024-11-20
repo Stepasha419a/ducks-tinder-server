@@ -21,9 +21,16 @@ type BillingServiceImpl struct {
 }
 
 func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService) (*BillingServiceImpl, func(), error) {
+	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
+	creds, err := credentials.NewClientTLSFromFile(certPath, configService.GetConfig().GrpcBillingServiceDomain)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	perRPC := NewPerRPCCredentialsImpl(jwtService)
 	opts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(perRPC),
+		grpc.WithTransportCredentials(creds),
 	}
 
 	log.Printf("gRPC billing service client is connected to %s", configService.GetConfig().GrpcBillingServiceUrl)
