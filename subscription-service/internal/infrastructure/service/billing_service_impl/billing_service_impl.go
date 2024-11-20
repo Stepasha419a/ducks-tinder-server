@@ -45,3 +45,25 @@ func NewBillingServiceImpl(configService config_service.ConfigService, jwtServic
 		}
 	}, nil
 }
+
+func (c *BillingServiceImpl) WithdrawUserCreditCard(ctx context.Context, request *billing_service.WithdrawUserCreditCardRequest) (*billing_service.Purchase, error) {
+	in := &gen.WithdrawUserCreditCardRequest{
+		UserId:       request.UserId,
+		CreditCardId: request.CreditCardId,
+		Amount:       request.Amount,
+	}
+
+	out, err := c.client.WithdrawUserCreditCard(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &billing_service.Purchase{
+		Id:           out.Id,
+		CreditCardId: out.CreditCardId,
+		Amount:       out.Amount,
+		CreatedAt:    out.CreatedAt,
+	}
+
+	return response, nil
+}
