@@ -20,6 +20,12 @@ type BillingServiceImpl struct {
 	conn   *grpc.ClientConn
 }
 
+var kacp = keepalive.ClientParameters{
+	Time:                10 * time.Second,
+	Timeout:             time.Second,
+	PermitWithoutStream: true,
+}
+
 func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService) (*BillingServiceImpl, func(), error) {
 	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
 	creds, err := credentials.NewClientTLSFromFile(certPath, configService.GetConfig().GrpcBillingServiceDomain)
@@ -31,6 +37,8 @@ func NewBillingServiceImpl(configService config_service.ConfigService, jwtServic
 	opts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(perRPC),
 		grpc.WithTransportCredentials(creds),
+
+		grpc.WithKeepaliveParams(kacp),
 	}
 
 	log.Printf("gRPC billing service client is connected to %s", configService.GetConfig().GrpcBillingServiceUrl)
