@@ -20,3 +20,7 @@ type SubscriptionFacade struct {
 func NewSubscriptionFacade(subscriptionRepository repository.SubscriptionRepository, loginService login_service.LoginService, billingService billing_service.BillingService) *SubscriptionFacade {
 	return &SubscriptionFacade{subscriptionRepository, loginService, billingService}
 }
+
+func (f *SubscriptionFacade) GetSubscription(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], query *get_subscription.GetSubscriptionQuery) error {
+	return get_subscription.GetSubscriptionQueryHandler(ctx, query, f.subscriptionRepository)
+}
