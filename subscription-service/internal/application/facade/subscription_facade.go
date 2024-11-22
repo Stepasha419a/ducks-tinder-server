@@ -24,3 +24,7 @@ func NewSubscriptionFacade(subscriptionRepository repository.SubscriptionReposit
 func (f *SubscriptionFacade) GetSubscription(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], query *get_subscription.GetSubscriptionQuery) error {
 	return get_subscription.GetSubscriptionQueryHandler(ctx, query, f.subscriptionRepository)
 }
+
+func (f *SubscriptionFacade) CreateSubscription(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], command *create_subscription.CreateSubscriptionCommand) error {
+	return create_subscription.CreateSubscriptionCommandHandler(ctx, command, f.subscriptionRepository, f.billingService, f.loginService)
+}
