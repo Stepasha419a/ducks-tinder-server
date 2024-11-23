@@ -28,3 +28,7 @@ func (f *SubscriptionFacade) GetSubscription(ctx service_context.ServiceContext[
 func (f *SubscriptionFacade) CreateSubscription(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], command *create_subscription.CreateSubscriptionCommand) error {
 	return create_subscription.CreateSubscriptionCommandHandler(ctx, command, f.subscriptionRepository, f.billingService, f.loginService)
 }
+
+func (f *SubscriptionFacade) DeleteSubscription(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], command *delete_subscription.DeleteSubscriptionCommand) error {
+	return delete_subscription.DeleteSubscriptionCommandHandler(ctx, command, f.subscriptionRepository)
+}
