@@ -42,3 +42,18 @@ func (dto *CreateSubscriptionDto) ToCreateSubscriptionCommand(validatorService v
 		Login:        dto.Login,
 	}, nil
 }
+
+type DeleteSubscriptionDto struct {
+	UserId string `validate:"required,uuid4"`
+}
+
+func (dto *DeleteSubscriptionDto) ToDeleteSubscriptionCommand(validatorService validator_service.ValidatorService) (*delete_subscription.DeleteSubscriptionCommand, error) {
+	err := validatorService.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &delete_subscription.DeleteSubscriptionCommand{
+		UserId: dto.UserId,
+	}, nil
+}
