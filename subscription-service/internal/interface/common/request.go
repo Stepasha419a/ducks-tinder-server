@@ -21,3 +21,24 @@ func (dto *GetSubscriptionDto) ToGetSubscriptionQuery(validatorService validator
 		UserId: dto.UserId,
 	}, nil
 }
+
+type CreateSubscriptionDto struct {
+	UserId       string `validate:"required,uuid4"`
+	CreditCardId string `validate:"required,uuid4"`
+	Subscription string `validate:"required"`
+	Login        string `validate:"required,max=50"`
+}
+
+func (dto *CreateSubscriptionDto) ToCreateSubscriptionCommand(validatorService validator_service.ValidatorService) (*create_subscription.CreateSubscriptionCommand, error) {
+	err := validatorService.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &create_subscription.CreateSubscriptionCommand{
+		UserId:       dto.UserId,
+		CreditCardId: dto.CreditCardId,
+		Subscription: dto.Subscription,
+		Login:        dto.Login,
+	}, nil
+}
