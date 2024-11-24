@@ -13,6 +13,10 @@ import (
 var publicUris = []string{"/metrics"}
 
 func authMiddleware(ctx fiber.Ctx, jwtService *jwt_service.JwtService) error {
+	if isPublicUri(string(ctx.Request().RequestURI())) {
+		return ctx.Next()
+	}
+
 	authorization := ctx.Get(fiber.HeaderAuthorization)
 
 	if authorization == "" || len(authorization) < 7 || authorization[:6] != "Bearer" {
@@ -27,4 +31,8 @@ func authMiddleware(ctx fiber.Ctx, jwtService *jwt_service.JwtService) error {
 	ctx.Locals("userId", payload.UserId)
 
 	return ctx.Next()
+}
+
+func isPublicUri(uri string) bool {
+	return slices.Contains(publicUris, uri)
 }
