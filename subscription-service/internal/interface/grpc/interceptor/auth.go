@@ -40,3 +40,9 @@ func authUnaryInterceptor(ctx context.Context, req interface{}, _ *grpc.UnarySer
 
 	return handler(ctx, req)
 }
+
+func newAuthUnaryInterceptor(jwtService *jwt_service.JwtService) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
+		return authUnaryInterceptor(ctx, req, info, handler, jwtService)
+	}
+}
