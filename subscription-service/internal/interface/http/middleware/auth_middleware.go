@@ -36,3 +36,9 @@ func authMiddleware(ctx fiber.Ctx, jwtService *jwt_service.JwtService) error {
 func isPublicUri(uri string) bool {
 	return slices.Contains(publicUris, uri)
 }
+
+func newAuthMiddleware(jwtService *jwt_service.JwtService) func(ctx fiber.Ctx) error {
+	return func(ctx fiber.Ctx) error {
+		return authMiddleware(ctx, jwtService)
+	}
+}
