@@ -44,3 +44,27 @@ func (s *ServiceContextImpl[R]) ErrorMessage(status int, message string) error {
 		"message": message,
 	})
 }
+
+func (s *ServiceContextImpl[R]) BadRequest() error {
+	return s.ctx.Status(http.StatusBadRequest).JSON(BadRequest)
+}
+
+func (s *ServiceContextImpl[R]) Unauthorized() error {
+	return s.ctx.Status(http.StatusUnauthorized).JSON(UnauthorizedResponse)
+}
+
+func (s *ServiceContextImpl[R]) NotFound() error {
+	return s.ctx.Status(http.StatusNotFound).JSON(NotFound)
+}
+
+func (s *ServiceContextImpl[R]) MethodNotAllowed() error {
+	return s.ctx.Status(http.StatusMethodNotAllowed).JSON(MethodNotAllowed)
+}
+
+func (s *ServiceContextImpl[R]) Conflict() error {
+	return s.ctx.Status(http.StatusConflict).JSON(Conflict)
+}
+
+func (s *ServiceContextImpl[R]) InternalServerError() error {
+	return s.ctx.Status(http.StatusInternalServerError).JSON(InternalServerErrorResponse)
+}
