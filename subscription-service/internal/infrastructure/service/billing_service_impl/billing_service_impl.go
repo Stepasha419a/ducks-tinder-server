@@ -3,12 +3,12 @@ package billing_service_impl
 import (
 	"context"
 	"log"
-	"path"
 	"time"
 
 	billing_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/billing"
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
 	jwt_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/jwt"
+	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/proto/gen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -26,12 +26,10 @@ var kacp = keepalive.ClientParameters{
 	PermitWithoutStream: true,
 }
 
-func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService) (*BillingServiceImpl, func(), error) {
-	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
-	creds, err := credentials.NewClientTLSFromFile(certPath, configService.GetConfig().GrpcBillingServiceDomain)
-	if err != nil {
-		return nil, nil, err
-	}
+func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService, tlsService *tls_service.TlsService) (*BillingServiceImpl, func(), error) {
+	tlsConfig := tlsService.GetConfig()
+
+	creds := credentials.NewTLS(tlsConfig)
 
 	perRPC := NewPerRPCCredentialsImpl(jwtService)
 	opts := []grpc.DialOption{
