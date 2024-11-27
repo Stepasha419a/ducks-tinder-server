@@ -23,6 +23,27 @@ import (
 
 func NewFiberApp(middleware *middleware.Middleware, configService config_service.ConfigService) (*fiber.App, func()) {
 	app := fiber.New(fiber.Config{
+		ErrorHandler: func(ctx fiber.Ctx, err error) error {
+			status := http.StatusInternalServerError
+			response := fiber_impl_context.InternalServerErrorResponse
+
+			var e *fiber.Error
+			if errors.As(err, &e) {
+				status = e.Code
+			}
+
+			// route not found
+			if status == 404 {
+				response = fiber_impl_context.NotFound
+			}
+
+			// method not allowed
+			if status == 405 {
+				response = fiber_impl_context.MethodNotAllowed
+			}
+
+			return ctx.Status(status).JSON(response)
+		},
 	})
 	return app, func() {
 		log.Println("close fiber app")
