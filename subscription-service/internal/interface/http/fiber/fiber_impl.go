@@ -37,6 +37,11 @@ func InitHttpListener(app *fiber.App, configService config_service.ConfigService
 	if err != nil {
 		return err
 	}
+
+	tlsConfig := tlsService.GetConfig()
+
+	ln = tls.NewListener(ln, tlsConfig)
+
 	err = app.Listener(ln)
 	if err != nil {
 		return err
