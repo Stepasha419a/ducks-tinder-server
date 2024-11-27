@@ -29,3 +29,18 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 		app.Shutdown()
 	}
 }
+
+func InitHttpListener(app *fiber.App, configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
+	port := strconv.Itoa(int(configService.GetConfig().Port))
+
+	ln, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", port))
+	if err != nil {
+		return err
+	}
+	err = app.Listener(ln)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
