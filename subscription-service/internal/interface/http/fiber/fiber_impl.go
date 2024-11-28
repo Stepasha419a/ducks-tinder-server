@@ -45,6 +45,16 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 			return ctx.Status(status).JSON(response)
 		},
 	})
+
+	app.Use(logger.New())
+	app.Use(recover.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{configService.GetConfig().ClientUrl},
+		AllowHeaders:     []string{"Authorization", "Content-Type", "Origin", "Accept"},
+		MaxAge:           3600,
+		AllowCredentials: true,
+	}))
+	app.Use(helmet.New())
 	return app, func() {
 		log.Println("close fiber app")
 		app.Shutdown()
