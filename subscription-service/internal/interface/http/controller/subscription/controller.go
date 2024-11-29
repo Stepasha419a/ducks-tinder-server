@@ -24,6 +24,7 @@ func NewSubscriptionController(f *fiber.App, service service.SubscriptionService
 	}
 
 	f.Get("/subscription", controller.GetSubscription)
+	f.Post("/subscription", controller.CreateSubscription)
 
 	return controller
 }
@@ -47,4 +48,32 @@ func (bc *SubscriptionController) GetSubscription(ctx fiber.Ctx) error {
 
 	serviceContext := fiber_impl_context.NewServiceContext[*mapper.SubscriptionResponse](ctx)
 	return bc.service.GetSubscription(serviceContext, query)
+}
+
+func (bc *SubscriptionController) CreateSubscription(ctx fiber.Ctx) error {
+	rawUserId := ctx.Locals("userId")
+
+	userId, ok := rawUserId.(string)
+	if !ok {
+		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
+	}
+
+	dto := new(interface_common.CreateSubscriptionDto)
+
+	err := ctx.Bind().Body(dto)
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber_impl_context.BadRequest)
+	}
+
+	serviceContext := fiber_impl_context.NewServiceContext[*mapper.SubscriptionResponse](ctx)
+
+	dto.UserId = userId
+
+	command, err := dto.ToCreateSubscriptionCommand(bc.validatorService)
+
+	if err != nil {
+		return serviceContext.ErrorMessage(http.StatusBadRequest, "Validation failed: "+err.Error())
+	}
+
+	return bc.service.CreateSubscription(serviceContext, command)
 }
