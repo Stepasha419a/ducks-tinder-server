@@ -17,6 +17,7 @@ import (
 )
 func NewGrpc(billingServer gen.SubscriptionServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func()) {
 	opts := []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(interceptor.RecoveryUnaryInterceptor, interceptor.AuthUnaryInterceptor),
 	}
 
 	server := grpc.NewServer(opts...)
