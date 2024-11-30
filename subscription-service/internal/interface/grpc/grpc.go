@@ -28,3 +28,24 @@ func NewGrpc(billingServer gen.SubscriptionServiceServer, interceptor *grpc_inte
 		server.GracefulStop()
 	}
 }
+
+func InitGrpcListener(server *grpc.Server, configService config_service.ConfigService) error {
+	PORT := configService.GetConfig().GrpcPort
+
+	con, err := net.Listen("tcp", fmt.Sprintf(":%d", PORT))
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		server.Stop()
+		con.Close()
+	}()
+
+	log.Printf("gRPC server is listening on port %d", PORT)
+	if err := server.Serve(con); err != nil {
+		return err
+	}
+
+	return nil
+}
