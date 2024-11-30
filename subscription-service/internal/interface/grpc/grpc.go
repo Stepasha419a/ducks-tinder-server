@@ -16,8 +16,12 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 func NewGrpc(billingServer gen.SubscriptionServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func()) {
+	tlsConfig := tlsService.GetConfig()
+	creds := credentials.NewTLS(tlsConfig)
+
 	opts := []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(interceptor.RecoveryUnaryInterceptor, interceptor.AuthUnaryInterceptor),
+		grpc.Creds(creds),
 	}
 
 	server := grpc.NewServer(opts...)
