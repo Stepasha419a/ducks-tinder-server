@@ -30,4 +30,7 @@ func initListeners(g *errgroup.Group, container *Container) {
 	g.Go(func() error {
 		return fiber_impl.InitHttpListener(container.App, container.ConfigService, container.TlsService)
 	})
+	g.Go(func() error {
+		return grpc_interface.InitGrpcListener(container.GrpcServer, container.ConfigService)
+	})
 }
