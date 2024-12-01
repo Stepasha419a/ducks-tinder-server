@@ -27,4 +27,7 @@ func setUpWithGracefulShutdown(container *Container, cleaner func()) {
 }
 
 func initListeners(g *errgroup.Group, container *Container) {
+	g.Go(func() error {
+		return fiber_impl.InitHttpListener(container.App, container.ConfigService, container.TlsService)
+	})
 }
