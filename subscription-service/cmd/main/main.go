@@ -36,3 +36,15 @@ func initListeners(g *errgroup.Group, container *Container) {
 		return grpc_interface.InitGrpcListener(container.GrpcServer, container.ConfigService)
 	})
 }
+
+func gracefulShutdown(gCtx context.Context, g *errgroup.Group, cleaner func()) {
+	g.Go(func() error {
+		<-gCtx.Done()
+
+		log.Println("start graceful shutdown")
+		cleaner()
+		log.Println("finish graceful shutdown")
+
+		return nil
+	})
+}
