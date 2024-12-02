@@ -6,14 +6,13 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	grpc_interface "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	fiber_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
-	"google.golang.org/grpc/keepalive"
 
 	"golang.org/x/sync/errgroup"
 )
+
 func main() {
 	container, cleaner, err := newContainer()
 	if err != nil {
@@ -24,6 +23,9 @@ func main() {
 }
 
 func setUpWithGracefulShutdown(container *Container, cleaner func()) {
+	g, gCtx := errgroup.WithContext(mainCtx)
+
+	initListeners(g, container)
 }
 
 func initListeners(g *errgroup.Group, container *Container) {
