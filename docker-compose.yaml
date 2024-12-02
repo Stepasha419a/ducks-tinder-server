@@ -54,6 +54,23 @@ services:
         condition: on-failure
     depends_on:
       - postgres
+  subscription-service:
+    container_name: subscription-service
+    restart: always
+    build:
+      context: subscription-service
+      dockerfile: Dockerfile
+    environment:
+      MODE: dev-docker
+    ports:
+      - '${SUBSCRIPTION_SERVICE_PORT}:${SUBSCRIPTION_SERVICE_PORT}'
+      - '${SUBSCRIPTION_SERVICE_GRPC_PORT}:${SUBSCRIPTION_SERVICE_GRPC_PORT}'
+    deploy:
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - billing-service
+      - postgres
   file-service:
     container_name: file-service
     restart: always
