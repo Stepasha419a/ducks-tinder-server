@@ -23,9 +23,18 @@ func main() {
 }
 
 func setUpWithGracefulShutdown(container *Container, cleaner func()) {
+	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
 	g, gCtx := errgroup.WithContext(mainCtx)
 
 	initListeners(g, container)
+	gracefulShutdown(gCtx, g, cleaner)
+
+	err := g.Wait()
+	if err != nil {
+		log.Printf("error: %s \n", err)
+	}
 }
 
 func initListeners(g *errgroup.Group, container *Container) {
