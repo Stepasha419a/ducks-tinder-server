@@ -35,3 +35,12 @@ scrape_configs:
       ca_file: /etc/prometheus/cert/dev-docker/certificate.pem
     static_configs:
       - targets: ['host.docker.internal:5004']
+
+  - job_name: 'subscription-service'
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/dev-docker/ca.crt
+      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
+      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+    static_configs:
+      - targets: ['host.docker.internal:5005']
