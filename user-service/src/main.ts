@@ -6,16 +6,21 @@ import * as cookieParser from 'cookie-parser';
 import { RabbitMQService } from './infrastructure/rabbitmq';
 import * as path from 'path';
 import * as fs from 'fs';
+import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 
 async function bootstrap() {
   const configService = new ConfigService();
 
   const mode = configService.get<string>('NODE_ENV');
+  const rootCertPath = path.join('cert', mode, 'ca.crt');
   const certPath = path.join('cert', mode, 'certificate.pem');
   const keyPath = path.join('cert', mode, 'private-key.pem');
-  const httpsOptions = {
+  const httpsOptions: HttpsOptions = {
+    ca: fs.readFileSync(rootCertPath).toString(),
     key: fs.readFileSync(keyPath).toString(),
     cert: fs.readFileSync(certPath).toString(),
+    rejectUnauthorized: true,
+    requestCert: true,
   };
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
