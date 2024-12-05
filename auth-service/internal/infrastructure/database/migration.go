@@ -2,11 +2,11 @@ package database
 
 import (
 	config_service "auth-service/internal/infrastructure/service/config"
+	tls_service "auth-service/internal/infrastructure/service/tls"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	log "log/slog"
 
@@ -62,11 +62,20 @@ func checkMigration(err error) {
 func initMigration(ctx context.Context, db *Postgres) error {
 	log.Info("migration - init")
 
-	postgresInstanceUrl := strings.Split(config_service.GetConfig().DatabaseUrl, "auth-service")[0] + "postgres"
+	tlsConfig := tls_service.GetConfig()
+	config := config_service.GetConfig()
 
-	postgresInstance, err := pgx.Connect(ctx, postgresInstanceUrl)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresRootDatabase)
+	pgxConfig, err := pgx.ParseConfig(connectionString)
 	if err != nil {
-		return err
+		panic(err)
+	}
+
+	pgxConfig.TLSConfig = tlsConfig
+
+	postgresInstance, err := pgx.ConnectConfig(context.TODO(), pgxConfig)
+	if err != nil {
+		panic(err)
 	}
 
 	defer postgresInstance.Close(ctx)
