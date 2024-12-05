@@ -5,6 +5,11 @@ jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 cookie_refresh_token_max_age: 604800
 cookie_refresh_token_domain: localhost
 port: 5003
-database_url: postgresql://prisma:prisma@postgres:5432/auth-service
 rabbit_mq_url: amqps://host.docker.internal:5672
 rabbit_mq_user_queue: user
+postgres_host: host.docker.internal
+postgres_port: 5433
+postgres_user: prisma
+postgres_password: prisma
+postgres_database: auth-service
+postgres_root_database: postgres
