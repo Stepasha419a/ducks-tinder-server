@@ -2,7 +2,9 @@ package database
 
 import (
 	config_service "auth-service/internal/infrastructure/service/config"
+	tls_service "auth-service/internal/infrastructure/service/tls"
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/jackc/pgx/v5"
@@ -21,7 +23,18 @@ var (
 
 func NewPostgresInstance() *Postgres {
 	pgOnce.Do(func() {
-		pool, err := pgxpool.New(context.TODO(), config_service.GetConfig().DatabaseUrl)
+		tlsConfig := tls_service.GetConfig()
+		config := config_service.GetConfig()
+
+		connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
+		pgxConfig, err := pgxpool.ParseConfig(connectionString)
+		if err != nil {
+			panic(err)
+		}
+
+		pgxConfig.ConnConfig.TLSConfig = tlsConfig
+
+		pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
 		if err != nil {
 			panic(err)
 		}
