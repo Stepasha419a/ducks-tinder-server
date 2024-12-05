@@ -18,9 +18,14 @@ type (
 		CookieRefreshTokenMaxAge uint32 `yaml:"cookie_refresh_token_max_age"`
 		CookieRefreshTokenDomain string `yaml:"cookie_refresh_token_domain"`
 		Port                     uint16 `yaml:"port"`
-		DatabaseUrl              string `yaml:"database_url"`
 		RabbitMqUrl              string `yaml:"rabbit_mq_url"`
 		RabbitMqUserQueue        string `yaml:"rabbit_mq_user_queue"`
+		PostgresHost             string `yaml:"postgres_host"`
+		PostgresPort             uint16 `yaml:"postgres_port"`
+		PostgresUser             string `yaml:"postgres_user"`
+		PostgresPassword         string `yaml:"postgres_password"`
+		PostgresDatabase         string `yaml:"postgres_database"`
+		PostgresRootDatabase     string `yaml:"postgres_root_database"`
 	}
 )
 
