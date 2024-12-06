@@ -114,7 +114,7 @@ func initMigration(ctx context.Context, db *Postgres) error {
 func refreshTokenIndexMigration(ctx context.Context, db *Postgres) error {
 	log.Info("migration - refresh token index")
 
-	_, err := db.Pool.Exec(ctx, `CREATE UNIQUE INDEX CONCURRENTLY refresh_token_index ON auth_users (refreshToken)`)
+	_, err := db.Pool.Exec(ctx, `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refreshToken)`)
 
 	if err != nil {
 		return err
