@@ -17,18 +17,16 @@ var (
 	err  error            = nil
 )
 
-func InitBroker() *amqp.Connection {
-	MODE := config_service.GetConfig().Mode
+func InitBroker(tlsConfig *tls.Config) *amqp.Connection {
 	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
 
-	cfg, err := requireTlsConfig(MODE)
 	if err != nil {
 		slog.Error("Broker cert error", slog.Any("err", err))
 	}
 
 	slog.Info("Broker connecting")
 
-	conn, err = amqp.DialTLS(RABBIT_MQ_URL, cfg)
+	conn, err = amqp.DialTLS(RABBIT_MQ_URL, tlsConfig)
 	if err != nil {
 		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
 		reconnect()
