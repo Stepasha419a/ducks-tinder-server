@@ -7,6 +7,7 @@ import (
 	"auth-service/internal/infrastructure/database"
 	repository_impl "auth-service/internal/infrastructure/repository"
 	config_service "auth-service/internal/infrastructure/service/config"
+	tls_service "auth-service/internal/infrastructure/service/tls"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"auth-service/internal/interface/http/middleware"
@@ -23,7 +24,7 @@ func main() {
 	db := database.NewPostgresInstance()
 	transactionService := database.NewTransactionService(db.Pool)
 
-	brokerConn := broker_service.InitBroker()
+	brokerConn := broker_service.InitBroker(tls_service.GetConfig())
 
 	userService := adapter.NewUserService(brokerConn)
 
