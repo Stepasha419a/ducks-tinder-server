@@ -12,8 +12,9 @@ import (
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"auth-service/internal/interface/http/middleware"
 	"net/http"
-	"path"
 	"strconv"
+
+	log "log/slog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,8 +40,16 @@ func main() {
 	auth_controller.NewAuthController(e, authFacade)
 	metrics_controller.NewMetricsController(e)
 
-	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
-	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
+	tlsConfig := tls_service.GetConfig()
 
-	http.ListenAndServeTLS("0.0.0.0:"+strconv.Itoa(int(config_service.GetConfig().Port)), certPath, privateKeyPath, e)
+	server := &http.Server{
+		Addr:      "0.0.0.0:" + strconv.Itoa(int(config_service.GetConfig().Port)),
+		Handler:   e,
+		TLSConfig: tlsConfig,
+	}
+
+	err := server.ListenAndServeTLS("", "")
+	if err != nil {
+		log.Error("server failed to start", log.Any("error", err))
+	}
 }
