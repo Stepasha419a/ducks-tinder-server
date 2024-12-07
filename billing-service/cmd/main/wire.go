@@ -10,6 +10,7 @@ import (
 	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/repository_impl"
 	config_service_impl "billing-service/internal/infrastructure/service/config_impl"
+	tls_service "billing-service/internal/infrastructure/service/tls"
 	validator_service_impl "billing-service/internal/infrastructure/service/validator_impl"
 	grpc_interface "billing-service/internal/interface/grpc"
 	grpc_interceptor "billing-service/internal/interface/grpc/interceptor"
@@ -28,6 +29,7 @@ import (
 type Container struct {
 	ValidatorService     validator_service.ValidatorService
 	ConfigService        config_service.ConfigService
+	TlsService           *tls_service.TlsService
 	Postgres             *database.PostgresInstance
 	App                  *fiber.App
 	BillingService       service.BillingService
@@ -57,6 +59,7 @@ func newContainer() (*Container, func(), error) {
 		wire.Bind(new(gen.BillingServiceServer), new(*grpc_billing_service_server_impl.BillingServiceServerImpl)),
 		grpc_billing_service_server_impl.NewBillingServiceServerImpl,
 		grpc_interceptor.NewInterceptor,
+		tls_service.NewTlsService,
 		grpc_interface.NewGrpc,
 		wire.Struct(new(Container), "*"),
 	))
