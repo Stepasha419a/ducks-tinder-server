@@ -2,13 +2,12 @@ package grpc_interface
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	tls_service "billing-service/internal/infrastructure/service/tls"
 	grpc_interceptor "billing-service/internal/interface/grpc/interceptor"
 	"billing-service/proto/gen"
-	"crypto/tls"
 	"fmt"
 	"log"
 	"net"
-	"path"
 	"time"
 
 	"google.golang.org/grpc"
@@ -29,16 +28,9 @@ var kasp = keepalive.ServerParameters{
 	Timeout:               1 * time.Second,
 }
 
-func NewGrpc(configService config_service.ConfigService, billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor) (*grpc.Server, func(), error) {
-	// TODO: ssl
-	certPath := path.Join("cert", configService.GetConfig().Mode, "certificate.pem")
-	privateKeyPath := path.Join("cert", configService.GetConfig().Mode, "private-key.pem")
-
-	cert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
-	if err != nil {
-		return nil, nil, err
-	}
-	creds := credentials.NewServerTLSFromCert(&cert)
+func NewGrpc(configService config_service.ConfigService, billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func(), error) {
+	tlsConfig := tlsService.GetConfig()
+	creds := credentials.NewTLS(tlsConfig)
 
 	opts := []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(interceptor.RecoveryUnaryInterceptor, interceptor.AuthUnaryInterceptor),
