@@ -13,14 +13,16 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func MigrateDB(db *Postgres) {
+func MigrateDB(db *Postgres, autoSubmit bool) {
 	ctx := context.TODO()
 
-	submitted := submitMigration()
+	if !autoSubmit {
+		submitted := submitMigration()
 
-	if !submitted {
-		log.Info("migration - canceled")
-		return
+		if !submitted {
+			log.Info("migration - canceled")
+			return
+		}
 	}
 
 	log.Info("migration - start")
