@@ -15,6 +15,7 @@ import (
 	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
+	"billing-service/internal/infrastructure/service/tls"
 	"billing-service/internal/infrastructure/service/validator_impl"
 	"billing-service/internal/interface/grpc"
 	"billing-service/internal/interface/grpc/interceptor"
@@ -33,7 +34,8 @@ import (
 func newContainer() (*Container, func(), error) {
 	validatorServiceImpl := validator_service_impl.NewValidatorService()
 	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
-	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl)
+	tlsService := tls_service.NewTlsService(configServiceImpl)
+	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl, tlsService)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
 	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
@@ -43,7 +45,7 @@ func newContainer() (*Container, func(), error) {
 	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
 	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
-	server, cleanup3, err := grpc_interface.NewGrpc(configServiceImpl, billingServiceServerImpl, grpcInterceptor)
+	server, cleanup3, err := grpc_interface.NewGrpc(configServiceImpl, billingServiceServerImpl, grpcInterceptor, tlsService)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -52,6 +54,7 @@ func newContainer() (*Container, func(), error) {
 	container := &Container{
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
+		TlsService:           tlsService,
 		Postgres:             postgresInstance,
 		App:                  app,
 		BillingService:       billingFacade,
@@ -73,6 +76,7 @@ func newContainer() (*Container, func(), error) {
 type Container struct {
 	ValidatorService     validator_service.ValidatorService
 	ConfigService        config_service.ConfigService
+	TlsService           *tls_service.TlsService
 	Postgres             *database.PostgresInstance
 	App                  *fiber.App
 	BillingService       service.BillingService
