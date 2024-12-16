@@ -16,11 +16,13 @@ import (
 func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService) {
 	ctx := context.TODO()
 
-	submitted := submitMigration()
+	if !autoSubmit {
+		submitted := submitMigration()
 
-	if !submitted {
-		log.Info("migration - canceled")
-		return
+		if !submitted {
+			log.Info("migration - canceled")
+			return
+		}
 	}
 
 	log.Info("migration - start")
