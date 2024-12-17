@@ -20,8 +20,13 @@ type (
 		JwtBillingServiceSecret string `validate:"required" yaml:"jwt_billing_service_secret"`
 		Port                    uint16 `validate:"required" yaml:"port"`
 		GrpcPort                uint16 `validate:"required" yaml:"grpc_port"`
-		DatabaseUrl             string `validate:"required" yaml:"database_url"`
 		ClientUrl               string `validate:"required" yaml:"client_url"`
+		PostgresHost            string `validate:"required" yaml:"postgres_host"`
+		PostgresPort            uint16 `validate:"required" yaml:"postgres_port"`
+		PostgresUser            string `validate:"required" yaml:"postgres_user"`
+		PostgresPassword        string `validate:"required" yaml:"postgres_password"`
+		PostgresDatabase        string `validate:"required" yaml:"postgres_database"`
+		PostgresRootDatabase    string `validate:"required" yaml:"postgres_root_database"`
 	}
 
 	ConfigServiceImpl struct{}
