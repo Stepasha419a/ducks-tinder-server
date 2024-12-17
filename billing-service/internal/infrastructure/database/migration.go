@@ -2,18 +2,18 @@ package database
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	tls_service "billing-service/internal/infrastructure/service/tls"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	log "log/slog"
 
 	"github.com/jackc/pgx/v5"
 )
 
-func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService) {
+func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService, autoSubmit bool) {
 	ctx := context.TODO()
 
 	if !autoSubmit {
@@ -27,7 +27,7 @@ func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService)
 
 	log.Info("migration - start")
 
-	runMigrations(ctx, pg, configService)
+	runMigrations(ctx, pg, configService, tlsService)
 
 	log.Info("migration - successful")
 }
@@ -49,8 +49,8 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runMigrations(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) {
-	checkMigration(initMigration(ctx, pg, configService))
+func runMigrations(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService) {
+	checkMigration(initMigration(ctx, pg, configService, tlsService))
 }
 
 func checkMigration(err error) {
@@ -60,14 +60,22 @@ func checkMigration(err error) {
 	}
 }
 
-func initMigration(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService) error {
+func initMigration(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
 	log.Info("migration - init")
 
-	postgresInstanceUrl := strings.Split(configService.GetConfig().DatabaseUrl, "billing-service")[0] + "postgres"
+	config := configService.GetConfig()
 
-	postgresInstance, err := pgx.Connect(ctx, postgresInstanceUrl)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresRootDatabase)
+	pgxConfig, err := pgx.ParseConfig(connectionString)
 	if err != nil {
-		return err
+		panic(err)
+	}
+
+	pgxConfig.TLSConfig = tlsService.GetConfig()
+
+	postgresInstance, err := pgx.ConnectConfig(context.TODO(), pgxConfig)
+	if err != nil {
+		panic(err)
 	}
 
 	defer postgresInstance.Close(ctx)
