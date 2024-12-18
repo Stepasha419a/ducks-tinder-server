@@ -3,6 +3,7 @@ package main
 import (
 	"billing-service/internal/infrastructure/database"
 	config_service_impl "billing-service/internal/infrastructure/service/config_impl"
+	tls_service "billing-service/internal/infrastructure/service/tls"
 	validator_service_impl "billing-service/internal/infrastructure/service/validator_impl"
 	"flag"
 )
@@ -15,8 +16,8 @@ func main() {
 	autoSubmit := flag.Bool("auto-submit", false, "submit migrations automatically")
 	flag.Parse()
 
-	db, cleanup := database.NewPostgresInstance(configService)
-	database.MigrateDB(db, configService)
+	db, cleanup := database.NewPostgresInstance(configService, tlsService)
+	database.MigrateDB(db, configService, tlsService, *autoSubmit)
 
 	cleanup()
 }
