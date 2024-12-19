@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path"
 	"sync"
 
 	router "go-file-server/internal/router"
 	config_service "go-file-server/internal/service/config"
 	grpc_service "go-file-server/internal/service/grpc"
+	tls_service "go-file-server/internal/service/tls"
 )
 
 func main() {
@@ -33,9 +33,18 @@ func setUpHttp() {
 
 	r := router.InitRouter()
 
-	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
-	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
-
 	log.Printf("serving on HTTPS port: %v\n", PORT)
-	log.Fatal(http.ListenAndServeTLS("0.0.0.0:"+fmt.Sprintf("%d", PORT), certPath, privateKeyPath, r))
+
+	tlsConfig := tls_service.GetConfig()
+
+	server := &http.Server{
+		Addr:      "0.0.0.0:" + fmt.Sprintf("%d", PORT),
+		Handler:   r,
+		TLSConfig: tlsConfig,
+	}
+
+	err := server.ListenAndServeTLS("", "")
+	if err != nil {
+		log.Fatalf("server failed to start: %v", err)
+	}
 }
