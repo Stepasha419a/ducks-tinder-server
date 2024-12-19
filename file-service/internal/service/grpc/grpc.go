@@ -41,9 +41,9 @@ func Init() {
 
 	server := grpc.NewServer(opts...)
 
-	fileServer := FileServiceServerImpl{}
+	fileServer := &FileServiceServerImpl{}
 
-	gen.RegisterFileServiceServer(server, &fileServer)
+	gen.RegisterFileServiceServer(server, fileServer)
 
 	PORT := config_service.GetConfig().GrpcPort
 
