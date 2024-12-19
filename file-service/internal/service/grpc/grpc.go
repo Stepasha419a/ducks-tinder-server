@@ -1,13 +1,12 @@
 package grpc_service
 
 import (
-	"crypto/tls"
 	"fmt"
 	config_service "go-file-server/internal/service/config"
+	tls_service "go-file-server/internal/service/tls"
 	"go-file-server/proto/gen"
 	"log"
 	"net"
-	"path"
 	"time"
 
 	"google.golang.org/grpc"
@@ -29,15 +28,8 @@ var kasp = keepalive.ServerParameters{
 }
 
 func Init() {
-	// TODO: ssl
-	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
-	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
-
-	cert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
-	if err != nil {
-		panic(err)
-	}
-	creds := credentials.NewServerTLSFromCert(&cert)
+	tlsConfig := tls_service.GetConfig()
+	creds := credentials.NewTLS(tlsConfig)
 
 	opts := []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor),
