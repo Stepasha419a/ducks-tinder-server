@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
 	log "log/slog"
 
@@ -15,14 +14,16 @@ import (
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 )
 
-func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService) {
+func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService, autoSubmit bool) {
 	ctx := context.TODO()
 
-	submitted := submitMigration()
+	if !autoSubmit {
+		submitted := submitMigration()
 
-	if !submitted {
-		log.Info("migration - canceled")
-		return
+		if !submitted {
+			log.Info("migration - canceled")
+			return
+		}
 	}
 
 	log.Info("migration - start")
