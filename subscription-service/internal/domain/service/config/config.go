@@ -12,10 +12,15 @@ type (
 		JwtBillingServiceSecret      string
 		Port                         uint16
 		GrpcPort                     uint16
-		DatabaseUrl                  string
 		ClientUrl                    string
 		GrpcBillingServiceUrl        string
 		GrpcBillingServiceDomain     string
 		LoginServiceUrl              string
+		PostgresHost                 string
+		PostgresPort                 uint16
+		PostgresUser                 string
+		PostgresPassword             string
+		PostgresDatabase             string
+		PostgresRootDatabase         string
 	}
 )
