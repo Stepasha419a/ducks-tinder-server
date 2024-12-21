@@ -4,12 +4,15 @@
   "description": "orm environment to support services",
   "main": "index.js",
   "scripts": {
-    "migrate:postgres": "dotenv -e .env.dev -- npx prisma migrate dev"
+    "migrate:postgres": "dotenvx run -f .env.dev -- npx prisma migrate dev"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^5.14.0",
     "prisma": "^5.14.0"
+  },
+  "devDependencies": {
+    "@dotenvx/dotenvx": "^1.28.0"
   }
 }
