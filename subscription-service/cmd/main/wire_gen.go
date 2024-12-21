@@ -40,10 +40,10 @@ func newContainer() (*Container, func(), error) {
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
 	app, cleanup := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
 	metricsController := metrics_controller.NewMetricsController(app)
-	postgresInstance, cleanup2 := database.NewPostgresInstance(configServiceImpl)
+	tlsService := tls_service.NewTlsService(configServiceImpl)
+	postgresInstance, cleanup2 := database.NewPostgresInstance(configServiceImpl, tlsService)
 	subscriptionRepositoryImpl := repository_impl.NewSubscriptionRepository(postgresInstance)
 	loginServiceImpl := login_service_impl.NewLoginServiceImpl(configServiceImpl)
-	tlsService := tls_service.NewTlsService(configServiceImpl)
 	billingServiceImpl, cleanup3, err := billing_service_impl.NewBillingServiceImpl(configServiceImpl, jwtService, tlsService)
 	if err != nil {
 		cleanup2()
