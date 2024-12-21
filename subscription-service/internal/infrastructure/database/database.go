@@ -2,10 +2,12 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"sync"
 
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
+	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -21,11 +23,22 @@ var (
 	pgOnce     sync.Once
 )
 
-func NewPostgresInstance(configService config_service.ConfigService) (*PostgresInstance, func()) {
+func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService) (*PostgresInstance, func()) {
 	pgOnce.Do(func() {
 		log.Println("new database postgres instance")
 
-		pool, err := pgxpool.New(context.TODO(), configService.GetConfig().DatabaseUrl)
+		tlsConfig := tlsService.GetConfig()
+		config := configService.GetConfig()
+
+		connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
+		pgxConfig, err := pgxpool.ParseConfig(connectionString)
+		if err != nil {
+			panic(err)
+		}
+
+		pgxConfig.ConnConfig.TLSConfig = tlsConfig
+
+		pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
 		if err != nil {
 			panic(err)
 		}
