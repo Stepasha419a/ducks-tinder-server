@@ -22,7 +22,9 @@ scrape_configs:
   - job_name: 'file-service'
     scheme: https
     tls_config:
-      ca_file: /etc/prometheus/cert/dev-docker/certificate.pem
+      ca_file: /etc/prometheus/cert/dev-docker/ca.crt
+      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
+      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
     static_configs:
       - targets: ['host.docker.internal:5002']
 
