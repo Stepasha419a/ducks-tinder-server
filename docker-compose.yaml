@@ -102,8 +102,8 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - ./database/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
-      - ./database/postgresql/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+      - ./database/postgresql/postgresql.conf:/var/lib/postgresql/postgresql.conf
+      - ./database/postgresql/pg_hba.conf:/var/lib/postgresql/pg_hba.conf
     build:
       context: .
       dockerfile: database/postgresql/Dockerfile
@@ -113,6 +113,14 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'
+    command:
+      [
+        'postgres',
+        '-c',
+        'config_file=/var/lib/postgresql/postgresql.conf',
+        '-c',
+        'hba_file=/var/lib/postgresql/pg_hba.conf',
+      ]
   prometheus:
     container_name: prometheus
     image: prom/prometheus
