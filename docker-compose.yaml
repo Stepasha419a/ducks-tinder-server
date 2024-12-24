@@ -121,6 +121,17 @@ services:
         '-c',
         'hba_file=/var/lib/postgresql/pg_hba.conf',
       ]
+  postgres-exporter:
+    container_name: postgres-exporter
+    image: prometheuscommunity/postgres-exporter:v0.13.1
+    environment:
+      DATA_SOURCE_URI: ${POSTGRES_ROOT_URL}
+      DATA_SOURCE_USER: ${POSTGRES_USER}
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    ports:
+      - '9187:9187'
+    depends_on:
+      - postgres
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4:8
