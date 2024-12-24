@@ -89,7 +89,7 @@ services:
         condition: on-failure
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:management
+    image: rabbitmq:4-management
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ./rabbitmq/cert:/etc/rabbitmq/cert
@@ -98,6 +98,7 @@ services:
     ports:
       - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
       - '15672:15672'
+      - '15692:15692'
   postgres:
     container_name: postgres
     restart: always
