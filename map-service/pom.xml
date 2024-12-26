@@ -21,6 +21,20 @@
 	<developers>
 		<developer />
 	</developers>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<spring-boot.run.profiles>dev</spring-boot.run.profiles>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev-docker</id>
+			<properties>
+				<spring-boot.run.profiles>dev-docker</spring-boot.run.profiles>
+			</properties>
+		</profile>
+	</profiles>
 	<scm>
 		<connection />
 		<developerConnection />
