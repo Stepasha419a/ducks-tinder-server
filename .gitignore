@@ -1,4 +1,6 @@
 # compiled output
+.vscode
+
 cert
 
 static
@@ -12,6 +14,9 @@ tmp
 
 dev.yaml
 dev-docker.yaml
+
+application-dev.properties
+application-dev-docker.properties
 
 node_modules
 
