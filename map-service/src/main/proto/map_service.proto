@@ -1,0 +1,20 @@
+syntax="proto3";
+
+package map;
+
+option java_package = "com.tinder.grpc.map";
+option java_multiple_files = true;
+
+service MapService {
+    rpc GetGeocode (GetGeocodeRequest) returns (Geocode);
+}
+
+message GetGeocodeRequest {
+    double latitude = 1;
+    double longitude = 2;
+}
+
+message Geocode {
+    string name = 1;
+    string address = 2;
+}
