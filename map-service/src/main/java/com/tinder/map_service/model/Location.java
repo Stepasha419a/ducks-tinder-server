@@ -23,4 +23,36 @@ public class Location {
     this.longitude = longitude;
     this.createdAt = createdAt;
   }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public String getAdminRegion() {
+    return adminRegion;
+  }
+
+  public LocationCapitalEnum getCapital() {
+    return capital;
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
 }
