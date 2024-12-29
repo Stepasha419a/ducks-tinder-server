@@ -55,4 +55,33 @@ public class Location {
   public Date getCreatedAt() {
     return createdAt;
   }
+
+  public Geocode getGeocode() {
+    var name = getName();
+    var address = getAddress();
+
+    var geocode = new Geocode(name, address);
+
+    return geocode;
+  }
+
+  public String getAddress() {
+    if (isAdminRegion()) {
+      return country + ", " + adminRegion + ", " + city;
+    }
+
+    return country + ", " + city;
+  }
+
+  public String getName() {
+    if (isAdminRegion()) {
+      return adminRegion + ", " + city;
+    }
+
+    return city;
+  }
+
+  private boolean isAdminRegion() {
+    return capital == null || capital == LocationCapitalEnum.MINOR;
+  }
 }
