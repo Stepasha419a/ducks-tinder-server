@@ -15,4 +15,11 @@ public class MapService {
 	public MapService(LocationRepository locationRepository) {
 		this.locationRepository = locationRepository;
 	}
+
+	public Geocode getGeocode(double latitude, double longitude) {
+		var location = locationRepository.findNearestByCoords(latitude, longitude)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Not Found"));
+
+		return location.getGeocode();
+	}
 }
