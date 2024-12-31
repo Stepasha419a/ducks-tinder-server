@@ -18,8 +18,5 @@ func main() {
 	autoSubmit := flag.Bool("auto-submit", false, "submit migrations automatically")
 	flag.Parse()
 
-	db, cleanup := database.NewPostgresInstance(configService, tlsService)
-	database.MigrateDB(db, configService, tlsService, *autoSubmit)
-
-	cleanup()
+	database.MigrateDB(configService, tlsService, *autoSubmit)
 }
