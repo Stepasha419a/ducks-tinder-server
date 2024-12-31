@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sync"
 
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
@@ -18,45 +17,38 @@ type PostgresInstance struct {
 	Pool *pgxpool.Pool
 }
 
-var (
-	pgInstance *PostgresInstance
-	pgOnce     sync.Once
-)
+func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService, dbName string) (*PostgresInstance, func()) {
+	log.Println("new database postgres instance")
 
-func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService) (*PostgresInstance, func()) {
-	pgOnce.Do(func() {
-		log.Println("new database postgres instance")
+	tlsConfig := tlsService.GetConfig()
+	config := configService.GetConfig()
 
-		tlsConfig := tlsService.GetConfig()
-		config := configService.GetConfig()
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
+	pgxConfig, err := pgxpool.ParseConfig(connectionString)
+	if err != nil {
+		panic(err)
+	}
 
-		connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
-		pgxConfig, err := pgxpool.ParseConfig(connectionString)
-		if err != nil {
-			panic(err)
-		}
+	pgxConfig.ConnConfig.TLSConfig = tlsConfig
 
-		pgxConfig.ConnConfig.TLSConfig = tlsConfig
+	pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
+	if err != nil {
+		panic(err)
+	}
 
-		pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
-		if err != nil {
-			panic(err)
-		}
+	err = pool.Ping(context.TODO())
+	if err != nil {
+		panic(err)
+	}
 
-		pgInstance = &PostgresInstance{pool}
-	})
+	pgInstance := &PostgresInstance{pool}
 
-	return pgInstance, cleanUp
-}
-
-func cleanUp() {
-	log.Println("close database postgres instance")
-
-	pgInstance.Pool.Close()
-	pgInstance.Close()
+	return pgInstance, pgInstance.Close
 }
 
 func (pg *PostgresInstance) Close() {
+	log.Println("close database postgres instance")
+
 	pg.Pool.Close()
 }
 
