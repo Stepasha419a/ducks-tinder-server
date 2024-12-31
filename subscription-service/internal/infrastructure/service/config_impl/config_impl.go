@@ -26,6 +26,7 @@ type (
 		GrpcBillingServiceUrl        string `validate:"required" yaml:"grpc_billing_service_url"`
 		GrpcBillingServiceDomain     string `validate:"required" yaml:"grpc_billing_service_domain"`
 		LoginServiceUrl              string `validate:"required" yaml:"login_service_url"`
+		TlsServerName                string `validate:"required" yaml:"tls_server_name"`
 		PostgresHost                 string `validate:"required" yaml:"postgres_host"`
 		PostgresPort                 uint16 `validate:"required" yaml:"postgres_port"`
 		PostgresUser                 string `validate:"required" yaml:"postgres_user"`
