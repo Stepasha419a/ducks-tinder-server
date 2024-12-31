@@ -16,6 +16,7 @@ type (
 		GrpcBillingServiceUrl        string
 		GrpcBillingServiceDomain     string
 		LoginServiceUrl              string
+		TlsServerName                string
 		PostgresHost                 string
 		PostgresPort                 uint16
 		PostgresUser                 string
