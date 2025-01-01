@@ -6,31 +6,35 @@ import (
 	"fmt"
 	"os"
 
-	log "log/slog"
-
-	"github.com/jackc/pgx/v5"
+	"log"
 
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 )
 
-func MigrateDB(pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService, autoSubmit bool) {
+func MigrateDB(configService config_service.ConfigService, tlsService *tls_service.TlsService, autoSubmit bool) {
 	ctx := context.TODO()
 
 	if !autoSubmit {
 		submitted := submitMigration()
 
 		if !submitted {
-			log.Info("migration - canceled")
+			log.Println("migration - canceled")
 			return
 		}
 	}
 
-	log.Info("migration - start")
+	log.Println("migration - start")
 
-	runMigrations(ctx, pg, configService, tlsService)
+	rootPg, cleanupRootDb := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresRootDatabase)
+	defer cleanupRootDb()
+	runRootMigrations(ctx, rootPg)
 
-	log.Info("migration - successful")
+	pg, cleanup := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresDatabase)
+	defer cleanup()
+	runMigrations(ctx, pg)
+
+	log.Println("migration - successful")
 }
 
 func submitMigration() bool {
@@ -50,39 +54,26 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runMigrations(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService) {
-	checkMigration(initMigration(ctx, pg, configService, tlsService))
+func runRootMigrations(ctx context.Context, pg *PostgresInstance) {
+	checkMigration(initRootMigration(ctx, pg))
+}
+
+func runMigrations(ctx context.Context, pg *PostgresInstance) {
+	checkMigration(initMigration(ctx, pg))
 }
 
 func checkMigration(err error) {
 	if err != nil {
-		log.Info("migration - failed")
+		log.Println("migration - failed")
 		panic(err)
 	}
 }
 
-func initMigration(ctx context.Context, pg *PostgresInstance, configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
-	log.Info("migration - init")
-
-	config := configService.GetConfig()
-
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresRootDatabase)
-	pgxConfig, err := pgx.ParseConfig(connectionString)
-	if err != nil {
-		panic(err)
-	}
-
-	pgxConfig.TLSConfig = tlsService.GetConfig()
-
-	postgresInstance, err := pgx.ConnectConfig(context.TODO(), pgxConfig)
-	if err != nil {
-		return err
-	}
-
-	defer postgresInstance.Close(ctx)
+func initRootMigration(ctx context.Context, pg *PostgresInstance) error {
+	log.Println("root migration - init")
 
 	var dbExists bool
-	err = postgresInstance.QueryRow(ctx, `
+	err := pg.Pool.QueryRow(ctx, `
     SELECT EXISTS (
         SELECT FROM pg_database WHERE datname = 'subscription-service'
     )`).Scan(&dbExists)
@@ -90,14 +81,22 @@ func initMigration(ctx context.Context, pg *PostgresInstance, configService conf
 		return err
 	}
 
-	if !dbExists {
-		_, err = postgresInstance.Exec(ctx, `CREATE DATABASE "subscription-service"`)
-		if err != nil {
-			return err
-		}
+	if dbExists {
+		return nil
 	}
 
-	_, err = pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS subscriptions (
+	_, err = pg.Pool.Exec(ctx, `CREATE DATABASE "subscription-service"`)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func initMigration(ctx context.Context, pg *PostgresInstance) error {
+	log.Println("migration - init")
+
+	_, err := pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS subscriptions (
 		user_id UUID PRIMARY KEY,
 		subscription VARCHAR(40) NOT NULL,
 		login VARCHAR(39) NOT NULL,
