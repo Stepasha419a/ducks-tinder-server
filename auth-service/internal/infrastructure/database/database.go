@@ -5,7 +5,6 @@ import (
 	tls_service "auth-service/internal/infrastructure/service/tls"
 	"context"
 	"fmt"
-	"sync"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -16,28 +15,22 @@ type Postgres struct {
 	Pool *pgxpool.Pool
 }
 
-var (
-	pgInstance *Postgres
-	pgOnce     sync.Once
-)
+func NewPostgresInstance(dbName string) *Postgres {
+	tlsConfig := tls_service.GetConfig()
+	config := config_service.GetConfig()
 
-func NewPostgresInstance() *Postgres {
-	pgOnce.Do(func() {
-		tlsConfig := tls_service.GetConfig()
-		config := config_service.GetConfig()
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
+	pgxConfig, err := pgxpool.ParseConfig(connectionString)
+	if err != nil {
+		panic(err)
+	}
 
-		connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
-		pgxConfig, err := pgxpool.ParseConfig(connectionString)
-		if err != nil {
-			panic(err)
-		}
+	pgxConfig.ConnConfig.TLSConfig = tlsConfig
 
-		pgxConfig.ConnConfig.TLSConfig = tlsConfig
-
-		pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
-		if err != nil {
-			panic(err)
-		}
+	pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
+	if err != nil {
+		panic(err)
+	}
 
 	err = pool.Ping(context.TODO())
 	if err != nil {
