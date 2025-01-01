@@ -39,10 +39,12 @@ func NewPostgresInstance() *Postgres {
 			panic(err)
 		}
 
-		pgInstance = &Postgres{pool}
-	})
+	err = pool.Ping(context.TODO())
+	if err != nil {
+		panic(err)
+	}
 
-	return pgInstance
+	return &Postgres{pool}
 }
 
 func (pg *Postgres) Close() {
