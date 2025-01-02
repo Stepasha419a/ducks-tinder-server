@@ -22,7 +22,7 @@ import (
 func main() {
 	config_service.RequireConfig()
 
-	db := database.NewPostgresInstance()
+	db := database.NewPostgresInstance(config_service.GetConfig().PostgresDatabase)
 	transactionService := database.NewTransactionService(db.Pool)
 
 	brokerConn := broker_service.InitBroker(tls_service.GetConfig())
