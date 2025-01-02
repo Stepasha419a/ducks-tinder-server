@@ -26,12 +26,12 @@ func GetConfig() *tls.Config {
 	}
 
 	tlsConfig := &tls.Config{
-		ClientCAs:          caCertPool,
-		ClientAuth:         tls.RequireAndVerifyClientCert,
-		RootCAs:            caCertPool,
-		MinVersion:         tls.VersionTLS12,
-		Certificates:       make([]tls.Certificate, 1),
-		InsecureSkipVerify: true,
+		ClientCAs:    caCertPool,
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		RootCAs:      caCertPool,
+		MinVersion:   tls.VersionTLS12,
+		Certificates: make([]tls.Certificate, 1),
+		ServerName:   config_service.GetConfig().TlsServerName,
 	}
 
 	serverCert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
