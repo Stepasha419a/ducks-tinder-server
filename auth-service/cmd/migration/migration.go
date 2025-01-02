@@ -12,6 +12,5 @@ func main() {
 	autoSubmit := flag.Bool("auto-submit", false, "submit migrations automatically")
 	flag.Parse()
 
-	db := database.NewPostgresInstance()
-	database.MigrateDB(db, *autoSubmit)
+	database.MigrateDB(*autoSubmit)
 }
