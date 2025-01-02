@@ -20,6 +20,7 @@ type (
 		Port                     uint16 `yaml:"port"`
 		RabbitMqUrl              string `yaml:"rabbit_mq_url"`
 		RabbitMqUserQueue        string `yaml:"rabbit_mq_user_queue"`
+		TlsServerName            string `yaml:"tls_server_name"`
 		PostgresHost             string `yaml:"postgres_host"`
 		PostgresPort             uint16 `yaml:"postgres_port"`
 		PostgresUser             string `yaml:"postgres_user"`
@@ -30,7 +31,7 @@ type (
 )
 
 var (
-	mods           = []string{"dev", "dev-docker"}
+	mods           = []string{"dev", "dev-docker", "dev-k8s"}
 	config *Config = &Config{}
 )
 
