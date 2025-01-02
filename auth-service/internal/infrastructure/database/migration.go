@@ -2,18 +2,15 @@ package database
 
 import (
 	config_service "auth-service/internal/infrastructure/service/config"
-	tls_service "auth-service/internal/infrastructure/service/tls"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
 
 	log "log/slog"
-
-	"github.com/jackc/pgx/v5"
 )
 
-func MigrateDB(db *Postgres, autoSubmit bool) {
+func MigrateDB(autoSubmit bool) {
 	ctx := context.TODO()
 
 	if !autoSubmit {
@@ -27,7 +24,13 @@ func MigrateDB(db *Postgres, autoSubmit bool) {
 
 	log.Info("migration - start")
 
-	runMigrations(ctx, db)
+	rootPg := NewPostgresInstance(config_service.GetConfig().PostgresRootDatabase)
+	defer rootPg.Close()
+	runRootMigrations(ctx, rootPg)
+
+	pg := NewPostgresInstance(config_service.GetConfig().PostgresDatabase)
+	defer pg.Close()
+	runMigrations(ctx, pg)
 
 	log.Info("migration - successful")
 }
@@ -49,6 +52,10 @@ func submitMigration() bool {
 	return submitted
 }
 
+func runRootMigrations(ctx context.Context, db *Postgres) {
+	checkMigration(initRootMigration(ctx, db))
+}
+
 func runMigrations(ctx context.Context, db *Postgres) {
 	checkMigration(initMigration(ctx, db))
 	checkMigration(refreshTokenIndexMigration(ctx, db))
@@ -61,29 +68,11 @@ func checkMigration(err error) {
 	}
 }
 
-func initMigration(ctx context.Context, db *Postgres) error {
-	log.Info("migration - init")
-
-	tlsConfig := tls_service.GetConfig()
-	config := config_service.GetConfig()
-
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=require", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresRootDatabase)
-	pgxConfig, err := pgx.ParseConfig(connectionString)
-	if err != nil {
-		panic(err)
-	}
-
-	pgxConfig.TLSConfig = tlsConfig
-
-	postgresInstance, err := pgx.ConnectConfig(context.TODO(), pgxConfig)
-	if err != nil {
-		panic(err)
-	}
-
-	defer postgresInstance.Close(ctx)
+func initRootMigration(ctx context.Context, db *Postgres) error {
+	log.Info("root migration - init")
 
 	var dbExists bool
-	err = postgresInstance.QueryRow(ctx, `
+	err := db.Pool.QueryRow(ctx, `
     SELECT EXISTS (
         SELECT FROM pg_database WHERE datname = 'auth-service'
     )`).Scan(&dbExists)
@@ -92,13 +81,19 @@ func initMigration(ctx context.Context, db *Postgres) error {
 	}
 
 	if !dbExists {
-		_, err = postgresInstance.Exec(ctx, `CREATE DATABASE "auth-service"`)
+		_, err = db.Pool.Exec(ctx, `CREATE DATABASE "auth-service"`)
 		if err != nil {
 			return err
 		}
 	}
 
-	_, err = db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
+	return nil
+}
+
+func initMigration(ctx context.Context, db *Postgres) error {
+	log.Info("migration - init")
+
+	_, err := db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
 		id UUID PRIMARY KEY,
 		email VARCHAR(100) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,
