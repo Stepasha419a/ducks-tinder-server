@@ -42,8 +42,10 @@ func NewPostgresInstance(configService config_service.ConfigService, tlsService 
 			panic(err)
 		}
 
-		pgInstance = &PostgresInstance{pool}
-	})
+	err = pool.Ping(context.TODO())
+	if err != nil {
+		panic(err)
+	}
 
 	return pgInstance, cleanUp
 }
