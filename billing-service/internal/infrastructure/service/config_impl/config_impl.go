@@ -21,6 +21,7 @@ type (
 		Port                    uint16 `validate:"required" yaml:"port"`
 		GrpcPort                uint16 `validate:"required" yaml:"grpc_port"`
 		ClientUrl               string `validate:"required" yaml:"client_url"`
+		TlsServerName           string `yaml:"tls_server_name"`
 		PostgresHost            string `validate:"required" yaml:"postgres_host"`
 		PostgresPort            uint16 `validate:"required" yaml:"postgres_port"`
 		PostgresUser            string `validate:"required" yaml:"postgres_user"`
