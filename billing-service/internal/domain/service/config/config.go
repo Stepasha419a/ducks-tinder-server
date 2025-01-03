@@ -12,6 +12,7 @@ type (
 		Port                    uint16
 		GrpcPort                uint16
 		ClientUrl               string
+		TlsServerName           string
 		PostgresHost            string
 		PostgresPort            uint16
 		PostgresUser            string
