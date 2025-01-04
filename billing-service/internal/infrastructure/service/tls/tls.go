@@ -39,6 +39,7 @@ func (s *TlsService) GetConfig() *tls.Config {
 		RootCAs:      caCertPool,
 		MinVersion:   tls.VersionTLS12,
 		Certificates: make([]tls.Certificate, 1),
+		ServerName:   s.configService.GetConfig().TlsServerName,
 	}
 
 	serverCert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
