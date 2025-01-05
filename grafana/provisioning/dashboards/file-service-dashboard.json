@@ -974,21 +974,16 @@
         "type": "interval"
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "file-service",
           "value": "file-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "file-service",
-            "value": "file-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "file-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
