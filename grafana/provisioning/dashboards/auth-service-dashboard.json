@@ -974,21 +974,16 @@
         "type": "interval"
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "auth-service",
           "value": "auth-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "auth-service",
-            "value": "auth-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "auth-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
