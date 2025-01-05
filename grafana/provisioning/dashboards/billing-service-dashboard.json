@@ -974,21 +974,16 @@
         "type": "interval"
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "billing-service",
           "value": "billing-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "billing-service",
-            "value": "billing-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "billing-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
