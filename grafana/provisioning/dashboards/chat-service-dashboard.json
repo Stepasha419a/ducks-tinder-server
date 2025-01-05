@@ -853,21 +853,16 @@
         "useTags": false
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "chat-service",
           "value": "chat-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "chat-service",
-            "value": "chat-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "chat-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
