@@ -21,6 +21,17 @@ public class FlywayConfig {
 
 	@Value("${spring.datasource.password}")
 	private String password;
+
+	@Bean
+	public Flyway flyway() {
+
+		createDatabase();
+
+		var flyway = Flyway.configure().dataSource(databaseUrl, username, password).load();
+		flyway.migrate();
+		return flyway;
+	}
+
 	private void createDatabase() {
 		var serviceDb = databaseUrl.split("/")[databaseUrl.split("/").length - 1];
 		var baseDbUrl = databaseUrl.replace(serviceDb, "postgres");
