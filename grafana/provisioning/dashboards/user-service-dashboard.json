@@ -856,21 +856,16 @@
         "useTags": false
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "user-service",
           "value": "user-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "user-service",
-            "value": "user-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "user-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
