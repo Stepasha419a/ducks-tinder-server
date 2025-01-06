@@ -974,21 +974,16 @@
         "type": "interval"
       },
       {
-        "name": "job_name",
-        "label": "Job Name",
-        "type": "custom",
         "current": {
           "text": "subscription-service",
           "value": "subscription-service"
         },
-        "options": [
-          {
-            "selected": true,
-            "text": "subscription-service",
-            "value": "subscription-service"
-          }
-        ],
-        "hide": 0
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "subscription-service",
+        "skipUrlSync": true,
+        "type": "constant"
       }
     ]
   },
