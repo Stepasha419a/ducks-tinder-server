@@ -17,4 +17,13 @@ public class GrpcError {
 				.withDescription("Validation Failed: " + validationException.getMessage())
 				.asRuntimeException(metadata));
 	}
+
+	private static Metadata getErrorMetadata() {
+		ErrorResponse errorResponse = ErrorResponse.newBuilder().build();
+
+		Metadata metadata = new Metadata();
+		metadata.put(errorResponseKey, errorResponse);
+
+		return metadata;
+	}
 }
