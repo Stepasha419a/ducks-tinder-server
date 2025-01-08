@@ -17,4 +17,21 @@ public class MapServiceServer extends MapServiceImplBase {
 	public MapServiceServer(MapService mapService) {
 		this.mapService = mapService;
 	}
+
+	@Override
+	public void getGeocode(GetGeocodeRequest request, StreamObserver<Geocode> responseObserver) {
+		try {
+			ValidatorService.isValidCoords(request.getLatitude(), request.getLongitude());
+		} catch (Exception e) {
+			GrpcError.ValidationFailed(responseObserver, e);
+		}
+
+		var geocode = mapService.getGeocode(request.getLatitude(), request.getLongitude());
+
+		var response =
+				Geocode.newBuilder().setName(geocode.getName()).setAddress(geocode.getAddress()).build();
+
+		responseObserver.onNext(response);
+		responseObserver.onCompleted();
+	}
 }
