@@ -54,6 +54,17 @@ scrape_configs:
       key_file: /etc/prometheus/cert/dev-docker/private-key.pem
     static_configs:
       - targets: ['host.docker.internal:5005']
+
+  - job_name: 'map-service'
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/dev-docker/ca.crt
+      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
+      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:5006']
+
   - job_name: postgres
     static_configs:
       - targets: ['host.docker.internal:9187']
