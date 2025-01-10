@@ -1,5 +1,6 @@
 $golangServices = ("auth-service", "billing-service", "file-service", "subscription-service")
 $typescriptServices = ("user-service", "chat-service")
+$javaServices = ("map-service/src/main")
 
 $yamlConfigServices = ("database-seeder")
 $onlyDevConfigServices = ("database-seeder")
@@ -60,8 +61,6 @@ function SetLocalUrls {
     Set-Content $configPath $content
 }
 
-
-
 function SetUpYamlConfigService {
     param (
         $servicePath
@@ -95,6 +94,35 @@ function SetUpYamlConfigService {
     }
 }
 
+function SetUpJavaConfigService {
+    param (
+        $servicePath
+    )
+
+    $configPath = "$servicePath/resources"
+
+    $devConfigPath = "$configPath/application-dev.properties"
+    $devDockerConfigPath = "$configPath/application-dev-docker.properties"
+
+    if (Test-Path "$configPath/application-example.properties") {
+        Write-Host "setting up configs for $service..."
+
+        if (-Not($onlyDevConfigServices.Contains($service))) {
+            Copy-Item "$configPath/application-example.properties" $devDockerConfigPath
+            
+            SetSecretsRelacement($devDockerConfigPath)
+        }
+
+        Copy-Item "$configPath/application-example.properties" $devConfigPath
+
+        SetSecretsRelacement($devConfigPath)
+        SetLocalUrls($devConfigPath)
+    }
+    else {
+        Write-Host "no application-example.properties file found for $service"
+    }
+}
+
 foreach ($service in $golangServices) {
     $servicePath = "../$service"
 
@@ -107,8 +135,11 @@ foreach ($service in $yamlConfigServices) {
     SetUpYamlConfigService($servicePath)
 }
 
-foreach ($service in $typescriptServices) {
+foreach ($service in $javaServices) {
     $servicePath = "../$service"
+
+    SetUpJavaConfigService($servicePath)
+}
 
     $devConfigPath = "$servicePath/.env.dev"
     $devDockerConfigPath = "$servicePath/.env.dev-docker"
