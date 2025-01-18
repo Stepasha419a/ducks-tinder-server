@@ -1,11 +1,13 @@
 param (
-    [switch]$override = $false
+    [switch]$override = $false,
+    [string]$rootPath = './',
+    [string]$certExamplePath = 'setup/cert-example'
 )
 
 $services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus", "grafana", "rabbitmq", "map-service", "database")
 
 foreach ($service in $services) {
-    $servicePath = "../$service"
+    $servicePath = $rootPath + "$service"
     $serviceCertPath = $servicePath + "/cert"
     $serviceCertExamplePath = $servicePath + "/cert-example"
 
