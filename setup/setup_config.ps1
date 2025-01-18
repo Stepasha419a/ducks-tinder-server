@@ -123,23 +123,10 @@ function SetUpJavaConfigService {
     }
 }
 
-foreach ($service in $golangServices) {
-    $servicePath = "../$service"
-
-    SetUpYamlConfigService($servicePath)
-}
-
-foreach ($service in $yamlConfigServices) {
-    $servicePath = "../$service"
-
-    SetUpYamlConfigService($servicePath)
-}
-
-foreach ($service in $javaServices) {
-    $servicePath = "../$service"
-
-    SetUpJavaConfigService($servicePath)
-}
+function SetUpEnvConfigService {
+    param (
+        $servicePath
+    )
 
     $devConfigPath = "$servicePath/.env.dev"
     $devDockerConfigPath = "$servicePath/.env.dev-docker"
@@ -155,9 +142,34 @@ foreach ($service in $javaServices) {
         SetLocalUrls("$servicePath/.env.dev")
     }
     else {
-        Write-Host "no example.yaml file found for $service"
+        Write-Host "no .env.example file found for $service"
     }
 }
+
+foreach ($service in $golangServices) {
+    $servicePath = $rootPath + $service
+
+    SetUpYamlConfigService($servicePath)
+}
+
+foreach ($service in $yamlConfigServices) {
+    $servicePath = $rootPath + $service
+
+    SetUpYamlConfigService($servicePath)
+}
+
+foreach ($service in $javaServices) {
+    $servicePath = $rootPath + $service
+
+    SetUpJavaConfigService($servicePath)
+}
+
+foreach ($service in $typescriptServices) {
+    $servicePath = $rootPath + $service
+
+    SetUpEnvConfigService($servicePath)
+}
+
 
 Write-Host "setting up configs for docker..."
         
