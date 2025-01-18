@@ -2,9 +2,7 @@ param (
     [switch]$override = $false
 )
 
-$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus", "grafana", "rabbitmq")
-
-$certExamplePath = "./cert-example"
+$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus", "grafana", "rabbitmq", "map-service", "database")
 
 foreach ($service in $services) {
     $servicePath = "../$service"
