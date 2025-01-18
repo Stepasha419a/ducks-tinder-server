@@ -1,3 +1,7 @@
+param (
+    [string]$rootPath = './'
+)
+
 $golangServices = ("auth-service", "billing-service", "file-service", "subscription-service")
 $typescriptServices = ("user-service", "chat-service")
 $javaServices = ("map-service/src/main")
@@ -12,7 +16,7 @@ $localVarsReplacement =
 ("amqp://rabbitmq:5672", "amqp://0.0.0.0:5672"), 
 ("cert/dev-docker", "cert/dev")
 
-$secretsReplacementEnvFilePath = "../.env.secrets"
+$secretsReplacementEnvFilePath = $rootPath + ".env.secrets"
 
 function GetSecretsReplacementEnvVariables {
     $envVariables = @{}
@@ -177,7 +181,8 @@ foreach ($service in $typescriptServices) {
 
 
 Write-Host "setting up configs for docker..."
-        
-$dockerEnvExamplePath = "../.env.example"
 
-Copy-Item $dockerEnvExamplePath "../.env"
+$dockerEnvExamplePath = $rootPath + ".env.example"
+$dockerEnvPath = $rootPath + ".env"
+
+Copy-Item $dockerEnvExamplePath $dockerEnvPath
