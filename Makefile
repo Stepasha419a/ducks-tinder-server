@@ -17,3 +17,6 @@ auth-service:
 
 setup-certs: 
 	powershell -File setup/setup_certificates.ps1 -override
+
+setup-configs:
+	powershell -File setup/setup_config.ps1
