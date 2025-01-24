@@ -14,3 +14,6 @@ file-service:
 
 auth-service:
 	cd auth-service && air
+
+setup-certs: 
+	powershell -File setup/setup_certificates.ps1 -override
