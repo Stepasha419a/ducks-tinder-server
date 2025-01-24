@@ -20,3 +20,12 @@ setup-certs:
 
 setup-configs:
 	powershell -File setup/setup_config.ps1
+
+force-migration-auth-service:
+	cd auth-service && make force-migration
+
+force-migration-billing-service:
+	cd billing-service && make force-migration
+
+force-migration-subscription-service:
+	cd subscription-service && make force-migration
