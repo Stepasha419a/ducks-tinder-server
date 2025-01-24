@@ -21,6 +21,9 @@ setup-certs:
 setup-configs:
 	powershell -File setup/setup_config.ps1
 
+migrate-prisma:
+	cd prisma && npm run migrate:postgres
+
 force-migration-auth-service:
 	cd auth-service && make force-migration
 
