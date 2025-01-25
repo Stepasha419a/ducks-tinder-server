@@ -35,3 +35,6 @@ force-migration-subscription-service:
 
 migrate-map-service:
 	cd map-service && make migration
+
+seed-databases:
+	cd database-seeder && make seed
