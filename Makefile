@@ -32,3 +32,6 @@ force-migration-billing-service:
 
 force-migration-subscription-service:
 	cd subscription-service && make force-migration
+
+migrate-map-service:
+	cd map-service && make migration
