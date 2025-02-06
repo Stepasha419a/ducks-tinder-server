@@ -38,6 +38,7 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    command: ['/usr/src/app/app']
     depends_on:
       - rabbitmq
       - postgres
