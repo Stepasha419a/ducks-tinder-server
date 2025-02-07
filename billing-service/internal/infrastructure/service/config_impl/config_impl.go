@@ -34,7 +34,7 @@ type (
 )
 
 var (
-	mods                                = []string{"dev", "dev-docker"}
+	mods                                = []string{"dev", "dev-docker", "dev-k8s"}
 	config *config_service.Config       = &config_service.Config{}
 	_      config_service.ConfigService = (*ConfigServiceImpl)(nil)
 )
