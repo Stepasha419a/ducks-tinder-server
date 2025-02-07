@@ -9,5 +9,4 @@ RUN go mod download
 COPY . .
 
 RUN go build -o app ./cmd/main/main.go ./cmd/main/wire_gen.go
-
-CMD ["./app"]
+RUN go build -o migration ./cmd/migration
