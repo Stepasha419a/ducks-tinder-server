@@ -10,10 +10,12 @@ tmp
 .env
 .env.dev
 .env.dev-docker
+.env.dev-k8s
 .env.secrets
 
 dev.yaml
 dev-docker.yaml
+dev-k8s.yaml
 
 application-dev.properties
 application-dev-docker.properties
