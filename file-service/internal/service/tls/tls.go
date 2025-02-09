@@ -26,8 +26,9 @@ func GetConfig() *tls.Config {
 	}
 
 	tlsConfig := &tls.Config{
-		ClientCAs:    caCertPool,
-		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientCAs: caCertPool,
+		// TODO: fix k8s ssl - ClientAuth: tls.RequireAndVerifyClientCert
+		ClientAuth:   tls.VerifyClientCertIfGiven,
 		RootCAs:      caCertPool,
 		MinVersion:   tls.VersionTLS12,
 		Certificates: make([]tls.Certificate, 1),
