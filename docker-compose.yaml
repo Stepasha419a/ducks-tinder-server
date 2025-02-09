@@ -152,7 +152,7 @@ services:
       - pgadmin-data:/var/lib/pgadmin
   prometheus:
     container_name: prometheus
-    image: prom/prometheus
+    image: prom/prometheus:v2.53.2
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -174,7 +174,7 @@ services:
         condition: on-failure
   grafana:
     container_name: grafana
-    image: grafana/grafana
+    image: grafana/grafana:11.4.0
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
