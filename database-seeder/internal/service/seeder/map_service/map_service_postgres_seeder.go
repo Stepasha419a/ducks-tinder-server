@@ -26,6 +26,32 @@ type (
 		CreatedAt time.Time
 	}
 )
+
+func SeedMapServicePostgres(instance *database_service.MapServicePostgresInstance) error {
+	ctx := context.Background()
+
+	tx, err := instance.Conn.Begin(ctx)
+
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	if err != nil {
+		return err
+	}
+
+	err = seedLocations(ctx, tx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func seedLocations(ctx context.Context, tx pgx.Tx) error {
 	rows, err := getData()
 	if err != nil {
