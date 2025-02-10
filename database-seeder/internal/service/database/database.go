@@ -13,6 +13,7 @@ type (
 		PrismaPostgresInstance         *PrismaPostgresInstance
 		AuthServicePostgresInstance    *AuthServicePostgresInstance
 		BillingServicePostgresInstance *BillingServicePostgresInstance
+		MapServicePostgresInstance     *MapServicePostgresInstance
 	}
 
 	PrismaPostgresInstance struct {
@@ -22,6 +23,9 @@ type (
 		Conn *pgx.Conn
 	}
 	BillingServicePostgresInstance struct {
+		Conn *pgx.Conn
+	}
+	MapServicePostgresInstance struct {
 		Conn *pgx.Conn
 	}
 )
@@ -34,8 +38,9 @@ func InitDatabaseInstances() *DatabaseInstances {
 	prismaPostgresInstance := newPrismaPostgresInstance()
 	authServicePostgresInstance := newAuthServicePostgresInstance()
 	billingServicePostgresInstance := newBillingServicePostgresInstance()
+	mapServicePostgresInstance := newMapServicePostgresInstance()
 
-	databaseInstances = &DatabaseInstances{prismaPostgresInstance, authServicePostgresInstance, billingServicePostgresInstance}
+	databaseInstances = &DatabaseInstances{prismaPostgresInstance, authServicePostgresInstance, billingServicePostgresInstance, mapServicePostgresInstance}
 
 	log.Print("database instances init")
 
@@ -69,10 +74,22 @@ func newBillingServicePostgresInstance() *BillingServicePostgresInstance {
 	return &BillingServicePostgresInstance{conn}
 }
 
+func newMapServicePostgresInstance() *MapServicePostgresInstance {
+	conn, err := pgx.Connect(context.TODO(), config_service.GetConfig().MapServiceDatabaseUrl)
+	if err != nil {
+		panic(err)
+	}
+
+	return &MapServicePostgresInstance{conn}
+}
+
 func (di *DatabaseInstances) Close() {
-	di.PrismaPostgresInstance.Conn.Close(context.TODO())
-	di.AuthServicePostgresInstance.Conn.Close(context.TODO())
-	di.BillingServicePostgresInstance.Conn.Close(context.TODO())
+	ctx := context.TODO()
+
+	di.PrismaPostgresInstance.Conn.Close(ctx)
+	di.AuthServicePostgresInstance.Conn.Close(ctx)
+	di.BillingServicePostgresInstance.Conn.Close(ctx)
+	di.BillingServicePostgresInstance.Conn.Close(ctx)
 
 	log.Print("database instances close")
 }
