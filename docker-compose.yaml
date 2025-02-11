@@ -23,8 +23,17 @@ services:
       - postgres
       - file-service
       - map-service
+  map-service:
+    container_name: map-service
+    restart: always
+    build:
+      context: map-service
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
     ports:
-      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+      - '${MAP_SERVICE_PORT}:${MAP_SERVICE_PORT}'
+      - '${MAP_SERVICE_GRPC_PORT}:${MAP_SERVICE_GRPC_PORT}'
   auth-service:
     container_name: auth-service
     restart: always
