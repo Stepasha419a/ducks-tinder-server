@@ -3,14 +3,12 @@ package grpc_service
 import (
 	"fmt"
 	config_service "go-file-server/internal/service/config"
-	tls_service "go-file-server/internal/service/tls"
 	"go-file-server/proto/gen"
 	"log"
 	"net"
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
 )
 
@@ -28,12 +26,13 @@ var kasp = keepalive.ServerParameters{
 }
 
 func Init() {
-	tlsConfig := tls_service.GetConfig()
-	creds := credentials.NewTLS(tlsConfig)
+	// TODO: fix k8s ssl
+	//tlsConfig := tls_service.GetConfig()
+	//creds := credentials.NewTLS(tlsConfig)
 
 	opts := []grpc.ServerOption{
 		grpc.ChainUnaryInterceptor(RecoveryUnaryInterceptor),
-		grpc.Creds(creds),
+		//grpc.Creds(creds),
 
 		grpc.KeepaliveEnforcementPolicy(kaep),
 		grpc.KeepaliveParams(kasp),
