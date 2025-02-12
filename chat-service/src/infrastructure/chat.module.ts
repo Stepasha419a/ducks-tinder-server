@@ -42,7 +42,7 @@ import { MetricsModule } from './metrics';
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
         NODE_ENV: Joi.string()
-          .valid('dev', 'dev-docker', 'prod', 'test')
+          .valid('dev', 'dev-docker', 'dev-k8s', 'prod', 'test')
           .default('dev'),
         PORT: Joi.number().default(5000),
         JWT_ACCESS_SECRET: Joi.string().required(),
