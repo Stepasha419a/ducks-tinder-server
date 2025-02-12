@@ -10,6 +10,8 @@ services:
       - rabbitmq
       - postgres
       - user-service
+    environment:
+      NODE_ENV: dev-docker
     ports:
       - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
   user-service:
