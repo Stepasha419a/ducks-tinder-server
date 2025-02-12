@@ -12,4 +12,6 @@ COPY prisma ./prisma
 
 RUN npx prisma generate --generator dockerDefault
 
-CMD [ "npm", "run", "start:dev:docker" ]
+RUN npm run build
+
+CMD ["npm", "run", "start:prod"]
