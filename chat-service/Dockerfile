@@ -8,7 +8,7 @@ RUN npm install
 
 COPY chat-service .
 
-COPY prisma/schema.prisma ./prisma/schema.prisma
+COPY prisma ./prisma
 
 RUN npx prisma generate --generator dockerDefault
 
