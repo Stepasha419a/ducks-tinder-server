@@ -18,8 +18,9 @@ async function bootstrap() {
     ca: fs.readFileSync(rootCertPath).toString(),
     key: fs.readFileSync(keyPath).toString(),
     cert: fs.readFileSync(certPath).toString(),
-    rejectUnauthorized: true,
-    requestCert: true,
+    // TODO: fix k8s ssl
+    /* rejectUnauthorized: true,
+    requestCert: true, */
   };
 
   const app = await NestFactory.create(ChatModule, { httpsOptions });
