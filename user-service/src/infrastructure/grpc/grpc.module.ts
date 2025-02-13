@@ -52,7 +52,8 @@ export class GrpcModule {
                     url: configService.get(`${name}_URL`),
                     package: packageName,
                     protoPath: `proto/${packageName}.proto`,
-                    credentials,
+                    // TODO: fix k8s ssl
+                    // credentials,
                   },
                 };
               },
