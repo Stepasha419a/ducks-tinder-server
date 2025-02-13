@@ -8,7 +8,7 @@ RUN npm install
 
 COPY user-service .
 
-COPY prisma/schema.prisma ./prisma/schema.prisma
+COPY prisma ./prisma
 
 RUN npx prisma generate --generator dockerDefault
 
