@@ -20,6 +20,10 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
+    environment:
+      NODE_ENV: dev-docker
+    ports:
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
     depends_on:
       - rabbitmq
       - postgres
