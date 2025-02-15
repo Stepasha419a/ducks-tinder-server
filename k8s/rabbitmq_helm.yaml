@@ -13,3 +13,12 @@ management.ssl.keyfile = /etc/rabbitmq/cert/dev-docker/private-key.pem
 management.ssl.password = password
 management.ssl.verify = verify_peer
 management.ssl.fail_if_no_peer_cert = true
+
+prometheus.ssl.port = 15692
+prometheus.tcp.listener = none
+prometheus.ssl.cacertfile = /etc/rabbitmq/cert/dev-docker/ca.crt
+prometheus.ssl.certfile = /etc/rabbitmq/cert/dev-docker/certificate.pem
+prometheus.ssl.keyfile = /etc/rabbitmq/cert/dev-docker/private-key.pem
+prometheus.ssl.password = password
+prometheus.ssl.verify = verify_peer
+prometheus.ssl.fail_if_no_peer_cert = true
