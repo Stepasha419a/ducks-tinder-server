@@ -2,6 +2,7 @@ package billing_service_impl
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"time"
 
@@ -29,6 +30,7 @@ var kacp = keepalive.ClientParameters{
 func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService, tlsService *tls_service.TlsService) (*BillingServiceImpl, func(), error) {
 	tlsConfig := tlsService.GetConfig()
 
+	tlsConfig.ClientAuth = tls.RequireAndVerifyClientCert
 	creds := credentials.NewTLS(tlsConfig)
 
 	perRPC := NewPerRPCCredentialsImpl(jwtService)
