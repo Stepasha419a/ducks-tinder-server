@@ -14,3 +14,18 @@ spec:
       labels:
         app: billing-app-service-deployment
     spec:
+      initContainers:
+        - name: billing-service-instance
+          image: 10.98.141.40:80/ducks-tinder-billing-service
+          resources:
+            limits:
+              cpu: '0.125'
+              memory: '64Mi'
+            requests:
+              cpu: '0.125'
+              memory: '64Mi'
+          imagePullPolicy: Always
+          env:
+            - name: MODE
+              value: 'dev-k8s'
+          command: ['/usr/src/app/migration', '-auto-submit']
