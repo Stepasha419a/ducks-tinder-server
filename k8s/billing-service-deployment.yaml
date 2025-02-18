@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-service-deployment
+  labels:
+    app: billing-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-app-service-deployment
+  template:
+    metadata:
+      labels:
+        app: billing-app-service-deployment
+    spec:
