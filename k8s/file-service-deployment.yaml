@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-service-deployment
+  labels:
+    app: file-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-app-service-deployment
+  template:
+    metadata:
+      labels:
+        app: file-app-service-deployment
+    spec:
+      volumes:
+        - name: file-service-media
+          persistentVolumeClaim:
+            claimName: file-service-media-pvc
