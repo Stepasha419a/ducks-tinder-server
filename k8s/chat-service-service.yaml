@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service-service
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+spec:
+  type: ClusterIP
+  selector:
+    app: chat-app-service-deployment
+  ports:
+    - name: http
+      port: 5001
+      targetPort: 5001
+      protocol: TCP
