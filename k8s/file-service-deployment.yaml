@@ -18,3 +18,25 @@ spec:
         - name: file-service-media
           persistentVolumeClaim:
             claimName: file-service-media-pvc
+      containers:
+        - name: file-app-service-deployment
+          image: 10.98.141.40:80/ducks-tinder-file-service
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: '0.125'
+              memory: '64Mi'
+            requests:
+              cpu: '0.125'
+              memory: '64Mi'
+          env:
+            - name: MODE
+              value: 'dev-k8s'
+          ports:
+            - name: http
+              containerPort: 5002
+            - name: grpc
+              containerPort: 6000
+          volumeMounts:
+            - name: file-service-media
+              mountPath: ../static
