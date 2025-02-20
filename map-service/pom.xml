@@ -185,7 +185,6 @@
 							<goal>compile</goal>
 							<goal>compile-custom</goal>
 						</goals>
-						<phase>generate-sources</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -196,9 +195,6 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-					<profiles>
-						<profile>dev</profile>
-					</profiles>
 				</configuration>
 			</plugin>
 		</plugins>
