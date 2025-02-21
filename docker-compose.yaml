@@ -35,6 +35,8 @@ services:
     build:
       context: map-service
       dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: dev-docker
     depends_on:
       - postgres
     ports:
