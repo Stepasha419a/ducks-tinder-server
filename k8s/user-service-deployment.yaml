@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+  labels:
+    app: user-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-app-service-deployment
+  template:
+    metadata:
+      labels:
+        app: user-app-service-deployment
+    spec:
