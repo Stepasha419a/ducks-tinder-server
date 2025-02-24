@@ -19,6 +19,7 @@ dev-k8s.yaml
 
 application-dev.properties
 application-dev-docker.properties
+application-dev-k8s.properties
 
 node_modules
 
