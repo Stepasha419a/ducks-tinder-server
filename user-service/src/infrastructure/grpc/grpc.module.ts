@@ -28,12 +28,8 @@ export class GrpcModule {
               useFactory: (configService: ConfigService) => {
                 const mode = configService.get<string>('NODE_ENV');
                 const rootCertPath = path.join('cert', mode, 'ca.crt');
-                const certPath = path.join('cert', mode, 'certificate.pem');
-                const privateKeyPath = path.join(
-                  'cert',
-                  mode,
-                  'private-key.pem',
-                );
+                const certPath = path.join('cert', mode, 'tls.crt');
+                const privateKeyPath = path.join('cert', mode, 'tls.key');
 
                 const credentials = ChannelCredentials.createSsl(
                   readFileSync(rootCertPath),
@@ -52,8 +48,7 @@ export class GrpcModule {
                     url: configService.get(`${name}_URL`),
                     package: packageName,
                     protoPath: `proto/${packageName}.proto`,
-                    // TODO: fix k8s ssl
-                    // credentials,
+                    credentials,
                   },
                 };
               },
