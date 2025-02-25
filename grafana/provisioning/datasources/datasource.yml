@@ -26,7 +26,7 @@ datasources:
       tlsSkipVerify: false
     secureJsonData:
       tlsCACert: $__file{/etc/grafana/cert/dev-docker/ca.crt}
-      tlsClientCert: $__file{/etc/grafana/cert/dev-docker/certificate.pem}
-      tlsClientKey: $__file{/etc/grafana/cert/dev-docker/private-key.pem}
+      tlsClientCert: $__file{/etc/grafana/cert/dev-docker/tls.crt}
+      tlsClientKey: $__file{/etc/grafana/cert/dev-docker/tls.key}
     version: 1
     editable: true
