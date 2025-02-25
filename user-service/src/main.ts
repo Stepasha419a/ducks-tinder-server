@@ -13,15 +13,14 @@ async function bootstrap() {
 
   const mode = configService.get<string>('NODE_ENV');
   const rootCertPath = path.join('cert', mode, 'ca.crt');
-  const certPath = path.join('cert', mode, 'certificate.pem');
-  const keyPath = path.join('cert', mode, 'private-key.pem');
+  const certPath = path.join('cert', mode, 'tls.crt');
+  const keyPath = path.join('cert', mode, 'tls.key');
   const httpsOptions: HttpsOptions = {
     ca: fs.readFileSync(rootCertPath).toString(),
     key: fs.readFileSync(keyPath).toString(),
     cert: fs.readFileSync(certPath).toString(),
-    // TODO: fix k8s ssl
-    /* rejectUnauthorized: true,
-    requestCert: true, */
+    rejectUnauthorized: true,
+    requestCert: true,
   };
 
   const app = await NestFactory.create(AppModule, { httpsOptions });
