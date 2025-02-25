@@ -14,3 +14,22 @@ spec:
       labels:
         app: map-app-service-deployment
     spec:
+      containers:
+        - name: map-app-service-deployment
+          image: 10.98.141.40:80/ducks-tinder-map-service
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: '0.125'
+              memory: '256Mi'
+            requests:
+              cpu: '0.125'
+              memory: '256Mi'
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev-k8s
+          ports:
+            - name: http
+              containerPort: 5006
+            - name: grpc
+              containerPort: 6003
