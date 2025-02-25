@@ -5,8 +5,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5000']
 
@@ -14,8 +14,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5001']
 
@@ -23,8 +23,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5002']
 
@@ -32,8 +32,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5003']
 
@@ -41,8 +41,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5004']
 
@@ -50,8 +50,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:5005']
 
@@ -59,8 +59,8 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['host.docker.internal:5006']
@@ -73,7 +73,7 @@ scrape_configs:
     scheme: https
     tls_config:
       ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/certificate.pem
-      key_file: /etc/prometheus/cert/dev-docker/private-key.pem
+      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
+      key_file: /etc/prometheus/cert/dev-docker/tls.key
     static_configs:
       - targets: ['host.docker.internal:15692']
