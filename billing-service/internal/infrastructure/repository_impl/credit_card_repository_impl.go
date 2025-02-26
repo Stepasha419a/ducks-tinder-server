@@ -65,7 +65,8 @@ func (r *CreditCardRepositoryImpl) SavePurchase(ctx context.Context, purchase *e
 	}
 
 	if existingPurchase != nil {
-		_, err = database.Exec(r.pg.Pool, tx)(ctx, "UPDATE purchases SET credit_card_id=@credit_card_id, amount=@amount, created_at=@created_at WHERE id=@id", &pgx.NamedArgs{
+		_, err = database.Exec(r.pg.Pool, tx)(ctx, "UPDATE purchases SET user_id=@user_id, credit_card_id=@credit_card_id, amount=@amount, created_at=@created_at WHERE id=@id", &pgx.NamedArgs{
+			"user_id":        purchase.UserId,
 			"credit_card_id": purchase.CreditCardId,
 			"amount":         purchase.Amount,
 			"created_at":     purchase.CreatedAt,
@@ -76,8 +77,9 @@ func (r *CreditCardRepositoryImpl) SavePurchase(ctx context.Context, purchase *e
 		return purchase, nil
 	}
 
-	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO purchases (id, credit_card_id, amount, created_at) VALUES (@id, @credit_card_id, @amount, @created_at)", &pgx.NamedArgs{
+	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO purchases (id, user_id, credit_card_id, amount, created_at) VALUES (@id, @user_id, @credit_card_id, @amount, @created_at)", &pgx.NamedArgs{
 		"id":             purchase.Id,
+		"user_id":        purchase.UserId,
 		"credit_card_id": purchase.CreditCardId,
 		"amount":         purchase.Amount,
 		"created_at":     purchase.CreatedAt,
@@ -118,9 +120,9 @@ func (r *CreditCardRepositoryImpl) FindByUserId(ctx context.Context, userId stri
 func (r *CreditCardRepositoryImpl) FindPurchase(ctx context.Context, id string, tx pgx.Tx) (*entity.Purchase, error) {
 	purchase := &entity.Purchase{}
 
-	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT id, credit_card_id, amount, created_at FROM purchases WHERE id=@id", &pgx.NamedArgs{
+	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT id, user_id, credit_card_id, amount, created_at FROM purchases WHERE id=@id", &pgx.NamedArgs{
 		"id": id,
-	}).Scan(&purchase.Id, &purchase.CreditCardId, &purchase.Amount, &purchase.CreatedAt)
+	}).Scan(&purchase.Id, &purchase.UserId, &purchase.CreditCardId, &purchase.Amount, &purchase.CreatedAt)
 	if err != nil {
 		return nil, handleError(err)
 	}
