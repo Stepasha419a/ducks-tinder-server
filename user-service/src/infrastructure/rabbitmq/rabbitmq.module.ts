@@ -19,9 +19,9 @@ export class RabbitMQModule {
             name,
             useFactory: (configService: ConfigService): RmqOptions => {
               const mode = configService.get<string>('NODE_ENV');
-              const certPath = path.join('cert', mode, 'certificate.pem');
+              const certPath = path.join('cert', mode, 'tls.crt');
               const rootCertPath = path.join('cert', mode, 'ca.crt');
-              const keyPath = path.join('cert', mode, 'private-key.pem');
+              const keyPath = path.join('cert', mode, 'tls.key');
 
               return {
                 transport: Transport.RMQ,
