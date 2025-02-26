@@ -11,8 +11,8 @@ import (
 )
 
 func GetConfig() *tls.Config {
-	certPath := path.Join("cert", config_service.GetConfig().Mode, "certificate.pem")
-	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "private-key.pem")
+	certPath := path.Join("cert", config_service.GetConfig().Mode, "tls.crt")
+	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "tls.key")
 	caCertPath := path.Join("cert", config_service.GetConfig().Mode, "ca.crt")
 
 	caCert, err := os.ReadFile(caCertPath)
