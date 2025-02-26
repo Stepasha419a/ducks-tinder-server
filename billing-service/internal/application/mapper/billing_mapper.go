@@ -32,6 +32,7 @@ func NewCreditCardResponse(creditCard *entity.CreditCard) *CreditCardResponse {
 
 type PurchaseResponse struct {
 	Id           string `json:"id"`
+	UserId       string `json:"userId"`
 	CreditCardId string `json:"creditCardId"`
 	Amount       int64  `json:"amount"`
 
@@ -41,6 +42,7 @@ type PurchaseResponse struct {
 func NewPurchaseResponse(purchase *entity.Purchase) *PurchaseResponse {
 	return &PurchaseResponse{
 		Id:           purchase.Id,
+		UserId:       purchase.UserId,
 		CreditCardId: purchase.CreditCardId,
 		Amount:       purchase.Amount,
 

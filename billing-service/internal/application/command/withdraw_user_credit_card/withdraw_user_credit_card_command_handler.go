@@ -17,7 +17,7 @@ func WithdrawUserCreditCardCommandHandler(ctx service_context.ServiceContext[*ma
 		return ctx.NotFound()
 	}
 
-	purchase, err := entity.NewPurchase(command.CreditCardId, command.Amount)
+	purchase, err := entity.NewPurchase(command.UserId, command.CreditCardId, command.Amount)
 	if err != nil {
 		return err
 	}
