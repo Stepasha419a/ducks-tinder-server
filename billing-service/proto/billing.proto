@@ -15,7 +15,8 @@ message WithdrawUserCreditCardRequest {
 
 message Purchase {
     string id = 1;
-    string creditCardId = 2;
-    int64 amount = 3;
-    int64 createdAt = 4;
+    string userId = 2;
+    string creditCardId = 3;
+    int64 amount = 4;
+    int64 createdAt = 5;
 }
