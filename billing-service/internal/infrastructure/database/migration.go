@@ -110,7 +110,8 @@ func initMigration(ctx context.Context, pg *PostgresInstance) error {
 
 	_, err = pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS purchases (
 		id UUID PRIMARY KEY,
-		credit_card_id UUID NOT NULL REFERENCES credit_cards(id),
+		credit_card_id UUID REFERENCES credit_cards(id) on delete set null,
+		user_id UUID NOT NULL,
 		amount bigint NOT NULL,
 
 		created_at timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
