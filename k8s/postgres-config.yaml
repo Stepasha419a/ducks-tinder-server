@@ -5,3 +5,14 @@ metadata:
 data:
   pg_hba.conf: |
     hostssl all all all md5
+  postgresql.conf: |
+    hba_file = '/var/lib/postgresql/pg_hba.conf'
+
+    ssl = on
+    ssl_ca_file = '/var/lib/postgresql/cert/ca.crt'
+    ssl_cert_file = '/var/lib/postgresql/cert/tls.crt'
+    ssl_key_file = '/var/lib/postgresql/cert/tls.key'
+    listen_addresses = '*'
+
+    log_connections = on
+    log_disconnections = on
