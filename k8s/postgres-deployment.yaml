@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-app-deployment
+  template:
+    metadata:
+      labels:
+        app: postgres-app-deployment
+    spec:
