@@ -3,3 +3,5 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
+  pg_hba.conf: |
+    hostssl all all all md5
