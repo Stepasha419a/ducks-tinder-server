@@ -9,6 +9,7 @@ $commands = @(
     "openssl x509 -req -in cert/server.csr -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -out cert/tls.crt -days 365 -extensions v3_req -extfile config.cfg",
     "openssl pkcs12 -export -out cert/client-identity.p12 -inkey cert/tls.key -in cert/tls.crt",
     "openssl rsa -in cert/tls.key -inform PEM -out cert/tls-key.pk8 -outform DER",
+    "openssl x509 -in cert/tls.crt -out cert/tls-crt.der -outform DER",
 )
 
 New-Item -ItemType Directory -Force -Path ./cert
