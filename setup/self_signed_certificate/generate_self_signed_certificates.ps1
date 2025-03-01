@@ -8,6 +8,7 @@ $commands = @(
     "openssl req -new -nodes -newkey rsa:2048 -keyout cert/tls.key -out cert/server.csr -config config.cfg",
     "openssl x509 -req -in cert/server.csr -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -out cert/tls.crt -days 365 -extensions v3_req -extfile config.cfg",
     "openssl pkcs12 -export -out cert/client-identity.p12 -inkey cert/tls.key -in cert/tls.crt",
+    "openssl rsa -in cert/tls.key -inform PEM -out cert/tls-key.pk8 -outform DER",
 )
 
 New-Item -ItemType Directory -Force -Path ./cert
@@ -16,7 +17,8 @@ foreach ($command in $commands) {
     Write-Host "execute: $command" -ForegroundColor Yellow
     try {
         Invoke-Expression $command
-    } catch {
+    }
+    catch {
         Write-Host "error: $command" -ForegroundColor Red
         exit 1
     }
