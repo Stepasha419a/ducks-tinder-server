@@ -10,7 +10,7 @@ $commands = @(
     "openssl pkcs12 -export -out cert/client-identity.p12 -inkey cert/tls.key -in cert/tls.crt -certfile cert/ca.crt -name `"postgresql-client`" -password pass:password",
     "openssl pkcs8 -topk8 -inform PEM -outform DER -in cert/tls.key -out cert/tls-key.der -nocrypt",
     "keytool -importkeystore -srckeystore cert/client-identity.p12 -srcstoretype PKCS12 -srcstorepass password -destkeystore cert/client-identity.jks -deststoretype JKS -deststorepass password",
-    "openssl x509 -in cert/ca.crt -out cert/ca-crt.der -outform DER"
+    "keytool -import -trustcacerts -file cert/ca.crt -keystore cert/truststore.jks -storepass password -noprompt"
 )
 
 New-Item -ItemType Directory -Force -Path ./cert
