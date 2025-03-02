@@ -2,6 +2,12 @@ if (-not (Get-Command "openssl" -ErrorAction SilentlyContinue)) {
     Write-Host "openssl not found" -ForegroundColor Red
     exit 1
 }
+if (-not (Get-Command "keytool" -ErrorAction SilentlyContinue)) {
+    Write-Host "keytool not found" -ForegroundColor Red
+    exit 1
+}
+
+Get-ChildItem -Path ./cert -Include *.* -File -Recurse | foreach { $_.Delete()}
 
 $commands = @(
     'openssl req -x509 -new -nodes -keyout cert/ca.key -out cert/ca.crt -days 365 -subj "/C=GB/ST=State/L=City/O=Organization/CN=MyCA"',
