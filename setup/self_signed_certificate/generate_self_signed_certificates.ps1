@@ -9,7 +9,7 @@ $commands = @(
     "openssl x509 -req -in cert/server.csr -CA cert/ca.crt -CAkey cert/ca.key -CAcreateserial -out cert/tls.crt -days 365 -extensions v3_req -extfile config.cfg",
     "openssl pkcs12 -export -out cert/client-identity.p12 -inkey cert/tls.key -in cert/tls.crt -certfile cert/ca.crt -name `"postgresql-client`" -password pass:password",
     "openssl pkcs8 -topk8 -inform PEM -outform DER -in cert/tls.key -out cert/tls-key.der -nocrypt",
-    "openssl x509 -in cert/tls.crt -out cert/tls-crt.der -outform DER",
+    "keytool -importkeystore -srckeystore cert/client-identity.p12 -srcstoretype PKCS12 -srcstorepass password -destkeystore cert/client-identity.jks -deststoretype JKS -deststorepass password",
     "openssl x509 -in cert/ca.crt -out cert/ca-crt.der -outform DER"
 )
 
