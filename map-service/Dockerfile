@@ -11,4 +11,6 @@ COPY . /app
 # TODO: fix tests skipping
 RUN mvn -f /app/pom.xml package -Dmaven.test.skip=true
 
-ENTRYPOINT ["java", "-jar", "/app/target/map_service-0.0.1-SNAPSHOT.jar"]
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
