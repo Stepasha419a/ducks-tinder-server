@@ -10,7 +10,8 @@ fi
 KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-password}"
 
 # resources cert path duplicate same files => verify only one of them
-TRUSTSTORE_PATH="/app/cert/$ACTIVE_PROFILE/truststore.jks"
+TRUSTSTORE_PATH="/tmp/truststore.jks"
+TLS_KEY_DER_PATH="/tmp/tls-key.der"
 CERT_PATH="/app/cert/$ACTIVE_PROFILE/ca.crt"
 if [ -f "$TRUSTSTORE_PATH" ]; then
     echo "Removing existing truststore..."
