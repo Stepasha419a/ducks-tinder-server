@@ -12,6 +12,10 @@ KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-password}"
 # resources cert path duplicate same files => verify only one of them
 TRUSTSTORE_PATH="/app/cert/$ACTIVE_PROFILE/truststore.jks"
 CERT_PATH="/app/cert/$ACTIVE_PROFILE/ca.crt"
+if [ -f "$TRUSTSTORE_PATH" ]; then
+    echo "Removing existing truststore..."
+    rm "$TRUSTSTORE_PATH"
+fi
 
 echo "Importing CA certificate to Java truststore..."
 keytool -importcert -keystore "$TRUSTSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -noprompt -alias postgres-ca -file "$CERT_PATH"
