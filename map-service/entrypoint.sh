@@ -25,6 +25,10 @@ if [ -f "$TLS_KEY_DER_PATH" ]; then
     rm "$TLS_KEY_DER_PATH"
 fi
 
+# TODO: pkcs12 format and with encryption (without -nocrypt flag?)
+echo "Converting TLS key to DER format..."
+openssl pkcs8 -topk8 -inform PEM -outform DER -in "$TLS_KEY_PATH" -out "$TLS_KEY_DER_PATH" -nocrypt
+
 echo "Importing CA certificate to Java truststore..."
 keytool -importcert -keystore "$TRUSTSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -noprompt -alias postgres-ca -file "$CERT_PATH"
 
