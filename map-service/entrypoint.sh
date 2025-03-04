@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
-ACTIVE_PROFILE="${SPRING_PROFILES_ACTIVE:-dev-docker}"
+if ! command -v openssl &> /dev/null; then
+    echo "OpenSSL not found. Installing..."
+    
+    apt update && apt install -y openssl && rm -rf /var/lib/apt/lists/*
+fi
+
 KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-password}"
 
 # resources cert path duplicate same files => verify only one of them
