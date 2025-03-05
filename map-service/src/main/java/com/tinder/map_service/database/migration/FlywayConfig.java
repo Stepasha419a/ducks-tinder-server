@@ -35,16 +35,28 @@ public class FlywayConfig {
 	}
 
 	private void createDatabase() {
-		var serviceDb = databaseUrl.replace(databaseName, "postgres");
-		var baseDbUrl = databaseUrl.replace(serviceDb, "postgres");
+		var baseDbUrl = databaseUrl.replace(databaseName, "postgres");
 
-		try (var connection = DriverManager.getConnection(baseDbUrl, username, password);
-				var statement = connection.createStatement()) {
+		try (var connection = DriverManager.getConnection(baseDbUrl, username, password)) {
+			try (var statement = connection
+					.prepareStatement("SELECT EXISTS (SELECT FROM pg_database WHERE datname = ?)")) {
+				statement.setString(1, databaseName);
+				try (var result = statement.executeQuery()) {
+					if (result.next() && result.getBoolean(1)) {
+						log.info("Database already exists: " + databaseName);
 
-			statement.executeUpdate("CREATE DATABASE \"" + serviceDb + "\";");
-			log.info("Database created successfully");
+						return;
+					}
+				}
+			}
+
+			try (var statement = connection.createStatement()) {
+				statement.executeUpdate("CREATE DATABASE \"" + databaseName + "\";");
+
+				log.info("Database created successfully: " + databaseName);
+			}
 		} catch (Exception e) {
-			log.info("Database already exists or cannot be created: " + e.getMessage());
+			log.error("Database cannot be created: " + e.getMessage());
 		}
 	}
 }
