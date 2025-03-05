@@ -7,6 +7,7 @@ if ! command -v openssl &> /dev/null; then
     apt update && apt install -y openssl && rm -rf /var/lib/apt/lists/*
 fi
 
+ACTIVE_PROFILE="${SPRING_PROFILES_ACTIVE:-dev-docker}"
 KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD:-password}"
 
 # resources cert path duplicate same files => verify only one of them
