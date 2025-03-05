@@ -1,7 +1,6 @@
 package com.tinder.map_service.database.migration;
 
 import java.sql.DriverManager;
-
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +14,9 @@ public class FlywayConfig {
 
 	@Value("${spring.datasource.url}")
 	private String databaseUrl;
+
+	@Value("${app.datasource.database-name}")
+	private String databaseName;
 
 	@Value("${spring.datasource.username}")
 	private String username;
@@ -33,7 +35,7 @@ public class FlywayConfig {
 	}
 
 	private void createDatabase() {
-		var serviceDb = databaseUrl.split("/")[databaseUrl.split("/").length - 1];
+		var serviceDb = databaseUrl.replace(databaseName, "postgres");
 		var baseDbUrl = databaseUrl.replace(serviceDb, "postgres");
 
 		try (var connection = DriverManager.getConnection(baseDbUrl, username, password);
