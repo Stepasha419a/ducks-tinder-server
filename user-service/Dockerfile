@@ -2,6 +2,8 @@ FROM node:21-alpine
 
 WORKDIR /usr/src/app
 
+RUN apk update && apk add bash openssl
+
 COPY user-service/package*.json .
 
 RUN npm install
