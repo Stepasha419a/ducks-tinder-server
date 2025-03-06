@@ -16,4 +16,4 @@ RUN npx prisma generate --generator dockerDefault
 
 RUN npm run build
 
-CMD ["npm", "run", "start:prod"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
