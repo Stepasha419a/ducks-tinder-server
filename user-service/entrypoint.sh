@@ -8,6 +8,7 @@ if ! command -v openssl &> /dev/null; then
 fi
 
 NODE_ENV="${NODE_ENV:-dev-docker}"
+IS_MIGRATION="${IS_MIGRATION:-false}"
 CLIENT_IDENTITY_PASSWORD="${CLIENT_IDENTITY_PASSWORD:-password}"
 
 CLIENT_IDENTITY_PATH="/tmp/client-identity.p12"
@@ -24,5 +25,10 @@ fi
 echo "Creating client-identity..."
 openssl pkcs12 -export -out $CLIENT_IDENTITY_PATH -inkey $TLS_KEY_PATH -in $TLS_CERT_PATH -certfile $CERT_PATH -name "client-identity" -password pass:$CLIENT_IDENTITY_PASSWORD
 
-echo "Starting application..."
-npm run start:prod
+if [[ "$IS_MIGRATION_LOWER" == "true" ]]; then
+    echo "Migrating database..."
+    npx prisma migrate deploy
+else
+    echo "Starting application..."
+    npm run start:prod
+fi
