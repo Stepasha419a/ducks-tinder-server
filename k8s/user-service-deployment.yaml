@@ -14,6 +14,9 @@ spec:
       labels:
         app: user-app-service-deployment
     spec:
+      securityContext:
+        fsGroup: 101
+        runAsUser: 70
       initContainers:
         - name: user-service-instance
           image: 10.98.141.40:80/ducks-tinder-user-service
