@@ -2,7 +2,7 @@ FROM node:21-alpine
 
 WORKDIR /usr/src/app
 
-RUN apk update && apk add bash openssl
+RUN apk update && apk add bash openssl postgresql
 
 COPY user-service/package*.json .
 
