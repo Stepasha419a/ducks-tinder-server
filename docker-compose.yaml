@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
     environment:
       SPRING_PROFILES_ACTIVE: dev-docker
+      KEYSTORE_PASSWORD: password
     depends_on:
       - postgres
     ports:
