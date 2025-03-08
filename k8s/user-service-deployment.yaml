@@ -28,6 +28,8 @@ spec:
           env:
             - name: NODE_ENV
               value: 'dev-k8s'
+            - name: IS_MIGRATION
+              value: 'true'
             - name: DATABASE_URL
               value: 'postgresql://postgres:prisma@postgres-postgresql:5432/tinder'
           command: ['sh', '-c', 'npx prisma migrate deploy']
