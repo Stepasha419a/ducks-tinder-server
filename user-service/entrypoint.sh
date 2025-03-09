@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-if ! command -v openssl &> /dev/null; then
-    echo "OpenSSL not found. Installing..."
-    
-    apk update && apk add openssl
-fi
-
 NODE_ENV="${NODE_ENV:-dev-docker}"
 IS_MIGRATION="${IS_MIGRATION:-false}"
 MIGRATION_DB_NAME="${MIGRATION_DB_NAME}"
