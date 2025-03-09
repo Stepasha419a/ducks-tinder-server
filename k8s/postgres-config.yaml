@@ -4,7 +4,7 @@ metadata:
   name: postgres-config
 data:
   pg_hba.conf: |
-    hostssl all all all md5
+    hostssl all all all cert clientcert=verify-full
   postgresql.conf: |
     hba_file = '/var/lib/postgresql/pg_hba.conf'
 
