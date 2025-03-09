@@ -140,13 +140,7 @@ services:
     ports:
       - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'
     command:
-      [
-        'postgres',
-        '-c',
-        'config_file=/var/lib/postgresql/postgresql.conf',
-        '-c',
-        'hba_file=/var/lib/postgresql/pg_hba.conf',
-      ]
+      ['postgres', '-c', 'config_file=/var/lib/postgresql/postgresql.conf']
   postgres-exporter:
     container_name: postgres-exporter
     image: prometheuscommunity/postgres-exporter:v0.13.1
