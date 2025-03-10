@@ -70,6 +70,7 @@ export class ChatController {
     return this.facade.queries.getChatMember(userId, memberId);
   }
 
+  // TODO: remove test endpoints
   @Post('TEST/message')
   async sendMessage(
     @User(ParseUUIDPipe) userId: string,
