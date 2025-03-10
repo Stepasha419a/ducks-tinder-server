@@ -4,9 +4,8 @@ param (
     [string]$certExamplePath = 'setup/cert-example'
 )
 
-$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus", "grafana", "rabbitmq", "map-service", "database")
-
-foreach ($service in $service")
+$services = ("user-service", "chat-service", "auth-service", "billing-service", "file-service", "subscription-service", "prometheus", "grafana", "rabbitmq", "database")
+$javaServices = ("map-service")
 
 
 function SetUpCert {
@@ -35,4 +34,12 @@ foreach ($service in $services) {
     $servicePath = $rootPath + $service
 
     SetUpCert($servicePath)
+}
+
+foreach ($service in $javaServices) {
+    $serviceCertRootPath = $rootPath + $service
+    $serviceResourcesCertRootPath = $rootPath + "$service/src/main/resources"
+
+    SetUpCert($serviceCertRootPath)
+    SetUpCert($serviceResourcesCertRootPath)
 }
