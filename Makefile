@@ -1,4 +1,4 @@
-.PHONY: dev user-service chat-service file-service auth-service
+.PHONY: dev user-service chat-service file-service auth-service map-service
 
 dev:
 	@$(MAKE) -j user-service chat-service file-service
@@ -14,6 +14,9 @@ file-service:
 
 auth-service:
 	cd auth-service && air
+
+map-service:
+	cd map-service && make dev
 
 setup-certs: 
 	powershell -File setup/setup_certificates.ps1 -override
