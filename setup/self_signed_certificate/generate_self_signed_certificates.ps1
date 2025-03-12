@@ -7,7 +7,7 @@ if (-not (Get-Command "keytool" -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-Get-ChildItem -Path ./cert -Include *.* -File -Recurse | foreach { $_.Delete()}
+Get-ChildItem -Path ./cert -Include *.* -File -Recurse | foreach { $_.Delete() }
 
 $commands = @(
     'openssl req -x509 -new -nodes -keyout cert/ca.key -out cert/ca.crt -days 365 -subj "/C=GB/ST=State/L=City/O=Organization/CN=MyCA"',
