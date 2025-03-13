@@ -75,6 +75,7 @@ func (c *BillingServiceImpl) WithdrawUserCreditCard(ctx context.Context, request
 
 	response := &billing_service.Purchase{
 		Id:           out.Id,
+		UserId:       out.UserId,
 		CreditCardId: out.CreditCardId,
 		Amount:       out.Amount,
 		CreatedAt:    out.CreatedAt,
