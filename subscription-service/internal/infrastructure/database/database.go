@@ -23,8 +23,7 @@ func NewPostgresInstance(configService config_service.ConfigService, tlsService 
 	tlsConfig := tlsService.GetConfig()
 	config := configService.GetConfig()
 
-	// TODO: db sslmode=require
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
 	pgxConfig, err := pgxpool.ParseConfig(connectionString)
 	if err != nil {
 		panic(err)
