@@ -17,6 +17,7 @@ type (
 
 	Purchase struct {
 		Id           string
+		UserId       string
 		CreditCardId string
 		Amount       int64
 		CreatedAt    int64
