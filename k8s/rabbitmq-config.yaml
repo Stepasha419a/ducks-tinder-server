@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+data:
+  rabbitmq.conf: |
+    listeners.ssl.default = 5672
+    listeners.tcp = none
+    ssl_options.cacertfile = /etc/rabbitmq/cert/ca.crt
+    ssl_options.certfile = /etc/rabbitmq/cert/tls.crt
+    ssl_options.keyfile = /etc/rabbitmq/cert/tls.key
+    ssl_options.verify = verify_peer
+    ssl_options.fail_if_no_peer_cert = true
+
+    management.ssl.port = 15672
+    management.ssl.cacertfile = /etc/rabbitmq/cert/ca.crt
+    management.ssl.certfile = /etc/rabbitmq/cert/tls.crt
+    management.ssl.keyfile = /etc/rabbitmq/cert/tls.key
+    management.ssl.password = password
+    management.ssl.verify = verify_peer
+    management.ssl.fail_if_no_peer_cert = true
