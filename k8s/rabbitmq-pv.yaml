@@ -14,6 +14,9 @@ spec:
   storageClassName: local-storage
   hostPath:
     path: /devkube/rabbitmq
+  claimRef:
+    name: rabbitmq-pvc
+    namespace: default
   nodeAffinity:
     required:
       nodeSelectorTerms:
