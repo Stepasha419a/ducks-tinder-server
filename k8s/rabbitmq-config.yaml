@@ -19,3 +19,12 @@ data:
     management.ssl.password = password
     management.ssl.verify = verify_peer
     management.ssl.fail_if_no_peer_cert = true
+
+    prometheus.ssl.port = 15692
+    prometheus.tcp.listener = none
+    prometheus.ssl.cacertfile = /etc/rabbitmq/cert/ca.crt
+    prometheus.ssl.certfile = /etc/rabbitmq/cert/tls.crt
+    prometheus.ssl.keyfile = /etc/rabbitmq/cert/tls.key
+    prometheus.ssl.password = password
+    prometheus.ssl.verify = verify_peer
+    prometheus.ssl.fail_if_no_peer_cert = true
