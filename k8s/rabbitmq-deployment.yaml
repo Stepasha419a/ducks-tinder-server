@@ -12,3 +12,22 @@ spec:
       labels:
         app: rabbitmq-app-deployment
     spec:
+      containers:
+        - name: rabbitmq-app-deployment
+          image: rabbitmq:4-management
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/rabbitmq/rabbitmq.conf
+              subPath: rabbitmq.conf
+            - name: data-volume
+              mountPath: /var/lib/rabbitmq
+          env:
+            - name: RABBITMQ_CONFIG_FILE
+              value: /etc/rabbitmq/rabbitmq
+      volumes:
+        - name: config-volume
+          configMap:
+            name: rabbitmq-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc
