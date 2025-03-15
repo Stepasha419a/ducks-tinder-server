@@ -15,6 +15,13 @@ spec:
       containers:
         - name: rabbitmq-app-deployment
           image: rabbitmq:4-management
+          resources:
+            limits:
+              cpu: '0.0625'
+              memory: '128Mi'
+            requests:
+              cpu: '0.0625'
+              memory: '128Mi'
           volumeMounts:
             - name: config-volume
               mountPath: /etc/rabbitmq/rabbitmq.conf
