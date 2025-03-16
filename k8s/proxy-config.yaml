@@ -10,5 +10,14 @@ data:
         server {
 
             listen 7000 ssl;
+            location /user {
+              proxy_pass https://user-service-service:5000;
+              proxy_http_version 1.1;
+
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header Connection "upgrade";
+              proxy_cache_bypass $http_upgrade;
+            }
         }
     }
