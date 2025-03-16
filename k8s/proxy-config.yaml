@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxy-config
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+        server {
+
+            listen 7000 ssl;
+        }
+    }
