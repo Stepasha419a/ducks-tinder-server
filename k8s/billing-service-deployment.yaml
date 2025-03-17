@@ -50,3 +50,7 @@ spec:
               containerPort: 6001
           command:
             - '/usr/src/app/app'
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
