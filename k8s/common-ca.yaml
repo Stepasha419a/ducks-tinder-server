@@ -7,6 +7,8 @@ spec:
   issuerRef:
     name: ca-issuer
     kind: ClusterIssuer
+    - rabbitmq-service
+    - postgres-service
   commonName: postgres
   duration: 2160h
   renewBefore: 360h
