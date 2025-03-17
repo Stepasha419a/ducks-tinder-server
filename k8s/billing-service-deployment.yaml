@@ -29,6 +29,10 @@ spec:
             - name: MODE
               value: 'dev-k8s'
           command: ['/usr/src/app/migration', '-auto-submit']
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /usr/src/app/cert/dev-k8s
+              readOnly: true
       containers:
         - name: billing-app-service-deployment
           image: 10.98.141.40:80/ducks-tinder-billing-service
@@ -50,6 +54,10 @@ spec:
               containerPort: 6001
           command:
             - '/usr/src/app/app'
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /usr/src/app/cert/dev-k8s
+              readOnly: true
       volumes:
         - name: tls-volume
           secret:
