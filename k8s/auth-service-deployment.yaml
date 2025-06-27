@@ -23,8 +23,8 @@ spec:
               cpu: '0.125'
               memory: '64Mi'
             requests:
-              cpu: '0.125'
-              memory: '64Mi'
+              cpu: '0.0625'
+              memory: '32Mi'
           env:
             - name: MODE
               value: 'dev-k8s'
@@ -42,8 +42,8 @@ spec:
               cpu: '0.125'
               memory: '64Mi'
             requests:
-              cpu: '0.125'
-              memory: '64Mi'
+              cpu: '0.0625'
+              memory: '32Mi'
           env:
             - name: MODE
               value: 'dev-k8s'
