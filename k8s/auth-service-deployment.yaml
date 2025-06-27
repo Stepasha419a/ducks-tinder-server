@@ -33,6 +33,9 @@ spec:
             - name: tls-volume
               mountPath: /usr/src/app/cert/dev-k8s
               readOnly: true
+            - name: config-volume
+              mountPath: /usr/src/app/config
+              readOnly: true
       containers:
         - name: auth-app-service-deployment
           image: 10.98.141.40:80/ducks-tinder-auth-service
@@ -56,7 +59,13 @@ spec:
             - name: tls-volume
               mountPath: /usr/src/app/cert/dev-k8s
               readOnly: true
+            - name: config-volume
+              mountPath: /usr/src/app/config
+              readOnly: true
       volumes:
         - name: tls-volume
           secret:
             secretName: common-ca-tls-secret
+        - name: config-volume
+          secret:
+            secretName: auth-service-secret
