@@ -15,6 +15,17 @@ spec:
       containers:
         - name: postgres-app-deployment
           image: postgres:13-alpine
+          volumeMounts:
+            - name: data-volume
+              mountPath: /var/lib/postgresql/data
+            - name: tls-volume
+              mountPath: /var/lib/postgresql/cert
+            - name: config-volume
+              mountPath: /var/lib/postgresql/postgresql.conf
+              subPath: postgresql.conf
+            - name: config-volume
+              mountPath: /var/lib/postgresql/pg_hba.conf
+              subPath: pg_hba.conf
           env:
             - name: POSTGRES_USER
               value: postgres
