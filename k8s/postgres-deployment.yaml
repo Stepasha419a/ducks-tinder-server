@@ -22,3 +22,21 @@ spec:
               value: prisma
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+            items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+                mode: 0640
+              - key: ca.crt
+                path: ca.crt
+        - name: config-volume
+          configMap:
+            name: postgres-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: postgres-pvc
