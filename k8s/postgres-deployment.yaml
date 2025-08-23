@@ -12,3 +12,13 @@ spec:
       labels:
         app: postgres-app-deployment
     spec:
+      containers:
+        - name: postgres-app-deployment
+          image: postgres:13-alpine
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: prisma
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
