@@ -33,6 +33,9 @@ spec:
               value: prisma
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
+          args:
+            - -c
+            - config_file=/var/lib/postgresql/postgresql.conf
       volumes:
         - name: tls-volume
           secret:
