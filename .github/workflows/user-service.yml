@@ -1,5 +1,10 @@
 name: user-service-ci
 
+on:
+  push:
+    paths:
+      - 'user-service/**'
+
 jobs:
   nestjs:
     runs-on: ubuntu-latest
