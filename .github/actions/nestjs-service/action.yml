@@ -1,0 +1,11 @@
+name: 'Check and build nestjs service'
+description: 'Check and build nestjs service'
+
+inputs:
+  service-path:
+    description: 'Path to service'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
