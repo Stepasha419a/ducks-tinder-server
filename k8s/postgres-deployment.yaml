@@ -12,6 +12,9 @@ spec:
       labels:
         app: postgres-app-deployment
     spec:
+      securityContext:
+        fsGroup: 101
+        runAsUser: 70
       containers:
         - name: postgres-app-deployment
           image: postgres:13-alpine
