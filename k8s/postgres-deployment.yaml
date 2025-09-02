@@ -18,6 +18,13 @@ spec:
       containers:
         - name: postgres-app-deployment
           image: postgres:13-alpine
+          resources:
+            limits:
+              cpu: '0.125'
+              memory: '64Mi'
+            requests:
+              cpu: '0.125'
+              memory: '32Mi'
           volumeMounts:
             - name: data-volume
               mountPath: /var/lib/postgresql/data
