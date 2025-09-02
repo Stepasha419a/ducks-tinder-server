@@ -26,6 +26,9 @@ spec:
             - name: config-volume
               mountPath: /etc/rabbitmq/rabbitmq.conf
               subPath: rabbitmq.conf
+            - name: tls-volume
+              mountPath: /etc/rabbitmq/cert
+              readOnly: true
             - name: data-volume
               mountPath: /var/lib/rabbitmq
           env:
@@ -35,6 +38,9 @@ spec:
         - name: config-volume
           configMap:
             name: rabbitmq-config
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
         - name: data-volume
           persistentVolumeClaim:
             claimName: rabbitmq-pvc
