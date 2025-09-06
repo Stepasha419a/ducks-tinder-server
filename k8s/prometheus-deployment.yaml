@@ -18,5 +18,12 @@ spec:
       containers:
         - name: prometheus-app-deployment
           image: prom/prometheus:v2.53.2
+          resources:
+            limits:
+              cpu: '0.125'
+              memory: '640Mi'
+            requests:
+              cpu: '0.0625'
+              memory: '128Mi'
           ports:
             - containerPort: 9090
