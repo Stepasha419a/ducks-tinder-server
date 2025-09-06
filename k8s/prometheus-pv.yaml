@@ -15,3 +15,11 @@ spec:
   claimRef:
     name: prometheus-pvc
     namespace: default
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube
