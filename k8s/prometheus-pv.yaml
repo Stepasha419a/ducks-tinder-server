@@ -12,3 +12,6 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: /devkube/postgresql
+  claimRef:
+    name: prometheus-pvc
+    namespace: default
