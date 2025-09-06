@@ -10,6 +10,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+  storageClassName: local-storage
   hostPath:
     path: /devkube/postgresql
   claimRef:
