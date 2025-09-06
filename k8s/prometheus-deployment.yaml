@@ -14,3 +14,9 @@ spec:
       labels:
         app: prometheus-app-deployment
     spec:
+      serviceAccountName: prometheus-service-account
+      containers:
+        - name: prometheus-app-deployment
+          image: prom/prometheus:v2.53.2
+          ports:
+            - containerPort: 9090
