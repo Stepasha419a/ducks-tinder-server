@@ -27,6 +27,12 @@ spec:
               memory: '128Mi'
           ports:
             - containerPort: 9090
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /etc/prometheus/cert
+              readOnly: true
+            - name: prometheus-config
+              mountPath: /etc/prometheus
       volumes:
         - name: tls-volume
           secret:
