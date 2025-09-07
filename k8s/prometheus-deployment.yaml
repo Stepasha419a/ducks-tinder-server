@@ -27,3 +27,10 @@ spec:
               memory: '128Mi'
           ports:
             - containerPort: 9090
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
