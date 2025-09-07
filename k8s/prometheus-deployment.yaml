@@ -27,6 +27,8 @@ spec:
               memory: '128Mi'
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--web.enable-lifecycle'
+            - '--web.enable-admin-api'
           ports:
             - containerPort: 9090
           volumeMounts:
