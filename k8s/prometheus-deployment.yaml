@@ -29,6 +29,8 @@ spec:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--web.enable-lifecycle'
             - '--web.enable-admin-api'
+            - '--web.external-url=https://kubernetes.docker.internal/prometheus/'
+            - '--web.config.file=/etc/prometheus/web-config.yml'
           ports:
             - containerPort: 9090
           volumeMounts:
