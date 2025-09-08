@@ -27,6 +27,9 @@ spec:
           ports:
             - name: http
               containerPort: 9100
+          envFrom:
+            - secretRef:
+                name: grafana-secret
           volumeMounts:
             - name: tls-volume
               mountPath: /etc/grafana/cert
