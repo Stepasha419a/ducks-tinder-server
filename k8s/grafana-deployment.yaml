@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  labels:
+    app: grafana-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-app-deployment
+  template:
+    metadata:
+      labels:
+        app: grafana-app-deployment
+    spec:
