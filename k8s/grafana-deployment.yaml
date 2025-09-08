@@ -27,6 +27,14 @@ spec:
           ports:
             - name: http
               containerPort: 9100
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /etc/grafana/cert
+              readOnly: true
+            - name: dashboards-config-volume
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: datasources-config-volume
+              mountPath: /etc/grafana/provisioning/datasources
       volumes:
         - name: tls-volume
           secret:
