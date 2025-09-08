@@ -14,3 +14,9 @@ spec:
       labels:
         app: grafana-app-deployment
     spec:
+      containers:
+        - name: grafana-app-deployment
+          image: grafana/grafana:11.4.0
+          ports:
+            - name: http
+              containerPort: 9100
