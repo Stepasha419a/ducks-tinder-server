@@ -27,3 +27,17 @@ spec:
           ports:
             - name: http
               containerPort: 9100
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+        - name: dashboards-config-volume
+          projected:
+            sources:
+              - configMap:
+                  name: grafana-dashboards-config
+              - configMap:
+                  name: grafana-dashboards-config-2
+        - name: datasources-config-volume
+          configMap:
+            name: grafana-datasources-config
