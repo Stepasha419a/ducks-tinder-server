@@ -2,7 +2,8 @@
 .gitignore
 .dockerignore
 
-dist
+*/cert
+*/dist
 */node_modules
 */tmp
 
