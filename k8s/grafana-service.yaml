@@ -8,3 +8,8 @@ spec:
   type: ClusterIP
   selector:
     app: grafana-app-deployment
+  ports:
+    - name: http
+      port: 9100
+      targetPort: 9100
+      protocol: TCP
