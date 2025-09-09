@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-tcp-idle-timeout: '30'
+spec:
+  type: ClusterIP
+  selector:
+    app: grafana-app-deployment
