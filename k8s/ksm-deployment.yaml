@@ -15,3 +15,11 @@ spec:
     metadata:
       labels:
         app: ksm-app-deployment
+    spec:
+      automountServiceAccountToken: true
+      serviceAccountName: ksm-service-account
+      containers:
+        - name: ksm-app-deployment
+          image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.15.0
+          ports:
+            - containerPort: 8080
