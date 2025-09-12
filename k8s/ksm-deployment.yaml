@@ -21,5 +21,12 @@ spec:
       containers:
         - name: ksm-app-deployment
           image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.15.0
+          resources:
+            limits:
+              cpu: '0.0625'
+              memory: '256Mi'
+            requests:
+              cpu: '0.0625'
+              memory: '128Mi'
           ports:
             - containerPort: 8080
