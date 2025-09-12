@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksm-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksm-app-deployment
+  template:
+    metadata:
+      labels:
+        app: ksm-app-deployment
