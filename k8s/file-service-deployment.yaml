@@ -14,10 +14,6 @@ spec:
       labels:
         app: file-app-service-deployment
     spec:
-      volumes:
-        - name: file-service-media
-          persistentVolumeClaim:
-            claimName: file-service-media-pvc
       containers:
         - name: file-app-service-deployment
           image: 10.98.141.40:80/ducks-tinder-file-service
