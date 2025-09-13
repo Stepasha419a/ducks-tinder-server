@@ -13,6 +13,7 @@ spec:
     - user-service-service
     - chat-service-service
     - file-service-service
+    - map-service-service
     - rabbitmq-service
     - postgres-service
   commonName: postgres
