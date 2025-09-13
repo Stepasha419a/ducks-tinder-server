@@ -9,3 +9,30 @@ data:
     deleteDatasources:
       - name: Prometheus
         orgId: 1
+
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        uid: prometheusdatasource
+        access: proxy
+        orgId: 1
+        url: https://prometheus-service:9090/prometheus
+        password:
+        user:
+        database:
+        basicAuth: false
+        basicAuthUser:
+        basicAuthPassword:
+        withCredentials:
+        isDefault: true
+        jsonData:
+          graphiteVersion: '1.1'
+          tlsAuth: true
+          tlsAuthWithCACert: true
+          tlsSkipVerify: false
+        secureJsonData:
+          tlsCACert: $__file{/etc/grafana/cert/ca.crt}
+          tlsClientCert: $__file{/etc/grafana/cert/tls.crt}
+          tlsClientKey: $__file{/etc/grafana/cert/tls.key}
+        version: 1
+        editable: true
