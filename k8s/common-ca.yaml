@@ -7,6 +7,9 @@ spec:
   issuerRef:
     name: ca-issuer
     kind: ClusterIssuer
+  dnsNames:
+    - prometheus-service
+    - grafana-service
     - auth-service-service
     - billing-service-service
     - subscription-service-service
