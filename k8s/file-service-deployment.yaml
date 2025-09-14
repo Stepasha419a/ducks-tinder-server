@@ -36,3 +36,13 @@ spec:
           volumeMounts:
             - name: file-service-media
               mountPath: ../static
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+        - name: file-service-media
+          persistentVolumeClaim:
+            claimName: file-service-media-pvc
+        - name: config-volume
+          secret:
+            secretName: file-service-secret
