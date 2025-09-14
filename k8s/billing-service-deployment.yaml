@@ -62,3 +62,6 @@ spec:
         - name: tls-volume
           secret:
             secretName: common-ca-tls-secret
+        - name: config-volume
+          secret:
+            secretName: billing-service-secret
