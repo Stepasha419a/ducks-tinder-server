@@ -13,3 +13,14 @@ spec:
     metadata:
       labels:
         app: node-exporter-app-deployment
+    spec:
+      containers:
+        - name: node-exporter-app-deployment
+          image: quay.io/prometheus/node-exporter:v1.9.1
+          ports:
+            - containerPort: 9100
+          args:
+            - '--path.rootfs=/host'
+          volumeMounts:
+            - name: host-root
+              mountPath: /host
