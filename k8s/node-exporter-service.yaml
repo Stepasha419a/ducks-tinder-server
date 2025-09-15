@@ -6,3 +6,8 @@ spec:
   type: ClusterIP
   selector:
     app: node-exporter-app-deployment
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9100
+      targetPort: 9100
