@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-exporter-deployment
+  labels:
+    app: node-exporter-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-exporter-app-deployment
+  template:
+    metadata:
+      labels:
+        app: node-exporter-app-deployment
