@@ -24,3 +24,8 @@ spec:
           volumeMounts:
             - name: host-root
               mountPath: /host
+      volumes:
+        - name: host-root
+          hostPath:
+            path: /
+            type: Directory
