@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadvisor-deployment
+  labels:
+    app: cadvisor-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadvisor-app-deployment
+  template:
+    metadata:
+      labels:
+        app: cadvisor-app-deployment
