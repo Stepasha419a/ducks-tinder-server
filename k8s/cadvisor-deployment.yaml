@@ -21,6 +21,17 @@ spec:
             privileged: true
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - mountPath: /var/run
+              name: var-run
+            - mountPath: /sys
+              name: sys
+            - mountPath: /var/lib/docker
+              name: var-lib-docker
+            - mountPath: /cgroup
+              name: cgroup
+          args:
+            - '--port=8080'
       volumes:
         - name: var-run
           hostPath:
