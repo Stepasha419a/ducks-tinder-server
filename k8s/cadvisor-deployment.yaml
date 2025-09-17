@@ -19,6 +19,13 @@ spec:
           image: gcr.io/cadvisor/cadvisor:v0.52.1
           securityContext:
             privileged: true
+          resources:
+            limits:
+              cpu: '0.5'
+              memory: '384Mi'
+            requests:
+              cpu: '0.125'
+              memory: '128Mi'
           ports:
             - containerPort: 8080
           volumeMounts:
