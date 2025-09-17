@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-deployment
+  labels:
+    app: proxy-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-app-deployment
+  template:
+    metadata:
+      labels:
+        app: proxy-app-deployment
