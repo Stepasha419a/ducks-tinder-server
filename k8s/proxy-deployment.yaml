@@ -13,3 +13,11 @@ spec:
     metadata:
       labels:
         app: proxy-app-deployment
+    spec:
+      containers:
+        - name: proxy-app-deployment
+          image: nginx:1.27.2-alpine
+          ports:
+            - name: http
+              containerPort: 7000
+          command: [nginx-debug, '-g', 'daemon off;']
