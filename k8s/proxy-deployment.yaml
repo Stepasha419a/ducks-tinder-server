@@ -21,3 +21,10 @@ spec:
             - name: http
               containerPort: 7000
           command: [nginx-debug, '-g', 'daemon off;']
+      volumes:
+        - name: config-volume
+          configMap:
+            name: proxy-config
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
