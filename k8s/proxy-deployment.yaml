@@ -21,6 +21,11 @@ spec:
             - name: http
               containerPort: 7000
           command: [nginx-debug, '-g', 'daemon off;']
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx
+            - name: tls-volume
+              mountPath: /etc/nginx/cert/dev-k8s
       volumes:
         - name: config-volume
           configMap:
