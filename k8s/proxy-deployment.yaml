@@ -17,6 +17,13 @@ spec:
       containers:
         - name: proxy-app-deployment
           image: nginx:1.27.2-alpine
+          resources:
+            limits:
+              cpu: '0.0625'
+              memory: '32Mi'
+            requests:
+              cpu: '0.0625'
+              memory: '16Mi'
           ports:
             - name: http
               containerPort: 7000
