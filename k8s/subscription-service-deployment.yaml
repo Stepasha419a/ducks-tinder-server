@@ -50,3 +50,10 @@ spec:
               containerPort: 6002
           command:
             - '/usr/src/app/app'
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+        - name: config-volume
+          secret:
+            secretName: subscription-service-secret
