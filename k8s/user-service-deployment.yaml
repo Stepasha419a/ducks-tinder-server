@@ -55,3 +55,18 @@ spec:
           ports:
             - name: http
               containerPort: 5000
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+            items:
+              - key: tls.crt
+                path: tls.crt
+              - key: tls.key
+                path: tls.key
+                mode: 0640
+              - key: ca.crt
+                path: ca.crt
+        - name: config-volume
+          secret:
+            secretName: user-service-secret
