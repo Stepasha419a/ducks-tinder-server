@@ -51,6 +51,14 @@ spec:
           ports:
             - name: http
               containerPort: 5001
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /usr/src/app/cert/dev-k8s
+              readOnly: true
+            - name: config-volume
+              mountPath: /usr/src/app/.env.dev-k8s
+              subPath: .env.dev-k8s
+              readOnly: true
       volumes:
         - name: tls-volume
           secret:
