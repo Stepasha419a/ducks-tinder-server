@@ -32,8 +32,14 @@ spec:
             - name: NODE_ENV
               value: 'dev-k8s'
             - name: DATABASE_URL
-              value: 'postgresql://postgres:prisma@postgres-postgresql:5432/tinder'
-          command: ['sh', '-c', 'npx prisma migrate deploy']
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /usr/src/app/cert/dev-k8s
+              readOnly: true
+            - name: config-volume
+              mountPath: /usr/src/app/.env.dev-k8s
+              subPath: .env.dev-k8s
+              readOnly: true
       containers:
         - name: chat-app-service-deployment
           image: 10.98.141.40:80/ducks-tinder-chat-service
