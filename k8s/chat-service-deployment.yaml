@@ -31,6 +31,10 @@ spec:
           env:
             - name: NODE_ENV
               value: 'dev-k8s'
+            - name: IS_MIGRATION
+              value: 'true'
+            - name: MIGRATION_DB_NAME
+              value: 'tinder'
             - name: DATABASE_URL
           volumeMounts:
             - name: tls-volume
