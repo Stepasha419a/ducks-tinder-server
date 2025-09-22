@@ -49,8 +49,8 @@ spec:
               cpu: '0.125'
               memory: '96Mi'
             requests:
-              cpu: '0.125'
-              memory: '96Mi'
+              cpu: '0.0625'
+              memory: '64Mi'
           env:
             - name: NODE_ENV
               value: 'dev-k8s'
