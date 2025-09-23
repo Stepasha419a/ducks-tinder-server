@@ -36,6 +36,7 @@ spec:
             - name: MIGRATION_DB_NAME
               value: 'tinder'
             - name: DATABASE_URL
+              value: 'postgresql://postgres:prisma@postgres-service:5432/tinder?sslmode=verify-full&sslidentity=/tmp/client-identity.p12&sslpassword=password'
           volumeMounts:
             - name: tls-volume
               mountPath: /usr/src/app/cert/dev-k8s
