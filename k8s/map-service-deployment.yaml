@@ -33,3 +33,13 @@ spec:
               containerPort: 5006
             - name: grpc
               containerPort: 6003
+      volumes:
+        - name: tls-volume
+          secret:
+            secretName: common-ca-tls-secret
+        - name: tls-volume2
+          secret:
+            secretName: common-ca-tls-secret
+        - name: config-volume
+          secret:
+            secretName: map-service-secret
