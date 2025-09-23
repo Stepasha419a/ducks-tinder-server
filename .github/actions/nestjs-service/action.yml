@@ -15,3 +15,6 @@ runs:
         node-version: 22
         cache: 'npm'
         registry-url: 'https://registry.npmjs.org'
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ${{ inputs.service-path }}
