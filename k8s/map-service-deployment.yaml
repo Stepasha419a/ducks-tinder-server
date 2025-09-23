@@ -28,6 +28,10 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: dev-k8s
+            - name: KEYSTORE_PASSWORD
+              value: password
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: file:/app/config/
           ports:
             - name: http
               containerPort: 5006
