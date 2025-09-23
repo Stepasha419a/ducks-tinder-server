@@ -33,6 +33,16 @@ spec:
               containerPort: 5006
             - name: grpc
               containerPort: 6003
+          volumeMounts:
+            - name: tls-volume
+              mountPath: /app/cert/dev-k8s
+              readOnly: true
+            - name: tls-volume2
+              mountPath: /app/src/main/resources/cert/dev-k8s
+              readOnly: true
+            - name: config-volume
+              mountPath: /app/config/application-dev-k8s.properties
+              subPath: application-dev-k8s.properties
       volumes:
         - name: tls-volume
           secret:
