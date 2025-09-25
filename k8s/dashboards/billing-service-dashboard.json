@@ -358,6 +358,131 @@
       "gridPos": {
         "h": 7,
         "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 5,
+      "isNew": true,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "alloc rate",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "deriv(go_memstats_alloc_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{pod}} - bytes allocated",
+          "metric": "go_memstats_alloc_bytes",
+          "refId": "A",
+          "step": 4
+        },
+        {
+          "expr": "rate(go_memstats_alloc_bytes_total{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{pod}} - alloc rate",
+          "metric": "go_memstats_alloc_bytes_total",
+          "refId": "B",
+          "step": 4
+        },
+        {
+          "expr": "deriv(go_memstats_stack_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{pod}} - stack inuse",
+          "metric": "go_memstats_stack_inuse_bytes",
+          "refId": "C",
+          "step": 4
+        },
+        {
+          "expr": "deriv(go_memstats_heap_inuse_bytes{namespace=~\"^($namespace)$\",pod=~\"^($pod)$\",job=\"$job_name\"}[$interval])",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "{{pod}} - heap inuse",
+          "metric": "go_memstats_heap_inuse_bytes",
+          "refId": "D",
+          "step": 4
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "go memstats deriv",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
         "x": 0,
         "y": 15
       },
