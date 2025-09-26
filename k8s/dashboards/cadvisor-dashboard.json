@@ -1,0 +1,137 @@
+{
+  "description": "I created this cadvisor dashboard to show everything scraped from cadvisor.\r\n\r\n- Expanding all the rows may consume too much resources.\r\n- Limit the containers by selecting compose_project.\r\n- First few rows are stacked. Container rows are not.\r\n\r\nIf you have any issues or suggestions, please email mail@maoyin.eu.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Check for Updates",
+      "tooltip": "Check update on Grafana.com Dashboard Repository",
+      "type": "link",
+      "url": "https://grafana.com/grafana/dashboards/19792-cadvisor-dashboard/"
+    },
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Author",
+      "tooltip": "A shameless plug of author's homepage. Contact author for issues and suggestions. ",
+      "type": "link",
+      "url": "https://maoyin.eu"
+    }
+  ],
+  "liveNow": false,
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": ["cadvisor", "docker", "prometheus", "container"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "label": "datasource",
+        "multi": false,
+        "name": "DS_PROMETHEUS",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values({__name__=~\"container.*\"},instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "host_instance",
+        "multi": true,
+        "name": "host_instance",
+        "options": [],
+        "query": {
+          "query": "label_values({__name__=~\"container.*\"},instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values({__name__=~\"container.*\", instance=~\"$host_instance\"},container_label_com_docker_compose_project)",
+        "description": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": "compose_project",
+        "multi": true,
+        "name": "compose_project",
+        "options": [],
+        "query": {
+          "query": "label_values({__name__=~\"container.*\", instance=~\"$host_instance\"},container_label_com_docker_compose_project)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values({__name__=~\"container.*\", instance=~\"$host_instance\", container_label_com_docker_compose_project=~\"$compose_project\"},name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "container_name",
+        "multi": true,
+        "name": "container_name",
+        "options": [],
+        "query": {
+          "query": "label_values({__name__=~\"container.*\", instance=~\"$host_instance\", container_label_com_docker_compose_project=~\"$compose_project\"},name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "cadvisor",
+  "uid": "9AJV_mnIk",
+  "version": 7,
+  "weekStart": "",
+  "gnetId": 19792
+}
