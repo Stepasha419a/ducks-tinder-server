@@ -1,4 +1,26 @@
 {
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "I created this cadvisor dashboard to show everything scraped from cadvisor.\r\n\r\n- Expanding all the rows may consume too much resources.\r\n- Limit the containers by selecting compose_project.\r\n- First few rows are stacked. Container rows are not.\r\n\r\nIf you have any issues or suggestions, please email mail@maoyin.eu.",
   "editable": true,
   "fiscalYearStartMonth": 0,
