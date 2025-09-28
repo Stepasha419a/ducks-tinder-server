@@ -23,3 +23,6 @@ runs:
     - name: Check format
       run: npm run format
       working-directory: ${{ inputs.service-path }}
+    - name: Build
+      run: npm run build
+      working-directory: ${{ inputs.service-path }}
