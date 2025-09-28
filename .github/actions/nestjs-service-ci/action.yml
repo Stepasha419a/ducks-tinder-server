@@ -20,3 +20,6 @@ runs:
     - name: Lint
       run: npm run lint
       working-directory: ${{ inputs.service-path }}
+    - name: Check format
+      run: npm run format
+      working-directory: ${{ inputs.service-path }}
