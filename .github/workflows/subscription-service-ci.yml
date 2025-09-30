@@ -1,5 +1,10 @@
 name: subscription-service-ci
 
+on:
+  push:
+    paths:
+      - 'subscription-service/**'
+
 jobs:
   golang:
     runs-on: ubuntu-latest
