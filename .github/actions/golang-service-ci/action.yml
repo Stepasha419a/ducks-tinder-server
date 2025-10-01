@@ -1,6 +1,14 @@
 name: 'Check and build golang service'
 description: 'Check and build golang service'
 
+inputs:
+  service-path:
+    description: 'Path to service'
+    required: true
+  main-file-root-path:
+    description: 'Path to modules'
+    default: './cmd'
+
 runs:
   using: 'composite'
   steps:
