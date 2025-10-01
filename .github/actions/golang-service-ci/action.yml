@@ -19,3 +19,6 @@ runs:
     - name: Install dependencies
       run: go mod download
       working-directory: ${{ inputs.service-path }}
+    - name: Build
+      run: go build -o app ${{ inputs.main-file-root-path }}
+      working-directory: ${{ inputs.service-path }}
