@@ -8,6 +8,9 @@ inputs:
   main-file-root-path:
     description: 'Path to modules'
     default: './cmd'
+  with-migration:
+    description: 'Run steps for migration'
+    default: false
 
 runs:
   using: 'composite'
