@@ -1,0 +1,10 @@
+name: 'Check and build golang service'
+description: 'Check and build golang service'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
