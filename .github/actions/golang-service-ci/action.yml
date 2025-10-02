@@ -28,3 +28,4 @@ runs:
     - name: Build migration
       if: ${{ inputs.with-migration }}
       run: go build -o migration ./cmd/migration
+      working-directory: ${{ inputs.service-path }}
