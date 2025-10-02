@@ -25,3 +25,6 @@ runs:
     - name: Build
       run: go build -o app ${{ inputs.main-file-root-path }}
       working-directory: ${{ inputs.service-path }}
+    - name: Build migration
+      if: ${{ inputs.with-migration }}
+      run: go build -o migration ./cmd/migration
