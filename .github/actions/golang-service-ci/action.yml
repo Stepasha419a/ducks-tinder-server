@@ -32,3 +32,6 @@ runs:
     - name: Lint
       run: go vet ${{ inputs.main-file-root-path }}
       working-directory: ${{ inputs.service-path }}
+    - name: Lint migration
+      run: go vet ./cmd/migration
+      working-directory: ${{ inputs.service-path }}
