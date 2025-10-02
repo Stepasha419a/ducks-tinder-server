@@ -29,3 +29,6 @@ runs:
       if: ${{ inputs.with-migration }}
       run: go build -o migration ./cmd/migration
       working-directory: ${{ inputs.service-path }}
+    - name: Lint
+      run: go vet ${{ inputs.main-file-root-path }}
+      working-directory: ${{ inputs.service-path }}
