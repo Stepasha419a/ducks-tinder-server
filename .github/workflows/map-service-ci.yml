@@ -1,5 +1,10 @@
 name: map-service-ci
 
+on:
+  push:
+    paths:
+      - 'map-service/**'
+
 jobs:
   check:
     runs-on: ubuntu-latest
