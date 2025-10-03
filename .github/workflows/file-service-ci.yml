@@ -1,5 +1,10 @@
 name: file-service-ci
 
+on:
+  push:
+    paths:
+      - 'file-service/**'
+
 jobs:
   golang:
     runs-on: ubuntu-latest
