@@ -21,3 +21,5 @@ jobs:
         run: mvn dependency:go-offline
       - name: Run tests
         run: mvn test
+      - name: Build JAR
+        run: mvn clean package -DskipTests -Dmaven.test.skip=true
