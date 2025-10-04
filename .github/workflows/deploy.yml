@@ -10,6 +10,9 @@ jobs:
         service:
           [
             auth-service,
+            billing-service,
         include:
           - service: auth-service
             repo_secret: AUTH_SERVICE_REPO_NAME
+          - service: billing-service
+            repo_secret: BILLING_SERVICE_REPO_NAME
