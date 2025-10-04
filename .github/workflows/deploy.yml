@@ -4,3 +4,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: production
+    strategy:
+      # https://github.com/orgs/community/discussions/26302
+      matrix:
+        service:
+          [
+            auth-service,
+        include:
+          - service: auth-service
+            repo_secret: AUTH_SERVICE_REPO_NAME
