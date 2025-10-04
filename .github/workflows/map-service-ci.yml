@@ -9,6 +9,10 @@ jobs:
   check:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./map-service
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
