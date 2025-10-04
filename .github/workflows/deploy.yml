@@ -1,0 +1,6 @@
+name: deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
