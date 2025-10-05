@@ -12,6 +12,7 @@ jobs:
             auth-service,
             billing-service,
             subscription-service,
+            map-service,
         include:
           - service: auth-service
             repo_secret: AUTH_SERVICE_REPO_NAME
@@ -19,3 +20,5 @@ jobs:
             repo_secret: BILLING_SERVICE_REPO_NAME
           - service: subscription-service
             repo_secret: SUBSCRIPTION_SERVICE_REPO_NAME
+          - service: map-service
+            repo_secret: MAP_SERVICE_REPO_NAME
