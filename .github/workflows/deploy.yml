@@ -22,3 +22,7 @@ jobs:
             repo_secret: SUBSCRIPTION_SERVICE_REPO_NAME
           - service: map-service
             repo_secret: MAP_SERVICE_REPO_NAME
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
