@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+      - 'test-*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
