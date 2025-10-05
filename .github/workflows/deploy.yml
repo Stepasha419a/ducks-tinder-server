@@ -11,8 +11,11 @@ jobs:
           [
             auth-service,
             billing-service,
+            subscription-service,
         include:
           - service: auth-service
             repo_secret: AUTH_SERVICE_REPO_NAME
           - service: billing-service
             repo_secret: BILLING_SERVICE_REPO_NAME
+          - service: subscription-service
+            repo_secret: SUBSCRIPTION_SERVICE_REPO_NAME
