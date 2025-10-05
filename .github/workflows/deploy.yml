@@ -13,6 +13,7 @@ jobs:
             billing-service,
             subscription-service,
             map-service,
+            chat-service,
         include:
           - service: auth-service
             repo_secret: AUTH_SERVICE_REPO_NAME
@@ -22,6 +23,8 @@ jobs:
             repo_secret: SUBSCRIPTION_SERVICE_REPO_NAME
           - service: map-service
             repo_secret: MAP_SERVICE_REPO_NAME
+          - service: chat-service
+            repo_secret: CHAT_SERVICE_REPO_NAME
 
     steps:
       - name: Set up Docker Buildx
