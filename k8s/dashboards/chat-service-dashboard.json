@@ -826,6 +826,46 @@
   ],
   "schemaVersion": 39,
   "tags": ["nodejs"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(nodejs_version_info{job=\"$job_name\"}, instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": "label_values(nodejs_version_info{job=\"$job_name\"}, instance)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "current": {
+          "text": "chat-service",
+          "value": "chat-service"
+        },
+        "hide": 2,
+        "label": "Job Name",
+        "name": "job_name",
+        "query": "chat-service",
+        "skipUrlSync": true,
+        "type": "constant"
+      }
+    ]
+  },
   "time": {
     "from": "now-1h",
     "to": "now"
