@@ -29,6 +29,19 @@
       "version": "5.0.0"
     }
   ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Process status published by Go Prometheus client library, e.g. memory used, fds open, GC details",
   "editable": true,
   "gnetId": 6671,
