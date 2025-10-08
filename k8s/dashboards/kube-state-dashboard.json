@@ -25,6 +25,17 @@
   "graphTooltip": 1,
   "id": 17,
   "iteration": 1668578317407,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": false,
+      "tags": ["kubernetes-app"],
+      "title": "Dashboards",
+      "type": "dashboards"
+    }
+  ],
   "liveNow": false,
   "refresh": false,
   "schemaVersion": 31,
