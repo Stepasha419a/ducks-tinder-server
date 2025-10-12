@@ -47,3 +47,5 @@ jobs:
         with:
           path: /tmp/.buildx-cache
           key: ${{ matrix.service }}-buildx-cache
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
