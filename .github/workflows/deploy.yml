@@ -51,6 +51,9 @@ jobs:
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Build and push image
         run: |
+          docker buildx build \
+            --cache-from type=local,src=/tmp/.buildx-cache \
+            --cache-to type=local,dest=/tmp/.buildx-cache,mode=max \
             -f ${{ inputs.service-path }}/Dockerfile \
             -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets[matrix.repo_secret] }}:${{ github.ref_name }} \
             --push .
