@@ -21,16 +21,20 @@ runs:
         go-version: 1.21
     - name: Install dependencies
       run: go mod download
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Build
       run: go build -o app ${{ inputs.main-file-root-path }}
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Build migration
       if: ${{ inputs.with-migration }}
       run: go build -o migration ./cmd/migration
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Lint
       run: go vet ${{ inputs.main-file-root-path }}
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Lint migration
       if: ${{ inputs.with-migration }}
