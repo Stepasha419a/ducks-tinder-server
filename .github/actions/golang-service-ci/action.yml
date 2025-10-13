@@ -10,7 +10,7 @@ inputs:
     default: './cmd'
   with-migration:
     description: 'Run steps for migration'
-    default: false
+    default: 'false'
 
 runs:
   using: 'composite'
