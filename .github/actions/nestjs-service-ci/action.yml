@@ -16,13 +16,17 @@ runs:
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Lint
       run: npm run lint
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Check format
       run: npm run format
+      shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Build
       run: npm run build
+      shell: bash
       working-directory: ${{ inputs.service-path }}
