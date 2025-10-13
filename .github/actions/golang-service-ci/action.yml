@@ -39,4 +39,5 @@ runs:
     - name: Lint migration
       if: ${{ inputs.with-migration }}
       run: go vet ./cmd/migration
+      shell: bash
       working-directory: ${{ inputs.service-path }}
