@@ -28,7 +28,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Build migration
-      if: ${{ inputs.with-migration }}
+      if: ${{ inputs.with-migration == 'true' }}
       run: go build -o migration ./cmd/migration
       shell: bash
       working-directory: ${{ inputs.service-path }}
@@ -37,7 +37,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Lint migration
-      if: ${{ inputs.with-migration }}
+      if: ${{ inputs.with-migration == 'true' }}
       run: go vet ./cmd/migration
       shell: bash
       working-directory: ${{ inputs.service-path }}
