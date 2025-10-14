@@ -26,6 +26,7 @@ jobs:
         include:
           - service: auth-service
             repo_secret: AUTH_SERVICE_REPO_NAME
+            root_path: ./auth-service
           - service: billing-service
             repo_secret: BILLING_SERVICE_REPO_NAME
             root_path: ./billing-service
