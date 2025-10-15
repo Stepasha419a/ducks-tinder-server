@@ -41,6 +41,7 @@ jobs:
             root_path: .
           - service: user-service
             repo_secret: USER_SERVICE_REPO_NAME
+            root_path: .
           - service: file-service
             repo_secret: FILE_SERVICE_REPO_NAME
 
