@@ -32,6 +32,7 @@ jobs:
             root_path: ./billing-service
           - service: subscription-service
             repo_secret: SUBSCRIPTION_SERVICE_REPO_NAME
+            root_path: ./subscription-service
           - service: map-service
             repo_secret: MAP_SERVICE_REPO_NAME
           - service: chat-service
