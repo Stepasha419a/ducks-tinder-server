@@ -38,6 +38,7 @@ jobs:
             root_path: ./map-service
           - service: chat-service
             repo_secret: CHAT_SERVICE_REPO_NAME
+            root_path: .
           - service: user-service
             repo_secret: USER_SERVICE_REPO_NAME
           - service: file-service
