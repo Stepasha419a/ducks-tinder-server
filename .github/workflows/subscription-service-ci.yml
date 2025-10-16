@@ -14,4 +14,4 @@ jobs:
         with:
           service-path: ./subscription-service
           with-migration: true
-          main-file-root-path: ./cmd/main
+          main-file-root-path: ./cmd/main/main.go ./cmd/main/wire_gen.go
