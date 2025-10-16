@@ -13,5 +13,5 @@ jobs:
       - uses: ./.github/actions/golang-service-ci
         with:
           service-path: ./subscription-service
-          with-migration: true
+          with-migration: 'true'
           main-file-root-path: ./cmd/main/main.go ./cmd/main/wire_gen.go
