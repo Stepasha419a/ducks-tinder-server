@@ -12,3 +12,6 @@ RUN go build -o app ./cmd/main
 RUN go build -o migration ./cmd/migration
 
 FROM alpine:3.22.1
+
+# TODO: check is ca-certificates package needed for https requests (out-coming https requests from service)
+RUN apk add --no-cache ca-certificates
