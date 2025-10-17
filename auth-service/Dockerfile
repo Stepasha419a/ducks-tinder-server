@@ -10,3 +10,5 @@ COPY . .
 
 RUN go build -o app ./cmd/main
 RUN go build -o migration ./cmd/migration
+
+FROM alpine:3.22.1
