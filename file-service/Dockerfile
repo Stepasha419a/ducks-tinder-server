@@ -10,4 +10,4 @@ COPY . .
 
 RUN go build -o app ./cmd
 
-CMD ["./app"]
+FROM alpine:3.22.1
