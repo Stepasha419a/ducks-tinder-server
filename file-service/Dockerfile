@@ -11,3 +11,5 @@ COPY . .
 RUN go build -o app ./cmd
 
 FROM alpine:3.22.1
+
+WORKDIR /app
