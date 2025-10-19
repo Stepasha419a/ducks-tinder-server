@@ -2,10 +2,9 @@ FROM node:21-alpine
 
 WORKDIR /usr/src/app
 
+COPY chat-service .
 
 RUN npm install
-
-COPY chat-service .
 
 COPY prisma ./prisma
 
