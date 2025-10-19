@@ -17,3 +17,7 @@ FROM node:21-alpine
 RUN apk add --no-cache bash openssl postgresql
 
 WORKDIR /app
+
+COPY --from=build /usr/src/app/dist ./dist
+
+COPY --from=build /usr/src/app/entrypoint.sh .
