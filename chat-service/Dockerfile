@@ -10,6 +10,8 @@ COPY prisma ./prisma
 
 RUN npx prisma generate --generator dockerDefault
 
+COPY chat-service .
+
 RUN npm run build
 
 FROM node:21-alpine
