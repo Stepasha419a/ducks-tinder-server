@@ -2,7 +2,7 @@ FROM node:21-alpine
 
 WORKDIR /usr/src/app
 
-COPY chat-service .
+COPY chat-service/package.json chat-service/package-lock.json ./
 
 RUN npm install
 
