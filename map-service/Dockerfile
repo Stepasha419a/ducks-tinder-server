@@ -1,4 +1,5 @@
-FROM maven:3.8.5-openjdk-17-slim
+
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
