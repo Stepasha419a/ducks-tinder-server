@@ -15,3 +15,5 @@ FROM alpine:3.22.1
 WORKDIR /app
 
 COPY --from=build /usr/src/app/app .
+
+CMD ["/app/app"]
