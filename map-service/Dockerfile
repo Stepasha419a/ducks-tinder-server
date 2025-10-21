@@ -6,6 +6,8 @@ COPY ./pom.xml ./pom.xml
 
 RUN mvn dependency:go-offline
 
+COPY . .
+
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
