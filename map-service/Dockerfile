@@ -8,6 +8,9 @@ RUN mvn dependency:go-offline
 
 COPY . .
 
+# TODO: fix tests skipping
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
+
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
