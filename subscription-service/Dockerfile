@@ -14,3 +14,5 @@ RUN go build -o migration ./cmd/migration
 FROM alpine:3.22.1
 
 RUN apk add --no-cache ca-certificates
+
+WORKDIR /app
