@@ -17,12 +17,9 @@ WORKDIR /app
 
 RUN apk add --no-cache bash
 
-RUN mvn -f /app/pom.xml verify clean --fail-never
+COPY --from=build /usr/src/app/target/*.jar /app/app.jar
 
-COPY . /app
-
-# TODO: fix tests skipping
-RUN mvn -f /app/pom.xml package -Dmaven.test.skip=true
+COPY --from=build /usr/src/app/entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
 
