@@ -15,7 +15,7 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-COPY ./pom.xml /app/pom.xml
+RUN apk add --no-cache bash
 
 RUN mvn -f /app/pom.xml verify clean --fail-never
 
