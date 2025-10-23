@@ -16,3 +16,6 @@ FROM alpine:3.22.1
 RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
+
+COPY --from=build /usr/src/app/app .
+COPY --from=build /usr/src/app/migration .
