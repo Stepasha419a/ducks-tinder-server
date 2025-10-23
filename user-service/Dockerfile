@@ -16,4 +16,4 @@ RUN npx prisma generate --generator dockerDefault
 
 RUN npm run build
 
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+FROM node:21-alpine
