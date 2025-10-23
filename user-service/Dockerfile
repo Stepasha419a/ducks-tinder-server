@@ -2,9 +2,7 @@ FROM node:21-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN apk update && apk add bash openssl postgresql
-
-COPY user-service/package*.json .
+COPY user-service/package.json user-service/package-lock.json ./
 
 RUN npm install
 
