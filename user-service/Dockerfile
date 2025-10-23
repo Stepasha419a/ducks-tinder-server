@@ -6,11 +6,11 @@ COPY user-service/package.json user-service/package-lock.json ./
 
 RUN npm install
 
-COPY user-service .
-
 COPY prisma ./prisma
 
 RUN npx prisma generate --generator dockerDefault
+
+COPY user-service .
 
 RUN npm run build
 
