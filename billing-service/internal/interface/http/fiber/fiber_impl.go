@@ -57,8 +57,9 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 	app.Use(helmet.New())
 	app.Use(middleware.AuthMiddleware)
 
-	app.Get(healthcheck.DefaultLivenessEndpoint, healthcheck.NewHealthChecker())
-	app.Get(healthcheck.DefaultReadinessEndpoint, healthcheck.NewHealthChecker())
+	app.Get(healthcheck.LivenessEndpoint, healthcheck.New())
+	app.Get(healthcheck.ReadinessEndpoint, healthcheck.New())
+	app.Get(healthcheck.StartupEndpoint, healthcheck.New())
 
 	return app, func() {
 		log.Println("close fiber app")
