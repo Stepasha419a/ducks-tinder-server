@@ -15,6 +15,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
+	"github.com/gofiber/fiber/v3/middleware/healthcheck"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
@@ -55,6 +56,9 @@ func NewFiberApp(middleware *middleware.Middleware, configService config_service
 	}))
 	app.Use(helmet.New())
 	app.Use(middleware.AuthMiddleware)
+
+	app.Get(healthcheck.DefaultLivenessEndpoint, healthcheck.NewHealthChecker())
+	app.Get(healthcheck.DefaultReadinessEndpoint, healthcheck.NewHealthChecker())
 
 	return app, func() {
 		log.Println("close fiber app")
