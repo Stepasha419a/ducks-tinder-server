@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-var publicUris = []string{"/metrics"}
+var publicUris = []string{"/metrics", "/readyz", "/startupz", "/livez"}
 
 func authMiddleware(ctx fiber.Ctx, jwtService *jwt_service.JwtService) error {
 	if isPublicUri(string(ctx.Request().RequestURI())) {
