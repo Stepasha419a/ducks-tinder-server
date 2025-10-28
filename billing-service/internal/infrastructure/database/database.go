@@ -16,13 +16,13 @@ type PostgresInstance struct {
 	Pool *pgxpool.Pool
 }
 
-func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService, dbName string) (*PostgresInstance, func()) {
+func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService) (*PostgresInstance, func()) {
 	log.Println("new database postgres instance")
 
 	tlsConfig := tlsService.GetConfig()
 	config := configService.GetConfig()
 
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
 	pgxConfig, err := pgxpool.ParseConfig(connectionString)
 	if err != nil {
 		panic(err)
