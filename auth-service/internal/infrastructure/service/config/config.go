@@ -31,7 +31,7 @@ type (
 )
 
 var (
-	mods           = []string{"dev", "dev-docker", "dev-k8s"}
+	mods           = []string{"dev", "dev-docker", "dev-k8s", "prod"}
 	config *Config = &Config{}
 )
 
