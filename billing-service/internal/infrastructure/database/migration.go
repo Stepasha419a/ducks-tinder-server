@@ -25,11 +25,7 @@ func MigrateDB(configService config_service.ConfigService, tlsService *tls_servi
 
 	log.Info("migration - start")
 
-	rootPg, cleanupRootDb := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresRootDatabase)
-	defer cleanupRootDb()
-	runRootMigrations(ctx, rootPg)
-
-	pg, cleanup := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresDatabase)
+	pg, cleanup := NewPostgresInstance(configService, tlsService)
 	defer cleanup()
 	runMigrations(ctx, pg)
 
