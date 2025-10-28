@@ -9,6 +9,7 @@ import (
 	config_service "auth-service/internal/infrastructure/service/config"
 	tls_service "auth-service/internal/infrastructure/service/tls"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
+	health_controller "auth-service/internal/interface/http/controller/health"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"auth-service/internal/interface/http/middleware"
 	"net/http"
@@ -39,6 +40,7 @@ func main() {
 
 	auth_controller.NewAuthController(e, authFacade)
 	metrics_controller.NewMetricsController(e)
+	health_controller.NewHealthController(e)
 
 	tlsConfig := tls_service.GetConfig()
 
