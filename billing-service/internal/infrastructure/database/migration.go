@@ -49,10 +49,6 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runRootMigrations(ctx context.Context, pg *PostgresInstance) {
-	checkMigration(initRootMigration(ctx, pg))
-}
-
 func runMigrations(ctx context.Context, pg *PostgresInstance) {
 	checkMigration(initMigration(ctx, pg))
 }
@@ -62,28 +58,6 @@ func checkMigration(err error) {
 		log.Info("migration - failed")
 		panic(err)
 	}
-}
-
-func initRootMigration(ctx context.Context, pg *PostgresInstance) error {
-	log.Info("root migration - init")
-
-	var dbExists bool
-	err := pg.Pool.QueryRow(ctx, `
-    SELECT EXISTS (
-        SELECT FROM pg_database WHERE datname = 'billing-service'
-    )`).Scan(&dbExists)
-	if err != nil {
-		return err
-	}
-
-	if !dbExists {
-		_, err = pg.Pool.Exec(ctx, `CREATE DATABASE "billing-service"`)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func initMigration(ctx context.Context, pg *PostgresInstance) error {
