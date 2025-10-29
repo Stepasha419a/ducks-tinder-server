@@ -36,3 +36,15 @@ func (m *ConnectionService) UpdateState(t ConnectionType, healthy bool, err erro
 
 	m.States[t] = &ConnectionState{Type: t, Healthy: healthy, Error: err, Updated: time.Now()}
 }
+
+func (m *ConnectionService) IsReady() bool {
+	m.Mu.RLock()
+	defer m.Mu.RUnlock()
+
+	for _, s := range m.States {
+		if !s.Healthy {
+			return false
+		}
+	}
+	return true
+}
