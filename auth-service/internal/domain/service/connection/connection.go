@@ -9,6 +9,7 @@ type ConnectionType string
 
 const (
 	ConnPostgres ConnectionType = "postgres"
+	ConnRabbitMQ ConnectionType = "rabbitmq"
 )
 
 type ConnectionState struct {
