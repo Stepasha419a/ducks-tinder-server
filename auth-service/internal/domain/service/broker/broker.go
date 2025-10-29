@@ -26,7 +26,7 @@ func InitBroker(tlsConfig *tls.Config) *amqp.Connection {
 	conn, err = amqp.DialTLS(RABBIT_MQ_URL, tlsConfig)
 	if err != nil {
 		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
-		reconnect()
+		reconnect(tlsConfig)
 	}
 
 	slog.Info("Broker successfully connected")
@@ -34,7 +34,7 @@ func InitBroker(tlsConfig *tls.Config) *amqp.Connection {
 	return conn
 }
 
-func reconnect() {
+func reconnect(tlsConfig *tls.Config) {
 	attempts := 0
 	ticker := time.NewTicker(time.Second * 3)
 	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
@@ -48,7 +48,7 @@ func reconnect() {
 		}
 		slog.Error("Broker connection error, reconnecting", slog.Any("err", err))
 
-		conn, err = amqp.Dial(RABBIT_MQ_URL)
+		conn, err = amqp.DialTLS(RABBIT_MQ_URL, tlsConfig)
 		if err == nil {
 			ticker.Stop()
 			break
