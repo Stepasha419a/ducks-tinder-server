@@ -29,3 +29,10 @@ func NewConnectionService() *ConnectionService {
 		States: make(map[ConnectionType]*ConnectionState),
 	}
 }
+
+func (m *ConnectionService) UpdateState(t ConnectionType, healthy bool, err error) {
+	m.Mu.Lock()
+	defer m.Mu.Unlock()
+
+	m.States[t] = &ConnectionState{Type: t, Healthy: healthy, Error: err, Updated: time.Now()}
+}
