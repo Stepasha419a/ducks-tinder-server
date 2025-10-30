@@ -35,8 +35,7 @@ func newContainer() (*Container, func(), error) {
 	validatorServiceImpl := validator_service_impl.NewValidatorService()
 	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
 	tlsService := tls_service.NewTlsService(configServiceImpl)
-	string2 := provideDbName(configServiceImpl)
-	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl, tlsService, string2)
+	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl, tlsService)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
 	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
@@ -86,8 +85,4 @@ type Container struct {
 	BillingController    *billing_controller.BillingController
 	BillingServiceServer gen.BillingServiceServer
 	GrpcServer           *grpc.Server
-}
-
-func provideDbName(configService config_service.ConfigService) string {
-	return configService.GetConfig().PostgresDatabase
 }
