@@ -1,7 +1,6 @@
 package database
 
 import (
-	config_service "auth-service/internal/infrastructure/service/config"
 	"bufio"
 	"context"
 	"fmt"
@@ -24,7 +23,7 @@ func MigrateDB(autoSubmit bool) {
 
 	log.Info("migration - start")
 
-	pg := NewPostgresInstance(config_service.GetConfig().PostgresDatabase)
+	pg := NewPostgresInstance()
 	defer pg.Close()
 	runMigrations(ctx, pg)
 
