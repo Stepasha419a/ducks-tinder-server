@@ -24,10 +24,6 @@ func MigrateDB(autoSubmit bool) {
 
 	log.Info("migration - start")
 
-	rootPg := NewPostgresInstance(config_service.GetConfig().PostgresRootDatabase)
-	defer rootPg.Close()
-	runRootMigrations(ctx, rootPg)
-
 	pg := NewPostgresInstance(config_service.GetConfig().PostgresDatabase)
 	defer pg.Close()
 	runMigrations(ctx, pg)
@@ -52,10 +48,6 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runRootMigrations(ctx context.Context, db *Postgres) {
-	checkMigration(initRootMigration(ctx, db))
-}
-
 func runMigrations(ctx context.Context, db *Postgres) {
 	checkMigration(initMigration(ctx, db))
 	checkMigration(refreshTokenIndexMigration(ctx, db))
@@ -66,28 +58,6 @@ func checkMigration(err error) {
 		log.Info("migration - failed")
 		panic(err)
 	}
-}
-
-func initRootMigration(ctx context.Context, db *Postgres) error {
-	log.Info("root migration - init")
-
-	var dbExists bool
-	err := db.Pool.QueryRow(ctx, `
-    SELECT EXISTS (
-        SELECT FROM pg_database WHERE datname = 'auth-service'
-    )`).Scan(&dbExists)
-	if err != nil {
-		return err
-	}
-
-	if !dbExists {
-		_, err = db.Pool.Exec(ctx, `CREATE DATABASE "auth-service"`)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func initMigration(ctx context.Context, db *Postgres) error {
