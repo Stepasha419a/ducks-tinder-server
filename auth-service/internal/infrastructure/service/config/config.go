@@ -1,6 +1,7 @@
 package config_service
 
 import (
+	"log/slog"
 	"os"
 	"path"
 	"slices"
