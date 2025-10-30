@@ -15,11 +15,11 @@ type Postgres struct {
 	Pool *pgxpool.Pool
 }
 
-func NewPostgresInstance(dbName string) *Postgres {
+func NewPostgresInstance() *Postgres {
 	tlsConfig := tls_service.GetConfig()
 	config := config_service.GetConfig()
 
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, dbName)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
 	pgxConfig, err := pgxpool.ParseConfig(connectionString)
 	if err != nil {
 		panic(err)
