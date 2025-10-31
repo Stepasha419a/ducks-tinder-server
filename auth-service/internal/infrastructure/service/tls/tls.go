@@ -10,7 +10,7 @@ import (
 	log "log/slog"
 )
 
-func GetConfig() *tls.Config {
+func GetConfig(serverName *string) *tls.Config {
 	certPath := path.Join("cert", config_service.GetConfig().Mode, "tls.crt")
 	privateKeyPath := path.Join("cert", config_service.GetConfig().Mode, "tls.key")
 	caCertPath := path.Join("cert", config_service.GetConfig().Mode, "ca.crt")
@@ -31,7 +31,7 @@ func GetConfig() *tls.Config {
 		RootCAs:      caCertPool,
 		MinVersion:   tls.VersionTLS12,
 		Certificates: make([]tls.Certificate, 1),
-		ServerName:   config_service.GetConfig().TlsServerName,
+		ServerName:   *serverName,
 	}
 
 	serverCert, err := tls.LoadX509KeyPair(certPath, privateKeyPath)
