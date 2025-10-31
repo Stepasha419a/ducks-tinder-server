@@ -91,7 +91,15 @@ func (pg *Postgres) GetPool() (*pgxpool.Pool, error) {
 }
 
 func (pg *Postgres) Close() {
-	pg.Pool.Close()
+	pg.Mu.Lock()
+	defer pg.Mu.Unlock()
+
+	if pg.Pool != nil {
+		pg.Pool.Close()
+		pg.Pool = nil
+
+		slog.Info("Postgres connection closed")
+	}
 }
 
 func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
