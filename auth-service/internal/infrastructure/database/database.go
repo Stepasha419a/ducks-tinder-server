@@ -21,12 +21,17 @@ type Postgres struct {
 	CancelFunc        context.CancelFunc
 }
 
-func NewPostgresInstance() *Postgres {
-	tlsConfig := tls_service.GetConfig()
-	config := config_service.GetConfig()
+func NewPostgresInstance(ctx context.Context, connectionService *connection_service.ConnectionService) (*Postgres, func()) {
+	pg := &Postgres{
+		ConnectionService: connectionService,
+	}
 
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full", config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDatabase)
-	pgxConfig, err := pgxpool.ParseConfig(connectionString)
+	ctx, cancel := context.WithCancel(ctx)
+	pg.CancelFunc = cancel
+
+	go pg.run(ctx)
+	return pg, pg.Shutdown
+}
 	if err != nil {
 		panic(err)
 	}
