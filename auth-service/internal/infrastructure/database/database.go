@@ -67,9 +67,17 @@ func (pg *Postgres) connect() error {
 
 	return nil
 }
+
+func (pg *Postgres) Ping(ctx context.Context) error {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
+
+	if pg.Pool == nil {
+		return fmt.Errorf("Postgres pool is nil")
 	}
 
-	return &Postgres{pool}
+	return pg.Pool.Ping(ctx)
+}
 }
 
 func (pg *Postgres) Close() {
