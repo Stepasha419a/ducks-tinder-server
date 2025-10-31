@@ -78,6 +78,16 @@ func (pg *Postgres) Ping(ctx context.Context) error {
 
 	return pg.Pool.Ping(ctx)
 }
+
+func (pg *Postgres) GetPool() (*pgxpool.Pool, error) {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
+
+	if pg.Pool == nil {
+		return nil, fmt.Errorf("postgres pool not initialized")
+	}
+
+	return pg.Pool, nil
 }
 
 func (pg *Postgres) Close() {
