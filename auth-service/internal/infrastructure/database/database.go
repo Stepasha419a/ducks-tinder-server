@@ -5,6 +5,9 @@ import (
 	tls_service "auth-service/internal/infrastructure/service/tls"
 	"context"
 	"fmt"
+	"log/slog"
+	"sync"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -12,7 +15,10 @@ import (
 )
 
 type Postgres struct {
-	Pool *pgxpool.Pool
+	Mu                sync.RWMutex
+	Pool              *pgxpool.Pool
+	ConnectionService *connection_service.ConnectionService
+	CancelFunc        context.CancelFunc
 }
 
 func NewPostgresInstance() *Postgres {
