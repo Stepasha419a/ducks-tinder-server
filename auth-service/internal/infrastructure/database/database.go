@@ -1,6 +1,7 @@
 package database
 
 import (
+	connection_service "auth-service/internal/domain/service/connection"
 	config_service "auth-service/internal/infrastructure/service/config"
 	tls_service "auth-service/internal/infrastructure/service/tls"
 	"context"
@@ -37,6 +38,7 @@ func (pg *Postgres) run(ctx context.Context) {
 	for {
 		if err := pg.connect(); err != nil {
 			slog.Error("Postgres connection failed", slog.Any("err", err))
+			pg.ConnectionService.UpdateState(connection_service.ConnPostgres, false, err)
 			select {
 			case <-time.After(5 * time.Second):
 				continue
@@ -45,6 +47,7 @@ func (pg *Postgres) run(ctx context.Context) {
 			}
 		}
 
+		pg.ConnectionService.UpdateState(connection_service.ConnPostgres, true, nil)
 		slog.Info("Postgres connected successfully")
 
 		ticker := time.NewTicker(5 * time.Second)
@@ -54,6 +57,7 @@ func (pg *Postgres) run(ctx context.Context) {
 				if err := pg.Ping(ctx); err != nil {
 					slog.Error("Postgres lost connection", slog.Any("err", err))
 					pg.Close()
+					pg.ConnectionService.UpdateState(connection_service.ConnPostgres, false, err)
 
 					goto RECONNECT
 				}
