@@ -1,12 +1,14 @@
 package database
 
 import (
+	connection_service "auth-service/internal/domain/service/connection"
 	"bufio"
 	"context"
 	"fmt"
 	"os"
+	"time"
 
-	log "log/slog"
+	"log/slog"
 )
 
 func MigrateDB(autoSubmit bool) {
@@ -25,10 +27,15 @@ func MigrateDB(autoSubmit bool) {
 
 	ctx := context.TODO()
 
-	pg := NewPostgresInstance()
-	defer pg.Close()
+	pg, cleanup := NewPostgresInstance(ctx, connectionService)
+	defer cleanup()
+
+	waitForPostgres(ctx, pg)
+
 	runMigrations(ctx, pg)
 
+	slog.Info("migration - successful")
+}
 
 func waitForPostgres(ctx context.Context, pg *Postgres) {
 	const retryInterval = 2 * time.Second
