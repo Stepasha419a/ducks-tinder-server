@@ -102,7 +102,15 @@ func (pg *Postgres) Close() {
 	}
 }
 
-func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
+func (pg *Postgres) Shutdown() {
+	if pg.CancelFunc != nil {
+		pg.CancelFunc()
+	}
+
+	pg.Close()
+}
+
+func (pg *Postgres) Exec(tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
 	if tx != nil {
 		return tx.Exec
 	}
