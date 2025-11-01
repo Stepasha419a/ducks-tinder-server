@@ -154,3 +154,11 @@ func (pg *Postgres) QueryRow(tx pgx.Tx) func(ctx context.Context, sql string, ar
 
 	return pool.QueryRow
 }
+
+type emptyRow struct {
+	err error
+}
+
+func (r *emptyRow) Scan(dest ...any) error {
+	return r.err
+}
