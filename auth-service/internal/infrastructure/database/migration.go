@@ -27,7 +27,23 @@ func MigrateDB(autoSubmit bool) {
 	defer pg.Close()
 	runMigrations(ctx, pg)
 
-	log.Info("migration - successful")
+
+func waitForPostgres(ctx context.Context, pg *Postgres) {
+	const retryInterval = 2 * time.Second
+
+	for {
+		pool, err := pg.GetPool()
+		if err == nil && pool != nil {
+			return
+		}
+
+		slog.Error("Postgres not ready, retrying...", slog.Any("err", err))
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(retryInterval):
+		}
+	}
 }
 
 func submitMigration() bool {
