@@ -10,18 +10,20 @@ import (
 )
 
 func MigrateDB(autoSubmit bool) {
-	ctx := context.TODO()
-
 	if !autoSubmit {
 		submitted := submitMigration()
 
 		if !submitted {
-			log.Info("migration - canceled")
+			slog.Info("migration - canceled")
 			return
 		}
 	}
 
-	log.Info("migration - start")
+	slog.Info("migration - start")
+
+	connectionService := connection_service.NewConnectionService()
+
+	ctx := context.TODO()
 
 	pg := NewPostgresInstance()
 	defer pg.Close()
