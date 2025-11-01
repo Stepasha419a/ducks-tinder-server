@@ -32,6 +32,43 @@ func NewPostgresInstance(ctx context.Context, connectionService *connection_serv
 	go pg.run(ctx)
 	return pg, pg.Shutdown
 }
+
+func (pg *Postgres) run(ctx context.Context) {
+	for {
+		if err := pg.connect(); err != nil {
+			slog.Error("Postgres connection failed", slog.Any("err", err))
+			select {
+			case <-time.After(5 * time.Second):
+				continue
+			case <-ctx.Done():
+				return
+			}
+		}
+
+		slog.Info("Postgres connected successfully")
+
+		ticker := time.NewTicker(5 * time.Second)
+		for {
+			select {
+			case <-ticker.C:
+				if err := pg.Ping(ctx); err != nil {
+					slog.Error("Postgres lost connection", slog.Any("err", err))
+					pg.Close()
+
+					goto RECONNECT
+				}
+			case <-ctx.Done():
+				ticker.Stop()
+				pg.Close()
+
+				return
+			}
+		}
+	RECONNECT:
+		ticker.Stop()
+	}
+}
+
 func (pg *Postgres) connect() error {
 	cfg := config_service.GetConfig()
 	tlsConfig := tls_service.GetConfig()
