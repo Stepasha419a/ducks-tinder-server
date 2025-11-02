@@ -75,7 +75,7 @@ func (pg *Postgres) run(ctx context.Context) {
 
 func (pg *Postgres) connect() error {
 	cfg := config_service.GetConfig()
-	tlsConfig := tls_service.GetConfig()
+	tlsConfig := tls_service.GetConfig(&config_service.GetConfig().PostgresTlsServerName)
 
 	connStr := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full",
