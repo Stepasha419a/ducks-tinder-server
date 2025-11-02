@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type (
 	TransactionService struct {
-		pool *pgxpool.Pool
+		db *Postgres
 	}
 
 	Transaction struct {
@@ -17,12 +16,17 @@ type (
 	}
 )
 
-func NewTransactionService(pool *pgxpool.Pool) *TransactionService {
-	return &TransactionService{pool}
+func NewTransactionService(db *Postgres) *TransactionService {
+	return &TransactionService{db}
 }
 
 func (ts *TransactionService) Begin(ctx context.Context) *Transaction {
-	tx, err := ts.pool.Begin(ctx)
+	pool, err := ts.db.GetPool()
+	if err != nil {
+		panic(err)
+	}
+
+	tx, err := pool.Begin(ctx)
 
 	if err != nil {
 		panic(err)
