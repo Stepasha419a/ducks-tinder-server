@@ -11,7 +11,7 @@ import (
 )
 
 type authUserRepository struct {
-	pool *pgxpool.Pool
+	db *database.Postgres
 }
 
 func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser, tx pgx.Tx) (*entity.AuthUser, error) {
@@ -88,8 +88,8 @@ func (r *authUserRepository) FindByRefreshToken(ctx context.Context, refreshToke
 	return &authUser, nil
 }
 
-func NewAuthUserRepository(pool *pgxpool.Pool) domain.AuthUserRepository {
-	return &authUserRepository{pool}
+func NewAuthUserRepository(db *database.Postgres) domain.AuthUserRepository {
+	return &authUserRepository{db}
 }
 
 func HandleError(err error) error {
