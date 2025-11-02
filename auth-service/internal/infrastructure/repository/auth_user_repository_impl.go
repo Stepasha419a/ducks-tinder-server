@@ -95,5 +95,6 @@ func HandleError(err error) error {
 	if err == pgx.ErrNoRows {
 		return nil
 	}
-	return nil
+
+	return err
 }
