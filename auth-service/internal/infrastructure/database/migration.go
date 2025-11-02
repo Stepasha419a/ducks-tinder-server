@@ -79,15 +79,15 @@ func runMigrations(ctx context.Context, db *Postgres) {
 
 func checkMigration(err error) {
 	if err != nil {
-		log.Info("migration - failed")
+		slog.Info("migration - failed")
 		panic(err)
 	}
 }
 
 func initMigration(ctx context.Context, db *Postgres) error {
-	log.Info("migration - init")
+	slog.Info("migration - init")
 
-	_, err := db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
+	_, err := db.Exec(nil)(ctx, `CREATE TABLE IF NOT EXISTS auth_users (
 		id UUID PRIMARY KEY,
 		email VARCHAR(100) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,
@@ -103,9 +103,9 @@ func initMigration(ctx context.Context, db *Postgres) error {
 }
 
 func refreshTokenIndexMigration(ctx context.Context, db *Postgres) error {
-	log.Info("migration - refresh token index")
+	slog.Info("migration - refresh token index")
 
-	_, err := db.Pool.Exec(ctx, `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refreshToken)`)
+	_, err := db.Exec(nil)(ctx, `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refreshToken)`)
 
 	if err != nil {
 		return err
