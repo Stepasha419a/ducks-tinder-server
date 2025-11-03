@@ -65,6 +65,22 @@ func (bs *BrokerService) connectLoop() {
 		time.Sleep(3 * time.Second)
 	}
 }
+
+func (bs *BrokerService) setConnection(conn *amqp.Connection) {
+	bs.mu.Lock()
+	bs.conn = conn
+	bs.mu.Unlock()
+
+	if conn == nil {
+		return
+	}
+
+	bs.mu.RLock()
+	for _, qc := range bs.queues {
+		qc.initChannel(conn)
+	}
+	bs.mu.RUnlock()
+}
 	ch, err := conn.Channel()
 	if err != nil {
 		panic(err)
