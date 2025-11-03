@@ -25,6 +25,19 @@ type QueueConnection struct {
 	queue   *amqp.Queue
 	name    string
 }
+
+func NewBrokerService(tlsConfig *tls.Config, connectionService *connection_service.ConnectionService) *BrokerService {
+	cfg := config_service.GetConfig()
+	bs := &BrokerService{
+		tlsConfig:         tlsConfig,
+		url:               cfg.RabbitMqUrl,
+		connectionService: connectionService,
+		queues:            make(map[string]*QueueConnection),
+	}
+
+	go bs.connectLoop()
+
+	return bs
 }
 
 func InitQueue(conn *amqp.Connection, queueName string) *QueueConnection {
