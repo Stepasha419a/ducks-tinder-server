@@ -45,17 +45,20 @@ func (bs *BrokerService) connectLoop() {
 		conn, err := amqp.DialTLS(bs.url, bs.tlsConfig)
 		if err != nil {
 			slog.Error("Broker connection failed", slog.Any("err", err))
+			bs.connectionService.UpdateState(connection_service.ConnRabbitMQ, false, err)
 			time.Sleep(3 * time.Second)
 			continue
 		}
 
 		slog.Info("Broker connected successfully")
+		bs.connectionService.UpdateState(connection_service.ConnRabbitMQ, true, err)
 		bs.setConnection(conn)
 
 		closeChan := make(chan *amqp.Error)
 		conn.NotifyClose(closeChan)
 
 		err = <-closeChan
+		bs.connectionService.UpdateState(connection_service.ConnRabbitMQ, false, err)
 		slog.Error("Broker connection closed", slog.Any("err", err))
 
 		bs.setConnection(nil)
