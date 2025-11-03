@@ -4,15 +4,20 @@ import (
 	config_service "auth-service/internal/infrastructure/service/config"
 	"crypto/tls"
 	"log/slog"
+	"sync"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-var (
-	conn *amqp.Connection = nil
-	err  error            = nil
-)
+type BrokerService struct {
+	mu                sync.RWMutex
+	conn              *amqp.Connection
+	connectionService *connection_service.ConnectionService
+	tlsConfig         *tls.Config
+	url               string
+	queues            map[string]*QueueConnection
+}
 
 func InitBroker(tlsConfig *tls.Config) *amqp.Connection {
 	RABBIT_MQ_URL := config_service.GetConfig().RabbitMqUrl
