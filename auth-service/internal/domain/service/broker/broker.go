@@ -40,7 +40,28 @@ func NewBrokerService(tlsConfig *tls.Config, connectionService *connection_servi
 	return bs
 }
 
-func InitQueue(conn *amqp.Connection, queueName string) *QueueConnection {
+func (bs *BrokerService) connectLoop() {
+	for {
+		conn, err := amqp.DialTLS(bs.url, bs.tlsConfig)
+		if err != nil {
+			slog.Error("Broker connection failed", slog.Any("err", err))
+			time.Sleep(3 * time.Second)
+			continue
+		}
+
+		slog.Info("Broker connected successfully")
+		bs.setConnection(conn)
+
+		closeChan := make(chan *amqp.Error)
+		conn.NotifyClose(closeChan)
+
+		err = <-closeChan
+		slog.Error("Broker connection closed", slog.Any("err", err))
+
+		bs.setConnection(nil)
+		time.Sleep(3 * time.Second)
+	}
+}
 	ch, err := conn.Channel()
 	if err != nil {
 		panic(err)
