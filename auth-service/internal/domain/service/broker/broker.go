@@ -81,6 +81,24 @@ func (bs *BrokerService) setConnection(conn *amqp.Connection) {
 	}
 	bs.mu.RUnlock()
 }
+
+func (b *BrokerService) InitQueue(queueName string) *QueueConnection {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	if qc, ok := b.queues[queueName]; ok {
+		return qc
+	}
+
+	qc := &QueueConnection{name: queueName}
+	b.queues[queueName] = qc
+
+	if b.conn != nil {
+		qc.initChannel(b.conn)
+	}
+
+	return qc
+}
 	ch, err := conn.Channel()
 	if err != nil {
 		panic(err)
