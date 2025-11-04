@@ -1,8 +1,10 @@
 package broker_service
 
 import (
+	connection_service "auth-service/internal/domain/service/connection"
 	config_service "auth-service/internal/infrastructure/service/config"
 	"crypto/tls"
+	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -130,12 +132,22 @@ func (qc *QueueConnection) initChannel(conn *amqp.Connection) {
 	qc.queue = &q
 }
 
-func (queueConn *QueueConnection) PublishQueueMessage(message []byte) error {
-	err := queueConn.channel.Publish(
-		"",                   // exchange
-		queueConn.queue.Name, // routing key
-		false,                // mandatory
-		false,                // immediate
+func (qc *QueueConnection) PublishQueueMessage(message []byte) error {
+	qc.mu.RLock()
+	defer qc.mu.RUnlock()
+
+	if qc.channel == nil {
+		err := fmt.Errorf("queue %s not ready: channel is nil", qc.name)
+		slog.Error("Publish queue message error", slog.Any("err", err))
+
+		return err
+	}
+
+	err := qc.channel.Publish(
+		"",            // exchange
+		qc.queue.Name, // routing key
+		false,         // mandatory
+		false,         // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        message,
