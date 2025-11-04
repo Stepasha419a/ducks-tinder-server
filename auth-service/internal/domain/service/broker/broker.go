@@ -99,24 +99,35 @@ func (b *BrokerService) InitQueue(queueName string) *QueueConnection {
 
 	return qc
 }
+
+func (qc *QueueConnection) initChannel(conn *amqp.Connection) {
+	qc.mu.Lock()
+	defer qc.mu.Unlock()
+
 	ch, err := conn.Channel()
 	if err != nil {
-		panic(err)
+		slog.Error("Failed to create channel", slog.String("queue", qc.name), slog.Any("err", err))
+		return
 	}
 
 	q, err := ch.QueueDeclare(
-		queueName,
-		true,  // durable
-		false, // delete when unused
-		false, // exclusive
-		false, // no-wait
+		qc.name,
+		true,
+		false,
+		false,
+		false,
 		nil,
 	)
 	if err != nil {
-		panic(err)
+		slog.Error("Failed to declare queue", slog.String("queue", qc.name), slog.Any("err", err))
+
+		ch.Close()
+		return
 	}
 
-	return &QueueConnection{ch, &q}
+	slog.Info("Queue connected successfully", slog.String("queue", qc.name))
+	qc.channel = ch
+	qc.queue = &q
 }
 
 func (queueConn *QueueConnection) PublishQueueMessage(message []byte) error {
