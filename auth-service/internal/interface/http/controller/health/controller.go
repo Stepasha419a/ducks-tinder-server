@@ -7,11 +7,15 @@ import (
 )
 
 type (
-	HealthController struct{}
+	HealthController struct {
+		ConnectionService *connection_service.ConnectionService
+	}
 )
 
-func NewHealthController(e *gin.Engine) *HealthController {
-	controller := &HealthController{}
+func NewHealthController(e *gin.Engine, connectionService *connection_service.ConnectionService) *HealthController {
+	controller := &HealthController{
+		ConnectionService: connectionService,
+	}
 
 	e.GET("/livez", controller.SuccessHealth)
 	e.GET("/readyz", controller.SuccessHealth)
