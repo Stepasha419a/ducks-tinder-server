@@ -34,6 +34,7 @@ func main() {
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
+func initHttpListener(authFacade service.AuthService, connectionService *connection_service.ConnectionService) error {
 	e := gin.Default()
 
 	e.Use(middleware.Cors)
@@ -52,6 +53,9 @@ func main() {
 
 	err := server.ListenAndServeTLS("", "")
 	if err != nil {
-		log.Error("server failed to start", log.Any("error", err))
+		return err
 	}
+
+	return nil
+}
 }
