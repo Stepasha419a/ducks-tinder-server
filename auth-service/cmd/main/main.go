@@ -40,7 +40,7 @@ func main() {
 
 	auth_controller.NewAuthController(e, authFacade)
 	metrics_controller.NewMetricsController(e)
-	health_controller.NewHealthController(e)
+	health_controller.NewHealthController(e, connectionService)
 
 	tlsConfig := tls_service.GetConfig()
 
