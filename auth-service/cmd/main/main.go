@@ -34,6 +34,12 @@ func main() {
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
+func initListeners(g *errgroup.Group, authFacade service.AuthService, connectionService *connection_service.ConnectionService) {
+	g.Go(func() error {
+		return initHttpListener(authFacade, connectionService)
+	})
+}
+
 func initHttpListener(authFacade service.AuthService, connectionService *connection_service.ConnectionService) error {
 	e := gin.Default()
 
