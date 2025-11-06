@@ -25,8 +25,9 @@ func main() {
 
 	config_service.RequireConfig()
 
-	db := database.NewPostgresInstance()
-	transactionService := database.NewTransactionService(db.Pool)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	defer cancel()
 
 	brokerConn := broker_service.InitBroker(tls_service.GetConfig())
 
