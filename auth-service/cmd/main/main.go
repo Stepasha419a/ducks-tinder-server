@@ -64,4 +64,15 @@ func initHttpListener(authFacade service.AuthService, connectionService *connect
 
 	return nil
 }
+
+func gracefulShutdown(gCtx context.Context, g *errgroup.Group, cleaner func()) {
+	g.Go(func() error {
+		<-gCtx.Done()
+
+		slog.Info("Start graceful shutdown")
+		cleaner()
+		slog.Info("Finish graceful shutdown")
+
+		return nil
+	})
 }
