@@ -34,6 +34,21 @@ func main() {
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
+func setUpWithGracefulShutdown(authFacade service.AuthService, connectionService *connection_service.ConnectionService, cleaner func()) {
+	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	g, gCtx := errgroup.WithContext(mainCtx)
+
+	initListeners(g, authFacade, connectionService)
+	gracefulShutdown(gCtx, g, cleaner)
+
+	err := g.Wait()
+	if err != nil {
+		slog.Error("Starting error:", slog.Any("err", err))
+	}
+}
+
 func initListeners(g *errgroup.Group, authFacade service.AuthService, connectionService *connection_service.ConnectionService) {
 	g.Go(func() error {
 		return initHttpListener(authFacade, connectionService)
