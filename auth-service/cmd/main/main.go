@@ -21,6 +21,8 @@ import (
 )
 
 func main() {
+	connectionService := connection_service.NewConnectionService()
+
 	config_service.RequireConfig()
 
 	db := database.NewPostgresInstance()
