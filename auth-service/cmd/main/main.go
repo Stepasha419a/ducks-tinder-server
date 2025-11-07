@@ -84,7 +84,7 @@ func initHttpListener(authFacade service.AuthService, connectionService *connect
 	metrics_controller.NewMetricsController(e)
 	health_controller.NewHealthController(e, connectionService)
 
-	tlsConfig := tls_service.GetConfig()
+	tlsConfig := tls_service.GetConfig(&config_service.GetConfig().TlsServerName)
 
 	server := &http.Server{
 		Addr:      "0.0.0.0:" + strconv.Itoa(int(config_service.GetConfig().Port)),
