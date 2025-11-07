@@ -29,7 +29,8 @@ func main() {
 
 	defer cancel()
 
-	brokerConn := broker_service.InitBroker(tls_service.GetConfig())
+	db, cleanup := database.NewPostgresInstance(ctx, connectionService)
+	transactionService := database.NewTransactionService(db)
 
 	userService := adapter.NewUserService(brokerConn)
 
