@@ -2,7 +2,9 @@ package main
 
 import (
 	"auth-service/internal/application/facade"
+	"auth-service/internal/application/service"
 	broker_service "auth-service/internal/domain/service/broker"
+	connection_service "auth-service/internal/domain/service/connection"
 	"auth-service/internal/infrastructure/adapter"
 	"auth-service/internal/infrastructure/database"
 	repository_impl "auth-service/internal/infrastructure/repository"
@@ -12,12 +14,17 @@ import (
 	health_controller "auth-service/internal/interface/http/controller/health"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
 	"auth-service/internal/interface/http/middleware"
+	"context"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 
-	log "log/slog"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
@@ -39,6 +46,13 @@ func main() {
 	authUserRepository := repository_impl.NewAuthUserRepository(db)
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
+
+	cleaner := func() {
+		cleanup()
+	}
+
+	setUpWithGracefulShutdown(authFacade, connectionService, cleaner)
+}
 
 func setUpWithGracefulShutdown(authFacade service.AuthService, connectionService *connection_service.ConnectionService, cleaner func()) {
 	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
