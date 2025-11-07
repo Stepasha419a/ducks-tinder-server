@@ -32,9 +32,11 @@ func main() {
 	db, cleanup := database.NewPostgresInstance(ctx, connectionService)
 	transactionService := database.NewTransactionService(db)
 
-	userService := adapter.NewUserService(brokerConn)
+	brokerService := broker_service.NewBrokerService(tls_service.GetConfig(&config_service.GetConfig().RabbitmqTlsServerName), connectionService)
 
-	authUserRepository := repository_impl.NewAuthUserRepository(db.Pool)
+	userService := adapter.NewUserService(brokerService)
+
+	authUserRepository := repository_impl.NewAuthUserRepository(db)
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
