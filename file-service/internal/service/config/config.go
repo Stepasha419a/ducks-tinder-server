@@ -1,6 +1,7 @@
 package config_service
 
 import (
+	"log"
 	"os"
 	"path"
 	"slices"
@@ -24,15 +25,17 @@ var (
 )
 
 func RequireConfig() *Config {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		panic("Error loading .env file")
+	if err := godotenv.Load(".env"); err != nil {
+		log.Println("warning: no .env file found, using environment variables")
 	}
 
 	mode := os.Getenv("MODE")
+	if mode == "" {
+		panic("MODE environment variable not set")
+	}
+
 	if !slices.Contains(mods, mode) {
-		panic("Error unknown config mode")
+		panic("Unknown config mode: " + mode)
 	}
 
 	filename := mode + ".yaml"
