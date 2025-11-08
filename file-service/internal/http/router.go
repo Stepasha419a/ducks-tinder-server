@@ -1,6 +1,7 @@
 package http_service
 
 import (
+	"go-file-server/internal/handler"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,6 +14,10 @@ func InitRouter() *mux.Router {
 	metricsHandler := promhttp.Handler()
 
 	router.Path("/metrics").Handler(metricsHandler)
+
+	router.Path("/livez").HandlerFunc(handler.SuccessHealth)
+	router.Path("/readyz").HandlerFunc(handler.SuccessHealth)
+	router.Path("/startupz").HandlerFunc(handler.SuccessHealth)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("../static"))).Methods("GET")
 
