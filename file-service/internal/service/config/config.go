@@ -16,6 +16,8 @@ type (
 		Port uint16 `yaml:"port"`
 
 		GrpcPort uint16 `yaml:"grpc_port"`
+
+		StaticDirPath string `yaml:"static_dir_path"`
 	}
 )
 
