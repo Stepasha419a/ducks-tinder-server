@@ -12,6 +12,8 @@ RUN go build -o app ./cmd
 
 FROM alpine:3.22.1
 
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 COPY --from=build /usr/src/app/app .
