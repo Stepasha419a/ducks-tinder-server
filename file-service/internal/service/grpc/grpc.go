@@ -57,10 +57,11 @@ func NewGrpcService() *GrpcService {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	defer func() {
-		server.Stop()
-		con.Close()
-	}()
+	return &GrpcService{
+		server,
+		con,
+	}
+}
 
 	log.Printf("gRPC server listening on port %d", PORT)
 	if err := server.Serve(con); err != nil {
