@@ -27,7 +27,12 @@ var kasp = keepalive.ServerParameters{
 	Timeout:               1 * time.Second,
 }
 
-func Init() {
+type GrpcService struct {
+	server *grpc.Server
+	con    net.Listener
+}
+
+func NewGrpcService() *GrpcService {
 	tlsConfig := tls_service.GetConfig()
 	creds := credentials.NewTLS(tlsConfig)
 
