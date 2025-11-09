@@ -63,8 +63,16 @@ func NewGrpcService() *GrpcService {
 	}
 }
 
+func (gs *GrpcService) Serve() error {
+	PORT := config_service.GetConfig().GrpcPort
+
 	log.Printf("gRPC server listening on port %d", PORT)
-	if err := server.Serve(con); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	if err := gs.server.Serve(gs.con); err != nil {
+		log.Printf("failed to serve: %v", err)
+
+		return err
 	}
+
+	return nil
+}
 }
