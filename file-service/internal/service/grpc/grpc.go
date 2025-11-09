@@ -75,4 +75,8 @@ func (gs *GrpcService) Serve() error {
 
 	return nil
 }
+
+func (gs *GrpcService) GracefulStop() {
+	gs.server.GracefulStop()
+	log.Print("gRPC server stopped gracefully")
 }
