@@ -22,3 +22,14 @@ func NewHttpService() *HttpService {
 
 	return &HttpService{server}
 }
+
+func (hs *HttpService) ListenAndServeTLS() error {
+	log.Printf("serving on HTTPS port: %v\n", config_service.GetConfig().Port)
+
+	err := hs.server.ListenAndServeTLS("", "")
+	if err != nil && err != http.ErrServerClosed {
+		return fmt.Errorf("http server error: %w", err)
+	}
+
+	return nil
+}
