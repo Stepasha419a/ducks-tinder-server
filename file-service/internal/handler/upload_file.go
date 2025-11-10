@@ -2,9 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"path"
-
-	"os"
+	file_service "go-file-server/internal/service/file"
 
 	"github.com/google/uuid"
 )
@@ -27,13 +25,16 @@ type (
 func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
 	fileExtension, err := getFileExtension(req.Type)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to upload file, %w", err)
 	}
 
 	filename := uuid.New()
 	fullFilename := filename.String() + "." + fileExtension
 
-	writeFile(req.Data, fullFilename)
+	err = file_service.WriteFile(req.Data, fullFilename)
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload file, %w", err)
+	}
 
 	return &UploadFileResponse{Filename: fullFilename}, nil
 }
@@ -44,22 +45,4 @@ func getFileExtension(dataType string) (string, error) {
 	}
 
 	return "", fmt.Errorf("invalid data type")
-}
-
-func writeFile(data []byte, filename string) {
-	writeDir()
-
-	err := os.WriteFile(path.Join("../static", filename), data, 0644)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func writeDir() {
-	_, err := os.Stat("../static")
-	if err != nil {
-		if err := os.Mkdir("../static", 0770); err != nil {
-			panic(err)
-		}
-	}
 }
