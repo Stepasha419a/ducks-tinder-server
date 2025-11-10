@@ -1,10 +1,9 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
+	file_service "go-file-server/internal/service/file"
 	"os"
-	"path"
 )
 
 type (
@@ -18,13 +17,12 @@ type (
 )
 
 func DeleteFile(req *DeleteFileRequest) (*DeleteFileResponse, error) {
-	if _, err := os.Stat(path.Join("../static", req.Filename)); errors.Is(err, os.ErrNotExist) {
-		return nil, fmt.Errorf("not found")
+	err := file_service.DeleteFile(req.Filename)
+	if os.IsNotExist(err) {
+		return nil, fmt.Errorf("not found, %w", err)
 	}
-
-	e := os.Remove(path.Join("../static", req.Filename))
-	if e != nil {
-		panic(e)
+	if err != nil {
+		return nil, fmt.Errorf("failed to delete file, %w", err)
 	}
 
 	return &DeleteFileResponse{Filename: req.Filename}, nil
