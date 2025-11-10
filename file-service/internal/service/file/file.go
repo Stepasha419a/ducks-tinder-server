@@ -30,3 +30,19 @@ func ensureDir(path string) error {
 
 	return nil
 }
+
+func DeleteFile(filename string) error {
+	staticDirPath := config_service.GetConfig().StaticDirPath
+
+	_, err := os.Stat(path.Join(staticDirPath, filename))
+	if err != nil {
+		return err
+	}
+
+	err = os.Remove(path.Join(staticDirPath, filename))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
