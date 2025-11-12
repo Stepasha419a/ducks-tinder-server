@@ -20,5 +20,9 @@ func ConvertToWebP(input []byte) ([]byte, error) {
 		return nil, fmt.Errorf("failed to process image: %w", err)
 	}
 
+	if len(converted) == 0 {
+		return nil, fmt.Errorf("empty result after conversion")
+	}
+
 	return converted, nil
 }
