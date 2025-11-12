@@ -23,9 +23,13 @@ type (
 )
 
 func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
-	fileExtension, err := getFileExtension(req.Type)
+	if !isValidFileType(req.Type) {
+		return nil, fmt.Errorf("failed to upload file: wrong file type")
+	}
+
+	webpData, err := image_service.ConvertToWebP(req.Data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to upload file, %w", err)
+		return nil, fmt.Errorf("failed to upload file: failed to convert to webp, %w", err)
 	}
 
 	filename := uuid.New()
