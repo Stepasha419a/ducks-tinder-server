@@ -1,6 +1,6 @@
 module go-file-server
 
-go 1.21.5
+go 1.24.0
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -23,9 +23,12 @@ require (
 )
 
 require (
+	github.com/chai2010/webp v1.4.0
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/h2non/bimg v1.1.9
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
+	golang.org/x/sync v0.17.0
 	google.golang.org/grpc v1.64.0
 	gopkg.in/yaml.v3 v3.0.1
 )
