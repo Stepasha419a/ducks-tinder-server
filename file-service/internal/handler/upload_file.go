@@ -39,10 +39,10 @@ func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
 	return &UploadFileResponse{Filename: fullFilename}, nil
 }
 
-func getFileExtension(dataType string) (string, error) {
+func isValidFileType(dataType string) bool {
 	if dataType == Image {
-		return "jpg", nil
+		return true
 	}
 
-	return "", fmt.Errorf("invalid data type")
+	return false
 }
