@@ -19,33 +19,12 @@ func main() {
 	setUpListeners()
 }
 
-func setUpListeners() {
-	wg := sync.WaitGroup{}
-	wg.Add(2)
-
-	go grpc_service.Init()
-	go setUpHttp()
-
-	wg.Wait()
+func initListeners(g *errgroup.Group, httpService *http_service.HttpService, grpcService *grpc_service.GrpcService) {
+	g.Go(func() error {
+		return httpService.ListenAndServeTLS()
+	})
+	g.Go(func() error {
+		return grpcService.Serve()
+	})
 }
-
-func setUpHttp() {
-	PORT := config_service.GetConfig().Port
-
-	r := router.InitRouter()
-
-	log.Printf("serving on HTTPS port: %v\n", PORT)
-
-	tlsConfig := tls_service.GetConfig()
-
-	server := &http.Server{
-		Addr:      "0.0.0.0:" + fmt.Sprintf("%d", PORT),
-		Handler:   r,
-		TLSConfig: tlsConfig,
-	}
-
-	err := server.ListenAndServeTLS("", "")
-	if err != nil {
-		log.Fatalf("server failed to start: %v", err)
-	}
 }
