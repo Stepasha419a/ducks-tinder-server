@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	file_service "go-file-server/internal/service/file"
+	image_service "go-file-server/internal/service/image"
 
 	"github.com/google/uuid"
 )
@@ -32,15 +33,13 @@ func UploadFile(req *UploadFileRequest) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("failed to upload file: failed to convert to webp, %w", err)
 	}
 
-	filename := uuid.New()
-	fullFilename := filename.String() + "." + fileExtension
+	filename := uuid.New().String() + ".webp"
 
-	err = file_service.WriteFile(req.Data, fullFilename)
-	if err != nil {
-		return nil, fmt.Errorf("failed to upload file, %w", err)
+	if err := file_service.WriteFile(webpData, filename); err != nil {
+		return nil, fmt.Errorf("failed to upload file: %w", err)
 	}
 
-	return &UploadFileResponse{Filename: fullFilename}, nil
+	return &UploadFileResponse{Filename: filename}, nil
 }
 
 func isValidFileType(dataType string) bool {
