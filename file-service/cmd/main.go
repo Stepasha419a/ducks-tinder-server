@@ -21,6 +21,18 @@ func setUpWithGracefulShutdown() {
 	defer stop()
 
 	g, gCtx := errgroup.WithContext(mainCtx)
+
+	httpService := http_service.NewHttpService()
+	grpcService := grpc_service.NewGrpcService()
+
+	cleaner := func(ctx context.Context) {
+		err := httpService.Shutdown(ctx)
+		if err != nil {
+			log.Printf("HTTPS shutdown error: %v", err)
+		}
+
+		grpcService.GracefulStop()
+	}
 }
 
 func initListeners(g *errgroup.Group, httpService *http_service.HttpService, grpcService *grpc_service.GrpcService) {
