@@ -1,20 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
-	"net/http"
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
 
 	grpc_service "go-file-server/internal/interface/grpc"
 	http_service "go-file-server/internal/interface/http"
 	config_service "go-file-server/internal/service/config"
-	grpc_service "go-file-server/internal/service/grpc"
-	tls_service "go-file-server/internal/service/tls"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
 	config_service.RequireConfig()
+
+	setUpWithGracefulShutdown()
+}
 
 func setUpWithGracefulShutdown() {
 	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -32,6 +36,13 @@ func setUpWithGracefulShutdown() {
 		}
 
 		grpcService.GracefulStop()
+	}
+
+	initListeners(g, httpService, grpcService)
+	gracefulShutdown(gCtx, g, cleaner)
+
+	if err := g.Wait(); err != nil {
+		log.Printf("exit reason: %v", err)
 	}
 }
 
