@@ -16,7 +16,11 @@ import (
 func main() {
 	config_service.RequireConfig()
 
-	setUpListeners()
+func setUpWithGracefulShutdown() {
+	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	g, gCtx := errgroup.WithContext(mainCtx)
 }
 
 func initListeners(g *errgroup.Group, httpService *http_service.HttpService, grpcService *grpc_service.GrpcService) {
