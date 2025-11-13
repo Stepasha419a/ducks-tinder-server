@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"sync"
 
-	router "go-file-server/internal/router"
+	grpc_service "go-file-server/internal/interface/grpc"
+	http_service "go-file-server/internal/interface/http"
 	config_service "go-file-server/internal/service/config"
 	grpc_service "go-file-server/internal/service/grpc"
 	tls_service "go-file-server/internal/service/tls"
