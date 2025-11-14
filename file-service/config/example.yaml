@@ -2,5 +2,7 @@ mode: dev-docker
 port: 5002
 grpc_port: 6000
 
+static_dir_path: ../static
+
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 jwt_file_service_secret: dfgh567sdfgdfg456sdfgdfg
