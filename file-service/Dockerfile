@@ -16,7 +16,9 @@ RUN go build -o app ./cmd
 
 FROM alpine:3.22.1
 
-RUN apk add --no-cache curl
+RUN apk add --no-cache \
+    vips \
+    curl
 
 WORKDIR /app
 
