@@ -1,5 +1,9 @@
 FROM golang:1.25.3-alpine AS build
 
+RUN apk add --no-cache \
+    build-base \
+    vips-dev
+
 WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
