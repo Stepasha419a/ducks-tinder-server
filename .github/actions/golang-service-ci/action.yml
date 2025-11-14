@@ -26,6 +26,11 @@ runs:
       run: go mod download
       shell: bash
       working-directory: ${{ inputs.service-path }}
+    - name: Build docker
+      if: ${{ inputs.docker-build == 'true' }}
+      run: docker build .
+      shell: bash
+      working-directory: ${{ inputs.service-path }}
     - name: Build
       run: go build -o app ${{ inputs.main-file-root-path }}
       shell: bash
