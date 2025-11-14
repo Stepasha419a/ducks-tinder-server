@@ -11,6 +11,9 @@ inputs:
   with-migration:
     description: 'Run steps for migration'
     default: 'false'
+  docker-build:
+    description: 'Run build steps via docker build'
+    default: 'false'
 
 runs:
   using: 'composite'
