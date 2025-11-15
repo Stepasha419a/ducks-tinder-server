@@ -13,3 +13,5 @@ pacman -S mingw-w64-x86_64-libvips
 ```
 
 3. Add path for windows `C:\msys64\mingw64\bin`
+
+Use the following [issue](https://github.com/h2non/bimg/issues/435) for troubleshooting
