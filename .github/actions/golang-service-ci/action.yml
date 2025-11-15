@@ -11,9 +11,6 @@ inputs:
   with-migration:
     description: 'Run steps for migration'
     default: 'false'
-  docker-build:
-    description: 'Run build steps via docker build'
-    default: 'false'
 
 runs:
   using: 'composite'
@@ -26,18 +23,12 @@ runs:
       run: go mod download
       shell: bash
       working-directory: ${{ inputs.service-path }}
-    - name: Build docker
-      if: ${{ inputs.docker-build == 'true' }}
-      run: docker build .
-      shell: bash
-      working-directory: ${{ inputs.service-path }}
     - name: Build
-      if: ${{ inputs.docker-build == 'false' }}
       run: go build -o app ${{ inputs.main-file-root-path }}
       shell: bash
       working-directory: ${{ inputs.service-path }}
     - name: Build migration
-      if: ${{ inputs.docker-build == 'false' && inputs.with-migration == 'true' }}
+      if: ${{ inputs.with-migration == 'true' }}
       run: go build -o migration ./cmd/migration
       shell: bash
       working-directory: ${{ inputs.service-path }}
