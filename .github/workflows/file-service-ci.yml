@@ -17,4 +17,3 @@ jobs:
       - uses: ./.github/actions/golang-service-ci
         with:
           service-path: ./file-service
-          docker-build: 'true'
