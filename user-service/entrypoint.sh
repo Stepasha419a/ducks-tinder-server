@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export PRISMA_QUERY_ENGINE_LIBRARY="/app/dist/client/libquery_engine-linux-musl-openssl-3.0.x.so.node"
+
 NODE_ENV="${NODE_ENV:-dev-docker}"
 IS_MIGRATION="${IS_MIGRATION:-false}"
 MIGRATION_DB_NAME="${MIGRATION_DB_NAME}"
