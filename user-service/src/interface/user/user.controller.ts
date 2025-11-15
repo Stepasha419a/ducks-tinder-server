@@ -112,7 +112,7 @@ export class UserController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: CONSTANT.ONE_MB_SIZE }),
-          new FileTypeValidator({ fileType: 'image/*' }),
+          new FileTypeValidator({ fileType: /^image\/png|image\/jpeg$/ }),
         ],
       }),
     )
