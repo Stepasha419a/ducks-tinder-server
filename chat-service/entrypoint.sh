@@ -9,10 +9,12 @@ CLIENT_IDENTITY_PASSWORD="${CLIENT_IDENTITY_PASSWORD:-password}"
 
 CLIENT_IDENTITY_PATH="/tmp/client-identity.p12"
 
-CERT_PATH="/usr/src/app/cert/$NODE_ENV/ca.crt"
-TLS_CERT_PATH="/usr/src/app/cert/$NODE_ENV/tls.crt"
-TLS_KEY_PATH="/usr/src/app/cert/$NODE_ENV/tls.key"
+CERT_PATH="/app/cert/$NODE_ENV/ca.crt"
+TLS_CERT_PATH="/app/cert/$NODE_ENV/tls.crt"
+TLS_KEY_PATH="/app/cert/$NODE_ENV/tls.key"
 
+# TODO: service should not create certificates, app has to provide them 
+# TODO: check k8s certificate can generate identities and keystore (for java service)
 if [ -f "$CLIENT_IDENTITY_PATH" ]; then
     echo "Removing existing client-identity..."
     rm "$CLIENT_IDENTITY_PATH"
