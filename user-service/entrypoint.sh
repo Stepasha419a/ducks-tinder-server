@@ -13,6 +13,8 @@ CERT_PATH="/app/cert/$NODE_ENV/ca.crt"
 TLS_CERT_PATH="/app/cert/$NODE_ENV/tls.crt"
 TLS_KEY_PATH="/app/cert/$NODE_ENV/tls.key"
 
+# TODO: service should not create certificates, app has to provide them 
+# TODO: check k8s certificate can generate identities and keystore (for java service)
 if [ -f "$CLIENT_IDENTITY_PATH" ]; then
     echo "Removing existing client-identity..."
     rm "$CLIENT_IDENTITY_PATH"
@@ -26,5 +28,5 @@ if [[ "$IS_MIGRATION" == "true" ]]; then
     npx prisma migrate deploy
 else
     echo "Starting application..."
-    npm run start:prod
+    node dist/index.js
 fi
