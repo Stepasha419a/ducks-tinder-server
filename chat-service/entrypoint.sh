@@ -28,5 +28,5 @@ if [[ "$IS_MIGRATION" == "true" ]]; then
     npx prisma migrate deploy
 else
     echo "Starting application..."
-    npm run start:prod
+    node dist/index.js
 fi
