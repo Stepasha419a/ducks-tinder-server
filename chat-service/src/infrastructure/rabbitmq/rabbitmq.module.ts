@@ -1,48 +1,22 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { RabbitMQService } from './rabbitmq.service';
-import { ClientsModule, RmqOptions, Transport } from '@nestjs/microservices';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
-import * as path from 'path';
+import { RabbitMQModule as RMQ } from '@golevelup/nestjs-rabbitmq';
 
 @Module({
-  providers: [RabbitMQService],
-  exports: [RabbitMQService],
-})
-export class RabbitMQModule {
-  static register(name: string): DynamicModule {
-    return {
-      module: RabbitMQModule,
-      imports: [
-        ClientsModule.registerAsync([
-          {
-            name,
-            useFactory: (configService: ConfigService): RmqOptions => {
-              const mode = configService.get<string>('NODE_ENV');
-              const certPath = path.join('cert', mode, 'tls.crt');
-              const rootCertPath = path.join('cert', mode, 'ca.crt');
-              const keyPath = path.join('cert', mode, 'tls.key');
-
-              return {
-                transport: Transport.RMQ,
-                options: {
-                  urls: [configService.get<string>('RABBIT_MQ_URI')],
-                  queue: configService.get<string>(`RABBIT_MQ_${name}_QUEUE`),
-                  socketOptions: {
-                    connectionOptions: {
-                      cert: fs.readFileSync(certPath),
-                      key: fs.readFileSync(keyPath),
-                      ca: [fs.readFileSync(rootCertPath)],
-                    },
-                  },
-                },
-              };
-            },
-            inject: [ConfigService],
+  imports: [
+    RMQ.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          uri: config.get('RABBIT_MQ_URI'),
+          connectionInitOptions: {
+            wait: true,
+            timeout: 1000,
           },
-        ]),
-      ],
-      exports: [ClientsModule],
-    };
-  }
-}
+        };
+      },
+    }),
+  ],
+  exports: [RMQ],
+})
+export class RabbitMQModule {}
