@@ -41,6 +41,15 @@ import { RABBITMQ } from './constants';
               type: 'topic',
             },
           ],
+          channels: {
+            consumer: {
+              prefetchCount: 10,
+              default: true,
+            },
+            producer: {
+              prefetchCount: 1,
+            },
+          },
         };
       },
     }),
