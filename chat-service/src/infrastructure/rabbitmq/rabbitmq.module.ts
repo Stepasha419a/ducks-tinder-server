@@ -31,6 +31,16 @@ import { RABBITMQ } from './constants';
               rejectUnauthorized: true,
             },
           },
+          exchanges: [
+            {
+              name: RABBITMQ.CHAT.QUEUE,
+              type: 'topic',
+            },
+            {
+              name: RABBITMQ.USER.QUEUE,
+              type: 'topic',
+            },
+          ],
         };
       },
     }),
