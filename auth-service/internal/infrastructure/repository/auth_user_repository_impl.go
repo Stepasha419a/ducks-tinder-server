@@ -20,12 +20,12 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 	}
 
 	if storedAuthUser != nil {
-		_, err := r.db.Exec(tx)(ctx, "UPDATE auth_users SET email=@email, password=@password, refreshToken=@refreshToken, updatedAt=@updatedAt WHERE id=@id", &pgx.NamedArgs{
-			"email":        authUser.Email,
-			"password":     authUser.Password,
-			"refreshToken": authUser.RefreshToken,
-			"id":           authUser.Id,
-			"updatedAt":    authUser.UpdatedAt,
+		_, err := r.db.Exec(tx)(ctx, "UPDATE auth_users SET email=@email, password=@password, refresh_token=@refresh_token, updated_at=@updated_at WHERE id=@id", &pgx.NamedArgs{
+			"email":         authUser.Email,
+			"password":      authUser.Password,
+			"refresh_token": authUser.RefreshToken,
+			"id":            authUser.Id,
+			"updated_at":    authUser.UpdatedAt,
 		})
 		if err != nil {
 			return nil, err
@@ -33,13 +33,13 @@ func (r *authUserRepository) Save(ctx context.Context, authUser *entity.AuthUser
 		return authUser, nil
 	}
 
-	_, err = r.db.Exec(tx)(ctx, "INSERT INTO auth_users(id, email, password, refreshToken, updatedAt, createdAt) VALUES (@id, @email, @password, @refreshToken, @updatedAt, @createdAt)", &pgx.NamedArgs{
-		"id":           authUser.Id,
-		"email":        authUser.Email,
-		"password":     authUser.Password,
-		"refreshToken": authUser.RefreshToken,
-		"updatedAt":    authUser.UpdatedAt,
-		"createdAt":    authUser.CreatedAt,
+	_, err = r.db.Exec(tx)(ctx, "INSERT INTO auth_users(id, email, password, refresh_token, updated_at, created_at) VALUES (@id, @email, @password, @refresh_token, @updated_at, @created_at)", &pgx.NamedArgs{
+		"id":            authUser.Id,
+		"email":         authUser.Email,
+		"password":      authUser.Password,
+		"refresh_token": authUser.RefreshToken,
+		"updated_at":    authUser.UpdatedAt,
+		"created_at":    authUser.CreatedAt,
 	})
 	if err != nil {
 		return nil, err
