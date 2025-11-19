@@ -1,2 +1,3 @@
 -- atlas:txmode none
+
 CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refresh_token);
