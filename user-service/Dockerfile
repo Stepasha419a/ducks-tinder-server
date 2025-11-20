@@ -22,6 +22,7 @@ WORKDIR /app
 
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/proto ./proto
+COPY --from=build /usr/src/app/prisma/migrations ./prisma/migrations
 
 COPY --from=build /usr/src/app/entrypoint.sh ./entrypoint.sh
 
