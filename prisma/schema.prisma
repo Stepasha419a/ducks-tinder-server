@@ -12,8 +12,10 @@ generator userService {
 }
 
 generator dockerDefault {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["linux-musl-openssl-3.0.x"]
+  engineType    = "binary"
 }
 
 datasource db {
