@@ -3,4 +3,8 @@ import { HealthCheck } from '@nestjs/terminus';
 import { Public } from '../common';
 
 @Controller('health')
-export class HealthController {}
+  @Get('livez')
+  @HealthCheck()
+  checkLive() {
+    return { status: 'ok' };
+}
