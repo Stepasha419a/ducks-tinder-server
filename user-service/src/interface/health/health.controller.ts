@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { HealthCheck } from '@nestjs/terminus';
 import { Public } from '../common';
 
+@Public()
 @Controller('health')
 export class HealthController {
   @Get('livez')
