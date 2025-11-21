@@ -9,6 +9,7 @@ import { MetricsModule } from './metrics';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
+  controllers: [HealthController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -31,6 +32,7 @@ import { MetricsModule } from './metrics';
     UserModule,
     DomainModule,
     MetricsModule,
+    TerminusModule,
   ],
 })
 export class AppModule {}
