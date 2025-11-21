@@ -7,4 +7,11 @@ import { Public } from '../common';
   @HealthCheck()
   checkLive() {
     return { status: 'ok' };
+  }
+
+  @Get('readyz')
+  @HealthCheck()
+  checkReady() {
+    return { status: 'ok' };
+  }
 }
