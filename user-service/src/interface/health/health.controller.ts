@@ -3,6 +3,7 @@ import { HealthCheck } from '@nestjs/terminus';
 import { Public } from '../common';
 
 @Controller('health')
+export class HealthController {
   @Get('livez')
   @HealthCheck()
   checkLive() {
@@ -12,6 +13,12 @@ import { Public } from '../common';
   @Get('readyz')
   @HealthCheck()
   checkReady() {
+    return { status: 'ok' };
+  }
+
+  @Get('startupz')
+  @HealthCheck()
+  checkStartup() {
     return { status: 'ok' };
   }
 }
