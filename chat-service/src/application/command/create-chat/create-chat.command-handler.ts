@@ -13,7 +13,9 @@ export class CreateChatCommandHandler
   constructor(private repository: ChatRepository) {}
 
   async execute(command: CreateChatCommand) {
-    const { memberIds } = command;
+    const {
+      dto: { memberIds },
+    } = command;
 
     const chatCandidate = await this.repository.findOneByUserIds(memberIds);
     if (chatCandidate) {

@@ -3,6 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   BlockChatCommand,
   CreateChatCommand,
+  CreateChatDto,
   DeleteChatCommand,
   EditMessageCommand,
   EditMessageDto,
@@ -28,9 +29,9 @@ import {
   NewMessageView,
   NewMessagesCountView,
 } from './view';
-import { ChatMemberView } from './view/chat-member.view';
 import { ChatPaginationEntity } from '../domain/chat/entity';
 import { PaginationDto } from 'src/domain/chat/repository/dto';
+import { ChatMemberView } from './adapter/user-api/view';
 
 @Injectable()
 export class ChatFacade {
@@ -55,7 +56,7 @@ export class ChatFacade {
       this.unblockChat(userId, chatId),
     saveLastSeen: (userId: string, chatId: string) =>
       this.saveLastSeen(userId, chatId),
-    createChat: (memberIds: string[]) => this.createChat(memberIds),
+    createChat: (dto: CreateChatDto) => this.createChat(dto),
     deleteChat: (userId: string, chatId: string) =>
       this.deleteChat(userId, chatId),
   };
@@ -115,9 +116,9 @@ export class ChatFacade {
     );
   }
 
-  private createChat(memberIds: string[]) {
+  private createChat(dto: CreateChatDto) {
     return this.commandBus.execute<CreateChatCommand>(
-      new CreateChatCommand(memberIds),
+      new CreateChatCommand(dto),
     );
   }
 
