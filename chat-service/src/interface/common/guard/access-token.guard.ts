@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { IS_PUBLIC_KEY } from '../constant';
 import { JwtService } from 'src/domain/service/jwt';
+import { RABBIT_CONTEXT_TYPE_KEY } from '@golevelup/nestjs-rabbitmq';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -16,6 +17,14 @@ export class AccessTokenGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
+    const contextType = context.getType<
+      'http' | typeof RABBIT_CONTEXT_TYPE_KEY
+    >();
+
+    if (contextType === RABBIT_CONTEXT_TYPE_KEY) {
+      return true;
+    }
+
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
