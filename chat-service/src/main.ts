@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ChatModule } from './infrastructure/chat.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RabbitMQService } from './infrastructure/rabbitmq';
 import * as path from 'path';
 import * as fs from 'fs';
 import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
@@ -32,11 +31,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  const rabbitMQService = app.get(RabbitMQService);
-
   await app.init();
-
-  app.connectMicroservice(rabbitMQService.getOptions('CHAT'));
 
   await app.startAllMicroservices();
 
