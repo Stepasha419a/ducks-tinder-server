@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   Logger,
   Param,
   ParseUUIDPipe,
@@ -13,10 +12,8 @@ import {
 } from '@nestjs/common';
 import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
-import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { ChatControllerEvent } from './chat.controller-event';
 import { PaginationDto } from 'src/domain/chat/repository/dto';
-import { User, Util } from './common';
+import { User } from './common';
 
 @Controller('chat')
 export class ChatController {
@@ -148,21 +145,5 @@ export class ChatController {
     const chat = await this.facade.commands.deleteChat(userId, chatId);
 
     return { chat, userIds };
-  }
-
-  @EventPattern(ChatControllerEvent.CreateChat)
-  createChat(@Payload() memberIds: string[], @Ctx() context: RmqContext) {
-    this.facade.commands
-      .createChat(memberIds)
-      .then(() => {
-        Util.ackMessage(context);
-      })
-      .catch((err: HttpException) => {
-        this.logger.error(err, err.stack);
-
-        if (err.message === 'Chat already exists') {
-          Util.ackMessage(context);
-        }
-      });
   }
 }
