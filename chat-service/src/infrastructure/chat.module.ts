@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ChatController, ChatGateway } from '../interface';
+import { ChatConsumer, ChatController, ChatGateway } from '../interface';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatRepository } from 'src/domain/chat/repository';
 import { ChatAdapter } from './repository';
@@ -13,17 +13,20 @@ import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule } from './database';
 import { RabbitMQModule } from './rabbitmq';
 import { AccessTokenGuard } from 'src/interface/common/guard';
-import { SERVICE } from './rabbitmq/service/service';
 import { DomainModule } from 'src/domain';
 import { MetricsModule } from './metrics';
+import { UserApi } from 'src/application/adapter';
+import { UserApiImplementation } from './adapter';
 
 @Module({
   controllers: [ChatController],
   providers: [
     ChatGateway,
+    ChatConsumer,
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,
     { provide: ChatRepository, useClass: ChatAdapter },
+    { provide: UserApi, useClass: UserApiImplementation },
     {
       provide: ChatFacade,
 
@@ -53,7 +56,7 @@ import { MetricsModule } from './metrics';
     }),
     DatabaseModule,
     CqrsModule,
-    RabbitMQModule.register(SERVICE.USER),
+    RabbitMQModule,
     DomainModule,
     MetricsModule,
   ],
