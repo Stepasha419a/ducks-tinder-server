@@ -30,6 +30,16 @@ import * as path from 'path';
               rejectUnauthorized: true,
             },
           },
+          exchanges: [
+            {
+              name: 'chat.exchange',
+              type: 'topic',
+            },
+            {
+              name: 'user.exchange',
+              type: 'topic',
+            },
+          ],
         };
       },
     }),
