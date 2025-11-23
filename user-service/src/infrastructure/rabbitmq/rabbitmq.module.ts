@@ -40,6 +40,15 @@ import * as path from 'path';
               type: 'topic',
             },
           ],
+          channels: {
+            consumer: {
+              prefetchCount: 10,
+              default: true,
+            },
+            producer: {
+              prefetchCount: 1,
+            },
+          },
         };
       },
     }),
