@@ -1,11 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetChatMemberQuery } from './get-chat-member.query';
 import { ChatRepository } from 'src/domain/chat/repository';
-import { Inject, NotFoundException } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { ChatMemberView } from '../../view/chat-member.view';
-import { firstValueFrom } from 'rxjs';
-import { SERVICE } from 'src/infrastructure/rabbitmq/service/service';
+import { NotFoundException } from '@nestjs/common';
+import { ChatMemberView } from 'src/application/adapter/user-api/view';
+import { UserApi } from 'src/application/adapter';
 
 @QueryHandler(GetChatMemberQuery)
 export class GetChatMemberQueryHandler
@@ -13,7 +11,7 @@ export class GetChatMemberQueryHandler
 {
   constructor(
     private readonly repository: ChatRepository,
-    @Inject(SERVICE.USER) private readonly userClient: ClientProxy,
+    private readonly userApi: UserApi,
   ) {}
 
   async execute(query: GetChatMemberQuery): Promise<ChatMemberView> {
@@ -24,9 +22,7 @@ export class GetChatMemberQueryHandler
       throw new NotFoundException();
     }
 
-    const member = await firstValueFrom<ChatMemberView>(
-      this.userClient.send('get_short_user', memberId),
-    );
+    const member = await this.userApi.getChatMemberView(memberId);
     if (!member) {
       throw new NotFoundException();
     }
