@@ -6,4 +6,12 @@ export const RABBITMQ = {
       CREATE_CHAT: 'chat.create',
     },
   },
+  USER: {
+    QUEUE: 'user.queue',
+    EXCHANGE: 'user.exchange',
+    EVENTS: {
+      GET_SHORT_USER: 'user.get-short-user',
+      CREATE_USER: 'user.create',
+    },
+  },
 };
