@@ -9,11 +9,26 @@ import * as path from 'path';
     RMQ.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
+        const mode = config.get<string>('NODE_ENV');
+
+        const certPath = path.join('cert', mode, 'tls.crt');
+        const caPath = path.join('cert', mode, 'ca.crt');
+        const keyPath = path.join('cert', mode, 'tls.key');
+
         return {
           uri: config.get('RABBIT_MQ_URI'),
           connectionInitOptions: {
             wait: true,
             timeout: 1000,
+          },
+          connectionManagerOptions: {
+            reconnectTimeInSeconds: 3,
+            connectionOptions: {
+              cert: fs.readFileSync(certPath),
+              key: fs.readFileSync(keyPath),
+              ca: [fs.readFileSync(caPath)],
+              rejectUnauthorized: true,
+            },
           },
         };
       },
