@@ -36,4 +36,23 @@ export class UserConsumer {
       throw error;
     }
   }
+
+  @RabbitSubscribe({
+    exchange: RABBITMQ.USER.EXCHANGE,
+    routingKey: RABBITMQ.USER.EVENTS.CREATE_USER,
+    queue: RABBITMQ.USER.QUEUE,
+  })
+  public async handleCreateUserEvent(dto: CreateUserDto) {
+    this.logger.log('Received message', RABBITMQ.USER.EVENTS.CREATE_USER, dto);
+
+    try {
+      const savedUser = await this.facade.commands.createUser(dto);
+
+      return this.mapper.getShortUser(savedUser);
+    } catch (error) {
+      this.logger.error('Failed to create user', error);
+
+      throw error;
+    }
+  }
 }
