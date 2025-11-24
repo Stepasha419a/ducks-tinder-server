@@ -11,4 +11,29 @@ export class UserConsumer {
     private readonly facade: UserFacade,
     private readonly mapper: UserMapper,
   ) {}
+
+  private readonly logger = new Logger(UserConsumer.name);
+
+  @RabbitRPC({
+    exchange: RABBITMQ.USER.EXCHANGE,
+    routingKey: RABBITMQ.USER.EVENTS.GET_SHORT_USER,
+    queue: RABBITMQ.USER.QUEUE,
+  })
+  public async handleGetShortUserEvent(userId: string) {
+    this.logger.log(
+      'Received message',
+      RABBITMQ.USER.EVENTS.GET_SHORT_USER,
+      userId,
+    );
+
+    try {
+      const user = await this.facade.queries.getUser(userId);
+
+      return this.mapper.getShortUser(user);
+    } catch (error) {
+      this.logger.error('Failed to get short user', error);
+
+      throw error;
+    }
+  }
 }
