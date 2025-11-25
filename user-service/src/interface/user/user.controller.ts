@@ -16,26 +16,16 @@ import {
   ParseUUIDPipe,
   Query,
   Logger,
-  HttpException,
   NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserFacade } from 'src/application/user';
-import {
-  Ctx,
-  EventPattern,
-  MessagePattern,
-  Payload,
-  RmqContext,
-} from '@nestjs/microservices';
-import { UserAggregate } from 'src/domain/user';
 import {
   ShortUser,
   UserMapper,
   WithoutPrivateFields,
 } from 'src/infrastructure/user/mapper';
 import {
-  CreateUserDto,
   MixPicturesDto,
   PatchUserDto,
   PatchUserPlaceDto,
@@ -43,7 +33,7 @@ import {
 import { CONSTANT } from 'src/infrastructure/user/common/constant';
 import { PairsInfoView } from 'src/application/user/view';
 import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
-import { User, Util } from '../common';
+import { User } from '../common';
 import { OptionalValidationPipe } from '../common';
 
 @Controller('user')
@@ -221,55 +211,6 @@ export class UserController {
   ): Promise<ShortUser> {
     const pair = await this.facade.commands.deletePair(userId, pairId);
     return this.mapper.getShortUser(pair);
-  }
-
-  @EventPattern('create_user')
-  async createUser(@Payload() dto: CreateUserDto, @Ctx() context: RmqContext) {
-    const savedUser = await this.facade.commands
-      .createUser(dto)
-      .catch((err: HttpException) => {
-        this.logger.error(err, err.stack);
-      });
-
-    if (savedUser) {
-      Util.ackMessage(context);
-    }
-  }
-
-  @MessagePattern('get_many_users')
-  async getManyUsers(
-    @Payload() ids: string[],
-    @Ctx() context: RmqContext,
-  ): Promise<UserAggregate[]> {
-    const users = await this.facade.queries
-      .getManyUsers(ids)
-      .catch((err: HttpException) => {
-        this.logger.error(err, err.stack);
-      });
-
-    Util.ackMessage(context);
-
-    return users || [];
-  }
-
-  @MessagePattern('get_short_user')
-  async getUser(
-    @Payload() id: string,
-    @Ctx() context: RmqContext,
-  ): Promise<ShortUser> {
-    const user = await this.facade.queries
-      .getUser(id)
-      .catch((err: HttpException) => {
-        this.logger.error(err, err.stack);
-      });
-
-    Util.ackMessage(context);
-
-    if (!user) {
-      return null;
-    }
-
-    return this.mapper.getShortUser(user);
   }
 
   // for dev
