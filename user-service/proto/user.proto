@@ -1,0 +1,16 @@
+syntax="proto3";
+
+package user;
+
+service UserService {
+    rpc GetShortUser (GetShortUserRequest) returns (ShortUser);
+}
+
+message GetShortUserRequest {
+    string id = 1; 
+}
+
+message CreateUserRequest {
+  string id = 1;
+  string name = 2;
+}
