@@ -4,6 +4,7 @@ package user;
 
 service UserService {
     rpc GetShortUser (GetShortUserRequest) returns (ShortUser);
+    rpc CreateUser (CreateUserRequest) returns (ShortUser);
 }
 
 message GetShortUserRequest {
