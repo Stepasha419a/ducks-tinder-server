@@ -15,3 +15,49 @@ message CreateUserRequest {
   string id = 1;
   string name = 2;
 }
+
+message ShortUser {
+  string id = 1;
+  string name = 2;
+  int32 age = 3;
+  string description = 4;
+  bool is_activated = 5;
+  double distance = 6;
+
+  repeated string interests = 7;
+
+  optional string zodiac_sign = 8;
+  optional string education = 9;
+  optional string alcohol_attitude = 10;
+  optional string chronotype = 11;
+  optional string food_preference = 12;
+  optional string pet = 13;
+  optional string smoking_attitude = 14;
+  optional string social_networks_activity = 15;
+  optional string training_attitude = 16;
+  optional string children_attitude = 17;
+  optional string personality_type = 18;
+  optional string communication_style = 19;
+  optional string attention_sign = 20;
+
+  repeated UserPictureInfo pictures = 21;
+
+  ShortUserPlaceInfo place = 22;
+}
+
+message ShortUserPlaceInfo {
+  string name = 1;
+}
+
+message UserPlaceInfo {
+  string name = 1;
+  string address = 2;
+  double latitude = 3;
+  double longitude = 4;
+}
+
+message UserPictureInfo {
+  string id = 1;
+  string name = 2;
+  int32 order = 3;
+}
