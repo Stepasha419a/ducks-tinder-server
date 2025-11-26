@@ -266,15 +266,10 @@ export class UserAdapter implements UserRepository {
   }
 
   async findOne(id: string): Promise<UserAggregate | null> {
-    const existingUser = await this.databaseService.user
-      .findUnique({
-        where: { id },
-        include: UserSelector.selectUser(),
-      })
-      .catch((err) => {
-        this.logger.error(err);
-        return null;
-      });
+    const existingUser = await this.databaseService.user.findUnique({
+      where: { id },
+      include: UserSelector.selectUser(),
+    });
 
     if (!existingUser) {
       return null;
@@ -286,15 +281,10 @@ export class UserAdapter implements UserRepository {
   }
 
   async findMany(ids: string[]): Promise<UserAggregate[]> {
-    const users = await this.databaseService.user
-      .findMany({
-        where: { id: { in: ids } },
-        include: UserSelector.selectUser(),
-      })
-      .catch((err) => {
-        this.logger.error(err);
-        return null;
-      });
+    const users = await this.databaseService.user.findMany({
+      where: { id: { in: ids } },
+      include: UserSelector.selectUser(),
+    });
 
     return users.map((user) => {
       this.standardUser(user);
@@ -303,15 +293,10 @@ export class UserAdapter implements UserRepository {
   }
 
   async findPair(id: string, forId: string): Promise<UserAggregate | null> {
-    const pair = await this.databaseService.user
-      .findFirst({
-        where: { id, pairFor: { some: { id: forId } } },
-        include: UserSelector.selectUser(),
-      })
-      .catch((err) => {
-        this.logger.error(err);
-        return null;
-      });
+    const pair = await this.databaseService.user.findFirst({
+      where: { id, pairFor: { some: { id: forId } } },
+      include: UserSelector.selectUser(),
+    });
 
     if (!pair) {
       return null;
@@ -541,12 +526,9 @@ export class UserAdapter implements UserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const deletedUser = await this.databaseService.user
-      .delete({ where: { id } })
-      .catch((err) => {
-        this.logger.error(err);
-        return false;
-      });
+    const deletedUser = await this.databaseService.user.delete({
+      where: { id },
+    });
 
     return Boolean(deletedUser);
   }
