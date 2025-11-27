@@ -44,4 +44,30 @@ export class UserGrpcController {
       throw error;
     }
   }
+
+  @GrpcMethod(
+    getGrpcPackageServiceName(GRPC_SERVICE.USER),
+    UserGrpcServiceEndpoint.GetShortUser,
+  )
+  async getShortUser(data: GetShortUserRequest): Promise<ShortUser> {
+    this.logger.log(
+      'Received gRPC call',
+      UserGrpcServiceEndpoint.GetShortUser,
+      data,
+    );
+
+    try {
+      const userAggregate = await this.facade.queries.getUser(data.id);
+
+      return this.mapper.getShortUser(userAggregate);
+    } catch (error) {
+      this.logger.error(
+        'Failed to handle gRPC call',
+        UserGrpcServiceEndpoint.GetShortUser,
+        error,
+      );
+
+      throw error;
+    }
+  }
 }
