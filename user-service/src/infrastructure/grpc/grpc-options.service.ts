@@ -24,6 +24,11 @@ export class GrpcOptionsService {
           keepCase: true,
         },
         gracefulShutdown: true,
+        keepalive: {
+          keepaliveTimeMs: 10 * 1000,
+          keepaliveTimeoutMs: 5 * 1000,
+          keepalivePermitWithoutCalls: 1,
+        },
         protoPath: path.join(process.cwd(), 'proto/user.proto'),
       },
     };
