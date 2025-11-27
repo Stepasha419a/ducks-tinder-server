@@ -18,4 +18,30 @@ export class UserGrpcController {
   ) {}
 
   private readonly logger = new Logger(UserGrpcController.name);
+
+  @GrpcMethod(
+    getGrpcPackageServiceName(GRPC_SERVICE.USER),
+    UserGrpcServiceEndpoint.CreateUser,
+  )
+  async createUser(data: CreateUserDto): Promise<ShortUser> {
+    this.logger.log(
+      'Received gRPC call',
+      UserGrpcServiceEndpoint.CreateUser,
+      data,
+    );
+
+    try {
+      const userAggregate = await this.facade.commands.createUser(data);
+
+      return this.mapper.getShortUser(userAggregate);
+    } catch (error) {
+      this.logger.error(
+        'Failed to handle gRPC call',
+        UserGrpcServiceEndpoint.CreateUser,
+        error,
+      );
+
+      throw error;
+    }
+  }
 }
