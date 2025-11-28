@@ -27,4 +27,18 @@ export class MapApiImplementation implements MapApi {
       getGrpcPackageServiceName(GRPC_SERVICE.MAP),
     );
   }
+
+  getGeocode(latitude: number, longitude: number): Promise<GeocodeView> {
+    const req: GetGeocodeRequest = { latitude, longitude };
+
+    return firstValueFrom(this.mapGrpcService.getGeocode(req)).catch((err) => {
+      this.logger.error(
+        'Failed to handle grpc request',
+        err.message,
+        err.stack,
+      );
+
+      throw new InternalServerErrorException();
+    });
+  }
 }
