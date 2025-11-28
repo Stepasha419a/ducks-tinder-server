@@ -11,6 +11,7 @@ gen-proto:
 	  \
 	  src/main/proto/*.proto
 
+# pwsh command - mvn spring-boot:run -D spring-boot.run.profiles=dev
 dev:
 	mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
