@@ -28,4 +28,16 @@ export class ChatApiImplementation implements ChatApi {
       getGrpcPackageServiceName(GRPC_SERVICE.CHAT),
     );
   }
+
+  createChat(dto: CreateChatDto): Promise<ChatResponse> {
+    return firstValueFrom(this.chatGrpcService.createChat(dto)).catch((err) => {
+      this.logger.error(
+        'Failed to handle grpc request',
+        err.message,
+        err.stack,
+      );
+
+      throw new InternalServerErrorException();
+    });
+  }
 }
