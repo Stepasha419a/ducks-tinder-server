@@ -18,7 +18,7 @@ import { GrpcOptionsService } from './grpc-options.service';
     { provide: MapApi, useClass: MapApiImplementation },
     { provide: ChatApi, useClass: ChatApiImplementation },
   ],
-    return {
+  exports: [FileApi, MapApi, ChatApi, ClientsModule, GrpcOptionsService],
       module: GrpcModule,
       imports: [
         ClientsModule.registerAsync(
