@@ -19,47 +19,45 @@ import { GrpcOptionsService } from './grpc-options.service';
     { provide: ChatApi, useClass: ChatApiImplementation },
   ],
   exports: [FileApi, MapApi, ChatApi, ClientsModule, GrpcOptionsService],
-      module: GrpcModule,
-      imports: [
-        ClientsModule.registerAsync(
-          names.map((name) => {
-            const packageName = getGrpcPackageName(name);
+  imports: [
+    DomainModule,
+    ClientsModule.registerAsync(
+      Object.values(GRPC_SERVICE_CLIENTS).map((name) => {
+        const packageName = getGrpcPackageName(name);
+
+        return {
+          name,
+          useFactory: (configService: ConfigService) => {
+            const mode = configService.get<string>('NODE_ENV');
+
+            const rootCertPath = path.join('cert', mode, 'ca.crt');
+            const certPath = path.join('cert', mode, 'tls.crt');
+            const privateKeyPath = path.join('cert', mode, 'tls.key');
+            const credentials = ChannelCredentials.createSsl(
+              readFileSync(rootCertPath),
+              readFileSync(privateKeyPath),
+              readFileSync(certPath),
+            );
 
             return {
-              name,
-              useFactory: (configService: ConfigService) => {
-                const mode = configService.get<string>('NODE_ENV');
-                const rootCertPath = path.join('cert', mode, 'ca.crt');
-                const certPath = path.join('cert', mode, 'tls.crt');
-                const privateKeyPath = path.join('cert', mode, 'tls.key');
-
-                const credentials = ChannelCredentials.createSsl(
-                  readFileSync(rootCertPath),
-                  readFileSync(privateKeyPath),
-                  readFileSync(certPath),
-                );
-
-                return {
-                  transport: Transport.GRPC,
-                  options: {
-                    keepalive: {
-                      keepaliveTimeMs: 10 * 1000,
-                      keepaliveTimeoutMs: 5 * 1000,
-                      keepalivePermitWithoutCalls: 1,
-                    },
-                    url: configService.get(`${name}_URL`),
-                    package: packageName,
-                    protoPath: `proto/${packageName}.proto`,
-                    credentials,
-                  },
-                };
+              transport: Transport.GRPC,
+              options: {
+                keepalive: {
+                  keepaliveTimeMs: 10 * 1000,
+                  keepaliveTimeoutMs: 5 * 1000,
+                  keepalivePermitWithoutCalls: 1,
+                },
+                url: configService.get(`${name}_URL`),
+                package: packageName,
+                protoPath: `proto/${packageName}.proto`,
+                credentials,
               },
-              inject: [ConfigService],
             };
-          }),
-        ),
-      ],
-      exports: [ClientsModule],
-    };
-  }
-}
+          },
+          inject: [ConfigService],
+        };
+      }),
+    ),
+  ],
+})
+export class GrpcModule {}
