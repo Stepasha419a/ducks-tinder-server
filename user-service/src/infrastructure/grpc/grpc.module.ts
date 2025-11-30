@@ -1,21 +1,23 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { GRPC_SERVICE, getGrpcPackageName } from './service/service';
+import { GRPC_SERVICE_CLIENTS, getGrpcPackageName } from './service/service';
 import { ConfigService } from '@nestjs/config';
 import { DomainModule } from 'src/domain';
-import { FileService } from 'src/domain/service/file';
-import { FileServiceAdapter } from '../adapter/file-service';
+import { FileApiImplementation } from '../adapter/file-api';
 import { ChannelCredentials } from '@grpc/grpc-js';
 import { readFileSync } from 'fs';
 import * as path from 'path';
+import { ChatApi, MapApi, FileApi } from 'src/application/user/adapter';
+import { MapApiImplementation, ChatApiImplementation } from '../adapter';
+import { GrpcOptionsService } from './grpc-options.service';
 
 @Module({
-  providers: [{ provide: FileService, useClass: FileServiceAdapter }],
-  exports: [FileService],
-  imports: [DomainModule],
-})
-export class GrpcModule {
-  static register(...names: GRPC_SERVICE[]): DynamicModule {
+  providers: [
+    GrpcOptionsService,
+    { provide: FileApi, useClass: FileApiImplementation },
+    { provide: MapApi, useClass: MapApiImplementation },
+    { provide: ChatApi, useClass: ChatApiImplementation },
+  ],
     return {
       module: GrpcModule,
       imports: [
