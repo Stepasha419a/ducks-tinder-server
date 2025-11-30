@@ -1,4 +1,4 @@
-import { Global, Logger, Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_SERVICE_CLIENTS, getGrpcPackageName } from './service/service';
 import { ConfigService } from '@nestjs/config';
@@ -28,6 +28,10 @@ import { GrpcOptionsService } from './grpc-options.service';
         return {
           name,
           useFactory: (configService: ConfigService) => {
+            const logger = new Logger('GrpcClientFactory');
+
+            logger.log(`Initializing gRPC client: ${name}`);
+
             const mode = configService.get<string>('NODE_ENV');
 
             const rootCertPath = path.join('cert', mode, 'ca.crt');
