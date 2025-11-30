@@ -3,10 +3,10 @@ import { Test } from '@nestjs/testing';
 import { AcceptPairCommandHandler } from './accept-pair.command-handler';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'src/domain/user/repository';
-import { SERVICES } from '@app/common/shared/constant';
 import { ClientProxy } from '@nestjs/microservices';
 import { ClientProxyMock, UserRepositoryMock } from 'src/test/mock';
 import { UserAggregateStub, UserStub } from 'src/test/stub';
+import { GRPC_SERVICE } from 'src/infrastructure/grpc/service';
 
 describe('when accept pair is called', () => {
   let repository: UserRepository;
@@ -17,7 +17,7 @@ describe('when accept pair is called', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         AcceptPairCommandHandler,
-        { provide: SERVICES.CHAT, useValue: ClientProxyMock() },
+        { provide: GRPC_SERVICE.CHAT, useValue: ClientProxyMock() },
         { provide: UserRepository, useValue: UserRepositoryMock() },
       ],
       imports: [
