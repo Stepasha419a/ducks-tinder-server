@@ -1,10 +1,9 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AcceptPairCommand } from './accept-pair.command';
 import { UserRepository } from 'src/domain/user/repository';
-import { ClientProxy } from '@nestjs/microservices';
-import { SERVICE, ChatServiceEvent } from 'src/infrastructure/rabbitmq/service';
 import { UserAggregate } from 'src/domain/user';
+import { ChatApi } from '../../adapter';
 
 @CommandHandler(AcceptPairCommand)
 export class AcceptPairCommandHandler
@@ -12,7 +11,7 @@ export class AcceptPairCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    @Inject(SERVICE.CHAT) private readonly chatClient: ClientProxy,
+    private readonly chatApi: ChatApi,
   ) {}
 
   async execute(command: AcceptPairCommand): Promise<UserAggregate> {
@@ -27,7 +26,7 @@ export class AcceptPairCommandHandler
 
     pair.setDistanceBetweenPlaces(place);
 
-    this.chatClient.emit(ChatServiceEvent.CreateChat, [userId, pairId]);
+    await this.chatApi.createChat({ memberIds: [userId, pairId] });
 
     await this.repository.deletePair(pair.id, userId);
 
