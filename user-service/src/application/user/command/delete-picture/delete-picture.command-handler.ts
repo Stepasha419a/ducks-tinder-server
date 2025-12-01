@@ -3,7 +3,7 @@ import { DeletePictureCommand } from './delete-picture.command';
 import { NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
-import { FileService } from 'src/domain/service/file';
+import { FileApi } from 'src/application/user/adapter/file-api';
 
 @CommandHandler(DeletePictureCommand)
 export class DeletePictureCommandHandler
@@ -11,7 +11,7 @@ export class DeletePictureCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly fileService: FileService,
+    private readonly fileService: FileApi,
   ) {}
 
   async execute(command: DeletePictureCommand): Promise<UserAggregate> {
