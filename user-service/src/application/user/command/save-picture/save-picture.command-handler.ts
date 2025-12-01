@@ -5,7 +5,7 @@ import { UserRepository } from 'src/domain/user/repository';
 import { UserAggregate } from 'src/domain/user';
 import { ERROR } from 'src/infrastructure/user/common/constant';
 import { PictureEntity } from 'src/domain/user/entity';
-import { FileService, UploadFileType } from 'src/domain/service/file';
+import { FileApi, UploadFileType } from 'src/application/user/adapter/file-api';
 
 @CommandHandler(SavePictureCommand)
 export class SavePictureCommandHandler
@@ -13,7 +13,7 @@ export class SavePictureCommandHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly fileService: FileService,
+    private readonly fileApi: FileApi,
   ) {}
 
   async execute(command: SavePictureCommand): Promise<UserAggregate> {
@@ -24,7 +24,7 @@ export class SavePictureCommandHandler
       throw new BadRequestException(ERROR.MAX_PICTURES_COUNT);
     }
 
-    const response = await this.fileService.uploadFile(
+    const response = await this.fileApi.uploadFile(
       picture,
       UploadFileType.IMAGE,
     );
