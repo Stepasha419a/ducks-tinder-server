@@ -16,7 +16,24 @@ const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
     package: 'file',
     service: 'FileService',
   },
+  [GRPC_SERVICE.MAP]: {
+    package: 'map',
+    service: 'MapService',
+  },
+  [GRPC_SERVICE.CHAT]: {
+    package: 'chat',
+    service: 'ChatService',
+  },
+  [GRPC_SERVICE.USER]: {
+    package: 'user',
+    service: 'UserService',
+  },
 };
+
+export enum UserGrpcServiceEndpoint {
+  CreateUser = 'CreateUser',
+  GetShortUser = 'GetShortUser',
+}
 
 export function getGrpcPackageName(name: GRPC_SERVICE) {
   return info[name].package;
