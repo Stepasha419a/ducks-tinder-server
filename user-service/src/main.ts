@@ -3,10 +3,10 @@ import { AppModule } from './infrastructure/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
-import { RabbitMQService } from './infrastructure/rabbitmq';
 import * as path from 'path';
 import * as fs from 'fs';
 import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
+import { GrpcOptionsService } from './infrastructure/grpc';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -37,9 +37,9 @@ async function bootstrap() {
 
   await app.init();
 
-  const rabbitMQService = app.get(RabbitMQService);
+  const grpcOptionsService = app.get(GrpcOptionsService);
 
-  app.connectMicroservice(rabbitMQService.getOptions('USER'));
+  app.connectMicroservice(grpcOptionsService.getOptions());
 
   await app.startAllMicroservices();
 
