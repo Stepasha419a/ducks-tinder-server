@@ -27,6 +27,7 @@
     "test:unit-refactoring": "jest --config ./jest.config.unit-refactoring.js"
   },
   "dependencies": {
+    "@golevelup/nestjs-rabbitmq": "^6.0.2",
     "@grpc/grpc-js": "^1.14.1",
     "@grpc/proto-loader": "^0.8.0",
     "@nestjs/axios": "^4.0.1",
