@@ -15,4 +15,52 @@ export class GrpcHealthIndicator {
     private readonly moduleRef: ModuleRef,
     private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
+
+  async isHealthy(
+    key: string,
+    service: GRPC_SERVICE,
+  ): Promise<HealthIndicatorResult> {
+    const indicator = this.healthIndicatorService.check(key);
+    const serviceName = getGrpcPackageServiceName(service);
+
+    try {
+      const grpcClient = this.moduleRef.get<ClientGrpc>(service, {
+        strict: false,
+      });
+
+      if (!grpcClient) {
+        return indicator.down({
+          message: `Client with token ${service} not found in context`,
+        });
+      }
+
+      const client = grpcClient.getClientByServiceName<Client>(serviceName);
+
+      if (!client) {
+        return indicator.down({
+          message: `${serviceName} gRPC clientInstance not found`,
+        });
+      }
+
+      const channel = client.getChannel();
+      const state = channel.getConnectivityState(true);
+
+      const isHealthy =
+        state === connectivityState.READY || state === connectivityState.IDLE;
+
+      if (isHealthy) {
+        return indicator.up();
+      }
+
+      return indicator.down({
+        message: `${serviceName} gRPC check failed`,
+        state,
+      });
+    } catch (error) {
+      return indicator.down({
+        message: `${serviceName} gRPC check failed`,
+        error: error.message,
+      });
+    }
+  }
 }
