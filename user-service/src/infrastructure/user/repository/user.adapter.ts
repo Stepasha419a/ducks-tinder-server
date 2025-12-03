@@ -358,7 +358,7 @@ export class UserAdapter implements UserRepository {
     from users
     ${joinQuery} 
     inner join "_Pairs" on "_Pairs"."A" = users.id 
-    where "_Pairs"."B" = \'${id}\' 
+    where "_Pairs"."B" = '${id}' 
     ${whereQuery}
     ${groupByQuery}
     offset ${dto.skip}
