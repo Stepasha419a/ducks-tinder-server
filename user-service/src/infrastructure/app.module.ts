@@ -6,12 +6,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
 import { DomainModule } from 'src/domain';
 import { MetricsModule } from './metrics';
-import { HealthController } from 'src/interface/health';
-import { TerminusModule } from '@nestjs/terminus';
+import { HealthModule } from './health/health.module';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
-  controllers: [HealthController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -31,10 +29,10 @@ import { TerminusModule } from '@nestjs/terminus';
         GRPC_FILE_SERVICE_URL: Joi.string().required(),
       }),
     }),
+    HealthModule,
     UserModule,
     DomainModule,
     MetricsModule,
-    TerminusModule,
   ],
 })
 export class AppModule {}
