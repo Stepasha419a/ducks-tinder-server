@@ -11,6 +11,9 @@ import { Public } from '../common';
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
+    private readonly rmqHealth: RabbitMQHealthIndicator,
+    private readonly db: DatabaseService,
+    private readonly prismaHealth: PrismaHealthIndicator,
   ) {}
 
   @Get('livez')
@@ -26,6 +29,7 @@ export class HealthController {
   checkReady() {
     return this.health.check([
       () => this.prismaHealth.pingCheck('database', this.db),
+      () => this.rmqHealth.isHealthy('rabbitmq'),
     ]);
   }
 
