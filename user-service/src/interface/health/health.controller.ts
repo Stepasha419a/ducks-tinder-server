@@ -1,14 +1,24 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthCheck } from '@nestjs/terminus';
+import {
+  HealthCheck,
+  HealthCheckService,
+  PrismaHealthIndicator,
+} from '@nestjs/terminus';
 import { Public } from '../common';
 
 @Public()
 @Controller('health')
 export class HealthController {
+  constructor(
+    private readonly health: HealthCheckService,
+  ) {}
+
   @Get('livez')
   @HealthCheck()
   checkLive() {
-    return { status: 'ok' };
+    return this.health.check([
+      () => Promise.resolve({ live: { status: 'up' } }),
+    ]);
   }
 
   @Get('readyz')
@@ -20,6 +30,8 @@ export class HealthController {
   @Get('startupz')
   @HealthCheck()
   checkStartup() {
-    return { status: 'ok' };
+    return this.health.check([
+      () => Promise.resolve({ startup: { status: 'up' } }),
+    ]);
   }
 }
