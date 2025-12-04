@@ -6,7 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from 'src/interface/common';
 import { DomainModule } from 'src/domain';
 import { MetricsModule } from './metrics';
-import { HealthModule } from './health/health.module';
+import { HealthModule } from './health';
 
 @Module({
   providers: [{ provide: APP_GUARD, useClass: AccessTokenGuard }],
