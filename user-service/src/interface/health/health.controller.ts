@@ -24,7 +24,9 @@ export class HealthController {
   @Get('readyz')
   @HealthCheck()
   checkReady() {
-    return { status: 'ok' };
+    return this.health.check([
+      () => this.prismaHealth.pingCheck('database', this.db),
+    ]);
   }
 
   @Get('startupz')
