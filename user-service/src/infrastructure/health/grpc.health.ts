@@ -19,6 +19,7 @@ export class GrpcHealthIndicator {
   async isHealthy(
     key: string,
     service: GRPC_SERVICE,
+    isCritical = true,
   ): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check(key);
     const serviceName = getGrpcPackageServiceName(service);
@@ -52,10 +53,18 @@ export class GrpcHealthIndicator {
         return indicator.up();
       }
 
-      return indicator.down({
+      const errorDetails = {
         message: `${serviceName} gRPC check failed`,
         state,
-      });
+        stateMessage: this.getStateName(state),
+        isCritical,
+      };
+
+      if (isCritical) {
+        return indicator.down(errorDetails);
+      }
+
+      return indicator.up(errorDetails);
     } catch (error) {
       return indicator.down({
         message: `${serviceName} gRPC check failed`,
