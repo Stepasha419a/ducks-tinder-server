@@ -63,4 +63,11 @@ export class GrpcHealthIndicator {
       });
     }
   }
+
+  private getStateName(state: number) {
+    return (
+      ['IDLE', 'CONNECTING', 'READY', 'TRANSIENT_FAILURE', 'SHUTDOWN'][state] ||
+      'UNKNOWN'
+    );
+  }
 }
