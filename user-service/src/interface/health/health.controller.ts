@@ -9,7 +9,10 @@ import { RabbitMQHealthIndicator } from '../../infrastructure/health/rabbitmq.he
 import { DatabaseService } from 'src/infrastructure/database';
 import { GrpcHealthIndicator } from 'src/infrastructure/health/grpc.health';
 import { getGrpcPackageName } from 'src/infrastructure/grpc/service';
-import { GRPC_SERVICE_CLIENTS } from 'src/infrastructure/grpc/service/service';
+import {
+  getIsGrpcServiceCritical,
+  GRPC_SERVICE_CLIENTS,
+} from 'src/infrastructure/grpc/service/service';
 
 @Public()
 @Controller('health')
@@ -41,6 +44,7 @@ export class HealthController {
           this.grpcHealth.isHealthy(
             `${getGrpcPackageName(service)}ServiceGrpc`,
             service,
+            getIsGrpcServiceCritical(service),
           ),
       ),
     ]);
