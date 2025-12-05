@@ -23,7 +23,7 @@ import { GRPC_SERVICE } from '../grpc/service';
 
 @Module({
   providers: [
-    ...MAP_API_QUERY_HANDLERS,
+    UserConsumer,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
