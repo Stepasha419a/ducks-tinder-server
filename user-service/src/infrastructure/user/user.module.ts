@@ -8,18 +8,15 @@ import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { userFacadeFactory } from './facade';
 import { UserRepository } from '../../domain/user/repository';
 import { UserAdapter } from './repository';
-import { MapApi } from '../../application/user/adapter';
-import { UserController } from '../../interface/user';
-import { HttpModule } from '@nestjs/axios';
 import {
-  MAP_API_QUERY_HANDLERS,
-  MapApiImplementation,
-} from '../adapter/map-api';
+  UserController,
+  UserConsumer,
+  UserGrpcController,
+} from '../../interface/user';
+import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database';
-import { SERVICE } from '../rabbitmq/service/service';
 import { RabbitMQModule } from '../rabbitmq';
 import { GrpcModule } from '../grpc';
-import { GRPC_SERVICE } from '../grpc/service';
 
 @Module({
   providers: [
@@ -37,19 +34,9 @@ import { GRPC_SERVICE } from '../grpc/service';
       provide: UserRepository,
       useClass: UserAdapter,
     },
-    {
-      provide: MapApi,
-      useClass: MapApiImplementation,
-    },
   ],
-  controllers: [UserController],
-  imports: [
-    DatabaseModule,
-    CqrsModule,
-    HttpModule,
-    RabbitMQModule.register(SERVICE.CHAT),
-    GrpcModule.register(GRPC_SERVICE.FILE),
-  ],
+  controllers: [UserController, UserGrpcController],
+  imports: [DatabaseModule, CqrsModule, HttpModule, RabbitMQModule, GrpcModule],
   exports: [UserRepository],
 })
 export class UserModule {}
