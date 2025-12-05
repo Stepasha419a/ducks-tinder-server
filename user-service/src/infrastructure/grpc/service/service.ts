@@ -11,6 +11,11 @@ export const GRPC_SERVICE_CLIENTS = [
   GRPC_SERVICE.MAP,
 ];
 
+export const CRITICAL_GRPC_SERVICE_CLIENTS = [
+  GRPC_SERVICE.FILE,
+  GRPC_SERVICE.MAP,
+];
+
 const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
   [GRPC_SERVICE.FILE]: {
     package: 'file',
@@ -41,4 +46,8 @@ export function getGrpcPackageName(name: GRPC_SERVICE) {
 
 export function getGrpcPackageServiceName(name: GRPC_SERVICE) {
   return info[name].service;
+}
+
+export function getIsGrpcServiceCritical(name: GRPC_SERVICE) {
+  return CRITICAL_GRPC_SERVICE_CLIENTS.includes(name);
 }
