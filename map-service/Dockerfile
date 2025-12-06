@@ -18,6 +18,7 @@ WORKDIR /app
 RUN apk add --no-cache bash
 
 COPY --from=build /usr/src/app/target/*.jar /app/app.jar
+COPY --from=build /usr/src/app/src/main/resources/db/migration /app/migration
 
 COPY --from=build /usr/src/app/entrypoint.sh /app/entrypoint.sh
 
