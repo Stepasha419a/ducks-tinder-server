@@ -95,7 +95,7 @@
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>3.25.1</version>
+			<version>4.28.2</version>
 		</dependency>
 
 		<dependency>
@@ -206,7 +206,7 @@
 			<dependency>
 				<groupId>com.google.protobuf</groupId>
 				<artifactId>protobuf-java</artifactId>
-				<version>3.25.1</version>
+				<version>4.28.2</version>
 			</dependency>
 			<dependency>
 				<groupId>io.grpc</groupId>
@@ -221,7 +221,7 @@
 			<dependency>
 				<groupId>io.grpc</groupId>
 				<artifactId>grpc-protobuf</artifactId>
-				<version>1.64.0</version>
+				<version>1.68.1</version>
 			</dependency>
 			<dependency>
 				<groupId>io.grpc</groupId>
