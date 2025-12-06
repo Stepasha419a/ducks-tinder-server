@@ -33,4 +33,4 @@ echo "Importing CA certificate to Java truststore..."
 keytool -importcert -keystore "$TRUSTSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -noprompt -alias postgres-ca -file "$CERT_PATH"
 
 echo "Starting application..."
-exec java -Djavax.net.ssl.trustStore="$TRUSTSTORE_PATH" -Djavax.net.ssl.trustStorePassword="$KEYSTORE_PASSWORD" -jar /app/target/map_service-0.0.1-SNAPSHOT.jar
+exec java -Djavax.net.ssl.trustStore="$TRUSTSTORE_PATH" -Djavax.net.ssl.trustStorePassword="$KEYSTORE_PASSWORD" -jar /app/app.jar
