@@ -34,30 +34,4 @@ public class FlywayConfig {
 		flyway.migrate();
 		return flyway;
 	}
-
-	private void createDatabase() {
-		var baseDbUrl = databaseUrl.replace(databaseName, "postgres");
-
-		try (var connection = DriverManager.getConnection(baseDbUrl, username, password)) {
-			try (var statement = connection
-					.prepareStatement("SELECT EXISTS (SELECT FROM pg_database WHERE datname = ?)")) {
-				statement.setString(1, databaseName);
-				try (var result = statement.executeQuery()) {
-					if (result.next() && result.getBoolean(1)) {
-						log.info("Database already exists: " + databaseName);
-
-						return;
-					}
-				}
-			}
-
-			try (var statement = connection.createStatement()) {
-				statement.executeUpdate("CREATE DATABASE \"" + databaseName + "\";");
-
-				log.info("Database created successfully: " + databaseName);
-			}
-		} catch (Exception e) {
-			log.error("Database cannot be created: " + e.getMessage());
-		}
-	}
 }
