@@ -15,7 +15,7 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash curl
 
 COPY --from=build /usr/src/app/target/*.jar /app/app.jar
 COPY --from=build /usr/src/app/src/main/resources/db/migration /app/migration
