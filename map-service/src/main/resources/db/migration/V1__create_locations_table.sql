@@ -1,9 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TYPE capital_enum AS ENUM ('primary', 'admin', 'minor');
 
 CREATE TABLE IF NOT EXISTS locations (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     latitude DOUBLE PRECISION NOT NULL,
     longitude DOUBLE PRECISION NOT NULL,
     city VARCHAR(255) NOT NULL,
