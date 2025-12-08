@@ -38,3 +38,9 @@ type ConnectionService struct {
 	Mu     sync.RWMutex
 	States map[string]*ConnectionState
 }
+
+func NewConnectionService() *ConnectionService {
+	return &ConnectionService{
+		States: make(map[string]*ConnectionState),
+	}
+}
