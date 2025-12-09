@@ -54,11 +54,7 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runRootMigrations(ctx context.Context, pg *PostgresInstance) {
-	checkMigration(initRootMigration(ctx, pg))
-}
-
-func runMigrations(ctx context.Context, pg *PostgresInstance) {
+func runMigrations(ctx context.Context, pg *Postgres) {
 	checkMigration(initMigration(ctx, pg))
 }
 
@@ -69,31 +65,7 @@ func checkMigration(err error) {
 	}
 }
 
-func initRootMigration(ctx context.Context, pg *PostgresInstance) error {
-	log.Println("root migration - init")
-
-	var dbExists bool
-	err := pg.Pool.QueryRow(ctx, `
-    SELECT EXISTS (
-        SELECT FROM pg_database WHERE datname = 'subscription-service'
-    )`).Scan(&dbExists)
-	if err != nil {
-		return err
-	}
-
-	if dbExists {
-		return nil
-	}
-
-	_, err = pg.Pool.Exec(ctx, `CREATE DATABASE "subscription-service"`)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func initMigration(ctx context.Context, pg *PostgresInstance) error {
+func initMigration(ctx context.Context, pg *Postgres) error {
 	log.Println("migration - init")
 
 	_, err := pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS subscriptions (
