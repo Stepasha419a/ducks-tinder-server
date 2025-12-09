@@ -14,4 +14,3 @@ postgres_port: 5433
 postgres_user: prisma
 postgres_password: prisma
 postgres_database: subscription-service
-postgres_root_database: postgres
