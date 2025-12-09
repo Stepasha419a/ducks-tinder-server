@@ -4,17 +4,24 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
+	"time"
 
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
+	connection_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
-
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresInstance struct {
-	Pool *pgxpool.Pool
+var connectionServiceName = "postgres"
+
+type Postgres struct {
+	Mu                sync.RWMutex
+	Pool              *pgxpool.Pool
+	ConnectionService *connection_service.ConnectionService
+	CancelFunc        context.CancelFunc
 }
 
 func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService, dbName string) (*PostgresInstance, func()) {
