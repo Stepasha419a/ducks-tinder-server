@@ -49,8 +49,10 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 				return
 			}
 		}
+	RECONNECT:
+		ticker.Stop()
+	}
 }
-
 	if err != nil {
 		panic(err)
 	}
