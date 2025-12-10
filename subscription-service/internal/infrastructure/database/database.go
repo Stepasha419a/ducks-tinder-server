@@ -91,24 +91,36 @@ func (pg *Postgres) connect(configService config_service.ConfigService, tlsServi
 
 	pgxCfg, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("postgres parse config error: %w", err)
 	}
+	pgxCfg.ConnConfig.TLSConfig = tlsConfig
 
-	pgxConfig.ConnConfig.TLSConfig = tlsConfig
-
-	pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
+	pool, err := pgxpool.NewWithConfig(context.Background(), pgxCfg)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("postgres new pool error: %w", err)
 	}
 
-	err = pool.Ping(context.TODO())
-	if err != nil {
-		panic(err)
+	if err := pool.Ping(context.Background()); err != nil {
+		pool.Close()
+		return fmt.Errorf("postgres ping failed error: %w", err)
 	}
 
-	pgInstance := &PostgresInstance{pool}
+	pg.Mu.Lock()
+	pg.Pool = pool
+	pg.Mu.Unlock()
 
-	return pgInstance, pgInstance.Close
+	return nil
+}
+
+func (pg *Postgres) Ping(ctx context.Context) error {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
+
+	if pg.Pool == nil {
+		return fmt.Errorf("postgres pool is nil")
+	}
+
+	return pg.Pool.Ping(ctx)
 }
 
 func (pg *PostgresInstance) Close() {
