@@ -64,6 +64,12 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 
 					goto RECONNECT
 				}
+			case <-ctx.Done():
+				ticker.Stop()
+				pg.Close()
+
+				return
+			}
 		}
 	RECONNECT:
 		ticker.Stop()
