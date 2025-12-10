@@ -123,10 +123,16 @@ func (pg *Postgres) Ping(ctx context.Context) error {
 	return pg.Pool.Ping(ctx)
 }
 
-func (pg *PostgresInstance) Close() {
-	log.Println("close database postgres instance")
+func (pg *Postgres) GetPool() (*pgxpool.Pool, error) {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
 
-	pg.Pool.Close()
+	if pg.Pool == nil {
+		return nil, fmt.Errorf("postgres pool not initialized")
+	}
+
+	return pg.Pool, nil
+}
 }
 
 func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
