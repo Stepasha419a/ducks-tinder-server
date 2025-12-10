@@ -75,6 +75,21 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 		ticker.Stop()
 	}
 }
+
+func (pg *Postgres) connect(configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
+	cfg := configService.GetConfig()
+	tlsConfig := tlsService.GetConfig(cfg.TlsServerName)
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full",
+		cfg.PostgresHost,
+		cfg.PostgresPort,
+		cfg.PostgresUser,
+		cfg.PostgresPassword,
+		cfg.PostgresDatabase,
+	)
+
+	pgxCfg, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
 		panic(err)
 	}
