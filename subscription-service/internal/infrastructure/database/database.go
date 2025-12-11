@@ -159,6 +159,13 @@ func (pg *Postgres) Exec(tx pgx.Tx) func(ctx context.Context, sql string, argume
 		return tx.Exec
 	}
 
+	pool, err := pg.GetPool()
+	if err != nil {
+		return func(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error) {
+			return pgconn.CommandTag{}, err
+		}
+	}
+
 	return pool.Exec
 }
 
