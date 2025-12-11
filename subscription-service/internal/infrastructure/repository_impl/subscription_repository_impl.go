@@ -11,12 +11,12 @@ import (
 )
 
 type SubscriptionRepositoryImpl struct {
-	pg *database.PostgresInstance
+	pg *database.Postgres
 }
 
 var _ repository.SubscriptionRepository = (*SubscriptionRepositoryImpl)(nil)
 
-func NewSubscriptionRepository(pg *database.PostgresInstance) *SubscriptionRepositoryImpl {
+func NewSubscriptionRepository(pg *database.Postgres) *SubscriptionRepositoryImpl {
 	return &SubscriptionRepositoryImpl{pg}
 }
 
@@ -27,7 +27,7 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 	}
 
 	if existingSubscription != nil {
-		_, err = database.Exec(r.pg.Pool, tx)(ctx, "UPDATE subscriptions SET subscription=@subscription, login=@login, expiresAt=@expires_at WHERE user_id=@user_id", &pgx.NamedArgs{
+		_, err = r.pg.Exec(tx)(ctx, "UPDATE subscriptions SET subscription=@subscription, login=@login, expiresAt=@expires_at WHERE user_id=@user_id", &pgx.NamedArgs{
 			"subscription": subscription.Subscription,
 			"user_id":      subscription.UserId,
 			"login":        subscription.Login,
@@ -39,7 +39,7 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 		return subscription, nil
 	}
 
-	_, err = database.Exec(r.pg.Pool, tx)(ctx, "INSERT INTO subscriptions (user_id, subscription, login, expires_at, created_at) VALUES (@user_id, @subscription, @login, @expires_at, @created_at)", &pgx.NamedArgs{
+	_, err = r.pg.Exec(tx)(ctx, "INSERT INTO subscriptions (user_id, subscription, login, expires_at, created_at) VALUES (@user_id, @subscription, @login, @expires_at, @created_at)", &pgx.NamedArgs{
 		"user_id":      subscription.UserId,
 		"subscription": subscription.Subscription,
 		"login":        subscription.Login,
@@ -56,7 +56,7 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 func (r *SubscriptionRepositoryImpl) Find(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error) {
 	subscription := &entity.Subscription{}
 
-	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
 		"user_id": userId,
 	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.ExpiresAt, &subscription.CreatedAt)
 	if err != nil {
@@ -69,7 +69,7 @@ func (r *SubscriptionRepositoryImpl) Find(ctx context.Context, userId string, tx
 func (r *SubscriptionRepositoryImpl) FindByUserIdOrLogin(ctx context.Context, userId string, login string, tx pgx.Tx) (*entity.Subscription, error) {
 	subscription := &entity.Subscription{}
 
-	err := database.QueryRow(r.pg.Pool, tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id OR login=@login", &pgx.NamedArgs{
+	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id OR login=@login", &pgx.NamedArgs{
 		"user_id": userId,
 		"login":   login,
 	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.ExpiresAt, &subscription.CreatedAt)
@@ -81,7 +81,7 @@ func (r *SubscriptionRepositoryImpl) FindByUserIdOrLogin(ctx context.Context, us
 }
 
 func (r *SubscriptionRepositoryImpl) Delete(ctx context.Context, userId string, tx pgx.Tx) error {
-	_, err := database.Exec(r.pg.Pool, tx)(ctx, "DELETE FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+	_, err := r.pg.Exec(tx)(ctx, "DELETE FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
 		"user_id": userId,
 	})
 	if err != nil {
