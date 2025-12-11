@@ -169,9 +169,16 @@ func (pg *Postgres) Exec(tx pgx.Tx) func(ctx context.Context, sql string, argume
 	return pool.Exec
 }
 
-func Query(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+func (pg *Postgres) Query(tx pgx.Tx) func(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
 	if tx != nil {
 		return tx.Query
+	}
+
+	pool, err := pg.GetPool()
+	if err != nil {
+		return func(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+			return nil, err
+		}
 	}
 
 	return pool.Query
