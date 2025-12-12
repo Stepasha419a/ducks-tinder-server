@@ -9,6 +9,7 @@ import (
 	"log"
 
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
+	connection_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 )
 
@@ -26,11 +27,9 @@ func MigrateDB(configService config_service.ConfigService, tlsService *tls_servi
 
 	log.Println("migration - start")
 
-	rootPg, cleanupRootDb := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresRootDatabase)
-	defer cleanupRootDb()
-	runRootMigrations(ctx, rootPg)
+	connectionService := connection_service.NewConnectionService()
 
-	pg, cleanup := NewPostgresInstance(configService, tlsService, configService.GetConfig().PostgresDatabase)
+	pg, cleanup := NewPostgresInstance(ctx, configService, tlsService, connectionService)
 	defer cleanup()
 	runMigrations(ctx, pg)
 
