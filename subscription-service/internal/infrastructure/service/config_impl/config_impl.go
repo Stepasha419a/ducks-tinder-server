@@ -32,7 +32,6 @@ type (
 		PostgresUser                 string `validate:"required" yaml:"postgres_user"`
 		PostgresPassword             string `validate:"required" yaml:"postgres_password"`
 		PostgresDatabase             string `validate:"required" yaml:"postgres_database"`
-		PostgresRootDatabase         string `validate:"required" yaml:"postgres_root_database"`
 	}
 
 	ConfigServiceImpl struct{}
