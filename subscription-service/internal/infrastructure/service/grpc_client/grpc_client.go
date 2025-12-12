@@ -10,6 +10,7 @@ import (
 	connection_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
 )
@@ -58,5 +59,32 @@ func NewGrpcClientService(ctx context.Context, tlsService *tls_service.TlsServic
 		Conn:              conn,
 		connectionService: connectionService,
 		options:           options,
+	}
+
+	go service.monitorConnectionState(ctx)
+
+	conn.Connect()
+
+	for {
+		state := conn.GetState()
+
+		if state == connectivity.Ready {
+			log.Printf("gRPC service connected successfully, service: %s", options.DisplayName)
+			break
+		}
+
+		waitCtx, waitCancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+		changed := conn.WaitForStateChange(waitCtx, state)
+		waitCancel()
+
+		if !changed {
+			log.Printf("failed to connect to gRPC service, service: %s, target: %s, current_state: %s, next_retry_log: 5s",
+				options.DisplayName,
+				options.TargetUrl,
+				state.String(),
+			)
+
+		}
 	}
 }
