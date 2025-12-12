@@ -3,6 +3,7 @@ package grpc_client_service
 import (
 	"context"
 	"crypto/tls"
+	"log"
 	"sync/atomic"
 	"time"
 
@@ -44,5 +45,18 @@ func NewGrpcClientService(ctx context.Context, tlsService *tls_service.TlsServic
 		grpc.WithTransportCredentials(creds),
 
 		grpc.WithKeepaliveParams(kacp),
+	}
+
+	conn, err := grpc.NewClient(options.TargetUrl, opts...)
+	if err != nil {
+		log.Printf("gRPC service creation failed, error: %s, service: %s", err, options.DisplayName)
+
+		panic(err)
+	}
+
+	service := &GrpcClientService{
+		Conn:              conn,
+		connectionService: connectionService,
+		options:           options,
 	}
 }
