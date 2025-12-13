@@ -8,45 +8,25 @@ import (
 
 	billing_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/billing"
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
-	jwt_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/jwt"
+	connection_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
+	grpc_client_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/grpc_client"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/proto/gen"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/keepalive"
 )
 
+var connectionServiceName = "grpc_billing_service"
+var displayName = "billing service"
+
 type BillingServiceImpl struct {
-	client gen.BillingServiceClient
-	conn   *grpc.ClientConn
+	client  gen.BillingServiceClient
+	service *grpc_client_service.GrpcClientService
 }
 
-var kacp = keepalive.ClientParameters{
-	Time:                10 * time.Second,
-	Timeout:             time.Second,
-	PermitWithoutStream: true,
-}
+func NewBillingServiceImpl(ctx context.Context, configService config_service.ConfigService, tlsService *tls_service.TlsService, connectionService *connection_service.ConnectionService) (*BillingServiceImpl, func()) {
+	targetUrl := configService.GetConfig().GrpcBillingServiceUrl
+	tlsServerName := configService.GetConfig().TlsServerName
 
-func NewBillingServiceImpl(configService config_service.ConfigService, jwtService *jwt_service.JwtService, tlsService *tls_service.TlsService) (*BillingServiceImpl, func(), error) {
-	tlsConfig := tlsService.GetConfig()
-
-	tlsConfig.ClientAuth = tls.RequireAndVerifyClientCert
-	creds := credentials.NewTLS(tlsConfig)
-
-	perRPC := NewPerRPCCredentialsImpl(jwtService)
-	opts := []grpc.DialOption{
-		grpc.WithPerRPCCredentials(perRPC),
-		grpc.WithTransportCredentials(creds),
-
-		grpc.WithKeepaliveParams(kacp),
-	}
-
-	log.Printf("gRPC billing service client is connected to %s", configService.GetConfig().GrpcBillingServiceUrl)
-	conn, err := grpc.NewClient(configService.GetConfig().GrpcBillingServiceUrl, opts...)
-	if err != nil {
-		return nil, nil, err
-	}
-
+	clientService, cleanUp := grpc_client_service.NewGrpcClientService(ctx, tlsService, connectionService, &grpc_client_service.GrpcClientServiceOptions{TargetUrl: targetUrl, TlsServerName: tlsServerName, DisplayName: displayName, ConnectionStateName: connectionServiceName})
 	service := &BillingServiceImpl{
 		client: gen.NewBillingServiceClient(conn),
 		conn:   conn,
