@@ -29,8 +29,8 @@ var kasp = keepalive.ServerParameters{
 	Timeout:               1 * time.Second,
 }
 
-func NewGrpc(billingServer gen.SubscriptionServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func()) {
-	tlsConfig := tlsService.GetConfig()
+func NewGrpc(billingServer gen.SubscriptionServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService, configService config_service.ConfigService) (*grpc.Server, func()) {
+	tlsConfig := tlsService.GetConfig(configService.GetConfig().TlsServerName)
 	creds := credentials.NewTLS(tlsConfig)
 
 	opts := []grpc.ServerOption{
