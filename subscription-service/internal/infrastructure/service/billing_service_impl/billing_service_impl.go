@@ -2,9 +2,6 @@ package billing_service_impl
 
 import (
 	"context"
-	"crypto/tls"
-	"log"
-	"time"
 
 	billing_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/billing"
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
@@ -28,17 +25,12 @@ func NewBillingServiceImpl(ctx context.Context, configService config_service.Con
 
 	clientService, cleanUp := grpc_client_service.NewGrpcClientService(ctx, tlsService, connectionService, &grpc_client_service.GrpcClientServiceOptions{TargetUrl: targetUrl, TlsServerName: tlsServerName, DisplayName: displayName, ConnectionStateName: connectionServiceName})
 	service := &BillingServiceImpl{
-		client: gen.NewBillingServiceClient(conn),
-		conn:   conn,
+		service: clientService,
 	}
 
-	return service, func() {
-		log.Println("close grpc billing service client")
+	service.client = gen.NewBillingServiceClient(service.service.Conn)
 
-		if service.conn != nil {
-			service.conn.Close()
-		}
-	}, nil
+	return service, cleanUp
 }
 
 func (c *BillingServiceImpl) WithdrawUserCreditCard(ctx context.Context, request *billing_service.WithdrawUserCreditCardRequest) (*billing_service.Purchase, error) {
