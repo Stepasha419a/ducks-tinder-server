@@ -114,3 +114,26 @@ func (c *GrpcClientService) monitorConnectionState(ctx context.Context) {
 		currentState = c.Conn.GetState()
 	}
 }
+
+func (c *GrpcClientService) handleStateChange(state connectivity.State) {
+	log.Printf("gRPC connection state changed, service: %s, state: %s", c.options.DisplayName, state.String())
+
+	switch state {
+	case connectivity.Ready:
+		c.IsReady.Store(true)
+		c.connectionService.UpdateState(c.options.ConnectionStateName, true, nil)
+
+	case connectivity.TransientFailure, connectivity.Shutdown:
+		c.IsReady.Store(false)
+		c.connectionService.UpdateState(c.options.ConnectionStateName, false, fmt.Errorf("gRPC service %s connection failed, state: %s", c.options.DisplayName, state))
+
+	case connectivity.Idle:
+		c.IsReady.Store(false)
+		c.connectionService.UpdateState(c.options.ConnectionStateName, false, fmt.Errorf("gRPC service %s connection failed, state: %s", c.options.DisplayName, state))
+
+		c.Conn.Connect()
+	case connectivity.Connecting:
+		c.IsReady.Store(false)
+		c.connectionService.UpdateState(c.options.ConnectionStateName, false, fmt.Errorf("gRPC service %s connection failed, state: %s", c.options.DisplayName, state))
+	}
+}
