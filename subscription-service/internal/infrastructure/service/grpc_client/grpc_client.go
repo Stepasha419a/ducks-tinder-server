@@ -3,6 +3,7 @@ package grpc_client_service
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"log"
 	"sync/atomic"
 	"time"
@@ -96,5 +97,20 @@ func NewGrpcClientService(ctx context.Context, tlsService *tls_service.TlsServic
 		if service.Conn != nil {
 			service.Conn.Close()
 		}
+	}
+}
+
+func (c *GrpcClientService) monitorConnectionState(ctx context.Context) {
+	currentState := c.Conn.GetState()
+
+	for {
+		c.handleStateChange(currentState)
+
+		if !c.Conn.WaitForStateChange(ctx, currentState) {
+			log.Printf("stopping connection monitor (context done), service: %s", c.options.DisplayName)
+			return
+		}
+
+		currentState = c.Conn.GetState()
 	}
 }
