@@ -67,11 +67,6 @@ func newContainer() (*Container, func(), error) {
 		grpc_subscription_service_server_impl.NewSubscriptionServiceServerImpl,
 		grpc_interceptor.NewInterceptor,
 		grpc_interface.NewGrpc,
-		provideDbName,
 		wire.Struct(new(Container), "*"),
 	))
-}
-
-func provideDbName(configService config_service.ConfigService) string {
-	return configService.GetConfig().PostgresDatabase
 }
