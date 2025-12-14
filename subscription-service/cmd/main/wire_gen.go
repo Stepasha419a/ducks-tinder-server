@@ -7,21 +7,25 @@
 package main
 
 import (
+	"context"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/facade"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/billing"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
+	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/jwt"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/validator"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/database"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/repository_impl"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/billing_service_impl"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/config_impl"
+	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/context"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/login_impl"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/validator_impl"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/interceptor"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/server"
+	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/health"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/metrics"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/subscription"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
@@ -34,40 +38,40 @@ import (
 // Injectors from wire.go:
 
 func newContainer() (*Container, func(), error) {
+	context, cleanup := context_service.NewContext()
 	validatorServiceImpl := validator_service_impl.NewValidatorService()
 	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
-	app, cleanup := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
+	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
 	metricsController := metrics_controller.NewMetricsController(app)
 	tlsService := tls_service.NewTlsService(configServiceImpl)
-	string2 := provideDbName(configServiceImpl)
-	postgresInstance, cleanup2 := database.NewPostgresInstance(configServiceImpl, tlsService, string2)
-	subscriptionRepositoryImpl := repository_impl.NewSubscriptionRepository(postgresInstance)
+	connectionService := connection_service.NewConnectionService()
+	postgres, cleanup3 := database.NewPostgresInstance(context, configServiceImpl, tlsService, connectionService)
+	subscriptionRepositoryImpl := repository_impl.NewSubscriptionRepository(postgres)
 	loginServiceImpl := login_service_impl.NewLoginServiceImpl(configServiceImpl)
-	billingServiceImpl, cleanup3, err := billing_service_impl.NewBillingServiceImpl(configServiceImpl, jwtService, tlsService)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
+	billingServiceImpl, cleanup4 := billing_service_impl.NewBillingServiceImpl(context, configServiceImpl, tlsService, connectionService)
 	subscriptionFacade := facade.NewSubscriptionFacade(subscriptionRepositoryImpl, loginServiceImpl, billingServiceImpl)
 	subscriptionController := subscription_controller.NewSubscriptionController(app, subscriptionFacade, validatorServiceImpl)
 	subscriptionServiceServerImpl := grpc_subscription_service_server_impl.NewSubscriptionServiceServerImpl(subscriptionFacade, validatorServiceImpl)
+	healthController := health_controller.NewHealthController(app, connectionService)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
-	server, cleanup4 := grpc_interface.NewGrpc(subscriptionServiceServerImpl, grpcInterceptor, tlsService)
+	server, cleanup5 := grpc_interface.NewGrpc(subscriptionServiceServerImpl, grpcInterceptor, tlsService, configServiceImpl)
 	container := &Container{
+		Context:                context,
 		ValidatorService:       validatorServiceImpl,
 		ConfigService:          configServiceImpl,
 		App:                    app,
 		MetricsController:      metricsController,
 		SubscriptionController: subscriptionController,
 		BillingServiceServer:   subscriptionServiceServerImpl,
+		HealthController:       healthController,
 		TlsService:             tlsService,
 		GrpcServer:             server,
 		BillingService:         billingServiceImpl,
 	}
 	return container, func() {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -78,17 +82,15 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
+	Context                context.Context
 	ValidatorService       validator_service.ValidatorService
 	ConfigService          config_service.ConfigService
 	App                    *fiber.App
 	MetricsController      *metrics_controller.MetricsController
 	SubscriptionController *subscription_controller.SubscriptionController
 	BillingServiceServer   gen.SubscriptionServiceServer
+	HealthController       *health_controller.HealthController
 	TlsService             *tls_service.TlsService
 	GrpcServer             *grpc.Server
 	BillingService         billing_service.BillingService
-}
-
-func provideDbName(configService config_service.ConfigService) string {
-	return configService.GetConfig().PostgresDatabase
 }
