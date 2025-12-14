@@ -7,3 +7,13 @@ import (
 type HealthController struct {
 	connectionService *connection_service.ConnectionService
 }
+
+func NewHealthController(f *fiber.App, connectionService *connection_service.ConnectionService) *HealthController {
+	controller := &HealthController{connectionService}
+
+	f.Get("/livez", controller.GetProbe)
+	f.Get("/readyz", controller.GetReadyProbe)
+	f.Get("/startupz", controller.GetProbe)
+
+	return controller
+}
