@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
+
 	facade "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/facade"
 	service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/service"
 	repository "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/repository"
 	billing_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/billing"
 	config_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/config"
+	connection_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/connection"
 	jwt_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/jwt"
 	login_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/login"
 	validator_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/validator"
@@ -13,12 +16,14 @@ import (
 	repository_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/repository_impl"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/billing_service_impl"
 	config_service_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/config_impl"
+	context_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/context"
 	login_service_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/login_impl"
 	tls_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/tls"
 	validator_service_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/infrastructure/service/validator_impl"
 	grpc_interface "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	grpc_interceptor "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/interceptor"
 	grpc_subscription_service_server_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/server"
+	health_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/health"
 	metrics_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/metrics"
 	subscription_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/subscription"
 	fiber_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
@@ -31,12 +36,14 @@ import (
 )
 
 type Container struct {
+	Context                context.Context
 	ValidatorService       validator_service.ValidatorService
 	ConfigService          config_service.ConfigService
 	App                    *fiber.App
 	MetricsController      *metrics_controller.MetricsController
 	SubscriptionController *subscription_controller.SubscriptionController
 	BillingServiceServer   gen.SubscriptionServiceServer
+	HealthController       *health_controller.HealthController
 	TlsService             *tls_service.TlsService
 	GrpcServer             *grpc.Server
 	BillingService         billing_service.BillingService
@@ -44,6 +51,8 @@ type Container struct {
 
 func newContainer() (*Container, func(), error) {
 	panic(wire.Build(
+		context_service.NewContext,
+		connection_service.NewConnectionService,
 		wire.Bind(new(validator_service.ValidatorService), new(*validator_service_impl.ValidatorServiceImpl)),
 		validator_service_impl.NewValidatorService,
 		wire.Bind(new(config_service.ConfigService), new(*config_service_impl.ConfigServiceImpl)),
@@ -63,6 +72,7 @@ func newContainer() (*Container, func(), error) {
 		facade.NewSubscriptionFacade,
 		subscription_controller.NewSubscriptionController,
 		metrics_controller.NewMetricsController,
+		health_controller.NewHealthController,
 		wire.Bind(new(gen.SubscriptionServiceServer), new(*grpc_subscription_service_server_impl.SubscriptionServiceServerImpl)),
 		grpc_subscription_service_server_impl.NewSubscriptionServiceServerImpl,
 		grpc_interceptor.NewInterceptor,
