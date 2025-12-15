@@ -19,3 +19,4 @@ WORKDIR /app
 
 COPY --from=build /usr/src/app/app .
 COPY --from=build /usr/src/app/migration .
+COPY --from=build /usr/src/app/migrations ./migrations
