@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
 	grpc_interface "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	fiber_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
@@ -23,8 +20,7 @@ func main() {
 }
 
 func setUpWithGracefulShutdown(container *Container, cleaner func()) {
-	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	mainCtx := container.Context
 
 	g, gCtx := errgroup.WithContext(mainCtx)
 
