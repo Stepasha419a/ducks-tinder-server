@@ -29,7 +29,7 @@ describe('when accept pair is called', () => {
     }).compile();
 
     repository = moduleRef.get<UserRepository>(UserRepository);
-    chatClient = moduleRef.get<ClientProxy>(SERVICES.CHAT);
+    chatClient = moduleRef.get<ClientProxy>(GRPC_SERVICE.CHAT);
     acceptPairCommandHandler = moduleRef.get<AcceptPairCommandHandler>(
       AcceptPairCommandHandler,
     );
@@ -52,7 +52,9 @@ describe('when accept pair is called', () => {
         response = await acceptPairCommandHandler.execute(
           new AcceptPairCommand(UserStub().id, pairId),
         );
-      } catch {}
+      } catch {
+        /* empty */
+      }
     });
 
     it('should call repository findPair', () => {
