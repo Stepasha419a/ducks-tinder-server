@@ -89,8 +89,6 @@ func NewGrpcClientService(ctx context.Context, tlsService *tls_service.TlsServic
 		}
 	}
 
-	log.Printf("gRPC service connected successfully, service: %s", options.DisplayName)
-
 	return service, func() {
 		log.Printf("close grpc service client, service: %s", options.DisplayName)
 
