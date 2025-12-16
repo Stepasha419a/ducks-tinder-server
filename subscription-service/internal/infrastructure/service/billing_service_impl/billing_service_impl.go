@@ -21,7 +21,7 @@ type BillingServiceImpl struct {
 
 func NewBillingServiceImpl(ctx context.Context, configService config_service.ConfigService, tlsService *tls_service.TlsService, connectionService *connection_service.ConnectionService) (*BillingServiceImpl, func()) {
 	targetUrl := configService.GetConfig().GrpcBillingServiceUrl
-	tlsServerName := configService.GetConfig().TlsServerName
+	tlsServerName := configService.GetConfig().GrpcBillingServiceDomain
 
 	clientService, cleanUp := grpc_client_service.NewGrpcClientService(ctx, tlsService, connectionService, &grpc_client_service.GrpcClientServiceOptions{TargetUrl: targetUrl, TlsServerName: tlsServerName, DisplayName: displayName, ConnectionStateName: connectionServiceName})
 	service := &BillingServiceImpl{
