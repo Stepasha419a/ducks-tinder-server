@@ -18,6 +18,5 @@ type (
 		PostgresUser            string
 		PostgresPassword        string
 		PostgresDatabase        string
-		PostgresRootDatabase    string
 	}
 )
