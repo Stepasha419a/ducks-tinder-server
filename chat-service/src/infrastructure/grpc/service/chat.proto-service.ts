@@ -1,3 +1,17 @@
 import { Observable } from 'rxjs';
 
-export interface ChatProtoService {}
+export interface ChatProtoService {
+  createChat(request: CreateChatRequest): Observable<ChatResponse>;
+}
+
+export interface CreateChatRequest {
+  member_ids: string[];
+}
+
+export interface ChatResponse {
+  id: string;
+  blocked: boolean;
+  blockedById?: string;
+  createdAt: string;
+  updatedAt: string;
+}
