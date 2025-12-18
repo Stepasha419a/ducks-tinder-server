@@ -17,3 +17,7 @@ const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
     service: 'UserService',
   },
 };
+
+export enum ChatGrpcServiceEndpoint {
+  CreateChat = 'CreateChat',
+}
