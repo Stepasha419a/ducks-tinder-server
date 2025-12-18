@@ -1,0 +1,4 @@
+export enum GRPC_SERVICE {
+  CHAT = 'GRPC_CHAT_SERVICE',
+  USER = 'GRPC_USER_SERVICE',
+}
