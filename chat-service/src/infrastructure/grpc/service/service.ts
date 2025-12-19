@@ -21,3 +21,15 @@ const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
 export enum ChatGrpcServiceEndpoint {
   CreateChat = 'CreateChat',
 }
+
+export function getGrpcPackageName(name: GRPC_SERVICE) {
+  return info[name].package;
+}
+
+export function getGrpcPackageServiceName(name: GRPC_SERVICE) {
+  return info[name].service;
+}
+
+export function getIsGrpcServiceCritical(name: GRPC_SERVICE) {
+  return Boolean(CRITICAL_GRPC_SERVICE_CLIENTS[name]);
+}
