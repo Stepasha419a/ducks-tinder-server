@@ -20,6 +20,12 @@ const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
   },
 };
 
+type ChatMethods = Capitalize<keyof ChatService & string>;
+
+export const ChatGrpcServiceEndpoints: Record<ChatMethods, ChatMethods> = {
+  CreateChat: 'CreateChat',
+};
+
 export function getGrpcPackageName(name: GRPC_SERVICE) {
   return info[name].package;
 }
