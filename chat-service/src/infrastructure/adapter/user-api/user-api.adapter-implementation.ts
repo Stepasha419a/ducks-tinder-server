@@ -1,29 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserApi } from 'src/application/adapter';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { ChatMemberView } from 'src/application/adapter/user-api/view';
-import { ChatConsumer } from 'src/interface';
-import { RABBITMQ } from 'src/infrastructure/rabbitmq';
+import {
+  getGrpcPackageServiceName,
+  GRPC_SERVICE,
+} from 'src/infrastructure/grpc/service';
+import { ClientGrpc } from '@nestjs/microservices';
+import { user } from 'src/infrastructure/grpc/gen';
 
 @Injectable()
 export class UserApiImplementation implements UserApi {
-  constructor(private readonly amqp: AmqpConnection) {}
+  private userGrpcService: user.UserService;
 
-  private readonly logger = new Logger(ChatConsumer.name);
+  constructor(@Inject(GRPC_SERVICE.USER) private readonly client: ClientGrpc) {}
 
-  async getChatMemberView(userId: string): Promise<ChatMemberView> {
-    try {
-      const view = await this.amqp.request<ChatMemberView>({
-        exchange: RABBITMQ.USER.EXCHANGE,
-        routingKey: RABBITMQ.USER.EVENTS.GET_SHORT_USER,
-        payload: userId,
-      });
-
-      return view;
-    } catch (error) {
-      this.logger.error('Failed to get chat member view', error);
-
-      throw error;
-    }
+  onModuleInit() {
+    this.userGrpcService = this.client.getService<user.UserService>(
+      getGrpcPackageServiceName(GRPC_SERVICE.USER),
+    );
   }
 }
