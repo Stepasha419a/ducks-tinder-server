@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_SERVICE_CLIENTS, getGrpcPackageName } from './service';
 import { ConfigService } from '@nestjs/config';
@@ -23,6 +23,10 @@ import { UserApiImplementation } from '../adapter';
         return {
           name,
           useFactory: (configService: ConfigService) => {
+            const logger = new Logger('GrpcClientFactory');
+
+            logger.log(`Initializing gRPC client: ${name}`);
+
             return {
               transport: Transport.GRPC,
               options: {
