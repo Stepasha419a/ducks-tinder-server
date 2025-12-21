@@ -30,6 +30,11 @@ import { UserApiImplementation } from '../adapter';
             return {
               transport: Transport.GRPC,
               options: {
+                keepalive: {
+                  keepaliveTimeMs: 10 * 1000,
+                  keepaliveTimeoutMs: 5 * 1000,
+                  keepalivePermitWithoutCalls: 1,
+                },
                 url: configService.get(`${name}_URL`),
                 package: packageName,
                 protoPath: `proto/${packageName}.proto`,
