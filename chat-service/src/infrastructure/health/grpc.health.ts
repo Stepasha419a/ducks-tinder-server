@@ -52,11 +52,27 @@ export class GrpcHealthIndicator {
       if (isHealthy) {
         return indicator.up();
       }
+
+      const errorDetails = {
+        message: `${serviceName} gRPC check failed`,
+        state,
+        stateMessage: this.getStateName(state),
+        isCritical,
+      };
+
+      return indicator.up(errorDetails);
     } catch (error) {
       return indicator.down({
         message: `${serviceName} gRPC check failed`,
         error: error.message,
       });
     }
+  }
+
+  private getStateName(state: number) {
+    return (
+      ['IDLE', 'CONNECTING', 'READY', 'TRANSIENT_FAILURE', 'SHUTDOWN'][state] ||
+      'UNKNOWN'
+    );
   }
 }
