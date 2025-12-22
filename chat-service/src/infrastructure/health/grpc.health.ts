@@ -60,6 +60,10 @@ export class GrpcHealthIndicator {
         isCritical,
       };
 
+      if (isCritical) {
+        return indicator.down(errorDetails);
+      }
+
       return indicator.up(errorDetails);
     } catch (error) {
       return indicator.down({
