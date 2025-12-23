@@ -32,4 +32,21 @@ export class HealthController {
       () => Promise.resolve({ live: { status: 'up' } }),
     ]);
   }
+
+  @Get('readyz')
+  @HealthCheck()
+  checkReady() {
+    return this.health.check([
+      () => this.prismaHealth.pingCheck('database', this.db),
+      () => this.rmqHealth.isHealthy('rabbitmq'),
+      ...Object.values(GRPC_SERVICE_CLIENTS).map(
+        (service) => () =>
+          this.grpcHealth.isHealthy(
+            `${getGrpcPackageName(service)}ServiceGrpc`,
+            service,
+            getIsGrpcServiceCritical(service),
+          ),
+      ),
+    ]);
+  }
 }
