@@ -24,4 +24,12 @@ export class HealthController {
     private readonly db: DatabaseService,
     private readonly prismaHealth: PrismaHealthIndicator,
   ) {}
+
+  @Get('livez')
+  @HealthCheck()
+  checkLive() {
+    return this.health.check([
+      () => Promise.resolve({ live: { status: 'up' } }),
+    ]);
+  }
 }
