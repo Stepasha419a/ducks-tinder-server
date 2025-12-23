@@ -49,4 +49,12 @@ export class HealthController {
       ),
     ]);
   }
+
+  @Get('startupz')
+  @HealthCheck()
+  checkStartup() {
+    return this.health.check([
+      () => Promise.resolve({ startup: { status: 'up' } }),
+    ]);
+  }
 }
