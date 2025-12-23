@@ -10,6 +10,7 @@
     "build": "ncc build ./src/main.ts -o dist --minify -t",
     "format": "prettier --check \"src/**/*.ts\"",
     "format:fix": "prettier --write \"src/**/*.ts\"",
+    "gen:proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_opt=outputEncodeMethods=false --ts_proto_opt=returnObservable=true --ts_proto_opt=outputJsonMethods=false --ts_proto_opt=outputClientImpl=false --ts_proto_opt=lowerCaseServiceMethods=true --ts_proto_opt=outputIndex=true --ts_proto_out=./src/infrastructure/grpc/gen --ts_proto_opt=fileSuffix=.pb --proto_path=./proto ./proto/*.proto",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=dev nest start --watch",
     "start:dev:docker": "cross-env NODE_ENV=dev-docker nest start --watch",
@@ -27,6 +28,8 @@
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^6.0.2",
+    "@grpc/grpc-js": "^1.14.1",
+    "@grpc/proto-loader": "^0.8.0",
     "@nestjs/common": "^10.3.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.3.0",
