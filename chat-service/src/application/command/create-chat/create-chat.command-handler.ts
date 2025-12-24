@@ -36,5 +36,7 @@ export class CreateChatCommandHandler
         await this.repository.saveUserChatConnection(userChatConnection);
       }),
     );
+
+    return chat;
   }
 }

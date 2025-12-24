@@ -117,7 +117,7 @@ export class ChatFacade {
   }
 
   private createChat(dto: CreateChatDto) {
-    return this.commandBus.execute<CreateChatCommand>(
+    return this.commandBus.execute<CreateChatCommand, ChatAggregate>(
       new CreateChatCommand(dto),
     );
   }
