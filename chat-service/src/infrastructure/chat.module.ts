@@ -26,7 +26,6 @@ import { UserApiImplementation } from './adapter';
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,
     { provide: ChatRepository, useClass: ChatAdapter },
-    { provide: UserApi, useClass: UserApiImplementation },
     {
       provide: ChatFacade,
 
