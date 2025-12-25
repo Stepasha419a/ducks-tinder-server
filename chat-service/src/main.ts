@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import * as path from 'path';
 import * as fs from 'fs';
 import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
+import { GrpcOptionsService } from './infrastructure/grpc';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -32,6 +33,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   await app.init();
+
+  const grpcOptionsService = app.get(GrpcOptionsService);
+
+  app.connectMicroservice(grpcOptionsService.getOptions());
 
   await app.startAllMicroservices();
 
