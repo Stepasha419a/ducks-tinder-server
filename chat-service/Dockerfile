@@ -16,7 +16,7 @@ RUN npm run build
 
 FROM node:21-alpine
 
-RUN apk add --no-cache bash openssl postgresql
+RUN apk add --no-cache bash openssl postgresql curl
 
 WORKDIR /app
 
