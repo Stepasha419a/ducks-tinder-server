@@ -13,4 +13,16 @@ import { CreateChatGrpcDto, GrpcValidationPipe } from './common';
 @UsePipes(GrpcValidationPipe)
 export class ChatGrpcController {
   constructor(private readonly facade: ChatFacade) {}
+
+  @GrpcMethod(
+    getGrpcPackageServiceName(GRPC_SERVICE.CHAT),
+    ChatGrpcServiceEndpoints.CreateChat,
+  )
+  createChat(dto: CreateChatGrpcDto): Promise<chat.ChatResponse> {
+    try {
+      return this.facade.commands.createChat(dto);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
