@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { GRPC_SERVICE_CLIENTS, getGrpcPackageName } from './service/service';
+import { GRPC_SERVICE_CLIENTS, getGrpcPackageName } from './service';
 import { ConfigService } from '@nestjs/config';
 import { DomainModule } from 'src/domain';
 import { FileApiImplementation } from '../adapter/file-api';
