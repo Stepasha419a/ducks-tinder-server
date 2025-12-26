@@ -44,9 +44,6 @@ export class GrpcOptionsService {
       options: {
         url: `0.0.0.0:${port}`,
         package: 'user',
-        loader: {
-          keepCase: true,
-        },
         gracefulShutdown: true,
         keepalive: {
           keepaliveTimeMs: 10 * 1000,
