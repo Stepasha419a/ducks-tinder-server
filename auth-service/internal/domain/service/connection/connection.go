@@ -36,16 +36,16 @@ type ConnectionStateReportError struct {
 
 type ConnectionService struct {
 	Mu     sync.RWMutex
-	States map[ConnectionType]*ConnectionState
+	States map[string]*ConnectionState
 }
 
 func NewConnectionService() *ConnectionService {
 	return &ConnectionService{
-		States: make(map[ConnectionType]*ConnectionState),
+		States: make(map[string]*ConnectionState),
 	}
 }
 
-func (m *ConnectionService) UpdateState(t ConnectionType, healthy bool, err error) {
+func (m *ConnectionService) UpdateState(t string, healthy bool, err error) {
 	m.Mu.Lock()
 	defer m.Mu.Unlock()
 
