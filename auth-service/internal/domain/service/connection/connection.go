@@ -5,18 +5,33 @@ import (
 	"time"
 )
 
-type ConnectionType string
+type StateType string
 
 const (
-	ConnPostgres ConnectionType = "postgres"
-	ConnRabbitMQ ConnectionType = "rabbitmq"
+	StateUp   StateType = "up"
+	StateDown StateType = "down"
 )
 
 type ConnectionState struct {
-	Type    ConnectionType
+	Type    string
 	Healthy bool
 	Error   error
 	Updated time.Time
+}
+
+type ConnectionStateReport struct {
+	Status StateType                              `json:"status"`
+	Info   map[string]*ConnectionStateReportInfo  `json:"info"`
+	Error  map[string]*ConnectionStateReportError `json:"error"`
+}
+
+type ConnectionStateReportInfo struct {
+	Status StateType `json:"status"`
+}
+
+type ConnectionStateReportError struct {
+	Status StateType `json:"status"`
+	Error  string    `json:"error"`
 }
 
 type ConnectionService struct {
