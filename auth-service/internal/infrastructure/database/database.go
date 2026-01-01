@@ -15,6 +15,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+var connectionServiceName = "postgres"
+
 type Postgres struct {
 	Mu                sync.RWMutex
 	Pool              *pgxpool.Pool
@@ -38,7 +40,7 @@ func (pg *Postgres) run(ctx context.Context) {
 	for {
 		if err := pg.connect(); err != nil {
 			slog.Error("Postgres connection failed", slog.Any("err", err))
-			pg.ConnectionService.UpdateState(connection_service.ConnPostgres, false, err)
+			pg.ConnectionService.UpdateState(connectionServiceName, false, err)
 			select {
 			case <-time.After(5 * time.Second):
 				continue
@@ -47,7 +49,7 @@ func (pg *Postgres) run(ctx context.Context) {
 			}
 		}
 
-		pg.ConnectionService.UpdateState(connection_service.ConnPostgres, true, nil)
+		pg.ConnectionService.UpdateState(connectionServiceName, true, nil)
 		slog.Info("Postgres connected successfully")
 
 		ticker := time.NewTicker(5 * time.Second)
@@ -57,7 +59,7 @@ func (pg *Postgres) run(ctx context.Context) {
 				if err := pg.Ping(ctx); err != nil {
 					slog.Error("Postgres lost connection", slog.Any("err", err))
 					pg.Close()
-					pg.ConnectionService.UpdateState(connection_service.ConnPostgres, false, err)
+					pg.ConnectionService.UpdateState(connectionServiceName, false, err)
 
 					goto RECONNECT
 				}
