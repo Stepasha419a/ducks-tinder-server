@@ -91,9 +91,9 @@ func initMigration(ctx context.Context, db *Postgres) error {
 		id UUID PRIMARY KEY,
 		email VARCHAR(100) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL,
-		refreshToken text,
-		createdAt timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		updatedAt timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+		refresh_token text,
+		created_at timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		updated_at timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 	)`)
 
 	if err != nil {
@@ -105,7 +105,7 @@ func initMigration(ctx context.Context, db *Postgres) error {
 func refreshTokenIndexMigration(ctx context.Context, db *Postgres) error {
 	slog.Info("migration - refresh token index")
 
-	_, err := db.Exec(nil)(ctx, `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refreshToken)`)
+	_, err := db.Exec(nil)(ctx, `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS refresh_token_index ON auth_users (refresh_token)`)
 
 	if err != nil {
 		return err
