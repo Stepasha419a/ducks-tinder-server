@@ -5,10 +5,16 @@ option go_package = "./gen";
 
 service UserService {
   rpc GetShortUser (GetShortUserRequest) returns (ShortUser);
+  rpc CreateUser (CreateUserRequest) returns (ShortUser);
 }
 
 message GetShortUserRequest {
   string id = 1;
+}
+
+message CreateUserRequest {
+  string id   = 1;
+  string name = 2;
 }
 
 message ShortUser {
