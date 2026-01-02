@@ -95,4 +95,19 @@ func NewGrpcClientService(ctx context.Context, connectionService *connection_ser
 	}
 }
 
+func (c *GrpcClientService) monitorConnectionState(ctx context.Context) {
+	currentState := c.Conn.GetState()
+
+	for {
+		c.handleStateChange(currentState)
+
+		if !c.Conn.WaitForStateChange(ctx, currentState) {
+			slog.Info("Stopping connection monitor (context done)",
+				slog.String("service", c.options.DisplayName))
+			return
+		}
+
+		currentState = c.Conn.GetState()
+	}
+}
 }
