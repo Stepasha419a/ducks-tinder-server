@@ -58,4 +58,41 @@ func NewGrpcClientService(ctx context.Context, connectionService *connection_ser
 	}
 
 	go service.monitorConnectionState(ctx)
+
+	conn.Connect()
+
+	for {
+		state := conn.GetState()
+
+		if state == connectivity.Ready {
+			slog.Info("gRPC service connected successfully",
+				slog.String("service", options.DisplayName))
+			break
+		}
+
+		waitCtx, waitCancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+		changed := conn.WaitForStateChange(waitCtx, state)
+		waitCancel()
+
+		if !changed {
+			slog.Error("Failed to connect to gRPC service",
+				slog.String("service", options.DisplayName),
+				slog.String("target", options.TargetUrl),
+				slog.String("current_state", state.String()),
+				slog.String("next_retry_log", "5s"),
+			)
+		}
+	}
+
+	return service, func() {
+		slog.Info("close grpc service client",
+			slog.String("service", options.DisplayName))
+
+		if service.Conn != nil {
+			service.Conn.Close()
+		}
+	}
+}
+
 }
