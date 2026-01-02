@@ -30,3 +30,32 @@ var kacp = keepalive.ClientParameters{
 	Timeout:             5 * time.Second,
 	PermitWithoutStream: true,
 }
+
+func NewGrpcClientService(ctx context.Context, connectionService *connection_service.ConnectionService, options *GrpcClientServiceOptions) (*GrpcClientService, func()) {
+	tlsConfig := tls_service.GetConfig(&options.TlsServerName)
+
+	tlsConfig.ClientAuth = tls.RequireAndVerifyClientCert
+	creds := credentials.NewTLS(tlsConfig)
+
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(creds),
+
+		grpc.WithKeepaliveParams(kacp),
+	}
+
+	conn, err := grpc.NewClient(options.TargetUrl, opts...)
+	if err != nil {
+		slog.Error("gRPC service creation failed", slog.Any("err", err),
+			slog.String("service", options.DisplayName))
+
+		panic(err)
+	}
+
+	service := &GrpcClientService{
+		Conn:              conn,
+		connectionService: connectionService,
+		options:           options,
+	}
+
+	go service.monitorConnectionState(ctx)
+}
