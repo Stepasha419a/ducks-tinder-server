@@ -29,7 +29,7 @@ type (
 		PostgresUser             string `yaml:"postgres_user"`
 		PostgresPassword         string `yaml:"postgres_password"`
 		PostgresDatabase         string `yaml:"postgres_database"`
-		PostgresRootDatabase     string `yaml:"postgres_root_database"`
+		GrpcUserServiceUrl       string `yaml:"grpc_user_service_url"`
 	}
 )
 
