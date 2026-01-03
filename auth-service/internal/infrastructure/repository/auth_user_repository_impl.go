@@ -76,8 +76,8 @@ func (r *authUserRepository) FindByEmail(ctx context.Context, email string, tx p
 
 func (r *authUserRepository) FindByRefreshToken(ctx context.Context, refreshToken string, tx pgx.Tx) (*entity.AuthUser, error) {
 	authUser := entity.AuthUser{}
-	err := r.db.QueryRow(tx)(ctx, "SELECT * FROM auth_users WHERE refreshToken=@refreshToken", pgx.NamedArgs{
-		"refreshToken": refreshToken,
+	err := r.db.QueryRow(tx)(ctx, "SELECT * FROM auth_users WHERE refresh_token=@refresh_token", pgx.NamedArgs{
+		"refresh_token": refreshToken,
 	}).Scan(&authUser.Id, &authUser.Email, &authUser.Password, &authUser.RefreshToken, &authUser.CreatedAt, &authUser.UpdatedAt)
 
 	if err != nil {
