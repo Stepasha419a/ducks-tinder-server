@@ -35,19 +35,18 @@ func main() {
 
 	defer cancel()
 
-	db, cleanup := database.NewPostgresInstance(ctx, connectionService)
+	db, cleanupDb := database.NewPostgresInstance(ctx, connectionService)
 	transactionService := database.NewTransactionService(db)
 
 	userService, cleanupGrpc := user_service_impl.NewUserServiceImpl(ctx, connectionService)
-
-	userService := adapter.NewUserService(brokerService)
 
 	authUserRepository := repository_impl.NewAuthUserRepository(db)
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
 	cleaner := func() {
-		cleanup()
+		cleanupDb()
+		cleanupGrpc()
 	}
 
 	setUpWithGracefulShutdown(authFacade, connectionService, cleaner)
