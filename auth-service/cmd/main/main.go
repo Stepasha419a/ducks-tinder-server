@@ -3,13 +3,12 @@ package main
 import (
 	"auth-service/internal/application/facade"
 	"auth-service/internal/application/service"
-	broker_service "auth-service/internal/domain/service/broker"
 	connection_service "auth-service/internal/domain/service/connection"
-	"auth-service/internal/infrastructure/adapter"
 	"auth-service/internal/infrastructure/database"
 	repository_impl "auth-service/internal/infrastructure/repository"
 	config_service "auth-service/internal/infrastructure/service/config"
 	tls_service "auth-service/internal/infrastructure/service/tls"
+	"auth-service/internal/infrastructure/service/user_service_impl"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	health_controller "auth-service/internal/interface/http/controller/health"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
@@ -39,7 +38,7 @@ func main() {
 	db, cleanup := database.NewPostgresInstance(ctx, connectionService)
 	transactionService := database.NewTransactionService(db)
 
-	brokerService := broker_service.NewBrokerService(tls_service.GetConfig(&config_service.GetConfig().RabbitmqTlsServerName), connectionService)
+	userService, cleanupGrpc := user_service_impl.NewUserServiceImpl(ctx, connectionService)
 
 	userService := adapter.NewUserService(brokerService)
 
