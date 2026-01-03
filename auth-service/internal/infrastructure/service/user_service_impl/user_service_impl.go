@@ -31,3 +31,17 @@ func NewUserServiceImpl(ctx context.Context, connectionService *connection_servi
 
 	return service, cleanUp
 }
+
+func (c *UserServiceImpl) CreateUser(ctx context.Context, request *user_service.CreateUserRequest) error {
+	in := &gen.CreateUserRequest{
+		Id:   request.Id,
+		Name: request.Name,
+	}
+
+	_, err := c.client.CreateUser(ctx, in)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
