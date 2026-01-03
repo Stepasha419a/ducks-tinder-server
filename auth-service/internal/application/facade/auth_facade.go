@@ -7,8 +7,8 @@ import (
 	register "auth-service/internal/application/command/auth/register"
 	"auth-service/internal/application/mapper"
 	service "auth-service/internal/application/service"
+	user_service "auth-service/internal/application/service/user"
 	domain "auth-service/internal/domain/repository"
-	user_service "auth-service/internal/domain/service/user"
 	"auth-service/internal/infrastructure/database"
 	"context"
 )
