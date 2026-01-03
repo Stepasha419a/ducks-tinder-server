@@ -2,10 +2,10 @@ package register
 
 import (
 	"auth-service/internal/application/mapper"
+	user_service "auth-service/internal/application/service/user"
 	entity "auth-service/internal/domain/entity"
 	repository "auth-service/internal/domain/repository"
 	jwt_service "auth-service/internal/domain/service/jwt"
-	user_service "auth-service/internal/domain/service/user"
 	"auth-service/internal/infrastructure/database"
 	"context"
 	"net/http"
@@ -43,7 +43,7 @@ func RegisterCommandHandler(ctx context.Context, command *RegisterCommand, respo
 		return nil, err
 	}
 
-	err = userService.EmitUserRegistered(&user_service.UserRegisteredDto{Id: authUser.Id, Name: command.Name})
+	err = userService.CreateUser(ctx, &user_service.CreateUserRequest{Id: authUser.Id, Name: command.Name})
 	if err != nil {
 		return nil, err
 	}
