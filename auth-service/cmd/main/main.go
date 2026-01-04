@@ -44,9 +44,23 @@ func main() {
 
 	authFacade := facade.NewAuthFacade(authUserRepository, userService, transactionService)
 
+	httpGin := gin_impl.NewGin(int(config_service.GetConfig().Port), "main", connectionService)
+	healthGin := gin_impl.NewGin(int(config_service.GetConfig().HealthPort), "health", connectionService)
+
+	auth_controller.NewAuthController(httpGin.Engine, authFacade)
+
+	metrics_controller.NewMetricsController(healthGin.Engine)
+	health_controller.NewHealthController(healthGin.Engine, connectionService)
+
 	cleaner := func() {
-		cleanupDb()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		httpGin.Shutdown(shutdownCtx)
+		healthGin.Shutdown(shutdownCtx)
+
 		cleanupGrpc()
+		cleanupDb()
 	}
 
 	setUpWithGracefulShutdown(authFacade, connectionService, cleaner)
