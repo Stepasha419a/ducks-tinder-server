@@ -26,13 +26,16 @@ func NewHealthController(e *gin.Engine, connectionService *connection_service.Co
 }
 
 func (hc *HealthController) ReadyHealth(c *gin.Context) {
-	if hc.ConnectionService.IsReady() {
-		c.Status(http.StatusOK)
+	report := hc.ConnectionService.GetConnectionStateReport()
+
+	isHealthy := report.Status == connection_service.StateUp
+	if isHealthy {
+		c.JSON(http.StatusOK, report)
 
 		return
 	}
 
-	c.Status(http.StatusServiceUnavailable)
+	c.JSON(http.StatusServiceUnavailable, report)
 }
 
 func (hc *HealthController) SuccessHealth(c *gin.Context) {
