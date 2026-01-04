@@ -7,22 +7,19 @@ import (
 	"auth-service/internal/infrastructure/database"
 	repository_impl "auth-service/internal/infrastructure/repository"
 	config_service "auth-service/internal/infrastructure/service/config"
-	tls_service "auth-service/internal/infrastructure/service/tls"
 	"auth-service/internal/infrastructure/service/user_service_impl"
 	auth_controller "auth-service/internal/interface/http/controller/auth"
 	health_controller "auth-service/internal/interface/http/controller/health"
 	metrics_controller "auth-service/internal/interface/http/controller/metrics"
-	"auth-service/internal/interface/http/middleware"
+	gin_impl "auth-service/internal/interface/http/gin"
 	"context"
-	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
+	"time"
 
 	"log/slog"
 
-	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -63,16 +60,16 @@ func main() {
 		cleanupDb()
 	}
 
-	setUpWithGracefulShutdown(authFacade, connectionService, cleaner)
+	setUpWithGracefulShutdown(authFacade, httpGin, healthGin, cleaner)
 }
 
-func setUpWithGracefulShutdown(authFacade service.AuthService, connectionService *connection_service.ConnectionService, cleaner func()) {
+func setUpWithGracefulShutdown(authFacade service.AuthService, httpGin *gin_impl.GinImpl, healthGin *gin_impl.GinImpl, cleaner func()) {
 	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	g, gCtx := errgroup.WithContext(mainCtx)
 
-	initListeners(g, authFacade, connectionService)
+	initListeners(g, httpGin, healthGin)
 	gracefulShutdown(gCtx, g, cleaner)
 
 	err := g.Wait()
@@ -81,35 +78,13 @@ func setUpWithGracefulShutdown(authFacade service.AuthService, connectionService
 	}
 }
 
-func initListeners(g *errgroup.Group, authFacade service.AuthService, connectionService *connection_service.ConnectionService) {
+func initListeners(g *errgroup.Group, httpGin *gin_impl.GinImpl, healthGin *gin_impl.GinImpl) {
 	g.Go(func() error {
-		return initHttpListener(authFacade, connectionService)
+		return httpGin.ListenAndServeTLS()
 	})
-}
-
-func initHttpListener(authFacade service.AuthService, connectionService *connection_service.ConnectionService) error {
-	e := gin.Default()
-
-	e.Use(middleware.Cors)
-
-	auth_controller.NewAuthController(e, authFacade)
-	metrics_controller.NewMetricsController(e)
-	health_controller.NewHealthController(e, connectionService)
-
-	tlsConfig := tls_service.GetConfig(&config_service.GetConfig().TlsServerName)
-
-	server := &http.Server{
-		Addr:      "0.0.0.0:" + strconv.Itoa(int(config_service.GetConfig().Port)),
-		Handler:   e,
-		TLSConfig: tlsConfig,
-	}
-
-	err := server.ListenAndServeTLS("", "")
-	if err != nil {
-		return err
-	}
-
-	return nil
+	g.Go(func() error {
+		return healthGin.ListenAndServeTLS()
+	})
 }
 
 func gracefulShutdown(gCtx context.Context, g *errgroup.Group, cleaner func()) {
