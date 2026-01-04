@@ -28,3 +28,10 @@ func NewGin(port int, name string, connectionService *connection_service.Connect
 
 	return &GinImpl{Engine: e, server: server, port: port, name: name}
 }
+
+func (g *GinImpl) ListenAndServeTLS() error {
+	slog.Info("http service successfully listens to",
+		slog.String("service", g.name), slog.Int("port", g.port))
+
+	return g.server.ListenAndServeTLS("", "")
+}
