@@ -1,7 +1,14 @@
 package gin_impl
 
 import (
+	connection_service "auth-service/internal/domain/service/connection"
+	config_service "auth-service/internal/infrastructure/service/config"
+	tls_service "auth-service/internal/infrastructure/service/tls"
+	"auth-service/internal/interface/http/middleware"
+	"context"
+	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +41,11 @@ func (g *GinImpl) ListenAndServeTLS() error {
 		slog.String("service", g.name), slog.Int("port", g.port))
 
 	return g.server.ListenAndServeTLS("", "")
+}
+
+func (g *GinImpl) Shutdown(ctx context.Context) error {
+	slog.Info("http service shutdown ",
+		slog.String("service", g.name), slog.Int("port", g.port))
+
+	return g.server.Shutdown(ctx)
 }
