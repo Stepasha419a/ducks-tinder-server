@@ -19,6 +19,7 @@ type (
 		CookieRefreshTokenMaxAge uint32 `yaml:"cookie_refresh_token_max_age"`
 		CookieRefreshTokenDomain string `yaml:"cookie_refresh_token_domain"`
 		Port                     uint16 `yaml:"port"`
+		HealthPort               uint16 `yaml:"health_port"`
 		RabbitMqUrl              string `yaml:"rabbit_mq_url"`
 		RabbitMqUserQueue        string `yaml:"rabbit_mq_user_queue"`
 		TlsServerName            string `yaml:"tls_server_name"`
