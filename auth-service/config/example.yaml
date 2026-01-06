@@ -5,6 +5,7 @@ jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 cookie_refresh_token_max_age: 604800
 cookie_refresh_token_domain: localhost
 port: 5003
+health_port: 35003
 rabbit_mq_url: amqps://host.docker.internal:5672
 rabbit_mq_user_queue: user
 tls_server_name: host.docker.internal
