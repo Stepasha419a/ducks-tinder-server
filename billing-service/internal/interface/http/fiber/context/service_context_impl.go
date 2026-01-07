@@ -3,6 +3,7 @@ package fiber_impl_context
 import (
 	service_context "billing-service/internal/application/service/context"
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -37,7 +38,11 @@ func (s *ServiceContextImpl[R]) Response(status int, body R) error {
 	return s.ctx.Status(status).JSON(body)
 }
 
-func (s *ServiceContextImpl[R]) BadRequest() error {
+func (s *ServiceContextImpl[R]) BadRequest(validationError *string) error {
+	if validationError != nil {
+		return s.ctx.Status(http.StatusBadRequest).JSON(map[string]string{"status": "400", "message": fmt.Sprintf("BadRequest: %s", *validationError)})
+	}
+
 	return s.ctx.Status(http.StatusBadRequest).JSON(BadRequest)
 }
 
