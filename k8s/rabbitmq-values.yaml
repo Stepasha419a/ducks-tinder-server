@@ -1,0 +1,4 @@
+image:
+  registry: docker.io
+  repository: bitnami/rabbitmq
+  tag: 4.1.0-debian-12-r0
