@@ -8,3 +8,13 @@ auth:
   username: admin
   password: password
   updatePassword: true
+
+  tls:
+    enabled: true
+    failIfNoPeerCert: true
+    sslOptionsVerify: verify_peer
+
+    caCertificate: ca.crt
+    serverCertificate: tls.crt
+    serverKey: tls.key
+    existingSecret: common-ca-tls-secret
