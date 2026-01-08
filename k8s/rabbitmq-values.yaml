@@ -18,3 +18,6 @@ auth:
     serverCertificate: tls.crt
     serverKey: tls.key
     existingSecret: common-ca-tls-secret
+
+metrics:
+  enabled: true
