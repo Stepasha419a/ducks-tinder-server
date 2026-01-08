@@ -21,3 +21,11 @@ auth:
 
 metrics:
   enabled: true
+configuration: |-
+  listeners.ssl.default = 5672
+  listeners.tcp = none
+  ssl_options.cacertfile = /opt/bitnami/rabbitmq/certs/ca_certificate.pem
+  ssl_options.certfile = /opt/bitnami/rabbitmq/certs/server_certificate.pem
+  ssl_options.keyfile = /opt/bitnami/rabbitmq/certs/server_key.pem
+  ssl_options.verify = verify_peer
+  ssl_options.fail_if_no_peer_cert = true
