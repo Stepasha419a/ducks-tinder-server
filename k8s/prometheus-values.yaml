@@ -20,3 +20,8 @@ server:
     - name: prometheus-config
       mountPath: /etc/prometheus
       configMap: prometheus-config
+  extraSecretMounts:
+    - name: tls-volume
+      mountPath: /etc/prometheus/cert
+      secretName: common-ca-tls-secret
+      readOnly: true
