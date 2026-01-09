@@ -21,6 +21,7 @@ auth:
 
 metrics:
   enabled: true
+
 configuration: |-
   listeners.ssl.default = 5672
   listeners.tcp = none
@@ -37,3 +38,28 @@ configuration: |-
   management.ssl.password = password
   management.ssl.verify = verify_peer
   management.ssl.fail_if_no_peer_cert = true
+
+lifecycleHooks: {}
+
+customLivenessProbe:
+  exec:
+    command:
+      - /bin/bash
+      - -ec
+      - curl -f --user admin:password --cacert /opt/bitnami/rabbitmq/certs/ca_certificate.pem --cert /opt/bitnami/rabbitmq/certs/server_certificate.pem --key /opt/bitnami/rabbitmq/certs/server_key.pem https://127.0.0.1:15672/api/health/checks/virtual-hosts
+  initialDelaySeconds: 60
+  timeoutSeconds: 10
+  periodSeconds: 30
+  failureThreshold: 24
+  successThreshold: 1
+customReadinessProbe:
+  exec:
+    command:
+      - /bin/bash
+      - -ec
+      - curl -f --user admin:password --cacert /opt/bitnami/rabbitmq/certs/ca_certificate.pem --cert /opt/bitnami/rabbitmq/certs/server_certificate.pem --key /opt/bitnami/rabbitmq/certs/server_key.pem https://127.0.0.1:15672/api/health/checks/local-alarms
+  initialDelaySeconds: 10
+  timeoutSeconds: 20
+  periodSeconds: 30
+  failureThreshold: 3
+  successThreshold: 1
