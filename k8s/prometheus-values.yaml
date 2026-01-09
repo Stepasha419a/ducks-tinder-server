@@ -2,3 +2,8 @@ prometheus-pushgateway:
   enabled: false
 alertmanager:
   enabled: false
+server:
+  probeScheme: HTTPS
+  prefixURL: /prometheus/
+  baseURL: https://kubernetes.docker.internal/prometheus/
+  configPath: /etc/prometheus/prometheus.yml
