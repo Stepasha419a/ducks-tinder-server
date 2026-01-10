@@ -41,6 +41,9 @@ server:
       cpu: "0.125"
       memory: "128Mi"
 extraScrapeConfigs:
+  - job_name: "kube-state-metrics"
+    static_configs:
+      - targets: ["prometheus-kube-state-metrics:8080"]
 
   - job_name: "node-exporter"
     static_configs:
