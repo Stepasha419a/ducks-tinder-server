@@ -27,3 +27,9 @@ server:
       readOnly: true
   service:
     servicePort: 9090
+  persistentVolume:
+    enabled: true
+    size: 2Gi
+    storageClass: local-storage
+    volumeName: prometheus-pv
+    existingClaim: prometheus-pvc
