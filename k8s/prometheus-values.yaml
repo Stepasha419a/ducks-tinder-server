@@ -25,3 +25,5 @@ server:
       mountPath: /etc/prometheus/cert
       secretName: common-ca-tls-secret
       readOnly: true
+  service:
+    servicePort: 9090
