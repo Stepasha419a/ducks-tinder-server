@@ -40,3 +40,54 @@ server:
     requests:
       cpu: "0.125"
       memory: "128Mi"
+extraScrapeConfigs:
+
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["prometheus-prometheus-node-exporter:9100"]
+
+  - job_name: "postgres"
+    static_configs:
+      - targets: ["postgres-postgresql-metrics:9187"]
+
+  - job_name: "file-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    static_configs:
+      - targets: ["file-service-service:5002"]
+  - job_name: "auth-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    static_configs:
+      - targets: ["auth-service-service:5003"]
+  - job_name: "billing-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    static_configs:
+      - targets: ["billing-service-service:5004"]
+  - job_name: "subscription-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    static_configs:
+      - targets: ["subscription-service-service:5005"]
+  - job_name: "map-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["map-service-service:5006"]
