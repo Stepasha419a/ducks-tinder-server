@@ -45,6 +45,10 @@ extraScrapeConfigs:
     static_configs:
       - targets: ["prometheus-kube-state-metrics:8080"]
 
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor-service:8080"]
+
   - job_name: "node-exporter"
     static_configs:
       - targets: ["prometheus-prometheus-node-exporter:9100"]
