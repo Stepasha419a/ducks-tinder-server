@@ -33,3 +33,10 @@ server:
     storageClass: local-storage
     volumeName: prometheus-pv
     existingClaim: prometheus-pvc
+  resources:
+    limits:
+      cpu: "0.25"
+      memory: "640Mi"
+    requests:
+      cpu: "0.125"
+      memory: "128Mi"
