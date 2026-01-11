@@ -23,3 +23,11 @@ tls:
   certFilename: tls.crt
   certKeyFilename: tls.key
   certCAFilename: ca.crt
+auth:
+  postgresPassword: prisma
+metrics:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgres-exporter
+    tag: 0.13.2-debian-11-r53
