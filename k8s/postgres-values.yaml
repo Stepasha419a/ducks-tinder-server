@@ -13,3 +13,6 @@ primary:
     log_connections = on
     log_disconnections = on
   # 127.0.0.1 - test from port-forward
+  pgHbaConfiguration: |-
+    hostssl all all all cert clientcert=verify-full
+    host all all 127.0.0.1/32 trust
