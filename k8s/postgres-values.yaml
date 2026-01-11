@@ -1,0 +1,4 @@
+image:
+  registry: docker.io
+  repository: bitnamilegacy/postgresql
+  tag: 13-debian-12
