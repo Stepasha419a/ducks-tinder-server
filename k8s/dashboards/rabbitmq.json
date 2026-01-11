@@ -1,0 +1,71 @@
+{
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.3.4"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "description": "A new RabbitMQ Management Overview",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "iteration": 1659711638455,
+  "links": [
+    {
+      "icon": "doc",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Monitoring with Prometheus & Grafana",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://www.rabbitmq.com/prometheus.html"
+    }
+  ],
+  "liveNow": false,
+  "refresh": "15s",
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": ["rabbitmq-prometheus"],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["15s", "30s", "1m", "5m", "10m"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "timezone": "",
+  "title": "rabbitmq",
+  "uid": "Kn5xm-gZk",
+  "version": 20220805,
+  "weekStart": "",
+  "gnetId": 10991
+}
