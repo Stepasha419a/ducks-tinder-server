@@ -8,3 +8,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
+    - host: kubernetes.docker.internal
+      http:
+        paths:
+          - path: /user
+            pathType: Prefix
+            backend:
+              service:
+                name: proxy-service
+                port:
+                  number: 7000
