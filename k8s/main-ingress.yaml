@@ -43,3 +43,10 @@ spec:
                 name: proxy-service
                 port:
                   number: 7000
+          - path: /billing
+            pathType: Prefix
+            backend:
+              service:
+                name: proxy-service
+                port:
+                  number: 7000
