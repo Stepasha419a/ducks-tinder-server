@@ -29,3 +29,10 @@ spec:
                 name: proxy-service
                 port:
                   number: 7000
+          - path: /file
+            pathType: Prefix
+            backend:
+              service:
+                name: proxy-service
+                port:
+                  number: 7000
