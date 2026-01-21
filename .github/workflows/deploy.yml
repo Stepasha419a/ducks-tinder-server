@@ -62,6 +62,6 @@ jobs:
           context: ${{ matrix.root_path }}
           file: ./${{ matrix.service }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets[matrix.repo_secret] }}:${{ github.ref_name }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets[matrix.repo_secret] }}:${{ env.APP_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
