@@ -21,7 +21,6 @@ import { WsHttpExceptionFilter, AccessTokenGuard, User } from './common';
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
 @WebSocketGateway({
-  namespace: '/chat/socket',
   cors: { origin: true },
   cookie: true,
 })
