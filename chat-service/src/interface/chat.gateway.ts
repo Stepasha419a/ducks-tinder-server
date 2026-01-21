@@ -23,6 +23,7 @@ import { WsHttpExceptionFilter, AccessTokenGuard, User } from './common';
 @WebSocketGateway({
   cors: { origin: true },
   cookie: true,
+  path: '/chat/socket',
 })
 export class ChatGateway {
   constructor(private readonly facade: ChatFacade) {}
