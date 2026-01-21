@@ -3,8 +3,7 @@ name: deploy
 on:
   push:
     tags:
-      - 'v*'
-      - 'test-*'
+      - "v*"
 
 jobs:
   build:
