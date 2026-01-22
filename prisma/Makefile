@@ -24,6 +24,7 @@ migrate-gen:
 	$$timestamp = Get-Date -Format 'yyyyMMddHHmmss'; \
 	$$path = '$(MIGRATIONS_DIR)/' + $$timestamp + '_' + $$name + '.sql'; \
 	$$scriptArray = npx prisma migrate diff --from-schema-datasource $(PRISMA_SCHEMA) --to-schema-datamodel $(PRISMA_SCHEMA) --script; \
+	if (-not $$scriptArray) { Write-Host 'No changes detected.' -ForegroundColor Yellow; exit }; \
 	$$scriptString = $$scriptArray -join \"`n\"; \
 	$$utf8NoBom = New-Object System.Text.UTF8Encoding($$false); \
 	atlas migrate hash --dir "file://$(MIGRATIONS_DIR)"
