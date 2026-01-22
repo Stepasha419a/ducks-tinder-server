@@ -11,3 +11,8 @@ GET_DB_URL = $(shell powershell -NoProfile -Command "\
 	}")
 
 DB_URL := $(GET_DB_URL)
+
+MIGRATIONS_DIR = ./migrations
+PRISMA_SCHEMA = ./schema.prisma
+
+.PHONY: migrate-gen migrate-apply
