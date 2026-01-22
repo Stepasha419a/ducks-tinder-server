@@ -27,4 +27,5 @@ migrate-gen:
 	if (-not $$scriptArray) { Write-Host 'No changes detected.' -ForegroundColor Yellow; exit }; \
 	$$scriptString = $$scriptArray -join \"`n\"; \
 	$$utf8NoBom = New-Object System.Text.UTF8Encoding($$false); \
+	[System.IO.File]::WriteAllText($$path, $$scriptString, $$utf8NoBom);"
 	atlas migrate hash --dir "file://$(MIGRATIONS_DIR)"
