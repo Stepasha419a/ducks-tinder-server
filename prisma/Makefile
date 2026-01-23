@@ -13,7 +13,6 @@ GET_DB_URL = $(shell powershell -NoProfile -Command "\
 DB_URL := $(GET_DB_URL)
 
 MIGRATIONS_DIR = ./migrations
-PRISMA_SCHEMA = ./schema.prisma
 
 .PHONY: migrate-gen migrate-apply
 
@@ -23,7 +22,7 @@ migrate-gen:
 	$$env:DATABASE_URL = '$(DB_URL)'; \
 	$$timestamp = Get-Date -Format 'yyyyMMddHHmmss'; \
 	$$path = '$(MIGRATIONS_DIR)/' + $$timestamp + '_' + $$name + '.sql'; \
-	$$scriptArray = npx prisma migrate diff --from-schema-datasource $(PRISMA_SCHEMA) --to-schema-datamodel $(PRISMA_SCHEMA) --script; \
+	$$scriptArray = npx prisma migrate diff --from-config-datasource --to-schema ./schema.prisma --script; \
 	if (-not $$scriptArray) { Write-Host 'No changes detected.' -ForegroundColor Yellow; exit }; \
 	$$scriptString = $$scriptArray -join \"`n\"; \
 	$$utf8NoBom = New-Object System.Text.UTF8Encoding($$false); \
