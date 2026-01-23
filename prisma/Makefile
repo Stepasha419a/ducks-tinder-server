@@ -28,3 +28,6 @@ migrate-gen:
 	$$utf8NoBom = New-Object System.Text.UTF8Encoding($$false); \
 	[System.IO.File]::WriteAllText($$path, $$scriptString, $$utf8NoBom);"
 	atlas migrate hash --dir "file://$(MIGRATIONS_DIR)"
+
+migrate-apply:
+	atlas migrate apply --dir "file://$(MIGRATIONS_DIR)" --url $(DB_URL)
