@@ -9,10 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^5.14.0",
-    "prisma": "^5.14.0"
+    "@prisma/client": "^7.3.0",
+    "prisma": "^7.3.0"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.28.0"
+    "@dotenvx/dotenvx": "^1.52.0"
   }
 }
