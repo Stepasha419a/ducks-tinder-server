@@ -4,7 +4,8 @@
   "description": "orm environment to support services",
   "main": "index.js",
   "scripts": {
-    "migrate:postgres": "dotenvx run -f .env.dev -- npx prisma migrate dev"
+    "migrate:postgres": "dotenvx run -f .env.dev -- npx prisma migrate dev",
+    "generate": "dotenvx run -f .env.dev -- npx prisma generate --generator userService --generator chatService"
   },
   "author": "",
   "license": "MIT",
