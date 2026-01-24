@@ -2,17 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator chatService {
-  provider = "prisma-client-js"
-  output   = "../chat-service/node_modules/.prisma/client"
+  provider = "prisma-client"
+  output   = "../chat-service/src/infrastructure/database/prisma"
 }
 
 generator userService {
-  provider = "prisma-client-js"
-  output   = "../user-service/node_modules/.prisma/client"
+  provider = "prisma-client"
+  output   = "../user-service/src/infrastructure/database/prisma"
 }
 
 generator dockerDefault {
-  provider      = "prisma-client-js"
+  provider      = "prisma-client"
   output        = "../node_modules/.prisma/client"
   binaryTargets = ["linux-musl-openssl-3.0.x"]
   engineType    = "binary"
