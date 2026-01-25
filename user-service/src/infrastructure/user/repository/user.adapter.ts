@@ -2,13 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { UserRepository } from 'src/domain/user/repository';
 import { Interest, User, UserAggregate } from 'src/domain/user';
 import { UserSelector } from './user.selector';
-import {
-  User as PrismaUser,
-  CheckedUsers as PrismaUserCheck,
-  Picture as PrismaPicture,
-  Place as PrismaPlace,
-  Prisma,
-} from '@prisma/client';
 import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
 import {
   PictureEntity,
@@ -16,6 +9,13 @@ import {
   UserCheckEntity,
 } from 'src/domain/user/entity';
 import { DatabaseService } from 'src/infrastructure/database';
+import {
+  User as PrismaUser,
+  CheckedUsers as PrismaUserCheck,
+  Picture as PrismaPicture,
+  Place as PrismaPlace,
+  Prisma,
+} from 'src/infrastructure/database/prisma/client';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -39,11 +39,7 @@ export class UserAdapter implements UserRepository {
         await this.updatePictures(user, existingUser);
       }
 
-      const dataToUpdate = (await user.getPrimitiveFields()) as Prisma.Without<
-        Prisma.UserUpdateInput,
-        Prisma.UserUncheckedUpdateInput
-      > &
-        Prisma.UserUncheckedUpdateInput;
+      const dataToUpdate = await user.getPrimitiveFields();
 
       const updatedUser = await this.databaseService.user.update({
         where: { id: user.id },

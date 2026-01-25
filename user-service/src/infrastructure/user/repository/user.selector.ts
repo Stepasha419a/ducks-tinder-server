@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
+import { UserSelect } from 'src/infrastructure/database/prisma/models';
 
 export class UserSelector {
-  static selectUser(): Prisma.UserSelect {
+  static selectUser(): UserSelect {
     return {
       interests: { select: { interest: true } },
       pictures: {
