@@ -1,4 +1,4 @@
-FROM node:21-alpine AS build
+FROM node:24-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -12,6 +12,7 @@ RUN npm run build
 
 COPY prisma/migrations ./prisma/migrations
 
+FROM node:24-alpine
 
 RUN apk add --no-cache bash openssl postgresql curl
 
