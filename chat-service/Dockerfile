@@ -6,15 +6,12 @@ COPY chat-service/package.json chat-service/package-lock.json ./
 
 RUN npm install
 
-COPY prisma ./prisma
-
-RUN npx prisma generate --generator dockerDefault
-
 COPY chat-service .
 
 RUN npm run build
 
-FROM node:21-alpine
+COPY prisma/migrations ./prisma/migrations
+
 
 RUN apk add --no-cache bash openssl postgresql curl
 
