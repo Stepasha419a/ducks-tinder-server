@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { ChatRepository } from 'src/domain/chat/repository';
 import { ChatAggregate } from 'src/domain/chat';
@@ -11,6 +10,7 @@ import {
 import { RepliedMessage } from 'src/domain/chat/message/message.interface';
 import { DatabaseService } from '../database';
 import { PaginationDto } from 'src/domain/chat/repository/dto';
+import { Prisma } from '../database/prisma/client';
 
 @Injectable()
 export class ChatAdapter implements ChatRepository {
@@ -19,11 +19,7 @@ export class ChatAdapter implements ChatRepository {
   async save(chat: ChatAggregate): Promise<ChatAggregate> {
     const existingChat = await this.findOne(chat.id);
     if (existingChat) {
-      const dataToUpdate = (await chat.getPrimitiveFields()) as Prisma.Without<
-        Prisma.ChatUpdateInput,
-        Prisma.ChatUncheckedUpdateInput
-      > &
-        Prisma.ChatUncheckedUpdateInput;
+      const dataToUpdate = await chat.getPrimitiveFields();
 
       const updatedChat = await this.databaseService.chat.update({
         where: { id: existingChat.id },

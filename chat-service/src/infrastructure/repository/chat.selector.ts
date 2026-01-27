@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { SortOrder } from '../database/prisma/internal/prismaNamespace';
 
 export class ChatSelector {
   static selectMessage() {
@@ -24,7 +24,7 @@ export class ChatSelector {
       user: {
         select: {
           name: true,
-          pictures: { take: 1, orderBy: { order: 'asc' as Prisma.SortOrder } },
+          pictures: { take: 1, orderBy: { order: 'asc' as SortOrder } },
         },
       },
     };
