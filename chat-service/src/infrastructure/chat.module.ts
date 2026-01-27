@@ -48,6 +48,8 @@ import { HealthModule } from './health';
       envFilePath: `.env.${process.env.NODE_ENV}`,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
+        CLIENT_IDENTITY_PASSWORD: Joi.string().required(),
+        CLIENT_IDENTITY_PATH: Joi.string().required(),
         NODE_ENV: Joi.string()
           .valid('dev', 'dev-docker', 'dev-k8s', 'prod', 'test')
           .default('dev'),
