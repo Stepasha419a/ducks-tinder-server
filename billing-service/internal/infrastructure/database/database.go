@@ -106,12 +106,17 @@ func (pg *Postgres) connect(configService config_service.ConfigService, tlsServi
 
 	return nil
 }
+
+func (pg *Postgres) Ping(ctx context.Context) error {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
+
+	if pg.Pool == nil {
+		return fmt.Errorf("postgres pool is nil")
+	}
+
+	return pg.Pool.Ping(ctx)
 }
-
-func (pg *PostgresInstance) Close() {
-	log.Println("close database postgres instance")
-
-	pg.Pool.Close()
 }
 
 func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
