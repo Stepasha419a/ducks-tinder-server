@@ -31,6 +31,24 @@ func NewPostgresInstance(ctx context.Context, configService config_service.Confi
 
 	return pg, pg.Shutdown
 }
+
+func (pg *Postgres) run(ctx context.Context, configService config_service.ConfigService, tlsService *tls_service.TlsService) {
+	for {
+		if err := pg.connect(configService, tlsService); err != nil {
+			log.Printf("postgres connection failed, error: %s", err)
+			pg.ConnectionService.UpdateState(connectionServiceName, false, err)
+			select {
+			case <-time.After(5 * time.Second):
+				continue
+			case <-ctx.Done():
+				return
+			}
+		}
+
+		pg.ConnectionService.UpdateState(connectionServiceName, true, nil)
+		log.Print("postgres connected successfully")
+	}
+}
 	if err != nil {
 		panic(err)
 	}
