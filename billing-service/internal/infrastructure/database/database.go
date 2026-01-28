@@ -47,6 +47,25 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 
 		pg.ConnectionService.UpdateState(connectionServiceName, true, nil)
 		log.Print("postgres connected successfully")
+
+		ticker := time.NewTicker(5 * time.Second)
+		for {
+			select {
+			case <-ticker.C:
+				if err := pg.Ping(ctx); err != nil {
+					log.Printf("postgres lost connection, error: %s", err)
+					pg.Close()
+					pg.ConnectionService.UpdateState(connectionServiceName, false, err)
+
+					goto RECONNECT
+				}
+			case <-ctx.Done():
+				ticker.Stop()
+				pg.Close()
+
+				return
+			}
+		}
 	RECONNECT:
 		ticker.Stop()
 	}
