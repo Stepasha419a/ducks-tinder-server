@@ -12,8 +12,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresInstance struct {
-	Pool *pgxpool.Pool
+type Postgres struct {
+	Mu                sync.RWMutex
+	Pool              *pgxpool.Pool
+	ConnectionService *connection_service.ConnectionService
+	CancelFunc        context.CancelFunc
 }
 
 func NewPostgresInstance(configService config_service.ConfigService, tlsService *tls_service.TlsService) (*PostgresInstance, func()) {
