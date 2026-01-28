@@ -70,25 +70,42 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 		ticker.Stop()
 	}
 }
+
+func (pg *Postgres) connect(configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
+	cfg := configService.GetConfig()
+	tlsConfig := tlsService.GetConfig(cfg.TlsServerName)
+
+	connStr := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=verify-full",
+		cfg.PostgresHost,
+		cfg.PostgresPort,
+		cfg.PostgresUser,
+		cfg.PostgresPassword,
+		cfg.PostgresDatabase,
+	)
+
+	pgxCfg, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("postgres parse config error: %w", err)
+	}
+	pgxCfg.ConnConfig.TLSConfig = tlsConfig
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), pgxCfg)
+	if err != nil {
+		return fmt.Errorf("postgres new pool error: %w", err)
 	}
 
-	pgxConfig.ConnConfig.TLSConfig = tlsConfig
-
-	pool, err := pgxpool.NewWithConfig(context.TODO(), pgxConfig)
-	if err != nil {
-		panic(err)
+	if err := pool.Ping(context.Background()); err != nil {
+		pool.Close()
+		return fmt.Errorf("postgres ping failed error: %w", err)
 	}
 
-	err = pool.Ping(context.TODO())
-	if err != nil {
-		panic(err)
-	}
+	pg.Mu.Lock()
+	pg.Pool = pool
+	pg.Mu.Unlock()
 
-	pgInstance := &PostgresInstance{pool}
-
-	return pgInstance, pgInstance.Close
+	return nil
+}
 }
 
 func (pg *PostgresInstance) Close() {
