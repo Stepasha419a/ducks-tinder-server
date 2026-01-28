@@ -47,6 +47,8 @@ func (pg *Postgres) run(ctx context.Context, configService config_service.Config
 
 		pg.ConnectionService.UpdateState(connectionServiceName, true, nil)
 		log.Print("postgres connected successfully")
+	RECONNECT:
+		ticker.Stop()
 	}
 }
 	if err != nil {
