@@ -117,9 +117,17 @@ func (pg *Postgres) Ping(ctx context.Context) error {
 
 	return pg.Pool.Ping(ctx)
 }
-}
 
-func Exec(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error) {
+func (pg *Postgres) GetPool() (*pgxpool.Pool, error) {
+	pg.Mu.RLock()
+	defer pg.Mu.RUnlock()
+
+	if pg.Pool == nil {
+		return nil, fmt.Errorf("postgres pool not initialized")
+	}
+
+	return pg.Pool, nil
+}
 	if tx != nil {
 		return tx.Exec
 	}
