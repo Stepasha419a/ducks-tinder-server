@@ -179,9 +179,16 @@ func (pg *Postgres) Query(tx pgx.Tx) func(ctx context.Context, sql string, args 
 	return pool.Query
 }
 
-func QueryRow(pool *pgxpool.Pool, tx pgx.Tx) func(ctx context.Context, sql string, args ...any) pgx.Row {
+func (pg *Postgres) QueryRow(tx pgx.Tx) func(ctx context.Context, sql string, args ...any) pgx.Row {
 	if tx != nil {
 		return tx.QueryRow
+	}
+
+	pool, err := pg.GetPool()
+	if err != nil {
+		return func(ctx context.Context, sql string, args ...any) pgx.Row {
+			return &emptyRow{err: err}
+		}
 	}
 
 	return pool.QueryRow
