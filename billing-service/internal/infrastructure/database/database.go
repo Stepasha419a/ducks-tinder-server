@@ -128,6 +128,18 @@ func (pg *Postgres) GetPool() (*pgxpool.Pool, error) {
 
 	return pg.Pool, nil
 }
+
+func (pg *Postgres) Close() {
+	pg.Mu.Lock()
+	defer pg.Mu.Unlock()
+
+	if pg.Pool != nil {
+		pg.Pool.Close()
+		pg.Pool = nil
+
+		log.Printf("postgres connection closed")
+	}
+}
 	if tx != nil {
 		return tx.Exec
 	}
