@@ -140,6 +140,14 @@ func (pg *Postgres) Close() {
 		log.Printf("postgres connection closed")
 	}
 }
+
+func (pg *Postgres) Shutdown() {
+	if pg.CancelFunc != nil {
+		pg.CancelFunc()
+	}
+
+	pg.Close()
+}
 	if tx != nil {
 		return tx.Exec
 	}
