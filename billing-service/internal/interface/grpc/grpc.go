@@ -21,11 +21,11 @@ var kaep = keepalive.EnforcementPolicy{
 }
 
 var kasp = keepalive.ServerParameters{
-	MaxConnectionIdle:     5 * time.Minute,
-	MaxConnectionAge:      time.Minute,
+	MaxConnectionIdle:     10 * time.Minute,
+	MaxConnectionAge:      30 * time.Minute,
 	MaxConnectionAgeGrace: 15 * time.Second,
 	Time:                  15 * time.Second,
-	Timeout:               1 * time.Second,
+	Timeout:               5 * time.Second,
 }
 
 func NewGrpc(configService config_service.ConfigService, billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func(), error) {
