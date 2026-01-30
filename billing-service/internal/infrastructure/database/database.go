@@ -2,15 +2,20 @@ package database
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	connection_service "billing-service/internal/domain/service/connection"
 	tls_service "billing-service/internal/infrastructure/service/tls"
 	"context"
 	"fmt"
 	"log"
+	"sync"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
+
+var connectionServiceName = "postgres"
 
 type Postgres struct {
 	Mu                sync.RWMutex

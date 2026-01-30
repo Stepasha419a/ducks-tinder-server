@@ -2,6 +2,7 @@ package database
 
 import (
 	config_service "billing-service/internal/domain/service/config"
+	connection_service "billing-service/internal/domain/service/connection"
 	tls_service "billing-service/internal/infrastructure/service/tls"
 	"bufio"
 	"context"
@@ -25,7 +26,9 @@ func MigrateDB(configService config_service.ConfigService, tlsService *tls_servi
 
 	log.Info("migration - start")
 
-	pg, cleanup := NewPostgresInstance(configService, tlsService)
+	connectionService := connection_service.NewConnectionService()
+
+	pg, cleanup := NewPostgresInstance(ctx, configService, tlsService, connectionService)
 	defer cleanup()
 	runMigrations(ctx, pg)
 
@@ -49,7 +52,7 @@ func submitMigration() bool {
 	return submitted
 }
 
-func runMigrations(ctx context.Context, pg *PostgresInstance) {
+func runMigrations(ctx context.Context, pg *Postgres) {
 	checkMigration(initMigration(ctx, pg))
 }
 
@@ -60,7 +63,7 @@ func checkMigration(err error) {
 	}
 }
 
-func initMigration(ctx context.Context, pg *PostgresInstance) error {
+func initMigration(ctx context.Context, pg *Postgres) error {
 	log.Info("migration - init")
 
 	_, err := pg.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS credit_cards (
