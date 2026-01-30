@@ -10,6 +10,7 @@ type (
 		JwtAccessSecret         string
 		JwtBillingServiceSecret string
 		Port                    uint16
+		HealthPort              uint16
 		GrpcPort                uint16
 		ClientUrl               string
 		TlsServerName           string
