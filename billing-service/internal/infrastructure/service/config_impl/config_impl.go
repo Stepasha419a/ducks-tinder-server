@@ -19,6 +19,7 @@ type (
 		JwtAccessSecret         string `validate:"required" yaml:"jwt_access_secret"`
 		JwtBillingServiceSecret string `validate:"required" yaml:"jwt_billing_service_secret"`
 		Port                    uint16 `validate:"required" yaml:"port"`
+		HealthPort              uint16 `validate:"required" yaml:"health_port"`
 		GrpcPort                uint16 `validate:"required" yaml:"grpc_port"`
 		ClientUrl               string `validate:"required" yaml:"client_url"`
 		TlsServerName           string `yaml:"tls_server_name"`
@@ -27,7 +28,6 @@ type (
 		PostgresUser            string `validate:"required" yaml:"postgres_user"`
 		PostgresPassword        string `validate:"required" yaml:"postgres_password"`
 		PostgresDatabase        string `validate:"required" yaml:"postgres_database"`
-		PostgresRootDatabase    string `validate:"required" yaml:"postgres_root_database"`
 	}
 
 	ConfigServiceImpl struct{}
