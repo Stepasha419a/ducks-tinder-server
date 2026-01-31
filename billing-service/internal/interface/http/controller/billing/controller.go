@@ -16,15 +16,15 @@ type BillingController struct {
 	validatorService validator_service.ValidatorService
 }
 
-func NewBillingController(f *fiber.App, service service.BillingService, validatorService validator_service.ValidatorService) *BillingController {
+func NewBillingController(app *fiber.App, service service.BillingService, validatorService validator_service.ValidatorService) *BillingController {
 	controller := &BillingController{
 		service,
 		validatorService,
 	}
 
-	f.Get("/billing/card", controller.GetUserCreditCard)
-	f.Post("/billing/card", controller.AddUserCreditCard)
-	f.Delete("/billing/card/:id", controller.DeleteUserCreditCard)
+	app.Get("/billing/card", controller.GetUserCreditCard)
+	app.Post("/billing/card", controller.AddUserCreditCard)
+	app.Delete("/billing/card/:id", controller.DeleteUserCreditCard)
 
 	return controller
 }
