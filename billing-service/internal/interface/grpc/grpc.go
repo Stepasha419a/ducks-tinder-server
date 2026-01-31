@@ -29,7 +29,7 @@ var kasp = keepalive.ServerParameters{
 }
 
 func NewGrpc(configService config_service.ConfigService, billingServer gen.BillingServiceServer, interceptor *grpc_interceptor.GrpcInterceptor, tlsService *tls_service.TlsService) (*grpc.Server, func(), error) {
-	tlsConfig := tlsService.GetConfig()
+	tlsConfig := tlsService.GetConfig(configService.GetConfig().TlsServerName)
 	creds := credentials.NewTLS(tlsConfig)
 
 	opts := []grpc.ServerOption{
