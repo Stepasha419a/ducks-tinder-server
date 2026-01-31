@@ -21,7 +21,11 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/recover"
 )
 
-func NewFiberApp(middleware *middleware.Middleware, configService config_service.ConfigService) (*fiber.App, func()) {
+type FiberImpl struct {
+	App  *fiber.App
+	port int
+	name string
+}
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx fiber.Ctx, err error) error {
 			status := http.StatusInternalServerError
