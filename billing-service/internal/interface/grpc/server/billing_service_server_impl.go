@@ -24,12 +24,13 @@ func NewBillingServiceServerImpl(billingService service.BillingService, validato
 func (s *BillingServiceServerImpl) WithdrawUserCreditCard(ctx context.Context, req *gen.WithdrawUserCreditCardRequest) (*gen.Purchase, error) {
 	dto := interface_common.WithdrawUserCreditCardDto{UserId: req.UserId, CreditCardId: req.CreditCardId, Amount: req.Amount}
 
+	serviceContext := grpc_context_impl.NewServiceContext[*mapper.PurchaseResponse](ctx)
 	command, err := dto.ToWithdrawUserCreditCardCommand(s.validatorService)
 	if err != nil {
-		return nil, err
+		msg := err.Error()
+		return nil, serviceContext.BadRequest(&msg)
 	}
 
-	serviceContext := grpc_context_impl.NewServiceContext[*mapper.PurchaseResponse](ctx)
 	err = s.billingService.WithdrawUserCreditCard(serviceContext, command)
 
 	if err != nil {
