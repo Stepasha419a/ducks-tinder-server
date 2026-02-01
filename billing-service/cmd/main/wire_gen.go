@@ -10,61 +10,66 @@ import (
 	"billing-service/internal/application/facade"
 	"billing-service/internal/application/service"
 	"billing-service/internal/domain/service/config"
+	"billing-service/internal/domain/service/connection"
 	"billing-service/internal/domain/service/jwt"
 	"billing-service/internal/domain/service/validator"
 	"billing-service/internal/infrastructure/database"
 	"billing-service/internal/infrastructure/repository_impl"
 	"billing-service/internal/infrastructure/service/config_impl"
+	"billing-service/internal/infrastructure/service/context"
 	"billing-service/internal/infrastructure/service/tls"
 	"billing-service/internal/infrastructure/service/validator_impl"
 	"billing-service/internal/interface/grpc"
 	"billing-service/internal/interface/grpc/interceptor"
 	"billing-service/internal/interface/grpc/server"
-	"billing-service/internal/interface/http/controller/billing"
-	"billing-service/internal/interface/http/controller/metrics"
 	"billing-service/internal/interface/http/fiber"
 	"billing-service/internal/interface/http/middleware"
 	"billing-service/proto/gen"
-	"github.com/gofiber/fiber/v3"
+	"context"
 	"google.golang.org/grpc"
 )
 
 // Injectors from wire.go:
 
 func newContainer() (*Container, func(), error) {
+	context, cleanup := context_service.NewContext()
 	validatorServiceImpl := validator_service_impl.NewValidatorService()
 	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
 	tlsService := tls_service.NewTlsService(configServiceImpl)
-	postgresInstance, cleanup := database.NewPostgresInstance(configServiceImpl, tlsService)
+	connectionService := connection_service.NewConnectionService()
+	postgres, cleanup2 := database.NewPostgresInstance(context, configServiceImpl, tlsService, connectionService)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
-	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
-	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgresInstance)
+	creditCardRepositoryImpl := repository_impl.NewCreditCardRepository(postgres)
 	billingFacade := facade.NewBillingFacade(creditCardRepositoryImpl)
-	metricsController := metrics_controller.NewMetricsController(app)
-	billingController := billing_controller.NewBillingController(app, billingFacade, validatorServiceImpl)
+	httpFiberApp, cleanup3 := fiber_impl.NewHttpFiberApp(middlewareMiddleware, billingFacade, configServiceImpl, validatorServiceImpl)
+	healthFiberApp, cleanup4 := fiber_impl.NewHealthFiberApp(configServiceImpl, connectionService)
 	billingServiceServerImpl := grpc_billing_service_server_impl.NewBillingServiceServerImpl(billingFacade, validatorServiceImpl)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
-	server, cleanup3, err := grpc_interface.NewGrpc(configServiceImpl, billingServiceServerImpl, grpcInterceptor, tlsService)
+	server, cleanup5, err := grpc_interface.NewGrpc(configServiceImpl, billingServiceServerImpl, grpcInterceptor, tlsService)
 	if err != nil {
+		cleanup4()
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	container := &Container{
+		Context:              context,
 		ValidatorService:     validatorServiceImpl,
 		ConfigService:        configServiceImpl,
 		TlsService:           tlsService,
-		Postgres:             postgresInstance,
-		App:                  app,
+		Postgres:             postgres,
+		HttpFiberApp:         httpFiberApp,
+		HealthFiberApp:       healthFiberApp,
 		BillingService:       billingFacade,
 		JwtService:           jwtService,
-		MetricsController:    metricsController,
-		BillingController:    billingController,
 		BillingServiceServer: billingServiceServerImpl,
 		GrpcServer:           server,
 	}
 	return container, func() {
+		cleanup5()
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -74,15 +79,15 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
+	Context              context.Context
 	ValidatorService     validator_service.ValidatorService
 	ConfigService        config_service.ConfigService
 	TlsService           *tls_service.TlsService
-	Postgres             *database.PostgresInstance
-	App                  *fiber.App
+	Postgres             *database.Postgres
+	HttpFiberApp         *fiber_impl.HttpFiberApp
+	HealthFiberApp       *fiber_impl.HealthFiberApp
 	BillingService       service.BillingService
 	JwtService           *jwt_service.JwtService
-	MetricsController    *metrics_controller.MetricsController
-	BillingController    *billing_controller.BillingController
 	BillingServiceServer gen.BillingServiceServer
 	GrpcServer           *grpc.Server
 }
