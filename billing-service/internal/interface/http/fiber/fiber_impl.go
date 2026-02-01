@@ -4,7 +4,6 @@ import (
 	config_service "billing-service/internal/domain/service/config"
 	tls_service "billing-service/internal/infrastructure/service/tls"
 	fiber_impl_context "billing-service/internal/interface/http/fiber/context"
-	"billing-service/internal/interface/http/middleware"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -15,7 +14,6 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
-	"github.com/gofiber/fiber/v3/middleware/healthcheck"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
@@ -26,6 +24,8 @@ type FiberImpl struct {
 	port int
 	name string
 }
+
+func NewFiberApp(port int, name string, configService config_service.ConfigService) (*FiberImpl, func()) {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx fiber.Ctx, err error) error {
 			status := http.StatusInternalServerError
@@ -60,16 +60,14 @@ type FiberImpl struct {
 	}))
 	app.Use(helmet.New())
 
-	return app, func() {
-		log.Println("close fiber app")
+	return &FiberImpl{app, port, name}, func() {
+		log.Println(fmt.Sprintf("close fiber app: %s", name))
 		app.Shutdown()
 	}
 }
 
-func InitHttpListener(app *fiber.App, configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
-	port := strconv.Itoa(int(configService.GetConfig().Port))
-
-	ln, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", port))
+func (f *FiberImpl) InitHttpListener(configService config_service.ConfigService, tlsService *tls_service.TlsService) error {
+	ln, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", strconv.Itoa(f.port)))
 	if err != nil {
 		return err
 	}
@@ -78,7 +76,7 @@ func InitHttpListener(app *fiber.App, configService config_service.ConfigService
 
 	ln = tls.NewListener(ln, tlsConfig)
 
-	err = app.Listener(ln)
+	err = f.App.Listener(ln)
 	if err != nil {
 		return err
 	}
