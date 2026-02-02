@@ -22,8 +22,7 @@ func main() {
 }
 
 func setUpWithGracefulShutdown(container *Container, cleaner func()) {
-	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	mainCtx := container.Context
 
 	g, gCtx := errgroup.WithContext(mainCtx)
 
