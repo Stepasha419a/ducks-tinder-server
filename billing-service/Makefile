@@ -17,5 +17,9 @@ dev:
 migration:
 	atlas migrate hash --dir file://migrations
 	atlas migrate apply --dir file://migrations --url "$(DB_URL)"
+
+wire:
+	wire ./cmd/main/wire.go
+
 gen-proto:
 	protoc --go_out=proto --go-grpc_out=proto proto/billing.proto
