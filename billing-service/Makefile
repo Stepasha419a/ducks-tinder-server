@@ -1,8 +1,4 @@
-migration:
-	go run cmd/migration/migration.go
-	
-force-migration:
-	go run cmd/migration/migration.go -auto-submit
+mode ?= dev
 
 dev:
 	air
