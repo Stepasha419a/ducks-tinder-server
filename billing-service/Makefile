@@ -14,5 +14,8 @@ DB_URL = postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmo
 dev:
 	air
 
+migration:
+	atlas migrate hash --dir file://migrations
+	atlas migrate apply --dir file://migrations --url "$(DB_URL)"
 gen-proto:
 	protoc --go_out=proto --go-grpc_out=proto proto/billing.proto
