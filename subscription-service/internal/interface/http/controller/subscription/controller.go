@@ -17,15 +17,15 @@ type SubscriptionController struct {
 	validatorService validator_service.ValidatorService
 }
 
-func NewSubscriptionController(f *fiber.App, service service.SubscriptionService, validatorService validator_service.ValidatorService) *SubscriptionController {
+func NewSubscriptionController(app *fiber.App, service service.SubscriptionService, validatorService validator_service.ValidatorService) *SubscriptionController {
 	controller := &SubscriptionController{
 		service,
 		validatorService,
 	}
 
-	f.Get("/subscription", controller.GetSubscription)
-	f.Post("/subscription", controller.CreateSubscription)
-	f.Delete("/subscription", controller.DeleteSubscription)
+	app.Get("/subscription", controller.GetSubscription)
+	app.Post("/subscription", controller.CreateSubscription)
+	app.Delete("/subscription", controller.DeleteSubscription)
 
 	return controller
 }

@@ -8,12 +8,12 @@ import (
 
 type MetricsController struct{}
 
-func NewMetricsController(f *fiber.App) *MetricsController {
+func NewMetricsController(app *fiber.App) *MetricsController {
 	controller := &MetricsController{}
 
 	metricsHandler := promhttp.Handler()
 
-	f.Get("/metrics", adaptor.HTTPHandler(metricsHandler))
+	app.Get("/metrics", adaptor.HTTPHandler(metricsHandler))
 
 	return controller
 }
