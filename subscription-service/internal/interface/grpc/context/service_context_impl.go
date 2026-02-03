@@ -2,6 +2,7 @@ package grpc_context_impl
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -41,7 +42,11 @@ func (s *ServiceContextImpl[R]) ErrorMessage(statusCode int, message string) err
 	return status.Error(codes.Code(statusCode), message)
 }
 
-func (s *ServiceContextImpl[R]) BadRequest() error {
+func (s *ServiceContextImpl[R]) BadRequest(validationError *string) error {
+	if validationError != nil {
+		return status.Error(codes.InvalidArgument, fmt.Sprintf("%s: %s", BadRequest, *validationError))
+	}
+
 	return status.Error(codes.InvalidArgument, BadRequest)
 }
 
