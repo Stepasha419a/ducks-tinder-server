@@ -21,6 +21,7 @@ type (
 		JwtSubscriptionServiceSecret string `validate:"required" yaml:"jwt_subscription_service_secret"`
 		JwtBillingServiceSecret      string `validate:"required" yaml:"jwt_billing_service_secret"`
 		Port                         uint16 `validate:"required" yaml:"port"`
+		HealthPort                   uint16 `validate:"required" yaml:"health_port"`
 		GrpcPort                     uint16 `validate:"required" yaml:"grpc_port"`
 		ClientUrl                    string `validate:"required" yaml:"client_url"`
 		GrpcBillingServiceUrl        string `validate:"required" yaml:"grpc_billing_service_url"`
