@@ -7,7 +7,7 @@ type ServiceContext[R any] interface {
 	ErrorMessage(status int, message string) error
 	Context() context.Context
 
-	BadRequest() error
+	BadRequest(validationError *string) error
 	Unauthorized() error
 	NotFound() error
 	MethodNotAllowed() error
