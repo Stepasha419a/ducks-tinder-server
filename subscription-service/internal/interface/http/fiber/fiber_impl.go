@@ -59,7 +59,6 @@ type FiberImpl struct {
 		AllowCredentials: true,
 	}))
 	app.Use(helmet.New())
-	app.Use(middleware.AuthMiddleware)
 
 	return app, func() {
 		log.Println("close fiber app")
