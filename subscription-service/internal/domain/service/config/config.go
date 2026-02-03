@@ -11,6 +11,7 @@ type (
 		JwtSubscriptionServiceSecret string
 		JwtBillingServiceSecret      string
 		Port                         uint16
+		HealthPort                   uint16
 		GrpcPort                     uint16
 		ClientUrl                    string
 		GrpcBillingServiceUrl        string
