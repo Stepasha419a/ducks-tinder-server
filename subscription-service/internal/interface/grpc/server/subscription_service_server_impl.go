@@ -25,12 +25,13 @@ func NewSubscriptionServiceServerImpl(subscriptionService service.SubscriptionSe
 func (s *SubscriptionServiceServerImpl) GetSubscription(ctx context.Context, req *gen.GetSubscriptionRequest) (*gen.Subscription, error) {
 	dto := interface_common.GetSubscriptionDto{UserId: req.UserId}
 
+	serviceContext := grpc_context_impl.NewServiceContext[*mapper.SubscriptionResponse](ctx)
 	query, err := dto.ToGetSubscriptionQuery(s.validatorService)
 	if err != nil {
-		return nil, err
+		msg := err.Error()
+		return nil, serviceContext.BadRequest(&msg)
 	}
 
-	serviceContext := grpc_context_impl.NewServiceContext[*mapper.SubscriptionResponse](ctx)
 	err = s.subscriptionService.GetSubscription(serviceContext, query)
 
 	if err != nil {
