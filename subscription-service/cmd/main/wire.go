@@ -23,30 +23,24 @@ import (
 	grpc_interface "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	grpc_interceptor "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/interceptor"
 	grpc_subscription_service_server_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/server"
-	health_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/health"
-	metrics_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/metrics"
-	subscription_controller "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/subscription"
 	fiber_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
-	middleware "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/middleware"
+	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/middleware"
 	gen "github.com/Stepasha419a/ducks-tinder-server/subscription-service/proto/gen"
 	"google.golang.org/grpc"
 
-	"github.com/gofiber/fiber/v3"
 	"github.com/google/wire"
 )
 
 type Container struct {
-	Context                context.Context
-	ValidatorService       validator_service.ValidatorService
-	ConfigService          config_service.ConfigService
-	App                    *fiber.App
-	MetricsController      *metrics_controller.MetricsController
-	SubscriptionController *subscription_controller.SubscriptionController
-	BillingServiceServer   gen.SubscriptionServiceServer
-	HealthController       *health_controller.HealthController
-	TlsService             *tls_service.TlsService
-	GrpcServer             *grpc.Server
-	BillingService         billing_service.BillingService
+	Context                   context.Context
+	ValidatorService          validator_service.ValidatorService
+	ConfigService             config_service.ConfigService
+	HttpFiberApp              *fiber_impl.HttpFiberApp
+	HealthFiberApp            *fiber_impl.HealthFiberApp
+	SubscriptionServiceServer gen.SubscriptionServiceServer
+	TlsService                *tls_service.TlsService
+	GrpcServer                *grpc.Server
+	BillingService            billing_service.BillingService
 }
 
 func newContainer() (*Container, func(), error) {
@@ -65,14 +59,12 @@ func newContainer() (*Container, func(), error) {
 		database.NewPostgresInstance,
 		jwt_service.NewJwtService,
 		middleware.NewMiddleware,
-		fiber_impl.NewFiberApp,
+		fiber_impl.NewHttpFiberApp,
+		fiber_impl.NewHealthFiberApp,
 		wire.Bind(new(repository.SubscriptionRepository), new(*repository_impl.SubscriptionRepositoryImpl)),
 		repository_impl.NewSubscriptionRepository,
 		wire.Bind(new(service.SubscriptionService), new(*facade.SubscriptionFacade)),
 		facade.NewSubscriptionFacade,
-		subscription_controller.NewSubscriptionController,
-		metrics_controller.NewMetricsController,
-		health_controller.NewHealthController,
 		wire.Bind(new(gen.SubscriptionServiceServer), new(*grpc_subscription_service_server_impl.SubscriptionServiceServerImpl)),
 		grpc_subscription_service_server_impl.NewSubscriptionServiceServerImpl,
 		grpc_interceptor.NewInterceptor,
