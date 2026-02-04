@@ -29,3 +29,13 @@ func NewHttpFiberApp(middleware *middleware.Middleware, service service.Subscrip
 type HealthFiberApp struct {
 	Fiber *FiberImpl
 }
+
+func NewHealthFiberApp(configService config_service.ConfigService, connectionService *connection_service.ConnectionService) (*HealthFiberApp, func()) {
+	port := int(configService.GetConfig().HealthPort)
+	healthApp, cleaner := NewFiberApp(port, "health", configService)
+
+	health_controller.NewHealthController(healthApp.App, connectionService)
+	metrics_controller.NewMetricsController(healthApp.App)
+
+	return &HealthFiberApp{Fiber: healthApp}, cleaner
+}
