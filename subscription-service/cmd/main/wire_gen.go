@@ -25,13 +25,9 @@ import (
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/interceptor"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc/server"
-	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/health"
-	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/metrics"
-	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/controller/subscription"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/middleware"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/proto/gen"
-	"github.com/gofiber/fiber/v3"
 	"google.golang.org/grpc"
 )
 
@@ -43,34 +39,31 @@ func newContainer() (*Container, func(), error) {
 	configServiceImpl := config_service_impl.NewConfigService(validatorServiceImpl)
 	jwtService := jwt_service.NewJwtService(configServiceImpl)
 	middlewareMiddleware := middleware.NewMiddleware(jwtService)
-	app, cleanup2 := fiber_impl.NewFiberApp(middlewareMiddleware, configServiceImpl)
-	metricsController := metrics_controller.NewMetricsController(app)
 	tlsService := tls_service.NewTlsService(configServiceImpl)
 	connectionService := connection_service.NewConnectionService()
-	postgres, cleanup3 := database.NewPostgresInstance(context, configServiceImpl, tlsService, connectionService)
+	postgres, cleanup2 := database.NewPostgresInstance(context, configServiceImpl, tlsService, connectionService)
 	subscriptionRepositoryImpl := repository_impl.NewSubscriptionRepository(postgres)
 	loginServiceImpl := login_service_impl.NewLoginServiceImpl(configServiceImpl)
-	billingServiceImpl, cleanup4 := billing_service_impl.NewBillingServiceImpl(context, configServiceImpl, tlsService, connectionService)
+	billingServiceImpl, cleanup3 := billing_service_impl.NewBillingServiceImpl(context, configServiceImpl, tlsService, connectionService)
 	subscriptionFacade := facade.NewSubscriptionFacade(subscriptionRepositoryImpl, loginServiceImpl, billingServiceImpl)
-	subscriptionController := subscription_controller.NewSubscriptionController(app, subscriptionFacade, validatorServiceImpl)
+	httpFiberApp, cleanup4 := fiber_impl.NewHttpFiberApp(middlewareMiddleware, subscriptionFacade, configServiceImpl, validatorServiceImpl)
+	healthFiberApp, cleanup5 := fiber_impl.NewHealthFiberApp(configServiceImpl, connectionService)
 	subscriptionServiceServerImpl := grpc_subscription_service_server_impl.NewSubscriptionServiceServerImpl(subscriptionFacade, validatorServiceImpl)
-	healthController := health_controller.NewHealthController(app, connectionService)
 	grpcInterceptor := grpc_interceptor.NewInterceptor(jwtService)
-	server, cleanup5 := grpc_interface.NewGrpc(subscriptionServiceServerImpl, grpcInterceptor, tlsService, configServiceImpl)
+	server, cleanup6 := grpc_interface.NewGrpc(subscriptionServiceServerImpl, grpcInterceptor, tlsService, configServiceImpl)
 	container := &Container{
-		Context:                context,
-		ValidatorService:       validatorServiceImpl,
-		ConfigService:          configServiceImpl,
-		App:                    app,
-		MetricsController:      metricsController,
-		SubscriptionController: subscriptionController,
-		BillingServiceServer:   subscriptionServiceServerImpl,
-		HealthController:       healthController,
-		TlsService:             tlsService,
-		GrpcServer:             server,
-		BillingService:         billingServiceImpl,
+		Context:                   context,
+		ValidatorService:          validatorServiceImpl,
+		ConfigService:             configServiceImpl,
+		HttpFiberApp:              httpFiberApp,
+		HealthFiberApp:            healthFiberApp,
+		SubscriptionServiceServer: subscriptionServiceServerImpl,
+		TlsService:                tlsService,
+		GrpcServer:                server,
+		BillingService:            billingServiceImpl,
 	}
 	return container, func() {
+		cleanup6()
 		cleanup5()
 		cleanup4()
 		cleanup3()
@@ -82,15 +75,13 @@ func newContainer() (*Container, func(), error) {
 // wire.go:
 
 type Container struct {
-	Context                context.Context
-	ValidatorService       validator_service.ValidatorService
-	ConfigService          config_service.ConfigService
-	App                    *fiber.App
-	MetricsController      *metrics_controller.MetricsController
-	SubscriptionController *subscription_controller.SubscriptionController
-	BillingServiceServer   gen.SubscriptionServiceServer
-	HealthController       *health_controller.HealthController
-	TlsService             *tls_service.TlsService
-	GrpcServer             *grpc.Server
-	BillingService         billing_service.BillingService
+	Context                   context.Context
+	ValidatorService          validator_service.ValidatorService
+	ConfigService             config_service.ConfigService
+	HttpFiberApp              *fiber_impl.HttpFiberApp
+	HealthFiberApp            *fiber_impl.HealthFiberApp
+	SubscriptionServiceServer gen.SubscriptionServiceServer
+	TlsService                *tls_service.TlsService
+	GrpcServer                *grpc.Server
+	BillingService            billing_service.BillingService
 }
