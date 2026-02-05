@@ -5,7 +5,6 @@ import (
 	"log"
 
 	grpc_interface "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/grpc"
-	fiber_impl "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/interface/http/fiber"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -35,7 +34,10 @@ func setUpWithGracefulShutdown(container *Container, cleaner func()) {
 
 func initListeners(g *errgroup.Group, container *Container) {
 	g.Go(func() error {
-		return fiber_impl.InitHttpListener(container.App, container.ConfigService, container.TlsService)
+		return container.HealthFiberApp.Fiber.InitHttpListener(container.ConfigService, container.TlsService)
+	})
+	g.Go(func() error {
+		return container.HttpFiberApp.Fiber.InitHttpListener(container.ConfigService, container.TlsService)
 	})
 	g.Go(func() error {
 		return grpc_interface.InitGrpcListener(container.GrpcServer, container.ConfigService)
