@@ -19,3 +19,7 @@ func NewValidatorService() *ValidatorService {
 		validate,
 	}
 }
+
+func (s *ValidatorService) Struct(value interface{}) error {
+	return s.validate.Struct(value)
+}
