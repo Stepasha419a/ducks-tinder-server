@@ -12,8 +12,9 @@ import (
 
 type (
 	Config struct {
-		Mode string `yaml:"mode"`
-		Port uint16 `yaml:"port"`
+		Mode       string `yaml:"mode"`
+		Port       uint16 `yaml:"port"`
+		HealthPort uint16 `yaml:"health_port"`
 
 		GrpcPort uint16 `yaml:"grpc_port"`
 
