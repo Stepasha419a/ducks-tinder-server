@@ -5,6 +5,11 @@ import (
 	validator_service "go-file-server/internal/service/validator"
 )
 
+type UploadFileDto struct {
+	Data []byte `validate:"required"`
+	Type string `validate:"required"`
+}
+
 func (dto *UploadFileDto) ToUploadFileRequest(validatorService *validator_service.ValidatorService) (*handler.UploadFileRequest, error) {
 	err := validatorService.Struct(dto)
 	if err != nil {
@@ -17,11 +22,17 @@ func (dto *UploadFileDto) ToUploadFileRequest(validatorService *validator_servic
 	}, nil
 }
 
-type UploadFileDto struct {
-	Data []byte `validate:"required"`
-	Type string `validate:"required"`
-}
-
 type DeleteFileDto struct {
 	Filename string `validate:"required"`
+}
+
+func (dto *DeleteFileDto) ToDeleteFileRequest(validatorService *validator_service.ValidatorService) (*handler.DeleteFileRequest, error) {
+	err := validatorService.Struct(dto)
+	if err != nil {
+		return nil, err
+	}
+
+	return &handler.DeleteFileRequest{
+		Filename: dto.Filename,
+	}, nil
 }
