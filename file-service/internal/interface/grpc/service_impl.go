@@ -35,7 +35,15 @@ func (f *FileServiceServerImpl) UploadFile(context context.Context, req *gen.Upl
 }
 
 func (f *FileServiceServerImpl) DeleteFile(context context.Context, req *gen.DeleteFileRequest) (*gen.DeleteFileResponse, error) {
-	res, err := handler.DeleteFile(&handler.DeleteFileRequest{Filename: req.Filename})
+	dto := interface_common.DeleteFileDto{Filename: req.Filename}
+
+	request, err := dto.ToDeleteFileRequest(f.validatorService)
+	if err != nil {
+		msg := err.Error()
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Bad request: %s", msg))
+	}
+
+	res, err := handler.DeleteFile(request)
 	if err != nil {
 		return nil, err
 	}
