@@ -2,12 +2,19 @@ package grpc_service
 
 import (
 	"context"
+	"fmt"
 	"go-file-server/internal/handler"
+	interface_common "go-file-server/internal/interface/common"
+	validator_service "go-file-server/internal/service/validator"
 	"go-file-server/proto/gen"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type FileServiceServerImpl struct {
 	gen.UnimplementedFileServiceServer
+	validatorService *validator_service.ValidatorService
 }
 
 func (f *FileServiceServerImpl) UploadFile(context context.Context, req *gen.UploadFileRequest) (*gen.UploadFileResponse, error) {
