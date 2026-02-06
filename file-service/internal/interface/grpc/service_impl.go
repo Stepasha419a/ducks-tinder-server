@@ -18,7 +18,15 @@ type FileServiceServerImpl struct {
 }
 
 func (f *FileServiceServerImpl) UploadFile(context context.Context, req *gen.UploadFileRequest) (*gen.UploadFileResponse, error) {
-	res, err := handler.UploadFile(&handler.UploadFileRequest{Data: req.Data, Type: req.Type})
+	dto := interface_common.UploadFileDto{Data: req.Data, Type: req.Type}
+
+	request, err := dto.ToUploadFileRequest(f.validatorService)
+	if err != nil {
+		msg := err.Error()
+		return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("Bad request: %s", msg))
+	}
+
+	res, err := handler.UploadFile(request)
 	if err != nil {
 		return nil, err
 	}
