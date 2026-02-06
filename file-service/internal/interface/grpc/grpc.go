@@ -4,6 +4,7 @@ import (
 	"fmt"
 	config_service "go-file-server/internal/service/config"
 	tls_service "go-file-server/internal/service/tls"
+	validator_service "go-file-server/internal/service/validator"
 	"go-file-server/proto/gen"
 	"log"
 	"net"
@@ -28,11 +29,12 @@ var kasp = keepalive.ServerParameters{
 }
 
 type GrpcService struct {
-	server *grpc.Server
-	con    net.Listener
+	server           *grpc.Server
+	con              net.Listener
+	validatorService *validator_service.ValidatorService
 }
 
-func NewGrpcService() *GrpcService {
+func NewGrpcService(validatorService *validator_service.ValidatorService) *GrpcService {
 	tlsConfig := tls_service.GetConfig()
 	creds := credentials.NewTLS(tlsConfig)
 
@@ -46,7 +48,7 @@ func NewGrpcService() *GrpcService {
 
 	server := grpc.NewServer(opts...)
 
-	fileServer := &FileServiceServerImpl{}
+	fileServer := &FileServiceServerImpl{validatorService: validatorService}
 
 	gen.RegisterFileServiceServer(server, fileServer)
 
@@ -60,6 +62,7 @@ func NewGrpcService() *GrpcService {
 	return &GrpcService{
 		server,
 		con,
+		validatorService,
 	}
 }
 
