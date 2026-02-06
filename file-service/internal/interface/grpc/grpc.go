@@ -20,11 +20,11 @@ var kaep = keepalive.EnforcementPolicy{
 }
 
 var kasp = keepalive.ServerParameters{
-	MaxConnectionIdle:     5 * time.Minute,
-	MaxConnectionAge:      time.Minute,
+	MaxConnectionIdle:     10 * time.Minute,
+	MaxConnectionAge:      30 * time.Minute,
 	MaxConnectionAgeGrace: 15 * time.Second,
 	Time:                  15 * time.Second,
-	Timeout:               1 * time.Second,
+	Timeout:               5 * time.Second,
 }
 
 type GrpcService struct {
