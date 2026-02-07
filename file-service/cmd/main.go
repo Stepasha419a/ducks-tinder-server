@@ -10,6 +10,7 @@ import (
 	grpc_service "go-file-server/internal/interface/grpc"
 	http_service "go-file-server/internal/interface/http"
 	config_service "go-file-server/internal/service/config"
+	validator_service "go-file-server/internal/service/validator"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -17,10 +18,12 @@ import (
 func main() {
 	config_service.RequireConfig()
 
-	setUpWithGracefulShutdown()
+	validatorService := validator_service.NewValidatorService()
+
+	setUpWithGracefulShutdown(validatorService)
 }
 
-func setUpWithGracefulShutdown() {
+func setUpWithGracefulShutdown(validatorService *validator_service.ValidatorService) {
 	mainCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
@@ -28,7 +31,7 @@ func setUpWithGracefulShutdown() {
 
 	httpApp := http_service.NewHttpApp()
 	healthApp := http_service.NewHealthApp()
-	grpcService := grpc_service.NewGrpcService()
+	grpcService := grpc_service.NewGrpcService(validatorService)
 
 	cleaner := func(ctx context.Context) {
 		err := httpService.Shutdown(ctx)
