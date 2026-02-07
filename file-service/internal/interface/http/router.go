@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func InitRouter() *mux.Router {
+func NewHealthRouter() *mux.Router {
 	router := mux.NewRouter()
 
 	metricsHandler := promhttp.Handler()
@@ -17,8 +17,6 @@ func InitRouter() *mux.Router {
 	router.Path("/livez").HandlerFunc(handler.SuccessHealth)
 	router.Path("/readyz").HandlerFunc(handler.SuccessHealth)
 	router.Path("/startupz").HandlerFunc(handler.SuccessHealth)
-
-	router.PathPrefix("/").HandlerFunc(handler.GetFile).Methods("GET")
 
 	return router
 }
