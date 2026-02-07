@@ -7,3 +7,9 @@ func NewHttpApp() *HttpService {
 
 	return NewHttpService(port, "http", NewHttpRouter())
 }
+
+func NewHealthApp() *HttpService {
+	port := int(config_service.GetConfig().HealthPort)
+
+	return NewHttpService(port, "health", NewHealthRouter())
+}
