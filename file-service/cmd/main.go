@@ -26,7 +26,8 @@ func setUpWithGracefulShutdown() {
 
 	g, gCtx := errgroup.WithContext(mainCtx)
 
-	httpService := http_service.NewHttpService()
+	httpApp := http_service.NewHttpApp()
+	healthApp := http_service.NewHealthApp()
 	grpcService := grpc_service.NewGrpcService()
 
 	cleaner := func(ctx context.Context) {
