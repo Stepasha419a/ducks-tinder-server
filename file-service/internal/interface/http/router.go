@@ -7,6 +7,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+func NewHttpRouter() *mux.Router {
+	router := mux.NewRouter()
+
+	router.PathPrefix("/").HandlerFunc(handler.GetFile).Methods("GET")
+
+	return router
+}
+
 func NewHealthRouter() *mux.Router {
 	router := mux.NewRouter()
 
