@@ -24,6 +24,8 @@ public class MapServiceServer extends MapServiceImplBase {
 			ValidatorService.isValidCoords(request.getLatitude(), request.getLongitude());
 		} catch (Exception e) {
 			GrpcError.ValidationFailed(responseObserver, e);
+
+			return;
 		}
 
 		var geocode = mapService.getGeocode(request.getLatitude(), request.getLongitude());
