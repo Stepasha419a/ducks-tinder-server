@@ -34,15 +34,20 @@ func setUpWithGracefulShutdown(validatorService *validator_service.ValidatorServ
 	grpcService := grpc_service.NewGrpcService(validatorService)
 
 	cleaner := func(ctx context.Context) {
-		err := httpService.Shutdown(ctx)
+		err := httpApp.Shutdown(ctx)
 		if err != nil {
-			log.Printf("HTTPS shutdown error: %v", err)
+			log.Printf("HTTPS http shutdown error: %v", err)
+		}
+
+		err = healthApp.Shutdown(ctx)
+		if err != nil {
+			log.Printf("HTTPS health shutdown error: %v", err)
 		}
 
 		grpcService.GracefulStop()
 	}
 
-	initListeners(g, httpService, grpcService)
+	initListeners(g, healthApp, httpApp, grpcService)
 	gracefulShutdown(gCtx, g, cleaner)
 
 	if err := g.Wait(); err != nil {
@@ -50,9 +55,12 @@ func setUpWithGracefulShutdown(validatorService *validator_service.ValidatorServ
 	}
 }
 
-func initListeners(g *errgroup.Group, httpService *http_service.HttpService, grpcService *grpc_service.GrpcService) {
+func initListeners(g *errgroup.Group, healthApp *http_service.HttpService, httpApp *http_service.HttpService, grpcService *grpc_service.GrpcService) {
 	g.Go(func() error {
-		return httpService.ListenAndServeTLS()
+		return healthApp.ListenAndServeTLS()
+	})
+	g.Go(func() error {
+		return httpApp.ListenAndServeTLS()
 	})
 	g.Go(func() error {
 		return grpcService.Serve()
