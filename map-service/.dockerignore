@@ -1,0 +1,16 @@
+**/.git
+**/.gitignore
+\*\*/.dockerignore
+
+**/application-\*.properties
+!**/application-test.properties
+
+**/cert
+**/dist
+**/target
+**/node_modules
+\*\*/tmp
+
+**/.eslint.js
+**/.prettierrc
+\*\*/README.md
