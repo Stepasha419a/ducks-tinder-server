@@ -2,6 +2,7 @@ FROM maven:3.9.12-eclipse-temurin-21 AS build
 
 WORKDIR /usr/src/app
 
+COPY ./src/main/resources/application-test.properties ./src/main/resources/application-test.properties
 COPY ./pom.xml ./pom.xml
 
 RUN mvn dependency:go-offline
