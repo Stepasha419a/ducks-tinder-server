@@ -1,4 +1,4 @@
-FROM maven:3.8.5-openjdk-17-slim AS build
+FROM maven:3.9.12-eclipse-temurin-21 AS build
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,7 @@ COPY . .
 # TODO: fix tests skipping
 RUN mvn clean package -DskipTests -Dmaven.test.skip=true
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine-3.23
 
 WORKDIR /app
 
