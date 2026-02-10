@@ -9,8 +9,7 @@ RUN mvn dependency:go-offline
 
 COPY . .
 
-# TODO: fix tests skipping
-RUN mvn clean package -DskipTests -Dmaven.test.skip=true
+RUN mvn clean package
 
 FROM eclipse-temurin:21-jre-alpine-3.23
 
