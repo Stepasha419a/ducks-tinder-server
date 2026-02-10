@@ -7,27 +7,23 @@ import {
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import {
-  DeleteFileRequest,
-  DeleteFileResponse,
-  FileProtoService,
   GRPC_SERVICE,
-  UploadFileRequest,
-  UploadFileResponse,
   getGrpcPackageServiceName,
 } from 'src/infrastructure/grpc/service';
 import { firstValueFrom } from 'rxjs';
 import { UploadFileType } from 'src/application/user/adapter/file-api';
+import { file } from 'src/infrastructure/grpc/gen';
 
 @Injectable()
 export class FileApiImplementation implements OnModuleInit {
-  private fileGrpcService: FileProtoService;
+  private fileGrpcService: file.FileService;
 
   constructor(@Inject(GRPC_SERVICE.FILE) private readonly client: ClientGrpc) {}
 
   private readonly logger = new Logger(FileApiImplementation.name);
 
   onModuleInit() {
-    this.fileGrpcService = this.client.getService<FileProtoService>(
+    this.fileGrpcService = this.client.getService<file.FileService>(
       getGrpcPackageServiceName(GRPC_SERVICE.FILE),
     );
   }
@@ -35,17 +31,17 @@ export class FileApiImplementation implements OnModuleInit {
   async uploadFile(
     file: Express.Multer.File | File,
     type: UploadFileType,
-  ): Promise<UploadFileResponse> {
-    let data: string;
+  ): Promise<file.UploadFileResponse> {
+    let data: Uint8Array<ArrayBuffer>;
     if ('buffer' in file) {
-      data = file.buffer.toString('base64');
+      data = Uint8Array.from(file.buffer);
     } else {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      data = buffer.toString('base64');
+      data = buffer;
     }
 
-    const req: UploadFileRequest = {
+    const req: file.UploadFileRequest = {
       data,
       type: type,
     };
@@ -56,8 +52,8 @@ export class FileApiImplementation implements OnModuleInit {
     });
   }
 
-  deleteFile(filename: string): Promise<DeleteFileResponse> {
-    const req: DeleteFileRequest = { filename };
+  deleteFile(filename: string): Promise<file.DeleteFileResponse> {
+    const req: file.DeleteFileRequest = { filename };
 
     return firstValueFrom(this.fileGrpcService.deleteFile(req)).catch((err) => {
       this.logger.error(
