@@ -10,6 +10,7 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
     const pool = new Pool({
       connectionString: configService.get('DATABASE_URL'),
       ssl: {
+        rejectUnauthorized: false,
         pfx: fs.readFileSync(
           path.resolve(
             process.cwd(),
