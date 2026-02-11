@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from './prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class DatabaseService extends PrismaClient implements OnModuleInit {
@@ -17,6 +19,7 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
             configService.get('CLIENT_IDENTITY_PATH'),
           ),
         ),
+        passphrase: configService.get('CLIENT_IDENTITY_PASSWORD'),
       },
     });
 
