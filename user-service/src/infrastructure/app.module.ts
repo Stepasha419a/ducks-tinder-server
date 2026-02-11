@@ -16,10 +16,13 @@ import { HealthModule } from './health';
       envFilePath: `.env.${process.env.NODE_ENV}`,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
+        CLIENT_IDENTITY_PASSWORD: Joi.string().required(),
+        CLIENT_IDENTITY_PATH: Joi.string().required(),
         NODE_ENV: Joi.string()
           .valid('dev', 'dev-docker', 'dev-k8s', 'prod', 'test')
           .default('dev'),
         PORT: Joi.number().default(5000),
+        HEALTH_PORT: Joi.number().default(35000),
         GEOCODE_API_URL: Joi.string().required(),
         GEOCODE_API_KEY: Joi.string().required(),
         JWT_ACCESS_SECRET: Joi.string().required(),
