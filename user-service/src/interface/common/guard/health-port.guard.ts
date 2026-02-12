@@ -9,13 +9,17 @@ import { Request } from 'express';
 
 @Injectable()
 export class HealthPortGuard implements CanActivate {
-  constructor(private readonly configService: ConfigService) {}
+  healthPort: number;
+
+  constructor(private readonly configService: ConfigService) {
+    this.healthPort = Number(this.configService.get('HEALTH_PORT'));
+  }
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
     const serverPort = request.socket.localPort;
 
-    if (serverPort !== 5000) {
+    if (serverPort !== this.healthPort) {
       throw new ForbiddenException();
     }
 
