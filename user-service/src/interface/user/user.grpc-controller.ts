@@ -1,4 +1,4 @@
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Logger, UsePipes } from '@nestjs/common';
 import { UserFacade } from 'src/application/user';
 import { ShortUser, UserMapper } from 'src/infrastructure/user/mapper';
 import { CreateUserDto } from 'src/application/user/command';
@@ -8,9 +8,11 @@ import {
   GetShortUserRequest,
   GRPC_SERVICE,
 } from 'src/infrastructure/grpc/service';
-import { UserGrpcServiceEndpoint } from 'src/infrastructure/grpc/service/service';
+import { GrpcValidationPipe } from '../common';
+import { CreateUserGrpcDto, GrpcShortUserGrpcDto } from '../common/dto';
 
 @Controller()
+@UsePipes(GrpcValidationPipe)
 export class UserGrpcController {
   constructor(
     private readonly facade: UserFacade,
