@@ -1,12 +1,11 @@
 import { Controller, Logger, UsePipes } from '@nestjs/common';
 import { UserFacade } from 'src/application/user';
 import { ShortUser, UserMapper } from 'src/infrastructure/user/mapper';
-import { CreateUserDto } from 'src/application/user/command';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   getGrpcPackageServiceName,
-  GetShortUserRequest,
   GRPC_SERVICE,
+  UserGrpcServiceEndpoints,
 } from 'src/infrastructure/grpc/service';
 import { GrpcValidationPipe } from '../common';
 import { CreateUserGrpcDto, GrpcShortUserGrpcDto } from '../common/dto';
@@ -23,23 +22,23 @@ export class UserGrpcController {
 
   @GrpcMethod(
     getGrpcPackageServiceName(GRPC_SERVICE.USER),
-    UserGrpcServiceEndpoint.CreateUser,
+    UserGrpcServiceEndpoints.CreateUser,
   )
-  async createUser(data: CreateUserDto): Promise<ShortUser> {
+  async createUser(dto: CreateUserGrpcDto): Promise<ShortUser> {
     this.logger.log(
       'Received gRPC call',
-      UserGrpcServiceEndpoint.CreateUser,
-      data,
+      UserGrpcServiceEndpoints.CreateUser,
+      dto,
     );
 
     try {
-      const userAggregate = await this.facade.commands.createUser(data);
+      const userAggregate = await this.facade.commands.createUser(dto);
 
       return this.mapper.getShortUser(userAggregate);
     } catch (error) {
       this.logger.error(
         'Failed to handle gRPC call',
-        UserGrpcServiceEndpoint.CreateUser,
+        UserGrpcServiceEndpoints.CreateUser,
         error,
       );
 
@@ -49,23 +48,23 @@ export class UserGrpcController {
 
   @GrpcMethod(
     getGrpcPackageServiceName(GRPC_SERVICE.USER),
-    UserGrpcServiceEndpoint.GetShortUser,
+    UserGrpcServiceEndpoints.GetShortUser,
   )
-  async getShortUser(data: GetShortUserRequest): Promise<ShortUser> {
+  async getShortUser(dto: GrpcShortUserGrpcDto): Promise<ShortUser> {
     this.logger.log(
       'Received gRPC call',
-      UserGrpcServiceEndpoint.GetShortUser,
-      data,
+      UserGrpcServiceEndpoints.GetShortUser,
+      dto,
     );
 
     try {
-      const userAggregate = await this.facade.queries.getUser(data.id);
+      const userAggregate = await this.facade.queries.getUser(dto.id);
 
       return this.mapper.getShortUser(userAggregate);
     } catch (error) {
       this.logger.error(
         'Failed to handle gRPC call',
-        UserGrpcServiceEndpoint.GetShortUser,
+        UserGrpcServiceEndpoints.GetShortUser,
         error,
       );
 
