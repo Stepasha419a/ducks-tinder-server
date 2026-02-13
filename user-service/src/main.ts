@@ -7,6 +7,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 import { GrpcOptionsService } from './infrastructure/grpc';
+import * as express from 'express';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as https from 'https';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -23,7 +26,8 @@ async function bootstrap() {
     requestCert: true,
   };
 
-  const app = await NestFactory.create(AppModule, { httpsOptions });
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   app.use(cookieParser());
 
@@ -44,7 +48,9 @@ async function bootstrap() {
   await app.startAllMicroservices();
 
   const port = configService.get('PORT');
+  const healthPort = configService.get('HEALTH_PORT');
 
-  await app.listen(port);
+  https.createServer(httpsOptions, server).listen(port);
+  https.createServer(httpsOptions, server).listen(healthPort);
 }
 bootstrap();
