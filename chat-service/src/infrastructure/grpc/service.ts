@@ -7,7 +7,7 @@ export enum GRPC_SERVICE {
 
 export const GRPC_SERVICE_CLIENTS = [GRPC_SERVICE.USER];
 
-export const CRITICAL_GRPC_SERVICE_CLIENTS = [];
+export const CRITICAL_GRPC_SERVICE_CLIENTS = [GRPC_SERVICE.USER];
 
 const info: Record<GRPC_SERVICE, { package: string; service: string }> = {
   [GRPC_SERVICE.CHAT]: {
