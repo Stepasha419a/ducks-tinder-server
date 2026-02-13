@@ -1,10 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
   PrismaHealthIndicator,
 } from '@nestjs/terminus';
-import { Public } from '../common';
+import { HealthPortGuard, Public } from '../common';
 import { RabbitMQHealthIndicator } from '../../infrastructure/health/rabbitmq.health';
 import { DatabaseService } from 'src/infrastructure/database';
 import { GrpcHealthIndicator } from 'src/infrastructure/health/grpc.health';
@@ -12,9 +12,10 @@ import { getGrpcPackageName } from 'src/infrastructure/grpc/service';
 import {
   getIsGrpcServiceCritical,
   GRPC_SERVICE_CLIENTS,
-} from 'src/infrastructure/grpc/service/service';
+} from 'src/infrastructure/grpc/service';
 
 @Public()
+@UseGuards(HealthPortGuard)
 @Controller('health')
 export class HealthController {
   constructor(
