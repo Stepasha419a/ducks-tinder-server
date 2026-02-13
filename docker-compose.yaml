@@ -24,7 +24,8 @@ services:
       NODE_ENV: dev-docker
       CLIENT_IDENTITY_PASSWORD: password
     ports:
-      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+      - "${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}"
     depends_on:
       - rabbitmq
       - postgres
