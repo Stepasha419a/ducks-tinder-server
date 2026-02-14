@@ -54,6 +54,7 @@ import { HealthModule } from './health';
           .valid('dev', 'dev-docker', 'dev-k8s', 'prod', 'test')
           .default('dev'),
         PORT: Joi.number().default(5000),
+        HEALTH_PORT: Joi.number().default(35000),
         JWT_ACCESS_SECRET: Joi.string().required(),
         RABBIT_MQ_USER_QUEUE: Joi.string().required(),
         RABBIT_MQ_CHAT_QUEUE: Joi.string().required(),
