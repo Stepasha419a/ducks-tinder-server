@@ -16,3 +16,4 @@ postgres_port: 5433
 postgres_user: prisma
 postgres_password: prisma
 postgres_database: auth-service
+grpc_user_service_url: host.docker.internal:6005
