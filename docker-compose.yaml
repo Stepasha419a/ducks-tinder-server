@@ -27,6 +27,7 @@ services:
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
       - "${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}"
+      - "${USER_SERVICE_GRPC_PORT}:${USER_SERVICE_GRPC_PORT}"
     depends_on:
       - rabbitmq
       - postgres
