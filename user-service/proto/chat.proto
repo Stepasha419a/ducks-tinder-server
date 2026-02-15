@@ -3,17 +3,17 @@ syntax="proto3";
 package chat;
 
 service ChatService {
-    rpc CreateChat (CreateChatRequest) returns (ChatResponse);
+  rpc CreateChat (CreateChatRequest) returns (ChatResponse);
 }
 
 message CreateChatRequest {
-    repeated string member_ids = 1; 
+  repeated string member_ids = 1;
 }
 
 message ChatResponse {
-  string id = 1;
-  bool blocked = 2;
+  string          id          = 1;
+  bool            blocked     = 2;
   optional string blockedById = 3;
-  string createdAt = 4;
-  string updatedAt = 5;
+  string          createdAt   = 4;
+  string          updatedAt   = 5;
 }
