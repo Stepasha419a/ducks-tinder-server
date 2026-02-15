@@ -13,7 +13,8 @@ services:
     environment:
       NODE_ENV: dev-docker
     ports:
-      - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
+      - "${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}"
+      - "${CHAT_SERVICE_HEALTH_PORT}:${CHAT_SERVICE_HEALTH_PORT}"
   user-service:
     container_name: user-service
     restart: always
