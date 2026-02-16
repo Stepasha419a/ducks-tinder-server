@@ -1,4 +1,4 @@
-FROM postgres:13-alpine
+FROM postgres:17-alpine
 
 COPY ./database/cert/dev/tls.crt /var/lib/postgresql/tls.crt
 COPY ./database/cert/dev/tls.key /var/lib/postgresql/tls.key
