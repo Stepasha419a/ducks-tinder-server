@@ -2,6 +2,7 @@ mode: dev-docker
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 jwt_billing_service_secret: dfgh567sdfgdfg456sdfgdfg
 port: 5004
+health_port: 35004
 grpc_port: 6001
 client_url: http://localhost:3000
 tls_server_name: host.docker.internal
