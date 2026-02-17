@@ -53,6 +53,8 @@ spec:
           ports:
             - name: http
               containerPort: 5003
+            - name: health
+              containerPort: 35000
           command:
             - '/usr/src/app/app'
           volumeMounts:
