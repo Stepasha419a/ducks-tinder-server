@@ -13,3 +13,7 @@ spec:
       port: 5003
       targetPort: 5003
       protocol: TCP
+    - name: health
+      port: 35000
+      targetPort: 35000
+      protocol: TCP
