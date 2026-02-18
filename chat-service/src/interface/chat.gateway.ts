@@ -42,6 +42,10 @@ export class ChatGateway implements OnGatewayInit {
         const [type, token] =
           socket.handshake.auth?.authorization.split(' ') ?? [];
 
+        if (type !== 'Bearer' || !token) {
+          return next(new Error('Unauthorized'));
+        }
+
         const userTokenDto = await this.jwtService.validateAccessToken(token);
         if (!userTokenDto) {
           return next(new Error('Unauthorized'));
