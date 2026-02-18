@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -17,6 +18,7 @@ import { ChatFacade } from 'src/application';
 import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { ChatGatewayEvent } from './chat.gateway-event';
 import { WsHttpExceptionFilter, AccessTokenGuard, User } from './common';
+import { JwtService } from 'src/domain/service/jwt';
 
 @UseFilters(WsHttpExceptionFilter)
 @UsePipes(ValidationPipe)
@@ -25,11 +27,31 @@ import { WsHttpExceptionFilter, AccessTokenGuard, User } from './common';
   cookie: true,
   path: '/chat/socket',
 })
-export class ChatGateway {
-  constructor(private readonly facade: ChatFacade) {}
+export class ChatGateway implements OnGatewayInit {
+  constructor(
+    private readonly facade: ChatFacade,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @WebSocketServer()
   wss: Server;
+
+  afterInit(server: Server) {
+    server.use(async (socket, next) => {
+      try {
+        const [type, token] =
+          socket.handshake.auth?.authorization.split(' ') ?? [];
+
+        const userTokenDto = await this.jwtService.validateAccessToken(token);
+
+        socket.client.request['userId'] = userTokenDto.userId;
+
+        next();
+      } catch (e) {
+        next(new Error('Unauthorized'));
+      }
+    });
+  }
 
   @UseGuards(AccessTokenGuard)
   @SubscribeMessage(ChatGatewayEvent.Connect)
