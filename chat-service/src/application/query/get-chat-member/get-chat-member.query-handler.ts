@@ -6,9 +6,10 @@ import { ChatMemberView } from 'src/application/adapter/user-api/view';
 import { UserApi } from 'src/application/adapter';
 
 @QueryHandler(GetChatMemberQuery)
-export class GetChatMemberQueryHandler
-  implements IQueryHandler<GetChatMemberQuery, ChatMemberView>
-{
+export class GetChatMemberQueryHandler implements IQueryHandler<
+  GetChatMemberQuery,
+  ChatMemberView
+> {
   constructor(
     private readonly repository: ChatRepository,
     private readonly userApi: UserApi,

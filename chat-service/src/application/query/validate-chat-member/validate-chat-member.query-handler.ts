@@ -4,9 +4,7 @@ import { ValidateChatMemberQuery } from './validate-chat-member.query';
 import { ChatRepository } from 'src/domain/chat/repository';
 
 @QueryHandler(ValidateChatMemberQuery)
-export class ValidateChatMemberQueryHandler
-  implements IQueryHandler<ValidateChatMemberQuery>
-{
+export class ValidateChatMemberQueryHandler implements IQueryHandler<ValidateChatMemberQuery> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(query: ValidateChatMemberQuery): Promise<void> {

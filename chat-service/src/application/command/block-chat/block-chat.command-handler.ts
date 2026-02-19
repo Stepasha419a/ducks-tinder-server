@@ -5,9 +5,7 @@ import { ChatRepository } from 'src/domain/chat/repository';
 import { ChatAggregate } from 'src/domain/chat';
 
 @CommandHandler(BlockChatCommand)
-export class BlockChatCommandHandler
-  implements ICommandHandler<BlockChatCommand>
-{
+export class BlockChatCommandHandler implements ICommandHandler<BlockChatCommand> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(command: BlockChatCommand): Promise<ChatAggregate> {

@@ -4,9 +4,7 @@ import { ChatRepository } from 'src/domain/chat/repository';
 import { NotFoundException } from '@nestjs/common';
 
 @QueryHandler(GetChatMemberIdsQuery)
-export class GetChatMemberIdsQueryHandler
-  implements IQueryHandler<GetChatMemberIdsQuery>
-{
+export class GetChatMemberIdsQueryHandler implements IQueryHandler<GetChatMemberIdsQuery> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(query: GetChatMemberIdsQuery): Promise<string[]> {

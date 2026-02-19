@@ -6,9 +6,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
 import { UserChatConnectionEntity } from 'src/domain/chat/entity';
 
 @CommandHandler(CreateChatCommand)
-export class CreateChatCommandHandler
-  implements ICommandHandler<CreateChatCommand>
-{
+export class CreateChatCommandHandler implements ICommandHandler<CreateChatCommand> {
   logger: Logger = new Logger();
   constructor(private repository: ChatRepository) {}
 

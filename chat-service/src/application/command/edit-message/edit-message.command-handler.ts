@@ -6,9 +6,7 @@ import { MessageAggregate } from 'src/domain/chat';
 import { DateUtil } from 'src/infrastructure/util';
 
 @CommandHandler(EditMessageCommand)
-export class EditMessageCommandHandler
-  implements ICommandHandler<EditMessageCommand>
-{
+export class EditMessageCommandHandler implements ICommandHandler<EditMessageCommand> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(command: EditMessageCommand): Promise<MessageAggregate> {

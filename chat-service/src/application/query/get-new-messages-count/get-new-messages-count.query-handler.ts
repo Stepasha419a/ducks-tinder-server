@@ -4,9 +4,10 @@ import { ChatRepository } from 'src/domain/chat/repository';
 import { NewMessagesCountView } from 'src/application/view';
 
 @QueryHandler(GetNewMessagesCountQuery)
-export class GetNewMessagesCountQueryHandler
-  implements IQueryHandler<GetNewMessagesCountQuery, NewMessagesCountView>
-{
+export class GetNewMessagesCountQueryHandler implements IQueryHandler<
+  GetNewMessagesCountQuery,
+  NewMessagesCountView
+> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(

@@ -6,9 +6,7 @@ import { MessageAggregate } from 'src/domain/chat';
 import { DateUtil } from 'src/infrastructure/util';
 
 @CommandHandler(DeleteMessageCommand)
-export class DeleteMessageCommandHandler
-  implements ICommandHandler<DeleteMessageCommand>
-{
+export class DeleteMessageCommandHandler implements ICommandHandler<DeleteMessageCommand> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(command: DeleteMessageCommand): Promise<MessageAggregate> {

@@ -6,9 +6,7 @@ import { MessageAggregate } from 'src/domain/chat/message';
 import { NewMessageView } from '../../view';
 
 @CommandHandler(SendMessageCommand)
-export class SendMessageCommandHandler
-  implements ICommandHandler<SendMessageCommand>
-{
+export class SendMessageCommandHandler implements ICommandHandler<SendMessageCommand> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(command: SendMessageCommand): Promise<NewMessageView> {

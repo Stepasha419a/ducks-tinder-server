@@ -5,9 +5,7 @@ import { ChatRepository } from 'src/domain/chat/repository';
 import { MessagesPaginationView } from '../../view';
 
 @QueryHandler(GetMessagesQuery)
-export class GetMessagesQueryHandler
-  implements IQueryHandler<GetMessagesQuery>
-{
+export class GetMessagesQueryHandler implements IQueryHandler<GetMessagesQuery> {
   constructor(private readonly repository: ChatRepository) {}
 
   async execute(query: GetMessagesQuery): Promise<MessagesPaginationView> {
