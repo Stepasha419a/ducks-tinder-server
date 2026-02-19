@@ -15,6 +15,7 @@ services:
     ports:
       - "${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}"
       - "${CHAT_SERVICE_HEALTH_PORT}:${CHAT_SERVICE_HEALTH_PORT}"
+      - "${CHAT_SERVICE_GRPC_PORT}:${CHAT_SERVICE_GRPC_PORT}"
   user-service:
     container_name: user-service
     restart: always
