@@ -10,8 +10,8 @@ services:
       - rabbitmq
       - postgres
       - user-service
-    environment:
-      NODE_ENV: dev-docker
+    env_file:
+      - ./chat-service/.env.dev-docker
     ports:
       - "${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}"
       - "${CHAT_SERVICE_HEALTH_PORT}:${CHAT_SERVICE_HEALTH_PORT}"
