@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: chat-service/Dockerfile
+    volumes:
+      - ./chat-service/cert:/app/cert
     depends_on:
       - rabbitmq
       - postgres
