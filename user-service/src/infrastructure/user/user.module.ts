@@ -8,11 +8,7 @@ import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { userFacadeFactory } from './facade';
 import { UserRepository } from '../../domain/user/repository';
 import { UserAdapter } from './repository';
-import {
-  UserController,
-  UserConsumer,
-  UserGrpcController,
-} from '../../interface/user';
+import { UserController, UserGrpcController } from '../../interface/user';
 import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database';
 import { RabbitMQModule } from '../rabbitmq';
@@ -20,7 +16,6 @@ import { GrpcModule } from '../grpc';
 
 @Module({
   providers: [
-    UserConsumer,
     ...USER_QUERY_HANDLERS,
     ...USER_COMMAND_HANDLERS,
     ...USER_DEV_HANDLERS,
