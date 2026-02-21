@@ -5,7 +5,6 @@ import {
   PrismaHealthIndicator,
 } from '@nestjs/terminus';
 import { HealthPortGuard, Public } from '../common';
-import { RabbitMQHealthIndicator } from '../../infrastructure/health/rabbitmq.health';
 import { DatabaseService } from 'src/infrastructure/database';
 import { GrpcHealthIndicator } from 'src/infrastructure/health/grpc.health';
 import { getGrpcPackageName } from 'src/infrastructure/grpc/service';
@@ -20,7 +19,6 @@ import {
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
-    private readonly rmqHealth: RabbitMQHealthIndicator,
     private readonly grpcHealth: GrpcHealthIndicator,
     private readonly db: DatabaseService,
     private readonly prismaHealth: PrismaHealthIndicator,
@@ -39,7 +37,6 @@ export class HealthController {
   checkReady() {
     return this.health.check([
       () => this.prismaHealth.pingCheck('database', this.db),
-      () => this.rmqHealth.isHealthy('rabbitmq'),
       ...Object.values(GRPC_SERVICE_CLIENTS).map(
         (service) => () =>
           this.grpcHealth.isHealthy(
