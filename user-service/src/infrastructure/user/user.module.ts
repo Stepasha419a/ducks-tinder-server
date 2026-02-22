@@ -11,7 +11,6 @@ import { UserAdapter } from './repository';
 import { UserController, UserGrpcController } from '../../interface/user';
 import { HttpModule } from '@nestjs/axios';
 import { DatabaseModule } from '../database';
-import { RabbitMQModule } from '../rabbitmq';
 import { GrpcModule } from '../grpc';
 
 @Module({
@@ -31,7 +30,7 @@ import { GrpcModule } from '../grpc';
     },
   ],
   controllers: [UserController, UserGrpcController],
-  imports: [DatabaseModule, CqrsModule, HttpModule, RabbitMQModule, GrpcModule],
+  imports: [DatabaseModule, CqrsModule, HttpModule, GrpcModule],
   exports: [UserRepository],
 })
 export class UserModule {}
