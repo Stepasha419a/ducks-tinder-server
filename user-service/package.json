@@ -27,7 +27,6 @@
     "test:unit-refactoring": "jest --config ./jest.config.unit-refactoring.js"
   },
   "dependencies": {
-    "@golevelup/nestjs-rabbitmq": "^6.0.2",
     "@grpc/grpc-js": "^1.14.1",
     "@grpc/proto-loader": "^0.8.0",
     "@nestjs/axios": "^4.0.1",
@@ -42,8 +41,6 @@
     "@nestjs/terminus": "^11.0.0",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
-    "amqp-connection-manager": "^5.0.0",
-    "amqplib": "^0.10.9",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
@@ -62,7 +59,6 @@
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.9",
-    "@types/amqplib": "^0.10.8",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.5",
     "@types/jest": "30.0.0",
