@@ -1,10 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  ChatConsumer,
-  ChatController,
-  ChatGateway,
-  ChatGrpcController,
-} from '../interface';
+import { ChatController, ChatGateway, ChatGrpcController } from '../interface';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { ChatRepository } from 'src/domain/chat/repository';
 import { ChatAdapter } from './repository';
@@ -27,7 +22,6 @@ import { HealthModule } from './health';
   controllers: [ChatController, ChatGrpcController],
   providers: [
     ChatGateway,
-    ChatConsumer,
     ...CHAT_COMMAND_HANDLERS,
     ...CHAT_QUERY_HANDLERS,
     { provide: ChatRepository, useClass: ChatAdapter },
