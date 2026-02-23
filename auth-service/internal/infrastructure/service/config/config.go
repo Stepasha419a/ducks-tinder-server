@@ -20,11 +20,8 @@ type (
 		CookieRefreshTokenDomain string `yaml:"cookie_refresh_token_domain"`
 		Port                     uint16 `yaml:"port"`
 		HealthPort               uint16 `yaml:"health_port"`
-		RabbitMqUrl              string `yaml:"rabbit_mq_url"`
-		RabbitMqUserQueue        string `yaml:"rabbit_mq_user_queue"`
 		TlsServerName            string `yaml:"tls_server_name"`
 		PostgresTlsServerName    string `yaml:"postgres_tls_server_name"`
-		RabbitmqTlsServerName    string `yaml:"rabbitmq_tls_server_name"`
 		PostgresHost             string `yaml:"postgres_host"`
 		PostgresPort             uint16 `yaml:"postgres_port"`
 		PostgresUser             string `yaml:"postgres_user"`
