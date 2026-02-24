@@ -113,23 +113,9 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - '${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}'
-      - '${FILE_SERVICE_GRPC_PORT}:${FILE_SERVICE_GRPC_PORT}'
-    deploy:
-      restart_policy:
-        condition: on-failure
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:4-management
-    volumes:
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-      - ./rabbitmq/cert:/etc/rabbitmq/cert
-    environment:
-      RABBITMQ_CONFIG_FILE: /etc/rabbitmq/rabbitmq.conf
-    ports:
-      - '${RABBITMQ_PORT}:${RABBITMQ_PORT}'
-      - '15672:15672'
-      - '15692:15692'
+      - "${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}"
+      - "${FILE_SERVICE_HEALTH_PORT}:${FILE_SERVICE_HEALTH_PORT}"
+      - "${FILE_SERVICE_GRPC_PORT}:${FILE_SERVICE_GRPC_PORT}"
   postgres:
     container_name: postgres
     restart: always
