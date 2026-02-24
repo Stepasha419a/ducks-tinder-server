@@ -11,7 +11,6 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule } from './database';
-import { RabbitMQModule } from './rabbitmq';
 import { AccessTokenGuard } from 'src/interface/common/guard';
 import { DomainModule } from 'src/domain';
 import { MetricsModule } from './metrics';
@@ -55,7 +54,6 @@ import { HealthModule } from './health';
     HealthModule,
     DatabaseModule,
     CqrsModule,
-    RabbitMQModule,
     GrpcModule,
     DomainModule,
     MetricsModule,
