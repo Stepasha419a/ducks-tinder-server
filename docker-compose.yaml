@@ -9,7 +9,6 @@ services:
     volumes:
       - ./chat-service/cert:/app/cert
     depends_on:
-      - rabbitmq
       - postgres
       - user-service
     env_file:
@@ -32,7 +31,6 @@ services:
       - "${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}"
       - "${USER_SERVICE_GRPC_PORT}:${USER_SERVICE_GRPC_PORT}"
     depends_on:
-      - rabbitmq
       - postgres
       - file-service
       - map-service
@@ -65,7 +63,6 @@ services:
         condition: on-failure
     command: ['/usr/src/app/app']
     depends_on:
-      - rabbitmq
       - postgres
   billing-service:
     container_name: billing-service
