@@ -23,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
+    volumes:
+      - ./user-service/cert:/app/cert
     env_file:
       - ./user-service/.env.dev-docker
     ports:
