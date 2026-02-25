@@ -50,8 +50,8 @@ services:
     depends_on:
       - postgres
     ports:
-      - '${MAP_SERVICE_PORT}:${MAP_SERVICE_PORT}'
-      - '${MAP_SERVICE_GRPC_PORT}:${MAP_SERVICE_GRPC_PORT}'
+      - "${MAP_SERVICE_HEALTH_PORT}:${MAP_SERVICE_HEALTH_PORT}"
+      - "${MAP_SERVICE_GRPC_PORT}:${MAP_SERVICE_GRPC_PORT}"
   auth-service:
     container_name: auth-service
     restart: always
