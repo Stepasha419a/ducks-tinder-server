@@ -23,9 +23,8 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-    environment:
-      NODE_ENV: dev-docker
-      CLIENT_IDENTITY_PASSWORD: password
+    env_file:
+      - ./user-service/.env.dev-docker
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
       - "${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}"
