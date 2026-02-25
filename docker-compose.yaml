@@ -43,6 +43,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./map-service/cert:/app/cert
+      - ./map-service/src/main/resources/application-dev-docker.properties:/app/config/application-dev-docker.properties
     environment:
       SPRING_PROFILES_ACTIVE: dev-docker
       KEYSTORE_PASSWORD: password
