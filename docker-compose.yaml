@@ -110,8 +110,8 @@ services:
     container_name: file-service
     restart: always
     build:
-      context: .
-      dockerfile: file-service/Dockerfile
+      context: file-service
+      dockerfile: Dockerfile
     volumes:
       - file_service_static_data:/usr/src/static
     environment:
