@@ -175,12 +175,6 @@ services:
       - '--web.config.file=/etc/prometheus/web-config.yml'
     ports:
       - 9090:9090
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-      restart_policy:
-        condition: on-failure
   grafana:
     container_name: grafana
     image: grafana/grafana:11.4.0
