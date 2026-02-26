@@ -113,7 +113,7 @@ services:
       context: file-service
       dockerfile: Dockerfile
     volumes:
-      - file_service_static_data:/usr/src/static
+      - ./static:/app/static
     environment:
       MODE: dev-docker
     ports:
