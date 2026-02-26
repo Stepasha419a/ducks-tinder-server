@@ -126,9 +126,9 @@ services:
     volumes:
       - ./database/postgresql/postgresql.conf:/var/lib/postgresql/postgresql.conf
       - ./database/postgresql/pg_hba.conf:/var/lib/postgresql/pg_hba.conf
-    build:
-      context: .
-      dockerfile: database/postgresql/Dockerfile
+      - ./database/cert/dev-docker/tls.crt:/var/lib/postgresql/tls.crt
+      - ./database/cert/dev-docker/tls.key:/var/lib/postgresql/tls.key
+      - ./database/cert/dev-docker/ca.crt:/var/lib/postgresql/ca.crt
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
