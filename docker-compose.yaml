@@ -58,6 +58,9 @@ services:
     build:
       context: auth-service
       dockerfile: Dockerfile
+    volumes:
+      - ./auth-service/.env:/app/.env
+      - ./auth-service/config:/app/config
     environment:
       MODE: dev-docker
     ports:
