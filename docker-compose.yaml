@@ -134,9 +134,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'
-    command:
-      ['postgres', '-c', 'config_file=/var/lib/postgresql/postgresql.conf']
+      - "${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}"
   postgres-exporter:
     container_name: postgres-exporter
     image: prometheuscommunity/postgres-exporter:v0.13.1
@@ -145,7 +143,7 @@ services:
       DATA_SOURCE_USER: ${POSTGRES_USER}
       DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
     ports:
-      - '9187:9187'
+      - "9187:9187"
     depends_on:
       - postgres
   pgadmin:
@@ -156,7 +154,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@gmail.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - '5050:80'
+      - "5050:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
   prometheus:
@@ -166,13 +164,13 @@ services:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
-      - '--web.enable-lifecycle'
-      - '--web.enable-admin-api'
-      - '--web.config.file=/etc/prometheus/web-config.yml'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+      - "--web.enable-admin-api"
+      - "--web.config.file=/etc/prometheus/web-config.yml"
     ports:
       - 9090:9090
   grafana:
