@@ -116,6 +116,7 @@ services:
       - ./static:/app/static
       - ./file-service/.env:/app/.env
       - ./file-service/config:/app/config
+      - ./file-service/cert:/app/cert
     environment:
       MODE: dev-docker
     ports:
