@@ -123,6 +123,9 @@ services:
   postgres:
     container_name: postgres
     restart: always
+    build:
+      context: .
+      dockerfile: database/postgresql/Dockerfile
     volumes:
       - ./database/postgresql/postgresql.conf:/var/lib/postgresql/postgresql.conf
       - ./database/postgresql/pg_hba.conf:/var/lib/postgresql/pg_hba.conf
