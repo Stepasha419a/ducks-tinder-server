@@ -129,6 +129,7 @@ services:
       - ./database/cert/dev-docker/tls.crt:/var/lib/postgresql/tls.crt
       - ./database/cert/dev-docker/tls.key:/var/lib/postgresql/tls.key
       - ./database/cert/dev-docker/ca.crt:/var/lib/postgresql/ca.crt
+      - ./database/postgresql/entrypoint.sh:/app/entrypoint.sh
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
