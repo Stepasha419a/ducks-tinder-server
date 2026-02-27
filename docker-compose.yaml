@@ -114,6 +114,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./static:/app/static
+      - ./file-service/.env:/app/.env
+      - ./file-service/config:/app/config
     environment:
       MODE: dev-docker
     ports:
@@ -199,6 +201,6 @@ volumes:
   file_service_static_data:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: 'static'
+      type: "none"
+      o: "bind"
+      device: "static"
