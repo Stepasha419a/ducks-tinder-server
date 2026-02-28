@@ -97,6 +97,7 @@ services:
     volumes:
       - ./subscription-service/.env:/app/.env
       - ./subscription-service/config:/app/config
+      - ./subscription-service/cert:/app/cert
     environment:
       MODE: dev-docker
     ports:
