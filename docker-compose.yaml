@@ -80,12 +80,10 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - '${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}'
-      - '${BILLING_SERVICE_GRPC_PORT}:${BILLING_SERVICE_GRPC_PORT}'
-    deploy:
-      restart_policy:
-        condition: on-failure
-    command: ['/usr/src/app/app']
+      - "${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}"
+      - "${BILLING_SERVICE_HEALTH_PORT}:${BILLING_SERVICE_HEALTH_PORT}"
+      - "${BILLING_SERVICE_GRPC_PORT}:${BILLING_SERVICE_GRPC_PORT}"
+    command: ["/app/app"]
     depends_on:
       - postgres
   subscription-service:
