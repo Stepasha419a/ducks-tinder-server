@@ -94,6 +94,9 @@ services:
     build:
       context: subscription-service
       dockerfile: Dockerfile
+    volumes:
+      - ./subscription-service/.env:/app/.env
+      - ./subscription-service/config:/app/config
     environment:
       MODE: dev-docker
     ports:
