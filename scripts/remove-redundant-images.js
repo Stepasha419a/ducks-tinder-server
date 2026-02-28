@@ -1,3 +1,6 @@
 const DOCKERHUB_USERNAME = process.env.DOCKERHUB_USERNAME;
 const DOCKERHUB_PASSWORD = process.env.DOCKERHUB_PASSWORD;
 const DOCKERHUB_REPO = process.env.DOCKERHUB_REPO;
+
+const TAG_PREFIX = "test-";
+const KEEP_LAST = 10;
