@@ -14,4 +14,12 @@ export class ImageFileTypeValidator extends FileValidator {
 
     return this.allowedMimeTypes.includes(file.mimetype);
   }
+
+  buildErrorMessage(file?: Express.Multer.File): string {
+    if (!file) {
+      return 'Validation failed (no file specified)';
+    }
+
+    return `Validation failed (current file type is ${file.mimetype}, expected type is image/png, image/jpg, image/jpeg)`;
+  }
 }
