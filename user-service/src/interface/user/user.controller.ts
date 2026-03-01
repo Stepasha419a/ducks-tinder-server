@@ -12,7 +12,6 @@ import {
   Param,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
   ParseUUIDPipe,
   Query,
   Logger,
@@ -33,7 +32,7 @@ import {
 import { CONSTANT } from 'src/infrastructure/user/common/constant';
 import { PairsInfoView } from 'src/application/user/view';
 import { MatchFilterDto, PairsFilterDto } from 'src/domain/user/repository/dto';
-import { User } from '../common';
+import { ImageFileTypeValidator, User } from '../common';
 import { OptionalValidationPipe } from '../common';
 
 @Controller('user')
@@ -102,9 +101,7 @@ export class UserController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: CONSTANT.ONE_MB_SIZE }),
-          new FileTypeValidator({
-            fileType: /(image\/png)|(image\/jpeg)|(image\/jpg)/,
-          }),
+          new ImageFileTypeValidator(),
         ],
       }),
     )
