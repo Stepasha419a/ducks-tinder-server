@@ -53,6 +53,8 @@ spec:
           ports:
             - name: http
               containerPort: 5004
+            - name: health
+              containerPort: 35000
             - name: grpc
               containerPort: 6001
           command:
