@@ -1,12 +1,13 @@
-.git
-.gitignore
-.dockerignore
+**/.git
+**/.gitignore
+**/.dockerignore
 
-*/cert
-*/dist
-*/node_modules
-*/tmp
+**/application-\*.properties
+**/cert
+**/dist
+**/node_modules
+**/tmp
 
-.eslint.js
-.prettierrc
-README.md
+**/.eslint.js
+**/.prettierrc
+**/README.md
