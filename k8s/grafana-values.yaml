@@ -5,3 +5,52 @@ resources:
   requests:
     cpu: "0.0625"
     memory: "64Mi"
+extraConfigmapMounts:
+  - name: datasources-config-volume
+    mountPath: /etc/grafana/provisioning/datasources
+    configMap: grafana-datasources-config
+
+  - name: auth-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/auth-service-dashboard.json
+    subPath: auth-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: billing-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/billing-service-dashboard.json
+    subPath: billing-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: chat-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/chat-service-dashboard.json
+    subPath: chat-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: file-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/file-service-dashboard.json
+    subPath: file-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: map-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/map-service-dashboard.json
+    subPath: map-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: subscription-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/subscription-service-dashboard.json
+    subPath: subscription-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: user-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/user-service-dashboard.json
+    subPath: user-service-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: rabbitmq-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/rabbitmq.json
+    subPath: rabbitmq.json
+    configMap: grafana-dashboards-config
+  - name: kube-state-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/kube-state-dashboard.json
+    subPath: kube-state-dashboard.json
+    configMap: grafana-dashboards-config
+  - name: cadvisor-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/cadvisor-dashboard.json
+    subPath: cadvisor-dashboard.json
+    configMap: grafana-dashboards-config-2
+  - name: node-exporter-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/node-exporter-dashboard.json
+    subPath: node-exporter-dashboard.json
+    configMap: grafana-dashboards-config-2
