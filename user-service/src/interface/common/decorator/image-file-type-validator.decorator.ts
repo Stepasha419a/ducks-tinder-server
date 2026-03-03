@@ -1,4 +1,5 @@
 import { FileValidator } from '@nestjs/common';
+import { filetypemime } from 'magic-bytes.js';
 
 export class ImageFileTypeValidator extends FileValidator {
   allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg'];
@@ -12,7 +13,9 @@ export class ImageFileTypeValidator extends FileValidator {
       return false;
     }
 
-    return this.allowedMimeTypes.includes(file.mimetype);
+    const mime = filetypemime(file.buffer);
+
+    return mime.some((item) => this.allowedMimeTypes.includes(item));
   }
 
   buildErrorMessage(file?: Express.Multer.File): string {
@@ -20,6 +23,9 @@ export class ImageFileTypeValidator extends FileValidator {
       return 'Validation failed (no file specified)';
     }
 
-    return `Validation failed (current file type is ${file.mimetype}, expected type is image/png, image/jpg, image/jpeg)`;
+    const mime = filetypemime(file.buffer);
+    const types = mime.length ? mime.join(', ') : 'unknown';
+
+    return `Validation failed (current file type is ${types}, expected type is image/png, image/jpg, image/jpeg)`;
   }
 }
