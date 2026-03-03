@@ -54,7 +54,7 @@ export class ChatGateway implements OnGatewayInit {
         socket.client.request['userId'] = userTokenDto.userId;
 
         next();
-      } catch (e) {
+      } catch {
         next(new Error('Unauthorized'));
       }
     });

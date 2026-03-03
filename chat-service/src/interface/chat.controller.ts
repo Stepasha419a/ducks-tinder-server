@@ -1,17 +1,12 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Logger,
   Param,
   ParseUUIDPipe,
-  Patch,
-  Post,
   Query,
 } from '@nestjs/common';
 import { ChatFacade } from 'src/application';
-import { EditMessageDto, SendMessageDto } from 'src/application/command';
 import { PaginationDto } from 'src/domain/chat/repository/dto';
 import { User } from './common';
 
