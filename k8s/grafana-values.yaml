@@ -63,3 +63,17 @@ extraSecretMounts:
     mountPath: /etc/grafana/cert
     secretName: common-ca-tls-secret
     readOnly: true
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: "default"
+        orgId: 1
+        folder: ""
+        type: file
+        updateIntervalSeconds: 10
+        disableDeletion: true
+        editable: true
+        options:
+          path: /etc/grafana/provisioning/dashboards
