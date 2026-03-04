@@ -77,3 +77,13 @@ dashboardProviders:
         editable: true
         options:
           path: /etc/grafana/provisioning/dashboards
+readinessProbe:
+  httpGet:
+    path: /grafana/api/health
+    port: 3000
+    scheme: HTTPS
+livenessProbe:
+  httpGet:
+    path: /grafana/api/health
+    port: 3000
+    scheme: HTTPS
