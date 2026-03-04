@@ -87,3 +87,8 @@ livenessProbe:
     path: /grafana/api/health
     port: 3000
     scheme: HTTPS
+
+admin:
+  existingSecret: grafana-secret
+  userKey: GF_SECURITY_ADMIN_USER
+  passwordKey: GF_SECURITY_ADMIN_PASSWORD
