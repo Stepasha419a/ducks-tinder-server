@@ -58,3 +58,8 @@ extraConfigmapMounts:
     mountPath: /etc/grafana/provisioning/dashboards/node-exporter-dashboard.json
     subPath: node-exporter-dashboard.json
     configMap: grafana-dashboards-config-2
+extraSecretMounts:
+  - name: tls-volume
+    mountPath: /etc/grafana/cert
+    secretName: common-ca-tls-secret
+    readOnly: true
