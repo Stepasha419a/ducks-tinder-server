@@ -38,6 +38,10 @@ extraConfigmapMounts:
     mountPath: /etc/grafana/provisioning/dashboards/user-service-dashboard.json
     subPath: user-service-dashboard.json
     configMap: grafana-dashboards-config
+  - name: postgres-service-dashboard
+    mountPath: /etc/grafana/provisioning/dashboards/postgres.json
+    subPath: postgres.json
+    configMap: grafana-dashboards-config
   - name: rabbitmq-dashboard
     mountPath: /etc/grafana/provisioning/dashboards/rabbitmq.json
     subPath: rabbitmq.json
