@@ -19,3 +19,29 @@ configMapGenerator:
     files:
       - dashboards/cadvisor-dashboard.json
       - dashboards/node-exporter-dashboard.json
+
+secretGenerator:
+  - name: user-service-secret
+    files:
+      - .env.dev-k8s=user-service-secret-template.env
+    type: Opaque
+  - name: chat-service-secret
+    files:
+      - .env.dev-k8s=chat-service-secret-template.env
+    type: Opaque
+  - name: auth-service-secret
+    files:
+      - dev-k8s.yaml=auth-service-secret-template.yaml
+    type: Opaque
+  - name: billing-service-secret
+    files:
+      - dev-k8s.yaml=billing-service-secret-template.yaml
+    type: Opaque
+  - name: subscription-service-secret
+    files:
+      - dev-k8s.yaml=subscription-service-secret-template.yaml
+    type: Opaque
+  - name: map-service-secret
+    files:
+      - application-dev-k8s.properties=map-service-secret-template.properties
+    type: Opaque
