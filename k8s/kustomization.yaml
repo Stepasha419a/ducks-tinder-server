@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 configMapGenerator:
   - name: grafana-dashboards-config
     files:
@@ -14,3 +15,7 @@ configMapGenerator:
       - dashboards/postgres.json
       - dashboards/rabbitmq.json
       - dashboards/kube-state-dashboard.json
+  - name: grafana-dashboards-config-2
+    files:
+      - dashboards/cadvisor-dashboard.json
+      - dashboards/node-exporter-dashboard.json
