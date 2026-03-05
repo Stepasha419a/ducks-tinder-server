@@ -8,6 +8,7 @@ configMapGenerator:
       - dashboards/chat-service-dashboard.json
       - dashboards/dashboard.yml
       - dashboards/file-service-dashboard.json
+      - dashboards/map-service-dashboard.json
       - dashboards/subscription-service-dashboard.json
       - dashboards/user-service-dashboard.json
       - dashboards/postgres.json
