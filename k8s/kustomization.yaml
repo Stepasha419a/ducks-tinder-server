@@ -1,2 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+configMapGenerator:
+  - name: grafana-dashboards-config
+    files:
+      - dashboards/auth-service-dashboard.json
+      - dashboards/billing-service-dashboard.json
+      - dashboards/chat-service-dashboard.json
+      - dashboards/dashboard.yml
+      - dashboards/file-service-dashboard.json
+      - dashboards/subscription-service-dashboard.json
+      - dashboards/user-service-dashboard.json
+      - dashboards/postgres.json
+      - dashboards/rabbitmq.json
+      - dashboards/kube-state-dashboard.json
