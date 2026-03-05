@@ -77,6 +77,8 @@ dashboardProviders:
         editable: true
         options:
           path: /etc/grafana/provisioning/dashboards
+envFromSecret: "grafana-secret"
+
 readinessProbe:
   httpGet:
     path: /grafana/api/health
