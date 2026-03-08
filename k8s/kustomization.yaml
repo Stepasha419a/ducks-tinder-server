@@ -29,6 +29,10 @@ secretGenerator:
     files:
       - .env.dev-k8s=chat-service-secret-template.env
     type: Opaque
+  - name: file-service-secret
+    files:
+      - dev-k8s.yaml=file-service-secret-template.yaml
+    type: Opaque
   - name: auth-service-secret
     files:
       - dev-k8s.yaml=auth-service-secret-template.yaml
