@@ -66,3 +66,6 @@ secretGenerator:
       - GF_SERVER_CERT_FILE=/etc/grafana/cert/tls.crt
       - GF_SERVER_CERT_KEY=/etc/grafana/cert/tls.key
     type: Opaque
+
+generatorOptions:
+  disableNameSuffixHash: true
