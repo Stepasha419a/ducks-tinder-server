@@ -6,6 +6,7 @@ import (
 	"path"
 	"slices"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
 )
@@ -37,6 +38,8 @@ var (
 	config *Config = &Config{}
 )
 
+var validatorService = validator.New()
+
 func RequireConfig() {
 	if err := godotenv.Load(".env"); err != nil {
 		slog.Warn("no .env file found, using environment variables")
@@ -61,6 +64,11 @@ func RequireConfig() {
 	decoder := yaml.NewDecoder(file)
 
 	if err := decoder.Decode(config); err != nil {
+		panic(err)
+	}
+
+	err = validatorService.Struct(config)
+	if err != nil {
 		panic(err)
 	}
 }
