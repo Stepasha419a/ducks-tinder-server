@@ -4,6 +4,8 @@ jwt_refresh_secret: hfhdj567ghj45hjkdfcvx456vbn
 jwt_access_secret: df345sdfsdfas234dfasdfa567sdf
 cookie_refresh_token_max_age: 604800
 cookie_refresh_token_domain: localhost
+# Default - 1; Lax - 2; Strict - 3; None - 4
+cookie_refresh_token_same_site: 4
 port: 5003
 health_port: 35003
 tls_server_name: host.docker.internal
