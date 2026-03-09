@@ -13,22 +13,22 @@ import (
 type (
 	Config struct {
 		Mode                       string `validate:"required" yaml:"mode"`
-		PasswordSalt               string `yaml:"password_salt"`
-		JwtRefreshSecret           string `yaml:"jwt_refresh_secret"`
-		JwtAccessSecret            string `yaml:"jwt_access_secret"`
-		CookieRefreshTokenMaxAge   uint32 `yaml:"cookie_refresh_token_max_age"`
-		CookieRefreshTokenDomain   string `yaml:"cookie_refresh_token_domain"`
-		CookieRefreshTokenSameSite uint8  `yaml:"cookie_refresh_token_same_site"`
-		Port                       uint16 `yaml:"port"`
-		HealthPort                 uint16 `yaml:"health_port"`
-		TlsServerName              string `yaml:"tls_server_name"`
-		PostgresTlsServerName      string `yaml:"postgres_tls_server_name"`
-		PostgresHost               string `yaml:"postgres_host"`
-		PostgresPort               uint16 `yaml:"postgres_port"`
-		PostgresUser               string `yaml:"postgres_user"`
-		PostgresPassword           string `yaml:"postgres_password"`
-		PostgresDatabase           string `yaml:"postgres_database"`
-		GrpcUserServiceUrl         string `yaml:"grpc_user_service_url"`
+		PasswordSalt               string `validate:"required" yaml:"password_salt"`
+		JwtRefreshSecret           string `validate:"required" yaml:"jwt_refresh_secret"`
+		JwtAccessSecret            string `validate:"required" yaml:"jwt_access_secret"`
+		CookieRefreshTokenMaxAge   uint32 `validate:"required" yaml:"cookie_refresh_token_max_age"`
+		CookieRefreshTokenDomain   string `validate:"required" yaml:"cookie_refresh_token_domain"`
+		CookieRefreshTokenSameSite uint8  `validate:"required" yaml:"cookie_refresh_token_same_site"`
+		Port                       uint16 `validate:"required" yaml:"port"`
+		HealthPort                 uint16 `validate:"required" yaml:"health_port"`
+		TlsServerName              string `validate:"required" yaml:"tls_server_name"`
+		PostgresTlsServerName      string `validate:"required" yaml:"postgres_tls_server_name"`
+		PostgresHost               string `validate:"required" yaml:"postgres_host"`
+		PostgresPort               uint16 `validate:"required" yaml:"postgres_port"`
+		PostgresUser               string `validate:"required" yaml:"postgres_user"`
+		PostgresPassword           string `validate:"required" yaml:"postgres_password"`
+		PostgresDatabase           string `validate:"required" yaml:"postgres_database"`
+		GrpcUserServiceUrl         string `validate:"required" yaml:"grpc_user_service_url"`
 	}
 )
 
