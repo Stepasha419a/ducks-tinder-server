@@ -188,8 +188,20 @@ func (ac *AuthController) Logout(c *gin.Context) {
 }
 
 func setCookie(c *gin.Context, refreshToken string) {
-	maxAge := int(config_service.GetConfig().CookieRefreshTokenMaxAge)
-	c.SetCookie("refreshToken", refreshToken, maxAge, "/auth", config_service.GetConfig().CookieRefreshTokenDomain, true, true)
+	config := config_service.GetConfig()
+
+	cookie := &http.Cookie{
+		Name:     "refreshToken",
+		Value:    refreshToken,
+		MaxAge:   int(config.CookieRefreshTokenMaxAge),
+		Path:     "/auth",
+		Domain:   config.CookieRefreshTokenDomain,
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSite(config.CookieRefreshTokenSameSite),
+	}
+
+	http.SetCookie(c.Writer, cookie)
 }
 
 func responseErrorContext(c *gin.Context) func(status int, message string) {
