@@ -10,4 +10,7 @@ foreach ($service in $services) {
     docker push $targetImage
 }
 
-helm uninstall postgres rabbitmq prometheus grafana
+helm uninstall postgres prometheus grafana
+
+helm install postgres oci://registry-1.docker.io/bitnamicharts/postgresql -f ./k8s/postgres-values.yaml --version 16.6.5
+helm install rabbitmq oci://registry-1.docker.io/bitnamicharts/rabbitmq -f ./k8s/rabbitmq-values.yaml --version 16.0.1
