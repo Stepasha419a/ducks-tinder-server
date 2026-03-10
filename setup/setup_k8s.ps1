@@ -9,3 +9,5 @@ foreach ($service in $services) {
 
     docker push $targetImage
 }
+
+helm uninstall postgres rabbitmq prometheus grafana
