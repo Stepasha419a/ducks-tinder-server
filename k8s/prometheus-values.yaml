@@ -106,3 +106,12 @@ extraScrapeConfigs:
     metrics_path: "/actuator/prometheus"
     static_configs:
       - targets: ['chat-service-service:35000']
+  - job_name: "user-service"
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/cert/ca.crt
+      cert_file: /etc/prometheus/cert/tls.crt
+      key_file: /etc/prometheus/cert/tls.key
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ['user-service-service:35000']
