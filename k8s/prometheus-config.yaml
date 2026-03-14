@@ -32,7 +32,7 @@ data:
           cert_file: /etc/prometheus/cert/tls.crt
           key_file: /etc/prometheus/cert/tls.key
         static_configs:
-          - targets: ['file-service-service:5002']
+          - targets: ['file-service-service:3443']
       - job_name: 'auth-service'
         scheme: https
         tls_config:
@@ -40,7 +40,7 @@ data:
           cert_file: /etc/prometheus/cert/tls.crt
           key_file: /etc/prometheus/cert/tls.key
         static_configs:
-          - targets: ['auth-service-service:5003']
+          - targets: ['auth-service-service:3443']
       - job_name: 'billing-service'
         scheme: https
         tls_config:
@@ -48,7 +48,7 @@ data:
           cert_file: /etc/prometheus/cert/tls.crt
           key_file: /etc/prometheus/cert/tls.key
         static_configs:
-          - targets: ['billing-service-service:5004']
+          - targets: ['billing-service-service:3443']
       - job_name: 'subscription-service'
         scheme: https
         tls_config:
@@ -56,7 +56,7 @@ data:
           cert_file: /etc/prometheus/cert/tls.crt
           key_file: /etc/prometheus/cert/tls.key
         static_configs:
-          - targets: ['subscription-service-service:5005']
+          - targets: ['subscription-service-service:3443']
       - job_name: 'map-service'
         scheme: https
         tls_config:
@@ -65,7 +65,7 @@ data:
           key_file: /etc/prometheus/cert/tls.key
         metrics_path: '/actuator/prometheus'
         static_configs:
-          - targets: ['map-service-service:5006']
+          - targets: ['map-service-service:3443']
   web-config.yml: |
     tls_server_config:
       cert_file: /etc/prometheus/cert/tls.crt
