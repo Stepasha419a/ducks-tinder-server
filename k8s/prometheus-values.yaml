@@ -64,7 +64,7 @@ extraScrapeConfigs:
       cert_file: /etc/prometheus/cert/tls.crt
       key_file: /etc/prometheus/cert/tls.key
     static_configs:
-      - targets: ["file-service-service:5002"]
+      - targets: ["file-service-service:3443"]
   - job_name: "auth-service"
     scheme: https
     tls_config:
@@ -72,7 +72,7 @@ extraScrapeConfigs:
       cert_file: /etc/prometheus/cert/tls.crt
       key_file: /etc/prometheus/cert/tls.key
     static_configs:
-      - targets: ["auth-service-service:5003"]
+      - targets: ["auth-service-service:3443"]
   - job_name: "billing-service"
     scheme: https
     tls_config:
@@ -80,7 +80,7 @@ extraScrapeConfigs:
       cert_file: /etc/prometheus/cert/tls.crt
       key_file: /etc/prometheus/cert/tls.key
     static_configs:
-      - targets: ["billing-service-service:5004"]
+      - targets: ["billing-service-service:3443"]
   - job_name: "subscription-service"
     scheme: https
     tls_config:
@@ -88,7 +88,7 @@ extraScrapeConfigs:
       cert_file: /etc/prometheus/cert/tls.crt
       key_file: /etc/prometheus/cert/tls.key
     static_configs:
-      - targets: ["subscription-service-service:5005"]
+      - targets: ["subscription-service-service:3443"]
   - job_name: "map-service"
     scheme: https
     tls_config:
@@ -97,6 +97,7 @@ extraScrapeConfigs:
       key_file: /etc/prometheus/cert/tls.key
     metrics_path: "/actuator/prometheus"
     static_configs:
+      - targets: ["map-service-service:3443"]
   - job_name: "chat-service"
     scheme: https
     tls_config:
@@ -105,7 +106,7 @@ extraScrapeConfigs:
       key_file: /etc/prometheus/cert/tls.key
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ['chat-service-service:35000']
+      - targets: ["chat-service-service:3443"]
   - job_name: "user-service"
     scheme: https
     tls_config:
@@ -114,4 +115,4 @@ extraScrapeConfigs:
       key_file: /etc/prometheus/cert/tls.key
     metrics_path: "/actuator/prometheus"
     static_configs:
-      - targets: ['user-service-service:35000']
+      - targets: ["user-service-service:3443"]
