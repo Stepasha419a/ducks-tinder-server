@@ -31,6 +31,8 @@ spec:
           ports:
             - name: http
               containerPort: 5002
+            - name: health
+              containerPort: 35000
             - name: grpc
               containerPort: 6000
           volumeMounts:
