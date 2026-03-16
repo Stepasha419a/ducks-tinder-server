@@ -14,9 +14,9 @@ type (
 		Id           string  `json:"id" validate:"required"`
 		Email        string  `json:"email" validate:"required"`
 		Password     string  `json:"password" validate:"required"`
-		RefreshToken *string `json:"refreshToken"`
-		CreatedAt    string  `json:"createdAt" validate:"required"`
-		UpdatedAt    string  `json:"updatedAt" validate:"required"`
+		RefreshToken *string `json:"refresh_token"`
+		CreatedAt    string  `json:"created_at" validate:"required"`
+		UpdatedAt    string  `json:"updated_at" validate:"required"`
 	}
 )
 
