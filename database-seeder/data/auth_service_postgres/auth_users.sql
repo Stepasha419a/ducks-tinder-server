@@ -1,4 +1,4 @@
-INSERT INTO auth_users (id, email, password, refreshToken, createdAt, updatedAt) VALUES
+INSERT INTO auth_users (id, email, password, refresh_token, created_at, updated_at) VALUES
 ('49f99290-1940-4153-8ac8-351c6a93a5c5', '2testAuth419a@gmail.com', '7d46573f6743ae19f2602d255f4ed5aa11d027f68bcfaaa95e61c5996728287dec27d7f390ab7e15ffc9ddaeb0e7ea504ab80d63fe5a80a035b0d1abaed7ede4', NULL, NOW(), NOW()),
 ('28f99290-1940-4153-8ac8-351c6a93a5c6', '3testAuth419a@gmail.com', '7d46573f6743ae19f2602d255f4ed5aa11d027f68bcfaaa95e61c5996728287dec27d7f390ab7e15ffc9ddaeb0e7ea504ab80d63fe5a80a035b0d1abaed7ede4', NULL, NOW(), NOW()),
 ('52f99290-1940-4153-8ac8-351c6a93a5c7', '4testAuth419a@gmail.com', '7d46573f6743ae19f2602d255f4ed5aa11d027f68bcfaaa95e61c5996728287dec27d7f390ab7e15ffc9ddaeb0e7ea504ab80d63fe5a80a035b0d1abaed7ede4', NULL, NOW(), NOW()),
