@@ -13,6 +13,10 @@ spec:
       port: 5005
       targetPort: 5005
       protocol: TCP
+    - name: health
+      port: 35000
+      targetPort: 35000
+      protocol: TCP
     - name: grpc
       port: 6002
       targetPort: 6002
