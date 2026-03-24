@@ -65,7 +65,8 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+      - "${AUTH_SERVICE_HEALTH_PORT}:${AUTH_SERVICE_HEALTH_PORT}"
     command: ["/app/app"]
     depends_on:
       - postgres
