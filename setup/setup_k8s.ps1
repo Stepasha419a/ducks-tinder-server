@@ -19,3 +19,5 @@ helm install grafana grafana/grafana -f ./k8s/grafana-values.yaml --version 8.14
 
 $deploymentsString = ($services | ForEach-Object { "$_`-deployment" }) -join ' '
 kubectl delete deployment $deploymentsString
+
+kubectl apply -f ./k8s
