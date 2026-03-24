@@ -65,10 +65,7 @@ services:
       MODE: dev-docker
     ports:
       - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
-    deploy:
-      restart_policy:
-        condition: on-failure
-    command: ['/usr/src/app/app']
+    command: ["/app/app"]
     depends_on:
       - postgres
   billing-service:
