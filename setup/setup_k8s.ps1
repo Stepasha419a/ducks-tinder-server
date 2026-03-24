@@ -15,3 +15,4 @@ helm uninstall postgres prometheus grafana
 helm install postgres oci://registry-1.docker.io/bitnamicharts/postgresql -f ./k8s/postgres-values.yaml --version 16.6.5
 
 helm install prometheus prometheus-community/prometheus -f ./k8s/prometheus-values.yaml --version 27.11.0
+helm install grafana grafana/grafana -f ./k8s/grafana-values.yaml --version 8.14.2
