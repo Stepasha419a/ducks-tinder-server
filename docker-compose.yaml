@@ -61,6 +61,7 @@ services:
     volumes:
       - ./auth-service/.env:/app/.env
       - ./auth-service/config:/app/config
+      - ./auth-service/cert:/app/cert
     environment:
       MODE: dev-docker
     ports:
