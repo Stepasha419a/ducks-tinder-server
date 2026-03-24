@@ -16,3 +16,6 @@ helm install postgres oci://registry-1.docker.io/bitnamicharts/postgresql -f ./k
 
 helm install prometheus prometheus-community/prometheus -f ./k8s/prometheus-values.yaml --version 27.11.0
 helm install grafana grafana/grafana -f ./k8s/grafana-values.yaml --version 8.14.2
+
+$deploymentsString = ($services | ForEach-Object { "$_`-deployment" }) -join ' '
+kubectl delete deployment $deploymentsString
