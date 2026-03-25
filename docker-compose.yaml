@@ -79,6 +79,7 @@ services:
     volumes:
       - ./billing-service/.env:/app/.env
       - ./billing-service/config:/app/config
+      - ./billing-service/cert:/app/cert
     environment:
       MODE: dev-docker
     ports:
