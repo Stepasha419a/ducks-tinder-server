@@ -76,6 +76,9 @@ services:
     build:
       context: billing-service
       dockerfile: Dockerfile
+    volumes:
+      - ./billing-service/.env:/app/.env
+      - ./billing-service/config:/app/config
     environment:
       MODE: dev-docker
     ports:
