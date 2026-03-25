@@ -14,9 +14,9 @@ services:
     env_file:
       - ./chat-service/.env.dev-docker
     ports:
-      - "${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}"
-      - "${CHAT_SERVICE_HEALTH_PORT}:${CHAT_SERVICE_HEALTH_PORT}"
-      - "${CHAT_SERVICE_GRPC_PORT}:${CHAT_SERVICE_GRPC_PORT}"
+      - '${CHAT_SERVICE_PORT}:${CHAT_SERVICE_PORT}'
+      - '${CHAT_SERVICE_HEALTH_PORT}:${CHAT_SERVICE_HEALTH_PORT}'
+      - '${CHAT_SERVICE_GRPC_PORT}:${CHAT_SERVICE_GRPC_PORT}'
   user-service:
     container_name: user-service
     restart: always
@@ -28,9 +28,9 @@ services:
     env_file:
       - ./user-service/.env.dev-docker
     ports:
-      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
-      - "${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}"
-      - "${USER_SERVICE_GRPC_PORT}:${USER_SERVICE_GRPC_PORT}"
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+      - '${USER_SERVICE_HEALTH_PORT}:${USER_SERVICE_HEALTH_PORT}'
+      - '${USER_SERVICE_GRPC_PORT}:${USER_SERVICE_GRPC_PORT}'
     depends_on:
       - postgres
       - file-service
@@ -50,8 +50,8 @@ services:
     depends_on:
       - postgres
     ports:
-      - "${MAP_SERVICE_HEALTH_PORT}:${MAP_SERVICE_HEALTH_PORT}"
-      - "${MAP_SERVICE_GRPC_PORT}:${MAP_SERVICE_GRPC_PORT}"
+      - '${MAP_SERVICE_HEALTH_PORT}:${MAP_SERVICE_HEALTH_PORT}'
+      - '${MAP_SERVICE_GRPC_PORT}:${MAP_SERVICE_GRPC_PORT}'
   auth-service:
     container_name: auth-service
     restart: always
@@ -65,9 +65,9 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
-      - "${AUTH_SERVICE_HEALTH_PORT}:${AUTH_SERVICE_HEALTH_PORT}"
-    command: ["/app/app"]
+      - '${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}'
+      - '${AUTH_SERVICE_HEALTH_PORT}:${AUTH_SERVICE_HEALTH_PORT}'
+    command: ['/app/app']
     depends_on:
       - postgres
   billing-service:
@@ -83,10 +83,10 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - "${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}"
-      - "${BILLING_SERVICE_HEALTH_PORT}:${BILLING_SERVICE_HEALTH_PORT}"
-      - "${BILLING_SERVICE_GRPC_PORT}:${BILLING_SERVICE_GRPC_PORT}"
-    command: ["/app/app"]
+      - '${BILLING_SERVICE_PORT}:${BILLING_SERVICE_PORT}'
+      - '${BILLING_SERVICE_HEALTH_PORT}:${BILLING_SERVICE_HEALTH_PORT}'
+      - '${BILLING_SERVICE_GRPC_PORT}:${BILLING_SERVICE_GRPC_PORT}'
+    command: ['/app/app']
     depends_on:
       - postgres
   subscription-service:
@@ -102,10 +102,10 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - "${SUBSCRIPTION_SERVICE_PORT}:${SUBSCRIPTION_SERVICE_PORT}"
-      - "${SUBSCRIPTION_SERVICE_HEALTH_PORT}:${SUBSCRIPTION_SERVICE_HEALTH_PORT}"
-      - "${SUBSCRIPTION_SERVICE_GRPC_PORT}:${SUBSCRIPTION_SERVICE_GRPC_PORT}"
-    command: ["/app/app"]
+      - '${SUBSCRIPTION_SERVICE_PORT}:${SUBSCRIPTION_SERVICE_PORT}'
+      - '${SUBSCRIPTION_SERVICE_HEALTH_PORT}:${SUBSCRIPTION_SERVICE_HEALTH_PORT}'
+      - '${SUBSCRIPTION_SERVICE_GRPC_PORT}:${SUBSCRIPTION_SERVICE_GRPC_PORT}'
+    command: ['/app/app']
     depends_on:
       - billing-service
       - postgres
@@ -123,9 +123,9 @@ services:
     environment:
       MODE: dev-docker
     ports:
-      - "${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}"
-      - "${FILE_SERVICE_HEALTH_PORT}:${FILE_SERVICE_HEALTH_PORT}"
-      - "${FILE_SERVICE_GRPC_PORT}:${FILE_SERVICE_GRPC_PORT}"
+      - '${FILE_SERVICE_PORT}:${FILE_SERVICE_PORT}'
+      - '${FILE_SERVICE_HEALTH_PORT}:${FILE_SERVICE_HEALTH_PORT}'
+      - '${FILE_SERVICE_GRPC_PORT}:${FILE_SERVICE_GRPC_PORT}'
   postgres:
     container_name: postgres
     restart: always
@@ -144,7 +144,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}"
+      - '${POSTGRES_PORT_LOCAL}:${POSTGRES_PORT}'
   postgres-exporter:
     container_name: postgres-exporter
     image: prometheuscommunity/postgres-exporter:v0.13.1
@@ -153,7 +153,7 @@ services:
       DATA_SOURCE_USER: ${POSTGRES_USER}
       DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
     ports:
-      - "9187:9187"
+      - '9187:9187'
     depends_on:
       - postgres
   pgadmin:
@@ -164,7 +164,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@gmail.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
+      - '5050:80'
     volumes:
       - pgadmin-data:/var/lib/pgadmin
   prometheus:
@@ -174,13 +174,13 @@ services:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
-      - "--web.console.templates=/usr/share/prometheus/consoles"
-      - "--web.enable-lifecycle"
-      - "--web.enable-admin-api"
-      - "--web.config.file=/etc/prometheus/web-config.yml"
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--web.config.file=/etc/prometheus/web-config.yml'
     ports:
       - 9090:9090
   grafana:
@@ -205,6 +205,6 @@ volumes:
   file_service_static_data:
     driver: local
     driver_opts:
-      type: "none"
-      o: "bind"
-      device: "static"
+      type: 'none'
+      o: 'bind'
+      device: 'static'
