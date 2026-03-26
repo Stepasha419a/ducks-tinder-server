@@ -1,8 +1,5 @@
-migration:
-	go run cmd/migration/migration.go
-
-force-migration:
-	go run cmd/migration/migration.go -auto-submit
+mode ?= dev
+CONF_FILE = ./config/$(mode).yaml
 
 dev:
 	air
