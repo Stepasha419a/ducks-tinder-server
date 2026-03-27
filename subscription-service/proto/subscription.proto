@@ -4,17 +4,17 @@ package subscription;
 option go_package = "./gen";
 
 service SubscriptionService {
-    rpc GetSubscription (GetSubscriptionRequest) returns (Subscription);
+  rpc GetSubscription (GetSubscriptionRequest) returns (Subscription);
 }
 
 message GetSubscriptionRequest {
-    string userId = 1;
+  string userId = 1;
 }
 
 message Subscription {
-    string userId = 1;
-    string subscription = 2;
-    string login = 3;
-    int64 expiresAt = 4;
-    int64 createdAt = 5;
+  string userId       = 1;
+  string subscription = 2;
+  string login        = 3;
+  int64  expiresAt    = 4;
+  int64  createdAt    = 5;
 }
