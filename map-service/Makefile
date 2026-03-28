@@ -12,6 +12,7 @@ DB_PASS = $(call get_prop,spring.datasource.password)
 DB_NAME = $(call get_prop,spring.datasource.database)
 
 DB_URL = postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-full&sslrootcert=$(CERTS_DIR)/ca.crt&sslcert=$(CERTS_DIR)/tls.crt&sslkey=$(CERTS_DIR)/tls.key
+
 GRPC_JAVA_PLUGIN = C:/apps/protoc-gen-grpc-java-1.60.0-windows-x86_64/protoc-gen-grpc-java-1.60.0-windows-x86_64.exe
 
 gen-proto:
@@ -30,4 +31,5 @@ dev:
 	mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 migration:
-	mvn clean install
+	atlas migrate hash --dir file://src/main/resources/db/migration
+	atlas migrate apply --dir file://src/main/resources/db/migration --url "$(DB_URL)"
