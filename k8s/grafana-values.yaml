@@ -1,10 +1,10 @@
 resources:
   limits:
-    cpu: "0.125"
-    memory: "128Mi"
+    cpu: '0.125'
+    memory: '128Mi'
   requests:
-    cpu: "0.0625"
-    memory: "64Mi"
+    cpu: '0.0625'
+    memory: '64Mi'
 extraConfigmapMounts:
   - name: datasources-config-volume
     mountPath: /etc/grafana/provisioning/datasources
@@ -42,10 +42,6 @@ extraConfigmapMounts:
     mountPath: /etc/grafana/provisioning/dashboards/postgres.json
     subPath: postgres.json
     configMap: grafana-dashboards-config
-  - name: rabbitmq-dashboard
-    mountPath: /etc/grafana/provisioning/dashboards/rabbitmq.json
-    subPath: rabbitmq.json
-    configMap: grafana-dashboards-config
   - name: kube-state-dashboard
     mountPath: /etc/grafana/provisioning/dashboards/kube-state-dashboard.json
     subPath: kube-state-dashboard.json
@@ -68,16 +64,16 @@ dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
     providers:
-      - name: "default"
+      - name: 'default'
         orgId: 1
-        folder: ""
+        folder: ''
         type: file
         updateIntervalSeconds: 10
         disableDeletion: true
         editable: true
         options:
           path: /etc/grafana/provisioning/dashboards
-envFromSecret: "grafana-secret"
+envFromSecret: 'grafana-secret'
 
 readinessProbe:
   httpGet:
