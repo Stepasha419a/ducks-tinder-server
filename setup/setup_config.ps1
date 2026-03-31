@@ -13,7 +13,6 @@ $localVarsReplacement =
 ("postgresql://prisma:prisma@postgres:5432/", "postgresql://prisma:prisma@127.0.0.1:5433/"), 
 ("jdbc:postgresql://postgres:5432", "jdbc:postgresql://127.0.0.1:5433"), 
 ("host.docker.internal", "0.0.0.0"), 
-("amqp://rabbitmq:5672", "amqp://0.0.0.0:5672"), 
 ("cert/dev-docker", "cert/dev")
 
 $secretsReplacementEnvFilePath = $rootPath + ".env.secrets"
