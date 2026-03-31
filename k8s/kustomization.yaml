@@ -13,7 +13,6 @@ configMapGenerator:
       - dashboards/subscription-service-dashboard.json
       - dashboards/user-service-dashboard.json
       - dashboards/postgres.json
-      - dashboards/rabbitmq.json
       - dashboards/kube-state-dashboard.json
   - name: grafana-dashboards-config-2
     files:
