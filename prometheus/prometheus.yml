@@ -68,12 +68,3 @@ scrape_configs:
   - job_name: postgres
     static_configs:
       - targets: ['host.docker.internal:9187']
-
-  - job_name: rabbitmq
-    scheme: https
-    tls_config:
-      ca_file: /etc/prometheus/cert/dev-docker/ca.crt
-      cert_file: /etc/prometheus/cert/dev-docker/tls.crt
-      key_file: /etc/prometheus/cert/dev-docker/tls.key
-    static_configs:
-      - targets: ['host.docker.internal:15692']
