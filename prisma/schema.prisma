@@ -71,6 +71,8 @@ model User {
   socialNetworksActivity String?
   chronotype             String?
 
+  searchBoostExpiresAt DateTime?
+
   @@map("users")
 }
 
