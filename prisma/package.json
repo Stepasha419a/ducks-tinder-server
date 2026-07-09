@@ -4,7 +4,8 @@
   "description": "orm environment to support services",
   "main": "index.js",
   "scripts": {
-    "generate": "dotenvx run -f .env.dev -- npx prisma generate --generator userService --generator chatService"
+    "generate": "dotenvx run -f .env.dev -- npx prisma generate --generator userService --generator chatService",
+    "generate-docker": "dotenvx run -f .env.dev-docker -- npx prisma generate --generator dockerDefault"
   },
   "author": "",
   "license": "MIT",
