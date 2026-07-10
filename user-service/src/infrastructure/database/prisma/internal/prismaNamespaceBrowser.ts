@@ -105,7 +105,8 @@ export const UserScalarFieldEnum = {
   trainingAttitude: 'trainingAttitude',
   foodPreference: 'foodPreference',
   socialNetworksActivity: 'socialNetworksActivity',
-  chronotype: 'chronotype'
+  chronotype: 'chronotype',
+  searchBoostExpiresAt: 'searchBoostExpiresAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

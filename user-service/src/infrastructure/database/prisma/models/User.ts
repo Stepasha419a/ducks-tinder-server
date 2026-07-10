@@ -69,6 +69,7 @@ export type UserMinAggregateOutputType = {
   foodPreference: string | null
   socialNetworksActivity: string | null
   chronotype: string | null
+  searchBoostExpiresAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -100,6 +101,7 @@ export type UserMaxAggregateOutputType = {
   foodPreference: string | null
   socialNetworksActivity: string | null
   chronotype: string | null
+  searchBoostExpiresAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -131,6 +133,7 @@ export type UserCountAggregateOutputType = {
   foodPreference: number
   socialNetworksActivity: number
   chronotype: number
+  searchBoostExpiresAt: number
   _all: number
 }
 
@@ -178,6 +181,7 @@ export type UserMinAggregateInputType = {
   foodPreference?: true
   socialNetworksActivity?: true
   chronotype?: true
+  searchBoostExpiresAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -209,6 +213,7 @@ export type UserMaxAggregateInputType = {
   foodPreference?: true
   socialNetworksActivity?: true
   chronotype?: true
+  searchBoostExpiresAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -240,6 +245,7 @@ export type UserCountAggregateInputType = {
   foodPreference?: true
   socialNetworksActivity?: true
   chronotype?: true
+  searchBoostExpiresAt?: true
   _all?: true
 }
 
@@ -358,6 +364,7 @@ export type UserGroupByOutputType = {
   foodPreference: string | null
   socialNetworksActivity: string | null
   chronotype: string | null
+  searchBoostExpiresAt: Date | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -412,6 +419,7 @@ export type UserWhereInput = {
   foodPreference?: Prisma.StringNullableFilter<"User"> | string | null
   socialNetworksActivity?: Prisma.StringNullableFilter<"User"> | string | null
   chronotype?: Prisma.StringNullableFilter<"User"> | string | null
+  searchBoostExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   pictures?: Prisma.PictureListRelationFilter
   interests?: Prisma.UsersOnInterestsListRelationFilter
   messages?: Prisma.MessageListRelationFilter
@@ -454,6 +462,7 @@ export type UserOrderByWithRelationInput = {
   foodPreference?: Prisma.SortOrderInput | Prisma.SortOrder
   socialNetworksActivity?: Prisma.SortOrderInput | Prisma.SortOrder
   chronotype?: Prisma.SortOrderInput | Prisma.SortOrder
+  searchBoostExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   pictures?: Prisma.PictureOrderByRelationAggregateInput
   interests?: Prisma.UsersOnInterestsOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
@@ -499,6 +508,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   foodPreference?: Prisma.StringNullableFilter<"User"> | string | null
   socialNetworksActivity?: Prisma.StringNullableFilter<"User"> | string | null
   chronotype?: Prisma.StringNullableFilter<"User"> | string | null
+  searchBoostExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   pictures?: Prisma.PictureListRelationFilter
   interests?: Prisma.UsersOnInterestsListRelationFilter
   messages?: Prisma.MessageListRelationFilter
@@ -541,6 +551,7 @@ export type UserOrderByWithAggregationInput = {
   foodPreference?: Prisma.SortOrderInput | Prisma.SortOrder
   socialNetworksActivity?: Prisma.SortOrderInput | Prisma.SortOrder
   chronotype?: Prisma.SortOrderInput | Prisma.SortOrder
+  searchBoostExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -580,6 +591,7 @@ export type UserScalarWhereWithAggregatesInput = {
   foodPreference?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   socialNetworksActivity?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   chronotype?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  searchBoostExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -610,6 +622,7 @@ export type UserCreateInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -652,6 +665,7 @@ export type UserUncheckedCreateInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -692,6 +706,7 @@ export type UserUpdateInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -734,6 +749,7 @@ export type UserUncheckedUpdateInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -775,6 +791,7 @@ export type UserCreateManyInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -805,6 +822,7 @@ export type UserUpdateManyMutationInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -836,6 +854,7 @@ export type UserUncheckedUpdateManyInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserListRelationFilter = {
@@ -882,6 +901,7 @@ export type UserCountOrderByAggregateInput = {
   foodPreference?: Prisma.SortOrder
   socialNetworksActivity?: Prisma.SortOrder
   chronotype?: Prisma.SortOrder
+  searchBoostExpiresAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -920,6 +940,7 @@ export type UserMaxOrderByAggregateInput = {
   foodPreference?: Prisma.SortOrder
   socialNetworksActivity?: Prisma.SortOrder
   chronotype?: Prisma.SortOrder
+  searchBoostExpiresAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -951,6 +972,7 @@ export type UserMinOrderByAggregateInput = {
   foodPreference?: Prisma.SortOrder
   socialNetworksActivity?: Prisma.SortOrder
   chronotype?: Prisma.SortOrder
+  searchBoostExpiresAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -1031,6 +1053,10 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type UserUpdateManyWithoutPairsNestedInput = {
@@ -1249,6 +1275,7 @@ export type UserCreateWithoutPairsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1290,6 +1317,7 @@ export type UserUncheckedCreateWithoutPairsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1334,6 +1362,7 @@ export type UserCreateWithoutPairForInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1375,6 +1404,7 @@ export type UserUncheckedCreateWithoutPairForInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1419,6 +1449,7 @@ export type UserCreateWithoutLastReturnableForInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1460,6 +1491,7 @@ export type UserUncheckedCreateWithoutLastReturnableForInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1504,6 +1536,7 @@ export type UserCreateWithoutLastReturnableInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1544,6 +1577,7 @@ export type UserUncheckedCreateWithoutLastReturnableInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1614,6 +1648,7 @@ export type UserScalarWhereInput = {
   foodPreference?: Prisma.StringNullableFilter<"User"> | string | null
   socialNetworksActivity?: Prisma.StringNullableFilter<"User"> | string | null
   chronotype?: Prisma.StringNullableFilter<"User"> | string | null
+  searchBoostExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserUpsertWithWhereUniqueWithoutPairForInput = {
@@ -1671,6 +1706,7 @@ export type UserUpdateWithoutLastReturnableForInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -1712,6 +1748,7 @@ export type UserUncheckedUpdateWithoutLastReturnableForInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -1767,6 +1804,7 @@ export type UserCreateWithoutCheckedInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1808,6 +1846,7 @@ export type UserUncheckedCreateWithoutCheckedInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1852,6 +1891,7 @@ export type UserCreateWithoutWasCheckedInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -1893,6 +1933,7 @@ export type UserUncheckedCreateWithoutWasCheckedInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -1948,6 +1989,7 @@ export type UserUpdateWithoutCheckedInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -1989,6 +2031,7 @@ export type UserUncheckedUpdateWithoutCheckedInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -2039,6 +2082,7 @@ export type UserUpdateWithoutWasCheckedInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -2080,6 +2124,7 @@ export type UserUncheckedUpdateWithoutWasCheckedInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -2119,6 +2164,7 @@ export type UserCreateWithoutPlaceInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -2160,6 +2206,7 @@ export type UserUncheckedCreateWithoutPlaceInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -2215,6 +2262,7 @@ export type UserUpdateWithoutPlaceInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -2256,6 +2304,7 @@ export type UserUncheckedUpdateWithoutPlaceInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -2295,6 +2344,7 @@ export type UserCreateWithoutPicturesInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsCreateNestedManyWithoutUserInput
@@ -2336,6 +2386,7 @@ export type UserUncheckedCreateWithoutPicturesInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsUncheckedCreateNestedManyWithoutUserInput
@@ -2391,6 +2442,7 @@ export type UserUpdateWithoutPicturesInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUpdateManyWithoutUserNestedInput
@@ -2432,6 +2484,7 @@ export type UserUncheckedUpdateWithoutPicturesInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUncheckedUpdateManyWithoutUserNestedInput
@@ -2471,6 +2524,7 @@ export type UserCreateWithoutInterestsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsCreateNestedManyWithoutUserInput
@@ -2512,6 +2566,7 @@ export type UserUncheckedCreateWithoutInterestsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsUncheckedCreateNestedManyWithoutUserInput
@@ -2567,6 +2622,7 @@ export type UserUpdateWithoutInterestsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUpdateManyWithoutUserNestedInput
@@ -2608,6 +2664,7 @@ export type UserUncheckedUpdateWithoutInterestsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUncheckedUpdateManyWithoutUserNestedInput
@@ -2647,6 +2704,7 @@ export type UserCreateWithoutMessagesInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsCreateNestedManyWithoutUserInput
@@ -2688,6 +2746,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   chats?: Prisma.UsersOnChatsUncheckedCreateNestedManyWithoutUserInput
@@ -2743,6 +2802,7 @@ export type UserUpdateWithoutMessagesInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUpdateManyWithoutUserNestedInput
@@ -2784,6 +2844,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   chats?: Prisma.UsersOnChatsUncheckedUpdateManyWithoutUserNestedInput
@@ -2823,6 +2884,7 @@ export type UserCreateWithoutChatsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
@@ -2864,6 +2926,7 @@ export type UserUncheckedCreateWithoutChatsInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
   pictures?: Prisma.PictureUncheckedCreateNestedManyWithoutUserInput
   interests?: Prisma.UsersOnInterestsUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
@@ -2919,6 +2982,7 @@ export type UserUpdateWithoutChatsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -2960,6 +3024,7 @@ export type UserUncheckedUpdateWithoutChatsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -2999,6 +3064,7 @@ export type UserCreateManyLastReturnableInput = {
   foodPreference?: string | null
   socialNetworksActivity?: string | null
   chronotype?: string | null
+  searchBoostExpiresAt?: Date | string | null
 }
 
 export type UserUpdateWithoutPairsInput = {
@@ -3029,6 +3095,7 @@ export type UserUpdateWithoutPairsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -3070,6 +3137,7 @@ export type UserUncheckedUpdateWithoutPairsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -3110,6 +3178,7 @@ export type UserUncheckedUpdateManyWithoutPairsInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUpdateWithoutPairForInput = {
@@ -3140,6 +3209,7 @@ export type UserUpdateWithoutPairForInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -3181,6 +3251,7 @@ export type UserUncheckedUpdateWithoutPairForInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -3221,6 +3292,7 @@ export type UserUncheckedUpdateManyWithoutPairForInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUpdateWithoutLastReturnableInput = {
@@ -3251,6 +3323,7 @@ export type UserUpdateWithoutLastReturnableInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
@@ -3291,6 +3364,7 @@ export type UserUncheckedUpdateWithoutLastReturnableInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pictures?: Prisma.PictureUncheckedUpdateManyWithoutUserNestedInput
   interests?: Prisma.UsersOnInterestsUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
@@ -3331,6 +3405,7 @@ export type UserUncheckedUpdateManyWithoutLastReturnableInput = {
   foodPreference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialNetworksActivity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chronotype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  searchBoostExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -3465,6 +3540,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   foodPreference?: boolean
   socialNetworksActivity?: boolean
   chronotype?: boolean
+  searchBoostExpiresAt?: boolean
   pictures?: boolean | Prisma.User$picturesArgs<ExtArgs>
   interests?: boolean | Prisma.User$interestsArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
@@ -3508,6 +3584,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   foodPreference?: boolean
   socialNetworksActivity?: boolean
   chronotype?: boolean
+  searchBoostExpiresAt?: boolean
   lastReturnable?: boolean | Prisma.User$lastReturnableArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3540,6 +3617,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   foodPreference?: boolean
   socialNetworksActivity?: boolean
   chronotype?: boolean
+  searchBoostExpiresAt?: boolean
   lastReturnable?: boolean | Prisma.User$lastReturnableArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3572,9 +3650,10 @@ export type UserSelectScalar = {
   foodPreference?: boolean
   socialNetworksActivity?: boolean
   chronotype?: boolean
+  searchBoostExpiresAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "nickname" | "isActivated" | "age" | "sex" | "distance" | "usersOnlyInDistance" | "preferSex" | "preferAgeFrom" | "preferAgeTo" | "createdAt" | "updatedAt" | "lastReturnableId" | "zodiacSign" | "education" | "childrenAttitude" | "personalityType" | "communicationStyle" | "attentionSign" | "pet" | "alcoholAttitude" | "smokingAttitude" | "trainingAttitude" | "foodPreference" | "socialNetworksActivity" | "chronotype", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "nickname" | "isActivated" | "age" | "sex" | "distance" | "usersOnlyInDistance" | "preferSex" | "preferAgeFrom" | "preferAgeTo" | "createdAt" | "updatedAt" | "lastReturnableId" | "zodiacSign" | "education" | "childrenAttitude" | "personalityType" | "communicationStyle" | "attentionSign" | "pet" | "alcoholAttitude" | "smokingAttitude" | "trainingAttitude" | "foodPreference" | "socialNetworksActivity" | "chronotype" | "searchBoostExpiresAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pictures?: boolean | Prisma.User$picturesArgs<ExtArgs>
   interests?: boolean | Prisma.User$interestsArgs<ExtArgs>
@@ -3640,6 +3719,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     foodPreference: string | null
     socialNetworksActivity: string | null
     chronotype: string | null
+    searchBoostExpiresAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -4102,6 +4182,7 @@ export interface UserFieldRefs {
   readonly foodPreference: Prisma.FieldRef<"User", 'String'>
   readonly socialNetworksActivity: Prisma.FieldRef<"User", 'String'>
   readonly chronotype: Prisma.FieldRef<"User", 'String'>
+  readonly searchBoostExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 
