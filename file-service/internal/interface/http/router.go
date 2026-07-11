@@ -10,6 +10,8 @@ import (
 func NewHttpRouter() *mux.Router {
 	router := mux.NewRouter()
 
+	router.Use(loggingMiddleware)
+
 	router.PathPrefix("/").HandlerFunc(handler.GetFile).Methods("GET")
 
 	return router
