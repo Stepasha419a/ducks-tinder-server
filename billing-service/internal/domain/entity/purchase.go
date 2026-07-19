@@ -7,20 +7,18 @@ import (
 )
 
 type Purchase struct {
-	Id           string
-	CreditCardId string
-	UserId       string
-	Amount       int64
+	Id     string
+	UserId string
+	Amount int64
 
 	CreatedAt time.Time
 }
 
-func NewPurchase(userId string, creditCardId string, amount int64) (*Purchase, error) {
+func NewPurchase(userId string, amount int64) (*Purchase, error) {
 	return &Purchase{
-		Id:           uuid.New().String(),
-		UserId:       userId,
-		CreditCardId: creditCardId,
-		Amount:       amount,
+		Id:     uuid.New().String(),
+		UserId: userId,
+		Amount: amount,
 
 		CreatedAt: time.Now(),
 	}, nil
