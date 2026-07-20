@@ -13,10 +13,9 @@ func (r *PurchaseResponse) ToPurchaseGrpcResponse() *gen.Purchase {
 	createdAt := r.CreatedAt.Unix()
 
 	return &gen.Purchase{
-		Id:           r.Id,
-		UserId:       r.UserId,
-		CreditCardId: r.CreditCardId,
-		Amount:       r.Amount,
-		CreatedAt:    createdAt,
+		Id:        r.Id,
+		UserId:    r.UserId,
+		Amount:    r.Amount,
+		CreatedAt: createdAt,
 	}
 }
