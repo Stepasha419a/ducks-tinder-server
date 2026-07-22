@@ -1,6 +1,9 @@
 syntax="proto3";
 
 package subscription;
+
+import "google/protobuf/timestamp.proto";
+
 option go_package = "./gen";
 
 service SubscriptionService {
@@ -12,9 +15,16 @@ message GetSubscriptionRequest {
 }
 
 message Subscription {
-  string userId       = 1;
+  string user_id = 1;
   string subscription = 2;
-  string login        = 3;
-  int64  expiresAt    = 4;
-  int64  createdAt    = 5;
+  string login = 3;
+
+  int32 super_likes_count = 4;
+  int32 search_boosts_count = 5;
+
+  optional google.protobuf.Timestamp cancelled_at = 6;
+  optional google.protobuf.Timestamp search_boost_expires_at = 7;
+
+  google.protobuf.Timestamp expires_at = 8;
+  google.protobuf.Timestamp created_at = 9;
 }
