@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BillingService_WithdrawUserCreditCard_FullMethodName = "/billing.BillingService/WithdrawUserCreditCard"
+	BillingService_HandleUserPurchase_FullMethodName = "/billing.BillingService/HandleUserPurchase"
 )
 
 // BillingServiceClient is the client API for BillingService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BillingServiceClient interface {
-	WithdrawUserCreditCard(ctx context.Context, in *WithdrawUserCreditCardRequest, opts ...grpc.CallOption) (*Purchase, error)
+	HandleUserPurchase(ctx context.Context, in *HandleUserPurchaseRequest, opts ...grpc.CallOption) (*Purchase, error)
 }
 
 type billingServiceClient struct {
@@ -37,10 +37,10 @@ func NewBillingServiceClient(cc grpc.ClientConnInterface) BillingServiceClient {
 	return &billingServiceClient{cc}
 }
 
-func (c *billingServiceClient) WithdrawUserCreditCard(ctx context.Context, in *WithdrawUserCreditCardRequest, opts ...grpc.CallOption) (*Purchase, error) {
+func (c *billingServiceClient) HandleUserPurchase(ctx context.Context, in *HandleUserPurchaseRequest, opts ...grpc.CallOption) (*Purchase, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Purchase)
-	err := c.cc.Invoke(ctx, BillingService_WithdrawUserCreditCard_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, BillingService_HandleUserPurchase_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *billingServiceClient) WithdrawUserCreditCard(ctx context.Context, in *W
 // All implementations must embed UnimplementedBillingServiceServer
 // for forward compatibility.
 type BillingServiceServer interface {
-	WithdrawUserCreditCard(context.Context, *WithdrawUserCreditCardRequest) (*Purchase, error)
+	HandleUserPurchase(context.Context, *HandleUserPurchaseRequest) (*Purchase, error)
 	mustEmbedUnimplementedBillingServiceServer()
 }
 
@@ -62,8 +62,8 @@ type BillingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBillingServiceServer struct{}
 
-func (UnimplementedBillingServiceServer) WithdrawUserCreditCard(context.Context, *WithdrawUserCreditCardRequest) (*Purchase, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawUserCreditCard not implemented")
+func (UnimplementedBillingServiceServer) HandleUserPurchase(context.Context, *HandleUserPurchaseRequest) (*Purchase, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleUserPurchase not implemented")
 }
 func (UnimplementedBillingServiceServer) mustEmbedUnimplementedBillingServiceServer() {}
 func (UnimplementedBillingServiceServer) testEmbeddedByValue()                        {}
@@ -86,20 +86,20 @@ func RegisterBillingServiceServer(s grpc.ServiceRegistrar, srv BillingServiceSer
 	s.RegisterService(&BillingService_ServiceDesc, srv)
 }
 
-func _BillingService_WithdrawUserCreditCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WithdrawUserCreditCardRequest)
+func _BillingService_HandleUserPurchase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HandleUserPurchaseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BillingServiceServer).WithdrawUserCreditCard(ctx, in)
+		return srv.(BillingServiceServer).HandleUserPurchase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BillingService_WithdrawUserCreditCard_FullMethodName,
+		FullMethod: BillingService_HandleUserPurchase_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BillingServiceServer).WithdrawUserCreditCard(ctx, req.(*WithdrawUserCreditCardRequest))
+		return srv.(BillingServiceServer).HandleUserPurchase(ctx, req.(*HandleUserPurchaseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +112,8 @@ var BillingService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BillingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "WithdrawUserCreditCard",
-			Handler:    _BillingService_WithdrawUserCreditCard_Handler,
+			MethodName: "HandleUserPurchase",
+			Handler:    _BillingService_HandleUserPurchase_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
