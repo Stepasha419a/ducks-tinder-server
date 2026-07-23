@@ -11,6 +11,6 @@ import (
 type SubscriptionRepository interface {
 	Save(ctx context.Context, subscription *entity.Subscription, tx pgx.Tx) (*entity.Subscription, error)
 	Find(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error)
-	FindByUserIdOrLogin(ctx context.Context, userId string, login string, tx pgx.Tx) (*entity.Subscription, error)
-	Delete(ctx context.Context, userId string, tx pgx.Tx) error
+	FindActive(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error)
+	FindActiveByUserIdOrLogin(ctx context.Context, userId string, login string, tx pgx.Tx) (*entity.Subscription, error)
 }
