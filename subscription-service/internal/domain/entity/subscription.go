@@ -9,6 +9,12 @@ type Subscription struct {
 	Subscription string
 	Login        string
 
+	SuperLikesCount   int
+	SearchBoostsCount int
+
+	CancelledAt          *time.Time
+	SearchBoostExpiresAt *time.Time
+
 	ExpiresAt time.Time
 	CreatedAt time.Time
 }
