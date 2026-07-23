@@ -29,3 +29,8 @@ func NewSubscription(userId string, subscription string, login string) *Subscrip
 		CreatedAt: time.Now(),
 	}
 }
+
+func (s *Subscription) Cancel() {
+	now := time.Now()
+	s.CancelledAt = &now
+}
