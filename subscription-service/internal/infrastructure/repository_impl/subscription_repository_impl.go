@@ -27,11 +27,15 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 	}
 
 	if existingSubscription != nil {
-		_, err = r.pg.Exec(tx)(ctx, "UPDATE subscriptions SET subscription=@subscription, login=@login, expiresAt=@expires_at WHERE user_id=@user_id", &pgx.NamedArgs{
-			"subscription": subscription.Subscription,
-			"user_id":      subscription.UserId,
-			"login":        subscription.Login,
-			"expires_at":   subscription.ExpiresAt,
+		_, err = r.pg.Exec(tx)(ctx, "UPDATE subscriptions SET subscription=@subscription, login=@login, super_likes_count=@super_likes_count, search_boosts_count=@search_boosts_count, cancelled_at=@cancelled_at, search_boost_expires_at=@search_boost_expires_at, expiresAt=@expires_at WHERE user_id=@user_id", &pgx.NamedArgs{
+			"subscription":            subscription.Subscription,
+			"user_id":                 subscription.UserId,
+			"login":                   subscription.Login,
+			"expires_at":              subscription.ExpiresAt,
+			"super_likes_count":       subscription.SuperLikesCount,
+			"search_boosts_count":     subscription.SearchBoostsCount,
+			"cancelled_at":            subscription.CancelledAt,
+			"search_boost_expires_at": subscription.SearchBoostExpiresAt,
 		})
 		if err != nil {
 			return nil, err
@@ -40,11 +44,15 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 	}
 
 	_, err = r.pg.Exec(tx)(ctx, "INSERT INTO subscriptions (user_id, subscription, login, expires_at, created_at) VALUES (@user_id, @subscription, @login, @expires_at, @created_at)", &pgx.NamedArgs{
-		"user_id":      subscription.UserId,
-		"subscription": subscription.Subscription,
-		"login":        subscription.Login,
-		"expires_at":   subscription.ExpiresAt,
-		"created_at":   subscription.CreatedAt,
+		"user_id":                 subscription.UserId,
+		"subscription":            subscription.Subscription,
+		"login":                   subscription.Login,
+		"expires_at":              subscription.ExpiresAt,
+		"created_at":              subscription.CreatedAt,
+		"super_likes_count":       subscription.SuperLikesCount,
+		"search_boosts_count":     subscription.SearchBoostsCount,
+		"cancelled_at":            subscription.CancelledAt,
+		"search_boost_expires_at": subscription.SearchBoostExpiresAt,
 	})
 	if err != nil {
 		return nil, err
@@ -56,9 +64,9 @@ func (r *SubscriptionRepositoryImpl) Save(ctx context.Context, subscription *ent
 func (r *SubscriptionRepositoryImpl) Find(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error) {
 	subscription := &entity.Subscription{}
 
-	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, super_likes_count, search_boosts_count, cancelled_at, search_boost_expires_at, expires_at, created_at FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
 		"user_id": userId,
-	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.ExpiresAt, &subscription.CreatedAt)
+	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.SuperLikesCount, &subscription.SearchBoostsCount, &subscription.CancelledAt, &subscription.SearchBoostExpiresAt, &subscription.ExpiresAt, &subscription.CreatedAt)
 	if err != nil {
 		return nil, handleError(err)
 	}
@@ -66,13 +74,12 @@ func (r *SubscriptionRepositoryImpl) Find(ctx context.Context, userId string, tx
 	return subscription, nil
 }
 
-func (r *SubscriptionRepositoryImpl) FindByUserIdOrLogin(ctx context.Context, userId string, login string, tx pgx.Tx) (*entity.Subscription, error) {
+func (r *SubscriptionRepositoryImpl) FindActive(ctx context.Context, userId string, tx pgx.Tx) (*entity.Subscription, error) {
 	subscription := &entity.Subscription{}
 
-	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, expires_at, created_at FROM subscriptions WHERE user_id=@user_id OR login=@login", &pgx.NamedArgs{
+	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, super_likes_count, search_boosts_count, cancelled_at, search_boost_expires_at, expires_at, created_at FROM subscriptions WHERE user_id=@user_id AND expires_at > NOW() AND cancelled_at IS NULL", &pgx.NamedArgs{
 		"user_id": userId,
-		"login":   login,
-	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.ExpiresAt, &subscription.CreatedAt)
+	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.SuperLikesCount, &subscription.SearchBoostsCount, &subscription.CancelledAt, &subscription.SearchBoostExpiresAt, &subscription.ExpiresAt, &subscription.CreatedAt)
 	if err != nil {
 		return nil, handleError(err)
 	}
@@ -80,15 +87,18 @@ func (r *SubscriptionRepositoryImpl) FindByUserIdOrLogin(ctx context.Context, us
 	return subscription, nil
 }
 
-func (r *SubscriptionRepositoryImpl) Delete(ctx context.Context, userId string, tx pgx.Tx) error {
-	_, err := r.pg.Exec(tx)(ctx, "DELETE FROM subscriptions WHERE user_id=@user_id", &pgx.NamedArgs{
+func (r *SubscriptionRepositoryImpl) FindActiveByUserIdOrLogin(ctx context.Context, userId string, login string, tx pgx.Tx) (*entity.Subscription, error) {
+	subscription := &entity.Subscription{}
+
+	err := r.pg.QueryRow(tx)(ctx, "SELECT user_id, subscription, login, super_likes_count, search_boosts_count, cancelled_at, search_boost_expires_at, expires_at, created_at FROM subscriptions WHERE (user_id=@user_id OR login=@login) AND expires_at > NOW() AND cancelled_at IS NULL", &pgx.NamedArgs{
 		"user_id": userId,
-	})
+		"login":   login,
+	}).Scan(&subscription.UserId, &subscription.Subscription, &subscription.Login, &subscription.SuperLikesCount, &subscription.SearchBoostsCount, &subscription.CancelledAt, &subscription.SearchBoostExpiresAt, &subscription.ExpiresAt, &subscription.CreatedAt)
 	if err != nil {
-		return err
+		return nil, handleError(err)
 	}
 
-	return nil
+	return subscription, nil
 }
 
 func handleError(err error) error {
