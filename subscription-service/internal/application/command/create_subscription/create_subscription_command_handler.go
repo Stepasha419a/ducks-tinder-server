@@ -14,7 +14,7 @@ import (
 )
 
 func CreateSubscriptionCommandHandler(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], command *CreateSubscriptionCommand, subscriptionRepository repository.SubscriptionRepository, billingService billing_service.BillingService, loginService login_service.LoginService) error {
-	subscription, err := subscriptionRepository.FindByUserIdOrLogin(ctx.Context(), command.UserId, command.Login, nil)
+	subscription, err := subscriptionRepository.FindActiveByUserIdOrLogin(ctx.Context(), command.UserId, command.Login, nil)
 	if err != nil {
 		return err
 	}
@@ -35,12 +35,11 @@ func CreateSubscriptionCommandHandler(ctx service_context.ServiceContext[*mapper
 		return ctx.ErrorMessage(http.StatusBadRequest, "Login is not valid")
 	}
 
-	request := &billing_service.WithdrawUserCreditCardRequest{
-		UserId:       command.UserId,
-		CreditCardId: command.CreditCardId,
-		Amount:       10000,
+	request := &billing_service.HandleUserPurchaseRequest{
+		UserId: command.UserId,
+		Amount: 0,
 	}
-	purchase, err := billingService.WithdrawUserCreditCard(ctx.Context(), request)
+	purchase, err := billingService.HandleUserPurchase(ctx.Context(), request)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
 			return ctx.NotFound()
