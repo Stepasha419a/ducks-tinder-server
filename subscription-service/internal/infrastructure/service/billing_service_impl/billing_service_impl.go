@@ -33,24 +33,22 @@ func NewBillingServiceImpl(ctx context.Context, configService config_service.Con
 	return service, cleanUp
 }
 
-func (c *BillingServiceImpl) WithdrawUserCreditCard(ctx context.Context, request *billing_service.WithdrawUserCreditCardRequest) (*billing_service.Purchase, error) {
-	in := &gen.WithdrawUserCreditCardRequest{
-		UserId:       request.UserId,
-		CreditCardId: request.CreditCardId,
-		Amount:       request.Amount,
+func (c *BillingServiceImpl) HandleUserPurchase(ctx context.Context, request *billing_service.HandleUserPurchaseRequest) (*billing_service.Purchase, error) {
+	in := &gen.HandleUserPurchaseRequest{
+		UserId: request.UserId,
+		Amount: request.Amount,
 	}
 
-	out, err := c.client.WithdrawUserCreditCard(ctx, in)
+	out, err := c.client.HandleUserPurchase(ctx, in)
 	if err != nil {
 		return nil, err
 	}
 
 	response := &billing_service.Purchase{
-		Id:           out.Id,
-		UserId:       out.UserId,
-		CreditCardId: out.CreditCardId,
-		Amount:       out.Amount,
-		CreatedAt:    out.CreatedAt,
+		Id:        out.Id,
+		UserId:    out.UserId,
+		Amount:    out.Amount,
+		CreatedAt: out.CreatedAt,
 	}
 
 	return response, nil
