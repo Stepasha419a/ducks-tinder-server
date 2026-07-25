@@ -1,8 +1,8 @@
 package interface_common
 
 import (
+	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/command/cancel_subscription"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/command/create_subscription"
-	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/command/delete_subscription"
 	get_subscription "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/query/get_subscription"
 	validator_service "github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/domain/service/validator"
 )
@@ -24,7 +24,6 @@ func (dto *GetSubscriptionDto) ToGetSubscriptionQuery(validatorService validator
 
 type CreateSubscriptionDto struct {
 	UserId       string `validate:"required,uuid4"`
-	CreditCardId string `validate:"required,uuid4"`
 	Subscription string `validate:"required"`
 	Login        string `validate:"required,max=50"`
 }
@@ -37,23 +36,22 @@ func (dto *CreateSubscriptionDto) ToCreateSubscriptionCommand(validatorService v
 
 	return &create_subscription.CreateSubscriptionCommand{
 		UserId:       dto.UserId,
-		CreditCardId: dto.CreditCardId,
 		Subscription: dto.Subscription,
 		Login:        dto.Login,
 	}, nil
 }
 
-type DeleteSubscriptionDto struct {
+type CancelSubscriptionDto struct {
 	UserId string `validate:"required,uuid4"`
 }
 
-func (dto *DeleteSubscriptionDto) ToDeleteSubscriptionCommand(validatorService validator_service.ValidatorService) (*delete_subscription.DeleteSubscriptionCommand, error) {
+func (dto *CancelSubscriptionDto) ToCancelSubscriptionCommand(validatorService validator_service.ValidatorService) (*cancel_subscription.CancelSubscriptionCommand, error) {
 	err := validatorService.Struct(dto)
 	if err != nil {
 		return nil, err
 	}
 
-	return &delete_subscription.DeleteSubscriptionCommand{
+	return &cancel_subscription.CancelSubscriptionCommand{
 		UserId: dto.UserId,
 	}, nil
 }
