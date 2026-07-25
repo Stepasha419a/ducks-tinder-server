@@ -9,7 +9,7 @@ import (
 )
 
 func GetSubscriptionQueryHandler(ctx service_context.ServiceContext[*mapper.SubscriptionResponse], query *GetSubscriptionQuery, subscriptionRepository repository.SubscriptionRepository) error {
-	subscription, err := subscriptionRepository.Find(ctx.Context(), query.UserId, nil)
+	subscription, err := subscriptionRepository.FindActive(ctx.Context(), query.UserId, nil)
 	if err != nil {
 		return err
 	}
