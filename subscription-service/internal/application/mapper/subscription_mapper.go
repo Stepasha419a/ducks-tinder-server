@@ -11,6 +11,11 @@ type SubscriptionResponse struct {
 	Subscription string `json:"subscription"`
 	Login        string `json:"login"`
 
+	SuperLikesCount   int `json:"superLikesCount"`
+	SearchBoostsCount int `json:"searchBoostsCount"`
+
+	SearchBoostExpiresAt *time.Time `json:"searchBoostExpiresAt"`
+
 	ExpiresAt time.Time `json:"expiresAt"`
 	CreatedAt time.Time `json:"createdAt"`
 }
@@ -20,6 +25,11 @@ func NewSubscriptionResponse(subscription *entity.Subscription) *SubscriptionRes
 		UserId:       subscription.UserId,
 		Subscription: subscription.Subscription,
 		Login:        subscription.Login,
+
+		SuperLikesCount:   subscription.SuperLikesCount,
+		SearchBoostsCount: subscription.SearchBoostsCount,
+
+		SearchBoostExpiresAt: subscription.SearchBoostExpiresAt,
 
 		ExpiresAt: subscription.ExpiresAt,
 		CreatedAt: subscription.CreatedAt,
