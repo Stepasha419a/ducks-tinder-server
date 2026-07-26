@@ -25,7 +25,7 @@ func NewSubscriptionController(app *fiber.App, service service.SubscriptionServi
 
 	app.Get("/subscription", controller.GetSubscription)
 	app.Post("/subscription", controller.CreateSubscription)
-	app.Delete("/subscription", controller.DeleteSubscription)
+	app.Put("/subscription", controller.CancelSubscription)
 
 	return controller
 }
@@ -79,7 +79,7 @@ func (bc *SubscriptionController) CreateSubscription(ctx fiber.Ctx) error {
 	return bc.service.CreateSubscription(serviceContext, command)
 }
 
-func (bc *SubscriptionController) DeleteSubscription(ctx fiber.Ctx) error {
+func (bc *SubscriptionController) CancelSubscription(ctx fiber.Ctx) error {
 	rawUserId := ctx.Locals("userId")
 
 	userId, ok := rawUserId.(string)
@@ -87,16 +87,16 @@ func (bc *SubscriptionController) DeleteSubscription(ctx fiber.Ctx) error {
 		return fiber.NewError(http.StatusInternalServerError, "Undefined userId")
 	}
 
-	dto := &interface_common.DeleteSubscriptionDto{
+	dto := &interface_common.CancelSubscriptionDto{
 		UserId: userId,
 	}
 
 	serviceContext := fiber_impl_context.NewServiceContext[*mapper.SubscriptionResponse](ctx)
-	command, err := dto.ToDeleteSubscriptionCommand(bc.validatorService)
+	command, err := dto.ToCancelSubscriptionCommand(bc.validatorService)
 
 	if err != nil {
 		return serviceContext.ErrorMessage(http.StatusBadRequest, "Validation failed: "+err.Error())
 	}
 
-	return bc.service.DeleteSubscription(serviceContext, command)
+	return bc.service.CancelSubscription(serviceContext, command)
 }
