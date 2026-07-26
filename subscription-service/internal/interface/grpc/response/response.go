@@ -3,6 +3,7 @@ package grpc_response
 import (
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/internal/application/mapper"
 	"github.com/Stepasha419a/ducks-tinder-server/subscription-service/proto/gen"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type SubscriptionResponse struct {
@@ -10,14 +11,21 @@ type SubscriptionResponse struct {
 }
 
 func (r *SubscriptionResponse) ToSubscriptionGrpcResponse() *gen.Subscription {
-	expiresAt := r.ExpiresAt.Unix()
-	createdAt := r.CreatedAt.Unix()
-
-	return &gen.Subscription{
+	res := &gen.Subscription{
 		UserId:       r.UserId,
 		Subscription: r.Subscription,
 		Login:        r.Login,
-		ExpiresAt:    expiresAt,
-		CreatedAt:    createdAt,
+
+		SuperLikesCount:   int32(r.SuperLikesCount),
+		SearchBoostsCount: int32(r.SearchBoostsCount),
+
+		ExpiresAt: timestamppb.New(r.ExpiresAt),
+		CreatedAt: timestamppb.New(r.CreatedAt),
 	}
+
+	if r.SearchBoostExpiresAt != nil {
+		res.SearchBoostExpiresAt = timestamppb.New(*r.SearchBoostExpiresAt)
+	}
+
+	return res
 }
